@@ -1,0 +1,148 @@
+use askama::Template;
+use std::{
+    borrow::Cow,
+    fmt::{Debug, Display},
+    marker::PhantomData,
+};
+
+use crate::{filters, prelude::*};
+
+pub trait OptionTag: Default + Clone + Debug + 'static {
+    const CLASS: Option<&'static str> = None;
+    type Content: Display + Default + Clone + Debug = Cow<'static, str>;
+}
+
+impl OptionTag for () {}
+
+/// The HTML `<option>` element.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option)
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let option: HtmlOption = HtmlOption::empty().id("html_option");
+///
+/// assert_eq!(option.bake(),
+/// r#"<option id="html_option"></option>"#);
+/// ```
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let option: HtmlOption = HtmlOption::new("Chocolate").value("chocolate");
+///
+/// assert_eq!(option.bake(),
+/// r#"<option value="chocolate">Chocolate</option>"#);
+/// ```
+///
+/// # Askama template
+///
+/// ```askama
+/// <option
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- data_attrs -}}
+///   {{- event_handlers -}}
+///   {{- global_aria_attrs -}}
+/// >{{ content | kirei(2, 70) }}</option>
+/// ```
+#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct HtmlOption<M: OptionTag = ()> {
+    _marker: PhantomData<M>,
+    pub content: M::Content,
+    pub global_attrs: GlobalAttrs,
+    pub specific_attrs: SpecificAttrs,
+    pub data_attrs: DataAttrs,
+    pub event_handlers: EventHandlers,
+    pub global_aria_attrs: GlobalAriaAttrs,
+}
+
+impl<M: OptionTag> HtmlOption<M> {
+    pub fn new(content: impl Into<M::Content>) -> Self {
+        let mut s = Self {
+            content: content.into(),
+            ..Default::default()
+        };
+        if let Some(class) = M::CLASS {
+            s = s.class(class);
+        }
+        s
+    }
+
+    pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
+        let mut s = Self::default();
+        if let Some(class) = M::CLASS {
+            s = s.class(class);
+        }
+        s.value(value)
+    }
+
+    pub fn empty() -> Self {
+        let mut s = Self::default();
+        if let Some(class) = M::CLASS {
+            s = s.class(class);
+        }
+        s
+    }
+
+    /// Whether the form control is disabled.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled)
+    pub fn disabled(mut self, value: bool) -> Self {
+        if value {
+            self.specific_attrs = self.specific_attrs.add_bool_attr("disabled");
+        }
+        self
+    }
+
+    /// User-visible label.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#label)
+    pub fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.specific_attrs = self.specific_attrs.add_attr("label", value.into());
+        self
+    }
+
+    /// Whether the option is selected by default.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#selected)
+    pub fn selected(mut self, value: bool) -> Self {
+        if value {
+            self.specific_attrs = self.specific_attrs.add_bool_attr("selected");
+        }
+        self
+    }
+
+    /// Value to be used for form submission.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#value)
+    pub fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.specific_attrs = self.specific_attrs.add_attr("value", value);
+        self
+    }
+}
+
+/// ```askama
+/// {%- for option in items -%}
+/// {{- option -}}
+/// {%- if !loop.last %}
+/// {% endif -%}
+/// {%- endfor -%}
+/// ```
+#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct Options {
+    items: Vec<HtmlOption>,
+}
+
+impl<I: IntoIterator<Item = HtmlOption>> From<I> for Options {
+    fn from(items: I) -> Self {
+        Self {
+            items: items.into_iter().collect(),
+        }
+    }
+}

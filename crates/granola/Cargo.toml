@@ -1,0 +1,18 @@
+[package]
+name = "granola"
+version.workspace = true
+description = "A nutty template library for Askama"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+askama = { workspace = true }
+granola-derive = { path = "../granola-derive" }
+indexmap = { workspace = true }
+strum = { workspace = true }
+
+[lints]
+workspace = true

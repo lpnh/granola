@@ -1,0 +1,37 @@
+[workspace]
+resolver = "2"
+members = ["crates/granola", "crates/granola-derive"]
+default-members = ["crates/granola"]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/lpnh/granola"
+keywords = ["askama", "html", "template", "web"]
+categories = ["template-engine", "web-programming"]
+
+[workspace.dependencies]
+askama = { git = "https://github.com/askama-rs/askama.git", features = [
+    "code-in-doc",
+] }
+indexmap = "2.14.0"
+strum = { version = "0.28.0", features = ["derive"] }
+
+[workspace.lints.clippy]
+doc_markdown = "warn"
+manual_let_else = "warn"
+redundant_closure_for_method_calls = "warn"
+redundant_else = "warn"
+semicolon_if_nothing_returned = "warn"
+type_complexity = "allow"
+too_many_arguments = "allow"
+undocumented_unsafe_blocks = "warn"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+unused_qualifications = "warn"
+
+# https://doc.rust-lang.org/cargo/reference/profiles.html?highlight=share-generics#overrides
+[profile.dev.package."*"]
+opt-level = 3
