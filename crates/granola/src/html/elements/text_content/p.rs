@@ -7,62 +7,61 @@ use std::{
 
 use crate::{filters, prelude::*};
 
-pub trait BdoTag: Default + Clone + Debug + 'static {
+pub trait PTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
     /// Permitted ARIA roles: any
     const ROLE: Option<&'static str> = None;
     type Content: Display + Default + Clone + Debug = Cow<'static, str>;
 }
 
-impl BdoTag for () {}
+impl PTag for () {}
 
-/// The HTML `<bdo>` element.
+/// The HTML `<p>` element.
 ///
-/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/bdo)
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/p)
 ///
 /// # Example
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let bdo: HtmlBdo = HtmlBdo::empty().id("bidirectional_text_override");
+/// let p: HtmlP = HtmlP::empty().id("paragraph");
 ///
-/// assert_eq!(bdo.bake(),
-/// r#"<bdo id="bidirectional_text_override"></bdo>"#);
+/// assert_eq!(p.bake(),
+/// r#"<p id="paragraph"></p>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let bdo: HtmlBdo = HtmlBdo::new("looking-glass").dir("rtl");
+/// let p: HtmlP = HtmlP::new("Lorem ipsum dolor sit amet...🙄");
 ///
-/// assert_eq!(bdo.bake(),
-/// r#"<bdo dir="rtl">looking-glass</bdo>"#);
+/// assert_eq!(p.bake(),
+/// r#"<p>Lorem ipsum dolor sit amet...🙄</p>"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
-/// <bdo
+/// <p
 ///   {{- global_attrs -}}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2, 70) }}</bdo>
+/// >{{ content | kirei(2, 70) }}</p>
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct HtmlBdo<M: BdoTag = ()> {
+pub struct HtmlP<M: PTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
     pub data_attrs: DataAttrs,
     pub event_handlers: EventHandlers,
     pub global_aria_attrs: GlobalAriaAttrs,
 }
 
-impl<M: BdoTag> HtmlBdo<M> {
+impl<M: PTag> HtmlP<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
         let mut s = Self {
             content: content.into(),
