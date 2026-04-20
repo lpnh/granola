@@ -46,9 +46,9 @@ impl<T: AsRef<str>> Roast for Bake<&T> {
 ///
 /// let textarea: HtmlTextarea = HtmlTextarea::new("Exegi monumentum aere perennius").id("ode");
 ///
-/// let label_content = bake_block!["Notes", textarea];
+/// let content = bake_block!["Notes", textarea];
 ///
-/// let label: HtmlLabel = HtmlLabel::new(label_content).for_id("ode");
+/// let label: HtmlLabel = HtmlLabel::new(content).for_id("ode");
 ///
 /// assert_eq!(label.bake(),
 /// r#"<label for="ode">
@@ -86,9 +86,9 @@ macro_rules! bake_block {
 ///
 /// let docs: HtmlA = HtmlA::new("docs").href("https://askama.rs");
 ///
-/// let span_content = bake_inline!["Read the ", docs, "."];
+/// let content = bake_inline!["Read the ", docs, "."];
 ///
-/// let span: HtmlSpan = HtmlSpan::new(span_content);
+/// let span: HtmlSpan = HtmlSpan::new(content);
 ///
 /// assert_eq!(span.bake(),
 /// r#"<span>Read the <a href="https://askama.rs">docs</a>.</span>"#);
@@ -105,4 +105,53 @@ macro_rules! bake_inline {
 
         buf
     }};
+}
+
+#[cfg(test)]
+mod oven_tests {
+    #[test]
+    fn bake_inline_1() {
+        assert_eq!(bake_inline![""], "");
+    }
+
+    #[test]
+    fn bake_inline_2() {
+        assert_eq!(bake_inline!["single\nitem"], "single\nitem");
+    }
+
+    #[test]
+    fn bake_inline_3() {
+        assert_eq!(bake_inline!["hallo", "ween"], "halloween");
+    }
+
+    #[test]
+    fn bake_inline_4() {
+        assert_eq!(
+            bake_inline!["halloween ", "hello\nworld"],
+            "halloween hello\nworld"
+        );
+    }
+
+    #[test]
+    fn bake_block_1() {
+        assert_eq!(bake_block![""], "");
+    }
+
+    #[test]
+    fn bake_block_2() {
+        assert_eq!(bake_block!["single\nitem"], "single\nitem");
+    }
+
+    #[test]
+    fn bake_block_3() {
+        assert_eq!(bake_block!["hello", "world"], "hello\nworld");
+    }
+
+    #[test]
+    fn bake_block_4() {
+        assert_eq!(
+            bake_block!["halloween", "hello\nworld"],
+            "halloween\nhello\nworld"
+        );
+    }
 }
