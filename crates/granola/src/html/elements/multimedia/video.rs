@@ -7,14 +7,14 @@ use std::{
 
 use crate::{filters, prelude::*};
 
-pub trait HtmlVideoTag: Default + Clone + Debug + 'static {
+pub trait VideoTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
     /// Permitted ARIA roles: application
     const ROLE: Option<&'static str> = None;
     type Content: Display + Default + Clone + Debug = Cow<'static, str>;
 }
 
-impl HtmlVideoTag for () {}
+impl VideoTag for () {}
 
 /// The HTML `<video>` element.
 ///
@@ -55,7 +55,7 @@ impl HtmlVideoTag for () {}
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct HtmlVideo<M: HtmlVideoTag = ()> {
+pub struct HtmlVideo<M: VideoTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     pub global_attrs: GlobalAttrs,
@@ -65,7 +65,7 @@ pub struct HtmlVideo<M: HtmlVideoTag = ()> {
     pub global_aria_attrs: GlobalAriaAttrs,
 }
 
-impl<M: HtmlVideoTag> HtmlVideo<M> {
+impl<M: VideoTag> HtmlVideo<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
         let mut s = Self {
             content: content.into(),
