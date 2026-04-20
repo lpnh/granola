@@ -46,9 +46,7 @@ impl MapTag for () {}
 /// assert_eq!(img.bake(),
 /// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />"##);
 /// assert_eq!(map.bake(),
-/// r#"<map name="minas-gerais">
-///   <area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />
-/// </map>"#);
+/// r#"<map name="minas-gerais"><area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" /></map>"#);
 /// ```
 ///
 /// # Askama template
@@ -60,7 +58,7 @@ impl MapTag for () {}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2, 70) }}</map>
+/// >{{ content | kirei(2) }}</map>
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]

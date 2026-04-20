@@ -48,7 +48,7 @@ impl KbdTag for () {}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2, 70) }}</kbd>
+/// >{{ content | kirei(2) }}</kbd>
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]

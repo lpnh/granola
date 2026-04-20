@@ -24,3 +24,69 @@ pub mod text_semantics;
 pub use text_semantics::*;
 // pub mod web_components;
 // pub use web_components::*;
+
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Content_categories#phrasing_content
+#[allow(dead_code)]
+enum PhrasingElement {
+    Abbr,
+    Audio,
+    B,
+    Bdi,
+    Bdo,
+    Br,
+    Button,
+    Canvas,
+    Cite,
+    Code,
+    Data,
+    Datalist,
+    Dfn,
+    Em,
+    Embed,
+    I,
+    Iframe,
+    Img,
+    Input,
+    Kbd,
+    Label,
+    Mark,
+    Math,
+    Meter,
+    Noscript,
+    Object,
+    Output,
+    Picture,
+    Progress,
+    Q,
+    Ruby,
+    S,
+    Samp,
+    Script,
+    Select,
+    Slot,
+    Small,
+    Span,
+    Strong,
+    Sub,
+    Sup,
+    Svg,
+    Template,
+    Textarea,
+    Time,
+    U,
+    Var,
+    Video,
+    Wbr,
+    // === Conditionally phrasing ===
+    //
+    // only if it contains only phrasing content:
+    A,
+    Del,
+    Ins,
+    Map,
+    // only if it is a descendant of a <map> element:
+    Area,
+    // only if the `itemprop` attribute is present:
+    Link,
+    Meta,
+}

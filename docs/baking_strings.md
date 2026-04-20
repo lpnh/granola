@@ -17,9 +17,8 @@ concatenates them with no separator.
 The `filters` module exposes three custom Askama filters used by the HTML
 element templates:
 
-- `kirei(indent_width, threshold)`: decides inline vs. block rendering for an
-  element's content in a single streaming pass; see [`Kirei`] for the exact
-  rules.
+- `kirei(indent_width)`: decides inline vs. block rendering for an element's
+  content in a single streaming pass; see [`kirei`] for the exact rules.
 - `bake_attr("name")`: renders ` name="value"` when `Some`, nothing when
   `None`, for any `Option<impl Display>`.
 - `bake_bool_attr("name")`: renders ` name` when `true`, nothing when `false`.
