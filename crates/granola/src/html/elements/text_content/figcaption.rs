@@ -7,60 +7,57 @@ use std::{
 
 use crate::{filters, prelude::*};
 
-pub trait DivTag: Default + Clone + Debug + 'static {
+pub trait FigcaptionTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles: any
+    /// Permitted ARIA roles: group, none, presentation
     const ROLE: Option<&'static str> = None;
     type Content: Display + Default + Clone + Debug = Cow<'static, str>;
 }
 
-impl DivTag for () {}
+impl FigcaptionTag for () {}
 
-/// The HTML `<div>` element.
+/// The HTML `<figcaption>` element.
 ///
-/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/div)
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/figcaption)
 ///
 /// # Example
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let div: HtmlDiv = HtmlDiv::empty().id("content_division");
+/// let figcaption: HtmlFigcaption = HtmlFigcaption::empty().id("figure_caption");
 ///
-/// assert_eq!(div.bake(),
-/// r#"<div id="content_division"></div>"#);
+/// assert_eq!(figcaption.bake(),
+/// r#"<figcaption id="figure_caption"></figcaption>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let save: HtmlButton = HtmlButton::new("Save");
-/// let cancel: HtmlButton = HtmlButton::new("Cancel").button_type("button");
+/// let code: HtmlCode = HtmlCode::new(r#"function greet() print("hi!") end"#);
 ///
-/// let content = bake_block![save, cancel];
+/// let figcaption: HtmlFigcaption = HtmlFigcaption::new("Defining a function in Lua");
 ///
-/// let div: HtmlDiv = HtmlDiv::new(content).class("flex justify-end gap-2");
+/// let content = bake_block![code, figcaption];
 ///
-/// assert_eq!(div.bake(),
-/// r#"<div class="flex justify-end gap-2">
-///   <button>Save</button>
-///   <button type="button">Cancel</button>
-/// </div>"#);
+/// assert_eq!(content,
+/// r#"<code>function greet() print("hi!") end</code>
+/// <figcaption>Defining a function in Lua</figcaption>"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
-/// <div
+/// <figcaption
 ///   {{- global_attrs -}}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</div>
+/// >{{ content | kirei(2) }}</figcaption>
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct HtmlDiv<M: DivTag = ()> {
+pub struct HtmlFigcaption<M: FigcaptionTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     pub global_attrs: GlobalAttrs,
@@ -69,7 +66,7 @@ pub struct HtmlDiv<M: DivTag = ()> {
     pub global_aria_attrs: GlobalAriaAttrs,
 }
 
-impl<M: DivTag> HtmlDiv<M> {
+impl<M: FigcaptionTag> HtmlFigcaption<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
         let mut s = Self {
             content: content.into(),
