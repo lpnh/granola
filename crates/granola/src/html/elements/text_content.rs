@@ -1,5 +1,5 @@
-// mod blockquote;
-// pub use blockquote::*;
+mod blockquote;
+pub use blockquote::*;
 // mod dd;
 // pub use dd::*;
 // mod div;
