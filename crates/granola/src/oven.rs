@@ -1,7 +1,7 @@
 //! Macros and primitives for building strings.
 //!
-//! With [`bake_block`] and [`bake_inline`], [`Template`] types and [`AsRef<str>`] values can be
-//! freely mixed and rendered into a single [`String`].
+//! With [`bake_block`], [`bake_inline`], and [`bake_newline`], [`Template`] types and
+//! [`AsRef<str>`] values can be freely mixed and rendered into a single [`String`].
 //!
 //! The dispatch between the two is resolved at compile time. [`Template`] items render via
 //! [`Template::render_into`] while string values fall back to [`String::push_str`].
@@ -10,6 +10,7 @@
 //!
 //! [`bake_block`]: crate::bake_block
 //! [`bake_inline`]: crate::bake_inline
+//! [`bake_newline`]: crate::bake_newline
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
 
@@ -22,16 +23,26 @@ impl<T: Template> Bake<&T> {
     pub fn bake_content(&self, buf: &mut String) {
         let _ = self.0.render_into(buf);
     }
+
+    pub fn size_hint(&self) -> usize {
+        T::SIZE_HINT
+    }
 }
 
 /// Fallback trait for the `bake_content` impl that handles [`AsRef<str>`] values.
 pub trait Roast {
     fn bake_content(&self, buf: &mut String);
+
+    fn size_hint(&self) -> usize;
 }
 
 impl<T: AsRef<str>> Roast for Bake<&T> {
     fn bake_content(&self, buf: &mut String) {
         buf.push_str(self.0.as_ref());
+    }
+
+    fn size_hint(&self) -> usize {
+        self.0.as_ref().len()
     }
 }
 
@@ -64,12 +75,18 @@ macro_rules! bake_block {
 
         let mut buf = String::new();
 
-        $crate::oven::Bake(&$first).bake_content(&mut buf);
+        {
+            let content = $crate::oven::Bake(&$first);
+            buf.reserve(content.size_hint());
+            content.bake_content(&mut buf);
+        }
 
-        $(
+        $({
+            let content = $crate::oven::Bake(&$rest);
+            buf.reserve(1 + content.size_hint());
             buf.push('\n');
-            $crate::oven::Bake(&$rest).bake_content(&mut buf);
-        )*
+            content.bake_content(&mut buf);
+        })*
 
         buf
     }};
@@ -101,7 +118,11 @@ macro_rules! bake_inline {
 
         let mut buf = String::new();
 
-        $($crate::oven::Bake(&$item).bake_content(&mut buf);)*
+        $({
+            let content = $crate::oven::Bake(&$item);
+            buf.reserve(content.size_hint());
+            content.bake_content(&mut buf);
+        })*
 
         buf
     }};
@@ -131,9 +152,10 @@ macro_rules! bake_newline {
         #[allow(unused_imports)]
         use $crate::oven::Roast as _;
 
-        let mut buf = String::from("\n");
-
-        $crate::oven::Bake(&$item).bake_content(&mut buf);
+        let content = $crate::oven::Bake(&$item);
+        let mut buf = String::with_capacity(1 + content.size_hint());
+        buf.push('\n');
+        content.bake_content(&mut buf);
 
         buf
     }};
@@ -141,29 +163,6 @@ macro_rules! bake_newline {
 
 #[cfg(test)]
 mod oven_tests {
-    #[test]
-    fn bake_inline_1() {
-        assert_eq!(bake_inline![""], "");
-    }
-
-    #[test]
-    fn bake_inline_2() {
-        assert_eq!(bake_inline!["single\nitem"], "single\nitem");
-    }
-
-    #[test]
-    fn bake_inline_3() {
-        assert_eq!(bake_inline!["hallo", "ween"], "halloween");
-    }
-
-    #[test]
-    fn bake_inline_4() {
-        assert_eq!(
-            bake_inline!["halloween ", "hello\nworld"],
-            "halloween hello\nworld"
-        );
-    }
-
     #[test]
     fn bake_block_1() {
         assert_eq!(bake_block![""], "");
@@ -188,6 +187,29 @@ mod oven_tests {
     }
 
     #[test]
+    fn bake_inline_1() {
+        assert_eq!(bake_inline![""], "");
+    }
+
+    #[test]
+    fn bake_inline_2() {
+        assert_eq!(bake_inline!["single\nitem"], "single\nitem");
+    }
+
+    #[test]
+    fn bake_inline_3() {
+        assert_eq!(bake_inline!["hallo", "ween"], "halloween");
+    }
+
+    #[test]
+    fn bake_inline_4() {
+        assert_eq!(
+            bake_inline!["halloween ", "hello\nworld"],
+            "halloween hello\nworld"
+        );
+    }
+
+    #[test]
     fn bake_newline_1() {
         assert_eq!(bake_newline!(""), "\n");
     }
@@ -200,5 +222,86 @@ mod oven_tests {
     #[test]
     fn bake_newline_3() {
         assert_eq!(bake_newline!("hello\nworld"), "\nhello\nworld");
+    }
+}
+
+// The SIZE_HINT-based preallocation depends on two things:
+//
+// 1. Askama's `Template::SIZE_HINT` is a tight estimate
+//     (scaffold plus a small per-expression headroom).
+//
+// 2. `bake()`, `bake_block!`, `bake_inline!`, and `bake_newline!`
+//     reserve capacity up-front: HINT bytes, or 1 + HINT.
+//
+// Two fixtures per element:
+// - small fixture (fits in HINT): String capacity == HINT
+// - larger fixture (exceeds HINT): String capacity <= 2 * HINT
+#[cfg(test)]
+mod preallocation_tests {
+    use crate::prelude::*;
+    use askama::Template;
+
+    const IMG_HINT: usize = <HtmlImg as Template>::SIZE_HINT;
+    const P_HINT: usize = <HtmlP as Template>::SIZE_HINT;
+
+    fn img_empty() -> HtmlImg {
+        HtmlImg::empty()
+    }
+
+    fn img_with_src() -> HtmlImg {
+        HtmlImg::from_src("https://example.com/")
+    }
+
+    fn p_empty() -> HtmlP {
+        HtmlP::empty()
+    }
+
+    fn p_with_span() -> HtmlP {
+        let span: HtmlSpan = HtmlSpan::new("hello, world!");
+        HtmlP::new(span)
+    }
+
+    #[test]
+    fn size_hint_is_tight() {
+        let empty: HtmlP = HtmlP::empty();
+        let headroom = P_HINT - empty.bake().len();
+
+        let at_boundary: HtmlP = HtmlP::new("x".repeat(headroom));
+        assert_eq!(at_boundary.bake().len(), P_HINT);
+
+        let past_boundary: HtmlP = HtmlP::new("x".repeat(headroom + 1));
+        assert_eq!(past_boundary.bake().len(), P_HINT + 1);
+    }
+
+    #[test]
+    fn bake_capacity() {
+        assert_eq!(img_empty().bake().capacity(), IMG_HINT);
+        assert_eq!(p_empty().bake().capacity(), P_HINT);
+        assert!(img_with_src().bake().capacity() <= 2 * IMG_HINT);
+        assert!(p_with_span().bake().capacity() <= 2 * P_HINT);
+    }
+
+    #[test]
+    fn bake_block_capacity() {
+        assert_eq!(bake_block![img_empty()].capacity(), IMG_HINT);
+        assert_eq!(bake_block![p_empty()].capacity(), P_HINT);
+        assert!(bake_block![img_with_src()].capacity() <= 2 * IMG_HINT);
+        assert!(bake_block![p_with_span()].capacity() <= 2 * P_HINT);
+    }
+
+    #[test]
+    fn bake_inline_capacity() {
+        assert_eq!(bake_inline![img_empty()].capacity(), IMG_HINT);
+        assert_eq!(bake_inline![p_empty()].capacity(), P_HINT);
+        assert!(bake_inline![img_with_src()].capacity() <= 2 * IMG_HINT);
+        assert!(bake_inline![p_with_span()].capacity() <= 2 * P_HINT);
+    }
+
+    #[test]
+    fn bake_newline_capacity() {
+        assert_eq!(bake_newline!(img_empty()).capacity(), 1 + IMG_HINT);
+        assert_eq!(bake_newline!(p_empty()).capacity(), 1 + P_HINT);
+        assert!(bake_newline!(img_with_src()).capacity() <= 2 * (1 + IMG_HINT));
+        assert!(bake_newline!(p_with_span()).capacity() <= 2 * (1 + P_HINT));
     }
 }

@@ -6,13 +6,14 @@ The `Granola` derive adds a `bake()` method to any type that already derives
 pass. The derive also implements `From<T> for Cow<'static, str>` (routed
 through `bake()`), so a templated struct flows directly into `Cow`-typed slots.
 
-For composing several items into one string, the `bake_block!` and
-`bake_inline!` macros accept any mix of `askama::Template` types and
+For composing several items into one string, the `bake_block!`, `bake_inline!`,
+and `bake_newline!` macros accept any mix of `askama::Template` types and
 `AsRef<str>` values (`&str`, `String`, `Cow`, ...) in a single call. Dispatch
 is resolved at compile time via autoref-based specialization (`oven::Bake` /
 `oven::Roast`): template items go through `render_into`, string items use
-`push_str`. `bake_block!` joins items with a newline; `bake_inline!`
-concatenates them with no separator.
+`push_str`. Because `render_into` bypasses the `SIZE_HINT`-based preallocation
+that `render()` performs, the macros reserve capacity per item, reading
+`Template::SIZE_HINT` for template items and `str::len` for string items.
 
 The `filters` module exposes three custom Askama filters used by the HTML
 element templates:
@@ -23,7 +24,7 @@ element templates:
   `None`, for any `Option<impl Display>`.
 - `bake_bool_attr("name")`: renders ` name` when `true`, nothing when `false`.
 
-Each filter returns a lightweight wrapper (`Kirei`, `OptAttr`, `BoolAttr`)
-that implements both `Display` and `askama::FastWritable`, so Askama picks the
+Each filter returns a lightweight wrapper (`Kirei`, `OptAttr`, `BoolAttr`) that
+implements both `Display` and `askama::FastWritable`, so Askama picks the
 streaming path automatically and avoids the intermediate `String` allocation a
 `format!()`-based filter would add.
