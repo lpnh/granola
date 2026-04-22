@@ -126,6 +126,10 @@ impl<M: OptionTag> HtmlOption<M> {
     }
 }
 
+/// A collection of HTML `<option>` items.
+///
+/// The content of [`HtmlOptgroup`].
+///
 /// ```askama
 /// {%- for option in items -%}
 /// {{- option -}}

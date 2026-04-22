@@ -32,7 +32,7 @@ impl OptgroupTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let options: [HtmlOption; 3] = [
+/// let options = [
 ///     HtmlOption::new("Grape"),
 ///     HtmlOption::new("Mango"),
 ///     HtmlOption::new("Strawberry"),
