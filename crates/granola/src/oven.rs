@@ -107,6 +107,38 @@ macro_rules! bake_inline {
     }};
 }
 
+/// Renders one item into a single [`String`], with a leading newline.
+///
+/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`).
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let content = bake_newline!("content");
+///
+/// let paragraph: HtmlP = HtmlP::new(content);
+///
+/// assert_eq!(paragraph.bake(),
+/// r#"<p>
+///   content
+/// </p>"#);
+/// ```
+#[macro_export]
+macro_rules! bake_newline {
+    ($item:expr $(,)?) => {{
+        #[allow(unused_imports)]
+        use $crate::oven::Roast as _;
+
+        let mut buf = String::from("\n");
+
+        $crate::oven::Bake(&$item).bake_content(&mut buf);
+
+        buf
+    }};
+}
+
 #[cfg(test)]
 mod oven_tests {
     #[test]
@@ -153,5 +185,20 @@ mod oven_tests {
             bake_block!["halloween", "hello\nworld"],
             "halloween\nhello\nworld"
         );
+    }
+
+    #[test]
+    fn bake_newline_1() {
+        assert_eq!(bake_newline!(""), "\n");
+    }
+
+    #[test]
+    fn bake_newline_2() {
+        assert_eq!(bake_newline!("halloween"), "\nhalloween");
+    }
+
+    #[test]
+    fn bake_newline_3() {
+        assert_eq!(bake_newline!("hello\nworld"), "\nhello\nworld");
     }
 }

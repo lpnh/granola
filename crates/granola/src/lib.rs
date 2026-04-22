@@ -8,5 +8,5 @@ pub mod oven;
 
 pub mod prelude {
     pub use super::{Granola, MutAttrs, html::*};
-    pub use crate::{bake_block, bake_inline};
+    pub use crate::{bake_block, bake_inline, bake_newline};
 }
