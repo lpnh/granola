@@ -105,7 +105,7 @@ impl<M: LiTag> HtmlLi<M> {
 
 /// A collection of HTML `<li>` items.
 ///
-/// The content of [`HtmlOl`] or [`HtmlUl`].
+/// The content of [`HtmlMenu`], [`HtmlOl`], or [`HtmlUl`].
 ///
 /// ```askama
 /// {%- for li in items -%}
