@@ -41,9 +41,9 @@ impl OlTag for () {}
 ///   HtmlLi::new("Fold in everything nice"),
 /// ];
 ///
-/// let ol: HtmlOl = HtmlOl::new(items);
+/// let instructions: HtmlOl = HtmlOl::new(items);
 ///
-/// assert_eq!(ol.bake(),
+/// assert_eq!(instructions.bake(),
 /// r#"<ol>
 ///   <li>Add the sugar</li>
 ///   <li>Coat with spice</li>
