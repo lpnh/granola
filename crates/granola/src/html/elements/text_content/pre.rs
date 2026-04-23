@@ -5,7 +5,7 @@ use std::{
     marker::PhantomData,
 };
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 pub trait PreTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
@@ -34,8 +34,7 @@ impl PreTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ferris_ascii = bake_block![
-/// "",
+/// let ferris_ascii = bake_newline![
 /// r#" __________________________
 /// &lt; Hello fellow Rustaceans! &gt;
 ///  --------------------------
@@ -45,7 +44,6 @@ impl PreTag for () {}
 ///         \) /  o o  \ (/
 ///           '_   -   _'
 ///           / '-----' \"#,
-/// "",
 ///];
 ///
 /// let pre: HtmlPre = HtmlPre::new(ferris_ascii).role("img").aria_label("ASCII ferris");
@@ -78,7 +76,7 @@ impl PreTag for () {}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
-/// >{{ content }}</pre>
+/// >{{ content | kirei(0) }}</pre>
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]

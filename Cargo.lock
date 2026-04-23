@@ -3,6 +3,14 @@
 version = 4
 
 [[package]]
+name = "alloc_count"
+version = "0.0.1"
+dependencies = [
+ "askama",
+ "granola",
+]
+
+[[package]]
 name = "askama"
 version = "0.15.6"
 source = "git+https://github.com/askama-rs/askama.git#778b7d2515b8bd3255ca746ef8fa72debd999eeb"

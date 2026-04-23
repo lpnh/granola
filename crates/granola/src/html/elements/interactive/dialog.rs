@@ -43,10 +43,11 @@ impl DialogTag for () {}
 ///     .id("modal_popover")
 ///     .popover("auto");
 ///
-/// assert_eq!(open_button.bake(),
-/// r#"<button popovertarget="modal_popover">open dialog</button>"#);
-/// assert_eq!(dialog.bake(),
-/// r#"<dialog id="modal_popover" popover="auto">
+/// let modal = bake_block![open_button, dialog];
+///
+/// assert_eq!(modal,
+/// r#"<button popovertarget="modal_popover">open dialog</button>
+/// <dialog id="modal_popover" popover="auto">
 ///   Hello, there!
 ///   <button popovertarget="modal_popover" popovertargetaction="hide">Close</button>
 /// </dialog>"#);
