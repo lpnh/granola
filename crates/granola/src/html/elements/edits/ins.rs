@@ -34,12 +34,14 @@ impl InsTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ins: HtmlIns = HtmlIns::new("?")
+/// let ins: HtmlIns = HtmlIns::new(bake_newline!("?"))
 ///     .datetime("2016-11-10")
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13/");
 ///
 /// assert_eq!(ins.bake(),
-/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13/">?</ins>"#);
+/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13/">
+///   ?
+/// </ins>"#);
 /// ```
 ///
 /// # Askama template

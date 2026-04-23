@@ -32,10 +32,21 @@ impl StyleTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let style: HtmlStyle = HtmlStyle::new("p { color: violet; }");
+/// let css =
+/// r#"p {
+///   color: violet;
+///   font-weight: lighter;
+/// }"#;
+///
+/// let style: HtmlStyle = HtmlStyle::new(bake_newline!(css));
 ///
 /// assert_eq!(style.bake(),
-/// r#"<style>p { color: violet; }</style>"#);
+/// r#"<style>
+///   p {
+///     color: violet;
+///     font-weight: lighter;
+///   }
+/// </style>"#);
 /// ```
 ///
 /// # Askama template

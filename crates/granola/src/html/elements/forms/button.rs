@@ -35,12 +35,14 @@ impl ButtonTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let button: HtmlButton = HtmlButton::new("Add to favorites")
+/// let button: HtmlButton = HtmlButton::new(bake_newline!("Add to favorites"))
 ///     .button_type("button")
 ///     .name("favorite");
 ///
 /// assert_eq!(button.bake(),
-/// r#"<button type="button" name="favorite">Add to favorites</button>"#);
+/// r#"<button type="button" name="favorite">
+///   Add to favorites
+/// </button>"#);
 /// ```
 ///
 /// # Askama template

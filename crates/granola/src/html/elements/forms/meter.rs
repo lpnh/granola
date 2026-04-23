@@ -32,7 +32,7 @@ impl MeterTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let meter: HtmlMeter = HtmlMeter::new("12%")
+/// let meter: HtmlMeter = HtmlMeter::new(bake_newline!("12%"))
 ///     .value(12.)
 ///     .min(0.)
 ///     .max(100.)
@@ -41,7 +41,9 @@ impl MeterTag for () {}
 ///     .optimum(80.);
 ///
 /// assert_eq!(meter.bake(),
-/// r#"<meter value="12" min="0" max="100" low="20" high="60" optimum="80">12%</meter>"#);
+/// r#"<meter value="12" min="0" max="100" low="20" high="60" optimum="80">
+///   12%
+/// </meter>"#);
 /// ```
 ///
 /// # Askama template

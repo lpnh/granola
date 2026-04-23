@@ -34,12 +34,14 @@ impl DelTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let del: HtmlDel = HtmlDel::new("try!")
+/// let del: HtmlDel = HtmlDel::new(bake_newline!("try!"))
 ///     .datetime("2019-11-07")
 ///     .cite("https://github.com/rust-lang/rust/pull/62672/");
 ///
 /// assert_eq!(del.bake(),
-/// r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672/">try!</del>"#);
+/// r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672/">
+///   try!
+/// </del>"#);
 /// ```
 ///
 /// # Askama template
