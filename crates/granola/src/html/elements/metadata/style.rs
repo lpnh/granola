@@ -32,13 +32,13 @@ impl StyleTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css =
-/// r#"p {
+/// let css = r#"
+/// p {
 ///   color: violet;
 ///   font-weight: lighter;
 /// }"#;
 ///
-/// let style: HtmlStyle = HtmlStyle::new(bake_newline!(css));
+/// let style: HtmlStyle = HtmlStyle::new(css);
 ///
 /// assert_eq!(style.bake(),
 /// r#"<style>

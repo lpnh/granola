@@ -34,8 +34,8 @@ impl PreTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ferris_ascii = bake_newline![
-/// r#" __________________________
+/// let ferris_ascii = r#"
+///  __________________________
 /// &lt; Hello fellow Rustaceans! &gt;
 ///  --------------------------
 ///         \
@@ -43,8 +43,7 @@ impl PreTag for () {}
 ///             _~^~^~_
 ///         \) /  o o  \ (/
 ///           '_   -   _'
-///           / '-----' \"#,
-///];
+///           / '-----' \"#;
 ///
 /// let pre: HtmlPre = HtmlPre::new(ferris_ascii).role("img").aria_label("ASCII ferris");
 ///
