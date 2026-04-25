@@ -91,7 +91,7 @@ impl<M: SourceTag> HtmlSource<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#sizes)
     pub fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("sizes", value.into());
         self
     }
 
