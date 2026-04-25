@@ -22,8 +22,8 @@ pub mod text_content;
 pub use text_content::*;
 pub mod text_semantics;
 pub use text_semantics::*;
-// pub mod web_components;
-// pub use web_components::*;
+pub mod web_components;
+pub use web_components::*;
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Content_categories#phrasing_content
 #[allow(dead_code)]
