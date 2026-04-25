@@ -24,5 +24,5 @@ mod nav;
 pub use nav::*;
 mod search;
 pub use search::*;
-// mod section;
-// pub use section::*;
+mod section;
+pub use section::*;

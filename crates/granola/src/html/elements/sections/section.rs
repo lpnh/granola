@@ -7,56 +7,62 @@ use std::{
 
 use crate::{filters, prelude::*};
 
-pub trait HeaderTag: Default + Clone + Debug + 'static {
+pub trait SectionTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles: group, presentation or none
+    /// Permitted ARIA roles: alert, alertdialog, application, banner, complementary, contentinfo,
+    ///     dialog, document, feed, log, main, marquee, navigation, none, note, presentation,
+    ///     search, status, tabpanel
     const ROLE: Option<&'static str> = None;
     type Content: Display + Default + Clone + Debug = Cow<'static, str>;
 }
 
-impl HeaderTag for () {}
+impl SectionTag for () {}
 
-/// The HTML `<header>` element.
+/// The HTML `<section>` element.
 ///
-/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/header)
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/section)
 ///
 /// # Example
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let header: HtmlHeader = HtmlHeader::empty().id("header");
+/// let section: HtmlSection = HtmlSection::empty().id("generic_section");
 ///
-/// assert_eq!(header.bake(),
-/// r#"<header id="header"></header>"#);
+/// assert_eq!(section.bake(),
+/// r#"<section id="generic_section"></section>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let logo: HtmlA = HtmlA::new("Oats &amp; Ends").href("/");
+/// let h2: HtmlH2 = HtmlH2::new("Latest news");
+/// let ul: HtmlUl = HtmlUl::new(HtmlLi::new("New café on Oak Street"));
 ///
-/// let header: HtmlHeader = HtmlHeader::new(bake_newline!(logo));
+/// let section: HtmlSection = HtmlSection::new(bake_block![h2, ul]);
 ///
-/// assert_eq!(header.bake(),
-/// r#"<header>
-///   <a href="/">Oats &amp; Ends</a>
-/// </header>"#);
+/// assert_eq!(section.bake(),
+/// r#"<section>
+///   <h2>Latest news</h2>
+///   <ul>
+///     <li>New café on Oak Street</li>
+///   </ul>
+/// </section>"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
-/// <header
+/// <section
 ///   {{- global_attrs -}}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</header>
+/// >{{ content | kirei(2) }}</section>
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct HtmlHeader<M: HeaderTag = ()> {
+pub struct HtmlSection<M: SectionTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     pub global_attrs: GlobalAttrs,
@@ -65,7 +71,7 @@ pub struct HtmlHeader<M: HeaderTag = ()> {
     pub global_aria_attrs: GlobalAriaAttrs,
 }
 
-impl<M: HeaderTag> HtmlHeader<M> {
+impl<M: SectionTag> HtmlSection<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
         let mut s = Self {
             content: content.into(),

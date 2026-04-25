@@ -34,13 +34,13 @@ impl FooterTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let content: HtmlSmall = HtmlSmall::new("&copy; 2026 Oats & Ends Café");
+/// let content: HtmlSmall = HtmlSmall::new("&copy; 2026 Oats &amp; Ends Café");
 ///
 /// let footer: HtmlFooter = HtmlFooter::new(bake_newline!(content));
 ///
 /// assert_eq!(footer.bake(),
 /// r#"<footer>
-///   <small>&copy; 2026 Oats & Ends Café</small>
+///   <small>&copy; 2026 Oats &amp; Ends Café</small>
 /// </footer>"#);
 /// ```
 ///

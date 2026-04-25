@@ -108,10 +108,8 @@ impl<M: LiTag> HtmlLi<M> {
 /// The content of [`HtmlMenu`], [`HtmlOl`], or [`HtmlUl`].
 ///
 /// ```askama
-/// {%- for li in items -%}
-/// {{- li -}}
-/// {%- if !loop.last %}
-/// {% endif -%}
+/// {%- for li in items %}
+/// {{ li -}}
 /// {%- endfor -%}
 /// ```
 #[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
@@ -125,5 +123,11 @@ impl<I: IntoIterator<Item = HtmlLi>> From<I> for ListItems {
         Self {
             items: items.into_iter().collect(),
         }
+    }
+}
+
+impl From<HtmlLi> for ListItems {
+    fn from(item: HtmlLi) -> Self {
+        Self { items: vec![item] }
     }
 }
