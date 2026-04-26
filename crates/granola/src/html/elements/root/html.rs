@@ -83,7 +83,7 @@ impl<M: HtmlTag> HtmlRoot<M> {
     }
 }
 
-/// One HTML <head> element, followed by one <body> element.
+/// One HTML `<head>` element, followed by one `<body>` element.
 ///
 /// The content of [`HtmlRoot`].
 ///

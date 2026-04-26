@@ -84,7 +84,6 @@ impl<M: EmbedTag> HtmlEmbed<M> {
 
     /// Vertical dimension.
     ///
-    ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#height)
     pub fn height(mut self, value: u32) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("height", value.to_string());

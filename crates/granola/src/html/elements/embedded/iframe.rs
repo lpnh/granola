@@ -115,7 +115,6 @@ impl<M: IframeTag> HtmlIframe<M> {
 
     /// Vertical dimension.
     ///
-    ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#height)
     pub fn height(mut self, value: u32) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("height", value.to_string());
@@ -139,6 +138,7 @@ impl<M: IframeTag> HtmlIframe<M> {
     }
 
     // NOTE: Include `privateToken` in the future.
+    //
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#privatetoken)
 
     /// Referrer policy for fetches initiated by the element.
