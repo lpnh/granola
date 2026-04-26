@@ -103,7 +103,7 @@ impl<M: OptionTag> HtmlOption<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#label)
     pub fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("label", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("label", value);
         self
     }
 

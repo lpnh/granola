@@ -97,7 +97,7 @@ impl<M: ObjectTag> HtmlObject<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#data)
     pub fn data(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("data", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("data", value);
         self
     }
 
@@ -121,7 +121,7 @@ impl<M: ObjectTag> HtmlObject<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#name)
     pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("name", value);
         self
     }
 

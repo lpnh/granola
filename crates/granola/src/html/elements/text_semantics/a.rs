@@ -96,7 +96,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#download)
     pub fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("download", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("download", value);
         self
     }
 
@@ -104,7 +104,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#href)
     pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("href", value);
         self
     }
 
@@ -112,7 +112,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#hreflang)
     pub fn hreflang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("hreflang", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("hreflang", value);
         self
     }
 
@@ -120,7 +120,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#ping)
     pub fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("ping", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("ping", value);
         self
     }
 
@@ -128,7 +128,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation]()
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
     }
 
@@ -136,7 +136,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
         self
     }
 
@@ -144,7 +144,7 @@ impl<M: ATag> HtmlA<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target)
     pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("target", value);
         self
     }
 

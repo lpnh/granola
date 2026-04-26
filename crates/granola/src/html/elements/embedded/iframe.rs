@@ -125,7 +125,7 @@ impl<M: IframeTag> HtmlIframe<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#loading)
     pub fn loading(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("loading", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("loading", value);
         self
     }
 
@@ -133,7 +133,7 @@ impl<M: IframeTag> HtmlIframe<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#name)
     pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("name", value);
         self
     }
 
@@ -145,7 +145,7 @@ impl<M: IframeTag> HtmlIframe<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#referrerpolicy)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
     }
 
@@ -153,7 +153,7 @@ impl<M: IframeTag> HtmlIframe<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox)
     pub fn sandbox(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("sandbox", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("sandbox", value);
         self
     }
 

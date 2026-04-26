@@ -93,7 +93,7 @@ impl<M: TimeTag> HtmlTime<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
     pub fn datetime(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("datetime", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("datetime", value);
         self
     }
 }

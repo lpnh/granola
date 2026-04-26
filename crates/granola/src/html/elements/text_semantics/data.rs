@@ -87,7 +87,7 @@ impl<M: DataTag> HtmlData<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data#value)
     pub fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("value", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("value", value);
         self
     }
 }

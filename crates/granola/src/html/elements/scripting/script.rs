@@ -105,7 +105,7 @@ impl<M: ScriptTag> HtmlScript<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#blocking)
     pub fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("blocking", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("blocking", value);
         self
     }
 
@@ -113,7 +113,7 @@ impl<M: ScriptTag> HtmlScript<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
     pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
         self
     }
 
@@ -131,7 +131,7 @@ impl<M: ScriptTag> HtmlScript<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
     pub fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value);
         self
     }
 
@@ -139,7 +139,7 @@ impl<M: ScriptTag> HtmlScript<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#integrity)
     pub fn integrity(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("integrity", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("integrity", value);
         self
     }
 
@@ -147,7 +147,7 @@ impl<M: ScriptTag> HtmlScript<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#nomodule)
     pub fn nomodule(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("nomodule", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("nomodule", value);
         self
     }
 
@@ -155,7 +155,7 @@ impl<M: ScriptTag> HtmlScript<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#nomodule)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
     }
 

@@ -96,7 +96,7 @@ impl<M: StyleTag> HtmlStyle<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#blocking)
     pub fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("blocking", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("blocking", value);
         self
     }
 
@@ -104,7 +104,7 @@ impl<M: StyleTag> HtmlStyle<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#media)
     pub fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("media", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("media", value);
         self
     }
 }

@@ -93,7 +93,7 @@ impl<M: OutputTag> HtmlOutput<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/for)
     pub fn for_id(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("for", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("for", value);
         self
     }
 
@@ -109,7 +109,7 @@ impl<M: OutputTag> HtmlOutput<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/output#name)
     pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("name", value);
         self
     }
 }

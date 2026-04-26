@@ -127,7 +127,7 @@ impl<M: VideoTag> HtmlVideo<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
     pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
         self
     }
     /// Vertical dimension.
@@ -176,7 +176,7 @@ impl<M: VideoTag> HtmlVideo<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#poster)
     pub fn poster(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("poster", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("poster", value);
         self
     }
 
@@ -184,7 +184,7 @@ impl<M: VideoTag> HtmlVideo<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#preload)
     pub fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("preload", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("preload", value);
         self
     }
 

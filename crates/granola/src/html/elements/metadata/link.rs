@@ -83,7 +83,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#blocking)
     pub fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("blocking", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("blocking", value);
         self
     }
 
@@ -91,7 +91,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
     pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
         self
     }
 
@@ -109,7 +109,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
     pub fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value);
         self
     }
 
@@ -117,7 +117,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#href)
     pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("href", value);
         self
     }
 
@@ -125,7 +125,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#hreflang)
     pub fn hreflang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("hreflang", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("hreflang", value);
         self
     }
 
@@ -133,7 +133,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#imagesizes)
     pub fn imagesizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("imagesizes", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("imagesizes", value);
         self
     }
 
@@ -141,7 +141,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#imagesrcset)
     pub fn imagesrcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("imagesrcset", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("imagesrcset", value);
         self
     }
 
@@ -149,7 +149,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#integrity)
     pub fn integrity(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("integrity", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("integrity", value);
         self
     }
 
@@ -157,7 +157,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#media)
     pub fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("media", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("media", value);
         self
     }
 
@@ -165,7 +165,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#referrerpolicy)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
     }
 
@@ -173,7 +173,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
         self
     }
 
@@ -181,7 +181,7 @@ impl<M: LinkTag> HtmlLink<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#sizes)
     pub fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("sizes", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("sizes", value);
         self
     }
 

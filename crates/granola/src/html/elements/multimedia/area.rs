@@ -85,7 +85,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#alt)
     pub fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("alt", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("alt", value);
         self
     }
 
@@ -93,7 +93,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#coords)
     pub fn coords(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("coords", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("coords", value);
         self
     }
 
@@ -101,7 +101,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#download)
     pub fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("download", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("download", value);
         self
     }
 
@@ -109,7 +109,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#href)
     pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("href", value);
         self
     }
 
@@ -120,7 +120,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#ping)
     pub fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("ping", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("ping", value);
         self
     }
 
@@ -128,7 +128,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#referrerpolicy)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
     }
 
@@ -136,7 +136,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
         self
     }
 
@@ -144,7 +144,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#shape)
     pub fn shape(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("shape", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("shape", value);
         self
     }
 
@@ -152,7 +152,7 @@ impl<M: AreaTag> HtmlArea<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#target)
     pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("target", value);
         self
     }
 }

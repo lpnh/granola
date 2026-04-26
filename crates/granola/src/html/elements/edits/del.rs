@@ -97,7 +97,7 @@ impl<M: DelTag> HtmlDel<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/del#cite)
     pub fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("cite", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("cite", value);
         self
     }
 
@@ -105,7 +105,7 @@ impl<M: DelTag> HtmlDel<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/del#datetime)
     pub fn datetime(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("datetime", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("datetime", value);
         self
     }
 }

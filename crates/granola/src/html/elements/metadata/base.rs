@@ -75,7 +75,7 @@ impl<M: BaseTag> HtmlBase<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#href)
     pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("href", value);
         self
     }
 
@@ -83,7 +83,7 @@ impl<M: BaseTag> HtmlBase<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#target)
     pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("target", value);
         self
     }
 }

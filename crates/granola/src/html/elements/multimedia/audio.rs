@@ -124,7 +124,7 @@ impl<M: AudioTag> HtmlAudio<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
     pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
         self
     }
 
@@ -135,7 +135,7 @@ impl<M: AudioTag> HtmlAudio<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#loading)
     pub fn loading(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("loading", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("loading", value);
         self
     }
 
@@ -163,7 +163,7 @@ impl<M: AudioTag> HtmlAudio<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#preload)
     pub fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("preload", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("preload", value);
         self
     }
 

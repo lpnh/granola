@@ -96,7 +96,7 @@ impl<M: MapTag> HtmlMap<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/map#name)
     pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("name", value);
         self
     }
 }

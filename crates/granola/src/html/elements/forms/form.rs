@@ -126,7 +126,7 @@ impl<M: FormTag> HtmlForm<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
     pub fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("autocomplete", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("autocomplete", value);
         self
     }
 
@@ -134,7 +134,7 @@ impl<M: FormTag> HtmlForm<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#enctype)
     pub fn enctype(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("enctype", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("enctype", value);
         self
     }
 
@@ -150,7 +150,7 @@ impl<M: FormTag> HtmlForm<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#name)
     pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("name", value);
         self
     }
 
@@ -168,7 +168,7 @@ impl<M: FormTag> HtmlForm<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
         self
     }
 
@@ -176,7 +176,7 @@ impl<M: FormTag> HtmlForm<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#target)
     pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("target", value);
         self
     }
 }

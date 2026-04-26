@@ -96,7 +96,7 @@ impl<M: LabelTag> HtmlLabel<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/for)
     pub fn for_id(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("for", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("for", value);
         self
     }
 }

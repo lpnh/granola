@@ -137,7 +137,7 @@ impl<M: TemplateTag> HtmlTemplate<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootmode)
     pub fn shadowrootmode(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("shadowrootmode", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("shadowrootmode", value);
         self
     }
 

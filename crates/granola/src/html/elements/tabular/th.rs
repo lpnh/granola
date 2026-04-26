@@ -109,7 +109,7 @@ impl<M: ThTag> HtmlTh<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#headers)
     pub fn headers(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("headers", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("headers", value);
         self
     }
 

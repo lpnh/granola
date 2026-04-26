@@ -99,7 +99,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#alt)
     pub fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("alt", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("alt", value);
         self
     }
 
@@ -107,7 +107,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
     pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
         self
     }
 
@@ -115,7 +115,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#decoding)
     pub fn decoding(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("decoding", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("decoding", value);
         self
     }
 
@@ -123,7 +123,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/elementtiming)
     pub fn elementtiming(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("elementtiming", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("elementtiming", value);
         self
     }
 
@@ -131,7 +131,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
     pub fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value);
         self
     }
 
@@ -157,7 +157,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#loading)
     pub fn loading(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("loading", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("loading", value);
         self
     }
 
@@ -165,7 +165,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#referrerpolicy)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
     }
 
@@ -173,7 +173,7 @@ impl<M: ImgTag> HtmlImg<M> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#sizes)
     pub fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("sizes", value.into());
+        self.specific_attrs = self.specific_attrs.add_attr("sizes", value);
         self
     }
 
