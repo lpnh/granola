@@ -94,14 +94,6 @@ impl<M: ButtonTag> HtmlButton<M> {
         s
     }
 
-    pub fn submit(content: impl Into<M::Content>) -> Self {
-        Self::new(content).button_type(ButtonType::Submit)
-    }
-
-    pub fn anchor_name(self, anchor_name: impl Into<Cow<'static, str>>) -> Self {
-        self.style(format!("anchor-name:--{}", anchor_name.into()))
-    }
-
     /// Indicates to the targeted element which action to take.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#command)
@@ -225,19 +217,19 @@ impl<M: ButtonTag> HtmlButton<M> {
 #[derive(strum::Display, strum::IntoStaticStr, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[strum(serialize_all = "lowercase")]
 pub enum ButtonType {
-    Button, // default
-    Submit,
+    Submit, // default
     Reset,
+    Button,
 }
 
 impl<T: AsRef<str>> From<T> for ButtonType {
     fn from(s: T) -> Self {
         let button_type = s.as_ref().trim().to_lowercase();
         match button_type.as_str() {
-            "button" => Self::Button,
             "submit" => Self::Submit,
             "reset" => Self::Reset,
-            _ => Self::Button,
+            "button" => Self::Button,
+            _ => Self::Submit,
         }
     }
 }
