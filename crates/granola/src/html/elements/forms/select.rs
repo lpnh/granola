@@ -78,6 +78,9 @@ impl<M: SelectTag> HtmlSelect<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s
     }
 
@@ -85,6 +88,9 @@ impl<M: SelectTag> HtmlSelect<M> {
         let mut s = Self::default();
         if let Some(class) = M::CLASS {
             s = s.class(class);
+        }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
         }
         s
     }
