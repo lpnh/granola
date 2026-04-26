@@ -206,3 +206,53 @@ impl From<FormMethod> for Cow<'static, str> {
         <&'static str>::from(m).into()
     }
 }
+
+/// Shorthand for `HtmlForm<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let form = form!().id("form");
+///
+/// assert_eq!(form.bake(),
+/// r#"<form id="form"></form>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let input = input!("cast-wish");
+/// let label = label!["Wish:", input];
+/// let button = button!("Cast");
+///
+/// let form = form![label, button].method("get");
+///
+/// assert_eq!(form.bake(),
+/// r#"<form method="get">
+///   <label>
+///     Wish:
+///     <input name="cast-wish" />
+///   </label>
+///   <button>Cast</button>
+/// </form>"#);
+/// ```
+#[macro_export]
+macro_rules! form {
+    () => {
+        $crate::html::HtmlForm::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlForm::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlForm::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlForm::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlForm::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

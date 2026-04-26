@@ -137,3 +137,51 @@ impl<M: MeterTag> HtmlMeter<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlMeter<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let meter = meter!().id("html_meter");
+///
+/// assert_eq!(meter.bake(),
+/// r#"<meter id="html_meter"></meter>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let meter = meter!(@newline "12%")
+///     .value(12.)
+///     .min(0.)
+///     .max(100.)
+///     .low(20.)
+///     .high(60.)
+///     .optimum(80.);
+///
+/// assert_eq!(meter.bake(),
+/// r#"<meter value="12" min="0" max="100" low="20" high="60" optimum="80">
+///   12%
+/// </meter>"#);
+/// ```
+#[macro_export]
+macro_rules! meter {
+    () => {
+        $crate::html::HtmlMeter::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlMeter::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlMeter::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlMeter::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlMeter::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

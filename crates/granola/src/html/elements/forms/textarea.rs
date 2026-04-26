@@ -198,3 +198,43 @@ impl<M: TextareaTag> HtmlTextarea<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlTextarea<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let textarea = textarea!().id("textarea");
+///
+/// assert_eq!(textarea.bake(),
+/// r#"<textarea id="textarea"></textarea>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let textarea = textarea!("Carpe diem").name("reminder").readonly(true);
+///
+/// assert_eq!(textarea.bake(),
+/// r#"<textarea name="reminder" readonly>Carpe diem</textarea>"#);
+/// ```
+#[macro_export]
+macro_rules! textarea {
+    () => {
+        $crate::html::HtmlTextarea::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTextarea::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTextarea::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTextarea::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTextarea::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

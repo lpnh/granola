@@ -12,5 +12,8 @@ pub mod prelude {
 }
 
 pub mod macros {
-    pub use crate::{del, embed, iframe, ins, object, picture, source};
+    pub use crate::{
+        button, datalist, del, embed, fieldset, form, iframe, input, ins, label, legend, meter,
+        object, optgroup, option, output, picture, progress, select, source, textarea,
+    };
 }

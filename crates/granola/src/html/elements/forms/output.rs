@@ -113,3 +113,43 @@ impl<M: OutputTag> HtmlOutput<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlOutput<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let output = output!().id("output");
+///
+/// assert_eq!(output.bake(),
+/// r#"<output id="output"></output>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let output = output!("42").name("answer").for_id("ultimate-question");
+///
+/// assert_eq!(output.bake(),
+/// r#"<output name="answer" for="ultimate-question">42</output>"#);
+/// ```
+#[macro_export]
+macro_rules! output {
+    () => {
+        $crate::html::HtmlOutput::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlOutput::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlOutput::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlOutput::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlOutput::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

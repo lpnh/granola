@@ -109,3 +109,62 @@ impl<M: OptgroupTag> HtmlOptgroup<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlOptgroup<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let optgroup = optgroup!().id("option_group");
+///
+/// assert_eq!(optgroup.bake(),
+/// r#"<optgroup id="option_group"></optgroup>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let yes = option!("Yes");
+/// let no = option!("No");
+///
+/// let optgroup = optgroup![yes, no].label("Binary");
+///
+/// assert_eq!(optgroup.bake(),
+/// r#"<optgroup label="Binary">
+///   <option>Yes</option>
+///   <option>No</option>
+/// </optgroup>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let options = [
+///     option!("Grape"),
+///     option!("Mango"),
+///     option!("Strawberry"),
+/// ];
+///
+/// let optgroup = optgroup!(options).label("Fruits");
+///
+/// assert_eq!(optgroup.bake(),
+/// r#"<optgroup label="Fruits">
+///   <option>Grape</option>
+///   <option>Mango</option>
+///   <option>Strawberry</option>
+/// </optgroup>"#);
+/// ```
+#[macro_export]
+macro_rules! optgroup {
+    () => {
+        $crate::html::HtmlOptgroup::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlOptgroup::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlOptgroup::<()>::new([$first $(, $rest)*])
+    };
+}

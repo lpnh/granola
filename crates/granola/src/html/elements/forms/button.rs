@@ -247,3 +247,47 @@ impl From<ButtonType> for Cow<'static, str> {
         <&'static str>::from(s).into()
     }
 }
+
+/// Shorthand for `HtmlButton<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let button = button!().id("button");
+///
+/// assert_eq!(button.bake(),
+/// r#"<button id="button"></button>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let button = button!(@newline "Add to favorites")
+///     .button_type("button")
+///     .name("favorite");
+///
+/// assert_eq!(button.bake(),
+/// r#"<button type="button" name="favorite">
+///   Add to favorites
+/// </button>"#);
+/// ```
+#[macro_export]
+macro_rules! button {
+    () => {
+        $crate::html::HtmlButton::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlButton::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlButton::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlButton::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlButton::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

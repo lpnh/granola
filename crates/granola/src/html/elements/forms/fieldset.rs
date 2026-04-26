@@ -126,3 +126,54 @@ impl<M: FieldsetTag> HtmlFieldset<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlFieldset<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let fieldset = fieldset!().id("field_set");
+///
+/// assert_eq!(fieldset.bake(),
+/// r#"<fieldset id="field_set"></fieldset>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let legend = legend!("To be, or not to be?");
+/// let input = input!(@from_type "checkbox")
+///     .id("chbx")
+///     .name("to-be")
+///     .value("dunno");
+/// let label = label!("That is the question").for_id("chbx");
+///
+/// let fieldset = fieldset![legend, input, label];
+///
+/// assert_eq!(fieldset.bake(),
+/// r#"<fieldset>
+///   <legend>To be, or not to be?</legend>
+///   <input id="chbx" type="checkbox" name="to-be" value="dunno" />
+///   <label for="chbx">That is the question</label>
+/// </fieldset>"#);
+/// ```
+#[macro_export]
+macro_rules! fieldset {
+    () => {
+        $crate::html::HtmlFieldset::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlFieldset::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlFieldset::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlFieldset::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlFieldset::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

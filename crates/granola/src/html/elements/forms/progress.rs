@@ -110,3 +110,43 @@ impl<M: ProgressTag> HtmlProgress<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlProgress<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let progress = progress!().id("progress_indicator");
+///
+/// assert_eq!(progress.bake(),
+/// r#"<progress id="progress_indicator"></progress>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let progress = progress!("10/300").id("experience").max(300.).value(10.);
+///
+/// assert_eq!(progress.bake(),
+/// r#"<progress id="experience" max="300" value="10">10/300</progress>"#);
+/// ```
+#[macro_export]
+macro_rules! progress {
+    () => {
+        $crate::html::HtmlProgress::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlProgress::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlProgress::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlProgress::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlProgress::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

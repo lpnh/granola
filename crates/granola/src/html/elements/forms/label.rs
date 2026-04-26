@@ -100,3 +100,48 @@ impl<M: LabelTag> HtmlLabel<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlLabel<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let label = label!().id("label");
+///
+/// assert_eq!(label.bake(),
+/// r#"<label id="label"></label>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let input = input!(@from_type "checkbox").name("reality-check").disabled(true);
+///
+/// let label = label!["We're so back", input];
+///
+/// assert_eq!(label.bake(),
+/// r#"<label>
+///   We're so back
+///   <input type="checkbox" name="reality-check" disabled />
+/// </label>"#);
+/// ```
+#[macro_export]
+macro_rules! label {
+    () => {
+        $crate::html::HtmlLabel::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlLabel::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlLabel::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlLabel::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlLabel::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

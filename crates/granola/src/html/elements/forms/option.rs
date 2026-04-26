@@ -150,3 +150,46 @@ impl<I: IntoIterator<Item = HtmlOption>> From<I> for Options {
         }
     }
 }
+
+/// Shorthand for `HtmlOption<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let option = option!().id("html_option");
+///
+/// assert_eq!(option.bake(),
+/// r#"<option id="html_option"></option>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let option = option!("Chocolate").value("chocolate");
+///
+/// assert_eq!(option.bake(),
+/// r#"<option value="chocolate">Chocolate</option>"#);
+/// ```
+#[macro_export]
+macro_rules! option {
+    () => {
+        $crate::html::HtmlOption::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlOption::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlOption::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlOption::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlOption::<()>::new($crate::bake_inline![$($content),+])
+    };
+    (@from_value $value: expr $(,)?) => {
+        $crate::html::HtmlOption::<()>::from_value($value)
+    };
+}

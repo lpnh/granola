@@ -162,3 +162,49 @@ impl<M: SelectTag<Content = Cow<'static, str>>> HtmlSelect<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlSelect<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let select = select!().id("html_select");
+///
+/// assert_eq!(select.bake(),
+/// r#"<select id="html_select"></select>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let opt_1 = option!("Salmon").value("salmon");
+/// let opt_2 = option!("Turbot").value("turbot");
+///
+/// let select: HtmlSelect = select![opt_1, opt_2].name("fishes");
+///
+/// assert_eq!(select.bake(),
+/// r#"<select name="fishes">
+///   <option value="salmon">Salmon</option>
+///   <option value="turbot">Turbot</option>
+/// </select>"#);
+/// ```
+#[macro_export]
+macro_rules! select {
+    () => {
+        $crate::html::HtmlSelect::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSelect::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSelect::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSelect::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSelect::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

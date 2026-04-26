@@ -446,3 +446,37 @@ impl From<InputType> for Cow<'static, str> {
         <&'static str>::from(s).into()
     }
 }
+
+/// Shorthand for `HtmlInput<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let input = input!().id("html_input");
+///
+/// assert_eq!(input.bake(),
+/// r#"<input id="html_input" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let input = input!("nickname").minlength(4).required(true);
+///
+/// assert_eq!(input.bake(),
+/// r#"<input name="nickname" minlength="4" required />"#);
+/// ```
+#[macro_export]
+macro_rules! input {
+    () => {
+        $crate::html::HtmlInput::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlInput::<()>::new($content)
+    };
+    (@from_type $type: expr $(,)?) => {
+        $crate::html::HtmlInput::<()>::from_type($type)
+    };
+}

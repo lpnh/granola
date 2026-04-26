@@ -79,3 +79,43 @@ impl<M: LegendTag> HtmlLegend<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlLegend<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let legend = legend!().id("field_set_legend");
+///
+/// assert_eq!(legend.bake(),
+/// r#"<legend id="field_set_legend"></legend>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let legend = legend!("Choose your favorite spoon");
+///
+/// assert_eq!(legend.bake(),
+/// r#"<legend>Choose your favorite spoon</legend>"#);
+/// ```
+#[macro_export]
+macro_rules! legend {
+    () => {
+        $crate::html::HtmlLegend::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlLegend::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlLegend::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlLegend::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlLegend::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
