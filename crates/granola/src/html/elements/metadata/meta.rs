@@ -113,3 +113,34 @@ impl<M: MetaTag> HtmlMeta<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlMeta<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let meta = meta!().id("metadata");
+///
+/// assert_eq!(meta.bake(),
+/// r#"<meta id="metadata" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let meta = meta!("noindex, nofollow").name("robots");
+///
+/// assert_eq!(meta.bake(),
+/// r#"<meta content="noindex, nofollow" name="robots" />"#);
+/// ```
+#[macro_export]
+macro_rules! meta {
+    () => {
+        $crate::html::HtmlMeta::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlMeta::<()>::new($content)
+    };
+}

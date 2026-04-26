@@ -193,3 +193,34 @@ impl<M: LinkTag> HtmlLink<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlLink<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let link = link!().id("external_resource_link");
+///
+/// assert_eq!(link.bake(),
+/// r#"<link id="external_resource_link" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let link = link!("fancy.css", "stylesheet");
+///
+/// assert_eq!(link.bake(),
+/// r#"<link href="fancy.css" rel="stylesheet" />"#);
+/// ```
+#[macro_export]
+macro_rules! link {
+    () => {
+        $crate::html::HtmlLink::<()>::empty()
+    };
+    ($href: expr, $rel: expr $(,)?) => {
+        $crate::html::HtmlLink::<()>::new($href, $rel)
+    };
+}

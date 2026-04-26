@@ -108,3 +108,54 @@ impl<M: StyleTag> HtmlStyle<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlStyle<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let style = style!().id("style_information");
+///
+/// assert_eq!(style.bake(),
+/// r#"<style id="style_information"></style>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let css = r#"
+/// p {
+///   color: violet;
+///   font-weight: lighter;
+/// }"#;
+///
+/// let style = style!(css);
+///
+/// assert_eq!(style.bake(),
+/// r#"<style>
+///   p {
+///     color: violet;
+///     font-weight: lighter;
+///   }
+/// </style>"#);
+/// ```
+#[macro_export]
+macro_rules! style {
+    () => {
+        $crate::html::HtmlStyle::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlStyle::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlStyle::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlStyle::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlStyle::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

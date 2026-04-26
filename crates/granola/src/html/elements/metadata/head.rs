@@ -33,7 +33,9 @@ impl HeadTag for () {}
 /// use granola::prelude::*;
 ///
 /// let charset: HtmlMeta = HtmlMeta::empty().charset();
-/// let viewport: HtmlMeta= HtmlMeta::empty().name("viewport").content("width=device-width");
+/// let viewport: HtmlMeta = HtmlMeta::empty()
+///     .name("viewport")
+///     .content("width=device-width");
 /// let title: HtmlTitle = HtmlTitle::new("Document title");
 ///
 /// let head: HtmlHead = HtmlHead::new(bake_block![charset, viewport, title]);
@@ -86,4 +88,52 @@ impl<M: HeadTag> HtmlHead<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlHead<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let head = head!().id("document_metadata");
+///
+/// assert_eq!(head.bake(),
+/// r#"<head id="document_metadata"></head>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let charset = meta!().charset();
+/// let viewport = meta!().name("viewport").content("width=device-width");
+/// let title = title!("Document title");
+///
+/// let head = head![charset, viewport, title];
+///
+/// assert_eq!(head.bake(),
+/// r#"<head>
+///   <meta charset="utf-8" />
+///   <meta name="viewport" content="width=device-width" />
+///   <title>Document title</title>
+/// </head>"#);
+/// ```
+#[macro_export]
+macro_rules! head {
+    () => {
+        $crate::html::HtmlHead::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlHead::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlHead::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlHead::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlHead::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

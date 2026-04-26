@@ -32,10 +32,10 @@ impl TitleTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let title: HtmlTitle = HtmlTitle::new("I asked for a title and all I got was this dummy text");
+/// let title: HtmlTitle = HtmlTitle::new("On the unabashed art of self-referential examples");
 ///
 /// assert_eq!(title.bake(),
-/// r#"<title>I asked for a title and all I got was this dummy text</title>"#);
+/// r#"<title>On the unabashed art of self-referential examples</title>"#);
 /// ```
 ///
 /// # Askama template
@@ -78,4 +78,44 @@ impl<M: TitleTag> HtmlTitle<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlTitle<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let title = title!().id("document_title");
+///
+/// assert_eq!(title.bake(),
+/// r#"<title id="document_title"></title>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let title = title!("On the unabashed art of self-referential examples");
+///
+/// assert_eq!(title.bake(),
+/// r#"<title>On the unabashed art of self-referential examples</title>"#);
+/// ```
+#[macro_export]
+macro_rules! title {
+    () => {
+        $crate::html::HtmlTitle::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTitle::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTitle::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTitle::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTitle::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

@@ -27,10 +27,10 @@ impl BaseTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let base: HtmlBase = HtmlBase::new("https://www.example.com/");
+/// let base: HtmlBase = HtmlBase::new("https://www.example.com");
 ///
 /// assert_eq!(base.bake(),
-/// r#"<base href="https://www.example.com/" />"#);
+/// r#"<base href="https://www.example.com" />"#);
 /// ```
 ///
 /// # Askama template
@@ -86,4 +86,35 @@ impl<M: BaseTag> HtmlBase<M> {
         self.specific_attrs = self.specific_attrs.add_attr("target", value.into());
         self
     }
+}
+
+/// Shorthand for `HtmlBase<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let base = base!().id("document_base_url");
+///
+/// assert_eq!(base.bake(),
+/// r#"<base id="document_base_url" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let base = base!("https://www.example.com");
+///
+/// assert_eq!(base.bake(),
+/// r#"<base href="https://www.example.com" />"#);
+/// ```
+#[macro_export]
+macro_rules! base {
+    () => {
+        $crate::html::HtmlBase::<()>::empty()
+    };
+    ($href: expr $(,)?) => {
+        $crate::html::HtmlBase::<()>::new($href)
+    };
 }

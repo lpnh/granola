@@ -13,8 +13,8 @@ pub mod prelude {
 
 pub mod macros {
     pub use crate::{
-        button, datalist, del, details, dialog, embed, fieldset, form, iframe, input, ins, label,
-        legend, meter, object, optgroup, option, output, picture, progress, select, source,
-        summary, textarea,
+        base, button, datalist, del, details, dialog, embed, fieldset, form, head, iframe, input,
+        ins, label, legend, link, meta, meter, object, optgroup, option, output, picture, progress,
+        select, source, style, summary, textarea, title,
     };
 }
