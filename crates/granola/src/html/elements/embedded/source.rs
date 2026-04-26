@@ -127,3 +127,34 @@ impl<M: SourceTag> HtmlSource<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlSource<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let source = source!().id("media_or_image_source");
+///
+/// assert_eq!(source.bake(),
+/// r#"<source id="media_or_image_source" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let source = source!("/videos/flower.mp4").mime_type("video/mp4");
+///
+/// assert_eq!(source.bake(),
+/// r#"<source src="/videos/flower.mp4" type="video/mp4" />"#);
+/// ```
+#[macro_export]
+macro_rules! source {
+    () => {
+        $crate::html::HtmlSource::<()>::empty()
+    };
+    ($src: expr $(,)?) => {
+        $crate::html::HtmlSource::<()>::new($src)
+    };
+}

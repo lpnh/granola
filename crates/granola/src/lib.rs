@@ -10,3 +10,7 @@ pub mod prelude {
     pub use super::{Granola, MutAttrs, html::*};
     pub use crate::{bake_block, bake_inline, bake_newline};
 }
+
+pub mod macros {
+    pub use crate::{del, embed, iframe, ins, object, picture, source};
+}

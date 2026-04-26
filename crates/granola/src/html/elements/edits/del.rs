@@ -109,3 +109,47 @@ impl<M: DelTag> HtmlDel<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlDel<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let del = del!().id("deleted_text");
+///
+/// assert_eq!(del.bake(),
+/// r#"<del id="deleted_text"></del>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let del = del!(@newline "try!")
+///     .datetime("2019-11-07")
+///     .cite("https://github.com/rust-lang/rust/pull/62672/");
+///
+/// assert_eq!(del.bake(),
+/// r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672/">
+///   try!
+/// </del>"#);
+/// ```
+#[macro_export]
+macro_rules! del {
+    () => {
+        $crate::html::HtmlDel::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDel::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDel::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDel::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDel::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

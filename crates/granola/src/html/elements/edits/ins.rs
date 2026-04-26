@@ -109,3 +109,47 @@ impl<M: InsTag> HtmlIns<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlIns<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let ins = ins!().id("inserted_text");
+///
+/// assert_eq!(ins.bake(),
+/// r#"<ins id="inserted_text"></ins>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let ins = ins!(@newline "?")
+///     .datetime("2016-11-10")
+///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13/");
+///
+/// assert_eq!(ins.bake(),
+/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13/">
+///   ?
+/// </ins>"#);
+/// ```
+#[macro_export]
+macro_rules! ins {
+    () => {
+        $crate::html::HtmlIns::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlIns::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlIns::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlIns::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlIns::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

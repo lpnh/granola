@@ -115,3 +115,37 @@ impl<M: EmbedTag> HtmlEmbed<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlEmbed<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let embed = embed!().id("embed_external_content");
+///
+/// assert_eq!(embed.bake(),
+/// r#"<embed id="embed_external_content" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let embed = embed!("flower.png")
+///     .mime_type("image/png")
+///     .width(420)
+///     .height(420);
+///
+/// assert_eq!(embed.bake(),
+/// r#"<embed src="flower.png" type="image/png" width="420" height="420" />"#);
+/// ```
+#[macro_export]
+macro_rules! embed {
+    () => {
+        $crate::html::HtmlEmbed::<()>::empty()
+    };
+    ($src: expr $(,)?) => {
+        $crate::html::HtmlEmbed::<()>::new($src)
+    };
+}

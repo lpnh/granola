@@ -141,3 +141,47 @@ impl<M: ObjectTag> HtmlObject<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlObject<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let object = object!().id("external_object");
+///
+/// assert_eq!(object.bake(),
+/// r#"<object id="external_object"></object>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let object = object!()
+///     .mime_type("video/mp4")
+///     .data("/videos/flower.mp4")
+///     .width(420)
+///     .height(420);
+///
+/// assert_eq!(object.bake(),
+/// r#"<object type="video/mp4" data="/videos/flower.mp4" width="420" height="420"></object>"#);
+/// ```
+#[macro_export]
+macro_rules! object {
+    () => {
+        $crate::html::HtmlObject::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlObject::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlObject::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlObject::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlObject::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

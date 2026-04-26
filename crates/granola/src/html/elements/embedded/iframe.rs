@@ -181,3 +181,34 @@ impl<M: IframeTag> HtmlIframe<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlIframe<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let iframe = iframe!().id("inline_frame");
+///
+/// assert_eq!(iframe.bake(),
+/// r#"<iframe id="inline_frame"></iframe>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let iframe = iframe!("https://w.wiki/LJK7").title("Pedestrians crossing an intersection.");
+///
+/// assert_eq!(iframe.bake(),
+/// r#"<iframe title="Pedestrians crossing an intersection." src="https://w.wiki/LJK7"></iframe>"#);
+/// ```
+#[macro_export]
+macro_rules! iframe {
+    () => {
+        $crate::html::HtmlIframe::<()>::empty()
+    };
+    ($src: expr $(,)?) => {
+        $crate::html::HtmlIframe::<()>::new($src)
+    };
+}
