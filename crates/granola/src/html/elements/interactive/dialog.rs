@@ -85,6 +85,9 @@ impl<M: DialogTag> HtmlDialog<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s
     }
 
@@ -92,6 +95,9 @@ impl<M: DialogTag> HtmlDialog<M> {
         let mut s = Self::default();
         if let Some(class) = M::CLASS {
             s = s.class(class);
+        }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
         }
         s
     }
