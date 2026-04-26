@@ -15,11 +15,19 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
 
     quote! {
         impl #impl_generics #name #ty_generics #where_clause {
+            /// Renders the template into a new [`String`].
+            ///
+            /// # Panics
+            ///
+            /// Panics if [`askama::Template::render_into`] returns an error.
+            /// Writing into a [`String`] via [`core::fmt::Write`] is infallible,
+            /// so the only way this fails is if the template itself errors.
+            /// See [`askama::Error`].
             pub fn bake(&self) -> ::std::string::String {
                 let mut buf = ::std::string::String::with_capacity(
                     <Self as ::askama::Template>::SIZE_HINT,
                 );
-                let _ = ::askama::Template::render_into(self, &mut buf);
+                ::askama::Template::render_into(self, &mut buf).unwrap();
                 buf
             }
         }

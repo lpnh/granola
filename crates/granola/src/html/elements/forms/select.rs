@@ -158,17 +158,6 @@ impl<M: SelectTag> HtmlSelect<M> {
     }
 }
 
-impl<M: SelectTag<Content = Cow<'static, str>>> HtmlSelect<M> {
-    pub fn push_item(mut self, item: HtmlSelect<impl SelectTag>) -> Self {
-        let content = self.content.to_mut();
-        if !content.is_empty() {
-            content.push('\n');
-        }
-        let _ = item.render_into(content);
-        self
-    }
-}
-
 /// Shorthand for `HtmlSelect<()>`.
 ///
 /// # Example

@@ -20,8 +20,16 @@ use askama::Template;
 pub struct Bake<T>(pub T);
 
 impl<T: Template> Bake<&T> {
+    /// Renders the template into a [`String`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if [`Template::render_into`] returns an error.
+    /// Writing into a [`String`] via [`core::fmt::Write`] is infallible,
+    /// so the only way this fails is if the template itself errors.
+    /// See [`askama::Error`].
     pub fn bake_content(&self, buf: &mut String) {
-        let _ = self.0.render_into(buf);
+        self.0.render_into(buf).unwrap();
     }
 
     pub fn size_hint(&self) -> usize {
