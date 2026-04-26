@@ -104,3 +104,48 @@ impl<M: DetailsTag> HtmlDetails<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlDetails<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let details = details!().id("details_disclosure");
+///
+/// assert_eq!(details.bake(),
+/// r#"<details id="details_disclosure"></details>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let summary = summary!("Pandora's box");
+///
+/// let details = details![summary, "Hope"];
+///
+/// assert_eq!(details.bake(),
+/// r#"<details>
+///   <summary>Pandora's box</summary>
+///   Hope
+/// </details>"#);
+/// ```
+#[macro_export]
+macro_rules! details {
+    () => {
+        $crate::html::HtmlDetails::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDetails::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDetails::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDetails::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDetails::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

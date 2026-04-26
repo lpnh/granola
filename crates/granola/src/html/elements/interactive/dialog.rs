@@ -114,3 +114,52 @@ impl<M: DialogTag> HtmlDialog<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlDialog<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let dialog = dialog!().id("dialog");
+///
+/// assert_eq!(dialog.bake(),
+/// r#"<dialog id="dialog"></dialog>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let open_button = button!("open dialog").popovertarget("modal_popover");
+/// let close_button = button!("Close").popovertarget("modal_popover").popovertargetaction("hide");
+///
+/// let dialog = dialog!["Hello, there!", close_button].id("modal_popover").popover("auto");
+///
+/// let modal = bake_block![open_button, dialog];
+///
+/// assert_eq!(modal,
+/// r#"<button popovertarget="modal_popover">open dialog</button>
+/// <dialog id="modal_popover" popover="auto">
+///   Hello, there!
+///   <button popovertarget="modal_popover" popovertargetaction="hide">Close</button>
+/// </dialog>"#);
+/// ```
+#[macro_export]
+macro_rules! dialog {
+    () => {
+        $crate::html::HtmlDialog::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDialog::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDialog::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDialog::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDialog::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

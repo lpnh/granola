@@ -79,3 +79,43 @@ impl<M: SummaryTag> HtmlSummary<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSummary<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let summary = summary!().id("disclosure_summary");
+///
+/// assert_eq!(summary.bake(),
+/// r#"<summary id="disclosure_summary"></summary>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let summary = summary!("Don't forget");
+///
+/// assert_eq!(summary.bake(),
+/// r#"<summary>Don't forget</summary>"#);
+/// ```
+#[macro_export]
+macro_rules! summary {
+    () => {
+        $crate::html::HtmlSummary::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSummary::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSummary::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSummary::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSummary::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
