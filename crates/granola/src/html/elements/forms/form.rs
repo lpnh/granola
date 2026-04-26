@@ -138,9 +138,9 @@ impl<M: FormTag> HtmlForm<M> {
         self
     }
 
-    /// Entry list encoding type to use for form submission.
+    /// Variant to use for form submission.
     ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#enctype)
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#method)
     pub fn method(mut self, value: impl Into<FormMethod>) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("method", value.into());
         self

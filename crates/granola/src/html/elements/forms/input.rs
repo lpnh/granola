@@ -357,15 +357,15 @@ impl<M: InputTag> HtmlInput<M> {
         self
     }
 
-    /// Granularity to be matched by the form control's value.
+    /// Type of form control.
     ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#type)
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#input_types)
     pub fn input_type(mut self, value: impl Into<InputType>) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("type", value.into());
         self
     }
 
-    /// Value to be used for form submission.
+    /// Value of the form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#value)
     pub fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {

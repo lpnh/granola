@@ -104,7 +104,7 @@ impl<M: ProgressTag> HtmlProgress<M> {
 
     /// Current value of the element.
     ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#value)
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress#value)
     pub fn value(mut self, value: f64) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("value", value.to_string());
         self
