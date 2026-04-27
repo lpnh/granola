@@ -74,3 +74,37 @@ impl<M: BrTag> HtmlBr<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlBr<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let br = br!().id("line_break");
+///
+/// assert_eq!(br.bake(),
+/// r#"<br id="line_break" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let roses = bake_inline!["Roses are red,", br!()];
+/// let violets = "Violets are blue.";
+///
+/// let poem = p!(roses, violets);
+///
+/// assert_eq!(poem.bake(),
+/// r#"<p>
+///   Roses are red,<br />
+///   Violets are blue.
+/// </p>"#);
+/// ```
+#[macro_export]
+macro_rules! br {
+    () => {
+        $crate::html::HtmlBr::<()>::new()
+    };
+}

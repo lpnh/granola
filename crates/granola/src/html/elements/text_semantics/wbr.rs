@@ -57,3 +57,22 @@ impl<M: WbrTag> HtmlWbr<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlWbr<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let wbr = wbr!().id("line_break_opportunity");
+///
+/// assert_eq!(wbr.bake(),
+/// r#"<wbr id="line_break_opportunity" />"#);
+/// ```
+#[macro_export]
+macro_rules! wbr {
+    () => {
+        $crate::html::HtmlWbr::<()>::new()
+    };
+}
