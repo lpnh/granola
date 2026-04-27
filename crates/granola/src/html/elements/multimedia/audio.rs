@@ -118,6 +118,7 @@ impl<M: AudioTag> HtmlAudio<M> {
     }
 
     // NOTE: Include `controlslist` in the future.
+    //
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#controlslist)
 
     /// How the element handles crossorigin requests.
@@ -174,4 +175,47 @@ impl<M: AudioTag> HtmlAudio<M> {
         self.specific_attrs = self.specific_attrs.add_attr("src", value);
         self
     }
+}
+
+/// Shorthand for `HtmlAudio<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let audio = audio!().id("embed_audio");
+///
+/// assert_eq!(audio.bake(),
+/// r#"<audio id="embed_audio"></audio>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let audio = audio!(@from_src "toms-dinner.mp3").autoplay(true);
+///
+/// assert_eq!(audio.bake(),
+/// r#"<audio src="toms-dinner.mp3" autoplay></audio>"#);
+/// ```
+#[macro_export]
+macro_rules! audio {
+    () => {
+        $crate::html::HtmlAudio::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlAudio::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlAudio::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlAudio::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlAudio::<()>::new($crate::bake_inline![$($content),+])
+    };
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlAudio::<()>::from_src($src)
+    };
 }

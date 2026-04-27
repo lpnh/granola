@@ -115,3 +115,34 @@ impl<M: TrackTag> HtmlTrack<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlTrack<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let track = track!().id("embed_text_track");
+///
+/// assert_eq!(track.bake(),
+/// r#"<track id="embed_text_track" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let track = track!("der_himmel_uber_berlin.vtt").kind("captions").enabled(true);
+///
+/// assert_eq!(track.bake(),
+/// r#"<track src="der_himmel_uber_berlin.vtt" kind="captions" default />"#);
+/// ```
+#[macro_export]
+macro_rules! track {
+    () => {
+        $crate::html::HtmlTrack::<()>::empty()
+    };
+    ($src: expr $(,)?) => {
+        $crate::html::HtmlTrack::<()>::new($src)
+    };
+}

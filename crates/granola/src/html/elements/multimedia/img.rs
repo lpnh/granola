@@ -73,17 +73,6 @@ impl<M: ImgTag> HtmlImg<M> {
         s.src(src).alt(alt)
     }
 
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s.src(src)
-    }
-
     pub fn empty() -> Self {
         let mut s = Self::default();
         if let Some(class) = M::CLASS {
@@ -93,6 +82,17 @@ impl<M: ImgTag> HtmlImg<M> {
             s = s.role(role);
         }
         s
+    }
+
+    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+        let mut s = Self::default();
+        if let Some(class) = M::CLASS {
+            s = s.class(class);
+        }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
+        s.src(src)
     }
 
     /// Replacement text for use when images are not available.
@@ -208,4 +208,38 @@ impl<M: ImgTag> HtmlImg<M> {
         self.specific_attrs = self.specific_attrs.add_attr("usemap", value);
         self
     }
+}
+
+/// Shorthand for `HtmlImg<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let img = img!().id("image_embed");
+///
+/// assert_eq!(img.bake(),
+/// r#"<img id="image_embed" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let img = img!("profile.png", "A mustachioed in a red cap and blue overalls");
+///
+/// assert_eq!(img.bake(),
+/// r#"<img src="profile.png" alt="A mustachioed in a red cap and blue overalls" />"#);
+/// ```
+#[macro_export]
+macro_rules! img {
+    () => {
+        $crate::html::HtmlImg::<()>::empty()
+    };
+    ($src: expr, $alt: expr $(,)?) => {
+        $crate::html::HtmlImg::<()>::new($src, $alt)
+    };
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlImg::<()>::from_src($src)
+    };
 }

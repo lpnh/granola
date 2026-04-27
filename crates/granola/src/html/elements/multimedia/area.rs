@@ -65,20 +65,20 @@ impl<M: AreaTag> HtmlArea<M> {
         s.href(href).alt(alt)
     }
 
-    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s.href(href)
-    }
-
     pub fn empty() -> Self {
         let mut s = Self::default();
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
         s
+    }
+
+    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
+        let mut s = Self::default();
+        if let Some(class) = M::CLASS {
+            s = s.class(class);
+        }
+        s.href(href)
     }
 
     /// Replacement text for use when images are not available.
@@ -158,10 +158,8 @@ impl<M: AreaTag> HtmlArea<M> {
 }
 
 /// ```askama
-/// {%- for area in items -%}
-/// {{- area -}}
-/// {%- if !loop.last %}
-/// {% endif -%}
+/// {%- for area in items %}
+/// {{ area -}}
 /// {%- endfor -%}
 /// ```
 #[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
@@ -182,4 +180,40 @@ impl From<HtmlArea> for Areas {
     fn from(area: HtmlArea) -> Self {
         Self { items: vec![area] }
     }
+}
+
+/// Shorthand for `HtmlArea<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let area = area!().id("image_map_area");
+///
+/// assert_eq!(area.bake(),
+/// r#"<area id="image_map_area" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let area = area!("https://w.wiki/LTnF", "Red triangle")
+///     .shape("poly")
+///     .coords("300,63,470,357,130,357");
+///
+/// assert_eq!(area.bake(),
+/// r#"<area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />"#);
+/// ```
+#[macro_export]
+macro_rules! area {
+    () => {
+        $crate::html::HtmlArea::<()>::empty()
+    };
+    ($href: expr, $alt: expr $(,)?) => {
+        $crate::html::HtmlArea::<()>::new($href, $alt)
+    };
+    (@from_href $href: expr $(,)?) => {
+        $crate::html::HtmlArea::<()>::from_href($href)
+    };
 }

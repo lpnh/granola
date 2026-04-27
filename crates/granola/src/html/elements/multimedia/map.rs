@@ -43,10 +43,13 @@ impl MapTag for () {}
 ///
 /// let map: HtmlMap = HtmlMap::new(area).name("minas-gerais");
 ///
-/// assert_eq!(img.bake(),
-/// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />"##);
-/// assert_eq!(map.bake(),
-/// r#"<map name="minas-gerais"><area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" /></map>"#);
+/// let img_map = bake_block![img, map];
+///
+/// assert_eq!(img_map,
+/// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
+/// <map name="minas-gerais">
+///   <area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />
+/// </map>"##);
 /// ```
 ///
 /// # Askama template
@@ -99,4 +102,52 @@ impl<M: MapTag> HtmlMap<M> {
         self.specific_attrs = self.specific_attrs.add_attr("name", value);
         self
     }
+}
+
+/// Shorthand for `HtmlMap<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let map = map!().id("image_map");
+///
+/// assert_eq!(map.bake(),
+/// r#"<map id="image_map"></map>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let img = img!("mg_flag.png", "MG flag")
+///     .width(600)
+///     .height(420)
+///     .usemap("#minas-gerais");
+///
+/// let area = area!("https://w.wiki/LTnF", "Red triangle")
+///     .shape("poly")
+///     .coords("300,63,470,357,130,357");
+///
+/// let map = map!(area).name("minas-gerais");
+///
+/// let img_map = bake_block![img, map];
+///
+/// assert_eq!(img_map,
+/// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
+/// <map name="minas-gerais">
+///   <area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />
+/// </map>"##);
+/// ```
+#[macro_export]
+macro_rules! map {
+    () => {
+        $crate::html::HtmlMap::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlMap::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlMap::<()>::new([$first $(, $rest)*])
+    };
 }

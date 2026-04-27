@@ -204,3 +204,48 @@ impl<M: VideoTag> HtmlVideo<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlVideo<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let video = video!().id("video_embed");
+///
+/// assert_eq!(video.bake(),
+/// r#"<video id="video_embed"></video>"#);
+/// ```
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let video = video!(@from_src "Never_Gonna_Give_You_Up.mp4")
+///     .width(800)
+///     .height(600)
+///     .autoplay(true);
+///
+/// assert_eq!(video.bake(),
+/// r#"<video src="Never_Gonna_Give_You_Up.mp4" width="800" height="600" autoplay></video>"#);
+/// ```
+#[macro_export]
+macro_rules! video {
+    () => {
+        $crate::html::HtmlVideo::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlVideo::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlVideo::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlVideo::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlVideo::<()>::new($crate::bake_inline![$($content),+])
+    };
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlVideo::<()>::from_src($src)
+    };
+}
