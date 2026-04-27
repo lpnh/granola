@@ -87,10 +87,6 @@ impl<M: ScriptTag> HtmlScript<M> {
         Self::empty().src(src)
     }
 
-    pub fn module(src: impl Into<Cow<'static, str>>) -> Self {
-        Self::from_src(src).script_type(ScriptType::Module)
-    }
-
     /// Execute script when available, without blocking while fetching.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#async)
@@ -146,14 +142,16 @@ impl<M: ScriptTag> HtmlScript<M> {
     /// Prevents execution in user agents that support module scripts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#nomodule)
-    pub fn nomodule(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("nomodule", value);
+    pub fn nomodule(mut self, value: bool) -> Self {
+        if value {
+            self.specific_attrs = self.specific_attrs.add_bool_attr("nomodule");
+        }
         self
     }
 
     /// Referrer policy for fetches initiated by the element.
     ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#nomodule)
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#referrerpolicy)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
@@ -205,6 +203,7 @@ impl<T: AsRef<str>> From<T> for ScriptType {
             "text/javascript" => Self::JavaScriptMimeType,
             "importmap" => Self::Importmap,
             "module" => Self::Module,
+            "speculationrules" => Self::Speculationrules,
             _ => Self::JavaScriptMimeType,
         }
     }
