@@ -87,3 +87,43 @@ impl<M: PTag> HtmlP<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlP<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let p = p!().id("paragraph");
+///
+/// assert_eq!(p.bake(),
+/// r#"<p id="paragraph"></p>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let p = p!("Lorem ipsum dolor sit amet...🙄");
+///
+/// assert_eq!(p.bake(),
+/// r#"<p>Lorem ipsum dolor sit amet...🙄</p>"#);
+/// ```
+#[macro_export]
+macro_rules! p {
+    () => {
+        $crate::html::HtmlP::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlP::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlP::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlP::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlP::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

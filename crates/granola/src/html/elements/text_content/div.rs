@@ -95,3 +95,49 @@ impl<M: DivTag> HtmlDiv<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlDiv<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let div = div!().id("content_division");
+///
+/// assert_eq!(div.bake(),
+/// r#"<div id="content_division"></div>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let save = button!("Save");
+/// let cancel = button!("Cancel").button_type("button");
+///
+/// let div = div!(save, cancel).class("flex justify-end gap-2");
+///
+/// assert_eq!(div.bake(),
+/// r#"<div class="flex justify-end gap-2">
+///   <button>Save</button>
+///   <button type="button">Cancel</button>
+/// </div>"#);
+/// ```
+#[macro_export]
+macro_rules! div {
+    () => {
+        $crate::html::HtmlDiv::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDiv::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDiv::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDiv::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDiv::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
