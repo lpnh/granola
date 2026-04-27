@@ -99,3 +99,68 @@ impl<M: MenuTag> HtmlMenu<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlMenu<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let menu = menu!().id("menu");
+///
+/// assert_eq!(menu.bake(),
+/// r#"<menu id="menu"></menu>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let items = [
+///   li!("Buy"),
+///   li!("Use"),
+///   li!("Break"),
+///   li!("Fix"),
+/// ];
+///
+/// let technologic = menu!(items);
+///
+/// assert_eq!(technologic.bake(),
+/// r#"<menu>
+///   <li>Buy</li>
+///   <li>Use</li>
+///   <li>Break</li>
+///   <li>Fix</li>
+/// </menu>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let technologic = menu![
+///   li!("Write"),
+///   li!("Cut"),
+///   li!("Paste"),
+///   li!("Save"),
+/// ];
+///
+/// assert_eq!(technologic.bake(),
+/// r#"<menu>
+///   <li>Write</li>
+///   <li>Cut</li>
+///   <li>Paste</li>
+///   <li>Save</li>
+/// </menu>"#);
+/// ```
+#[macro_export]
+macro_rules! menu {
+    () => {
+        $crate::html::HtmlMenu::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlMenu::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlMenu::<()>::new([$first $(, $rest)*])
+    };
+}

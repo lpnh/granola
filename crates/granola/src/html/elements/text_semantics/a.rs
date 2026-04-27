@@ -126,7 +126,7 @@ impl<M: ATag> HtmlA<M> {
 
     /// Referrer policy for fetches initiated by the element.
     ///
-    /// [MDN Documentation]()
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#referrerpolicy)
     pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
         self
@@ -155,4 +155,44 @@ impl<M: ATag> HtmlA<M> {
         self.specific_attrs = self.specific_attrs.add_attr("type", value);
         self
     }
+}
+
+/// Shorthand for `HtmlA<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let a = a!().id("anchor");
+///
+/// assert_eq!(a.bake(),
+/// r#"<a id="anchor"></a>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let a = a!("docs").href("https://askama.rs");
+///
+/// assert_eq!(a.bake(),
+/// r#"<a href="https://askama.rs">docs</a>"#);
+/// ```
+#[macro_export]
+macro_rules! a {
+    () => {
+        $crate::html::HtmlA::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlA::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlA::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlA::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlA::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

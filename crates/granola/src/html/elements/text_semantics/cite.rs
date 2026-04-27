@@ -87,3 +87,43 @@ impl<M: CiteTag> HtmlCite<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlCite<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let cite = cite!().id("citation");
+///
+/// assert_eq!(cite.bake(),
+/// r#"<cite id="citation"></cite>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let cite = cite!("Act Without Words I");
+///
+/// assert_eq!(cite.bake(),
+/// r#"<cite>Act Without Words I</cite>"#);
+/// ```
+#[macro_export]
+macro_rules! cite {
+    () => {
+        $crate::html::HtmlCite::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlCite::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlCite::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlCite::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlCite::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

@@ -13,10 +13,10 @@ pub mod prelude {
 
 pub mod macros {
     pub use crate::{
-        area, audio, base, blockquote, body, button, canvas, code, datalist, dd, del, details,
-        dialog, div, dl, doctype, dt, embed, fieldset, figcaption, figure, form, head, iframe, img,
-        input, ins, label, legend, li, link, map, meta, meter, noscript, object, ol, optgroup,
-        option, output, p, picture, progress, root, script, select, source, style, summary,
-        textarea, title, track, ul, video,
+        a, area, audio, base, blockquote, body, button, canvas, cite, code, datalist, dd, del,
+        details, dialog, div, dl, doctype, dt, embed, fieldset, figcaption, figure, form, head, hr,
+        iframe, img, input, ins, label, legend, li, link, map, menu, meta, meter, noscript, object,
+        ol, optgroup, option, output, p, picture, pre, progress, root, script, select, source,
+        style, summary, textarea, title, track, ul, video,
     };
 }
