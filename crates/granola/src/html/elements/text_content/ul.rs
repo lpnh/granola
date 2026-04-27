@@ -97,3 +97,62 @@ impl<M: UlTag> HtmlUl<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlUl<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let ul = ul!().id("unordered_list");
+///
+/// assert_eq!(ul.bake(),
+/// r#"<ul id="unordered_list"></ul>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let items = [
+///   li!("sugar"),
+///   li!("spice"),
+///   li!("everything nice"),
+/// ];
+///
+/// let ingredients = ul!(items);
+///
+/// assert_eq!(ingredients.bake(),
+/// r#"<ul>
+///   <li>sugar</li>
+///   <li>spice</li>
+///   <li>everything nice</li>
+/// </ul>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sugar = li!("sugar");
+/// let spice = li!("spice");
+///
+/// let ingredients = ul!(sugar, spice);
+///
+/// assert_eq!(ingredients.bake(),
+/// r#"<ul>
+///   <li>sugar</li>
+///   <li>spice</li>
+/// </ul>"#);
+/// ```
+#[macro_export]
+macro_rules! ul {
+    () => {
+        $crate::html::HtmlUl::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlUl::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlUl::<()>::new([$first $(, $rest)*])
+    };
+}

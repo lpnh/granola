@@ -124,3 +124,62 @@ impl<M: OlTag> HtmlOl<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlOl<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let ol = ol!().id("ordered_list");
+///
+/// assert_eq!(ol.bake(),
+/// r#"<ol id="ordered_list"></ol>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let items = [
+///   li!("Add the sugar"),
+///   li!("Coat with spice"),
+///   li!("Fold in everything nice"),
+/// ];
+///
+/// let instructions = ol!(items);
+///
+/// assert_eq!(instructions.bake(),
+/// r#"<ol>
+///   <li>Add the sugar</li>
+///   <li>Coat with spice</li>
+///   <li>Fold in everything nice</li>
+/// </ol>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sugar = li!("Add the sugar");
+/// let spice = li!("Coat with spice");
+///
+/// let instructions = ol!(sugar, spice);
+///
+/// assert_eq!(instructions.bake(),
+/// r#"<ol>
+///   <li>Add the sugar</li>
+///   <li>Coat with spice</li>
+/// </ol>"#);
+/// ```
+#[macro_export]
+macro_rules! ol {
+    () => {
+        $crate::html::HtmlOl::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlOl::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlOl::<()>::new([$first $(, $rest)*])
+    };
+}

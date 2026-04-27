@@ -131,3 +131,47 @@ impl From<HtmlLi> for ListItems {
         Self { items: vec![item] }
     }
 }
+
+/// Shorthand for `HtmlLi<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let li = li!().id("list_item");
+///
+/// assert_eq!(li.bake(),
+/// r#"<li id="list_item"></li>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sugar = li!("sugar");
+/// let spice = li!("spice");
+///
+/// let items = bake_block![sugar, spice];
+///
+/// assert_eq!(items,
+/// r#"<li>sugar</li>
+/// <li>spice</li>"#);
+/// ```
+#[macro_export]
+macro_rules! li {
+    () => {
+        $crate::html::HtmlLi::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlLi::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlLi::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlLi::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlLi::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
