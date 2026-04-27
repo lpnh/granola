@@ -103,16 +103,18 @@ impl<M: OlTag> HtmlOl<M> {
     /// Number the list backwards.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#reversed)
-    pub fn reversed(mut self) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("reversed", "reversed");
+    pub fn reversed(mut self, value: bool) -> Self {
+        if value {
+            self.specific_attrs = self.specific_attrs.add_bool_attr("reversed");
+        }
         self
     }
 
     /// Starting value of the list.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#start)
-    pub fn start(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("start", value);
+    pub fn start(mut self, value: i32) -> Self {
+        self.specific_attrs = self.specific_attrs.add_attr("start", value.to_string());
         self
     }
 
