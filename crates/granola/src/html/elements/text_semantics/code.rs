@@ -87,3 +87,43 @@ impl<M: CodeTag> HtmlCode<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlCode<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let code = code!().id("inline_code");
+///
+/// assert_eq!(code.bake(),
+/// r#"<code id="inline_code"></code>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let code = code!("todo!()");
+///
+/// assert_eq!(code.bake(),
+/// r#"<code>todo!()</code>"#);
+/// ```
+#[macro_export]
+macro_rules! code {
+    () => {
+        $crate::html::HtmlCode::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlCode::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlCode::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlCode::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlCode::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

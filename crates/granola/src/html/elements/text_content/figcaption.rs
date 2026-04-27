@@ -92,3 +92,48 @@ impl<M: FigcaptionTag> HtmlFigcaption<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlFigcaption<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let figcaption = figcaption!().id("figure_caption");
+///
+/// assert_eq!(figcaption.bake(),
+/// r#"<figcaption id="figure_caption"></figcaption>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let code = code!(r#"function greet() print("hi!") end"#);
+///
+/// let figcaption = figcaption!("Defining a function in Lua");
+///
+/// let content = bake_block![code, figcaption];
+///
+/// assert_eq!(content,
+/// r#"<code>function greet() print("hi!") end</code>
+/// <figcaption>Defining a function in Lua</figcaption>"#);
+/// ```
+#[macro_export]
+macro_rules! figcaption {
+    () => {
+        $crate::html::HtmlFigcaption::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlFigcaption::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlFigcaption::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlFigcaption::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlFigcaption::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

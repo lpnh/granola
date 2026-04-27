@@ -114,3 +114,58 @@ impl<M: BlockquoteTag> HtmlBlockquote<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlBlockquote<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let blockquote = blockquote!().id("block_quotation");
+///
+/// assert_eq!(blockquote.bake(),
+/// r#"<blockquote id="block_quotation"></blockquote>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let paragraph = p![
+///   "The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.",
+///   "Usually, this is rendered visually by indentation.",
+///   "A URL for the source of the quotation may be given using the cite attribute,",
+///   "while a text representation of the source can be given using the &lt;cite&gt; element.",
+/// ];
+///
+/// let blockquote = blockquote!(paragraph)
+///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote");
+///
+/// assert_eq!(blockquote.bake(),
+/// r#"<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote">
+///   <p>
+///     The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.
+///     Usually, this is rendered visually by indentation.
+///     A URL for the source of the quotation may be given using the cite attribute,
+///     while a text representation of the source can be given using the &lt;cite&gt; element.
+///   </p>
+/// </blockquote>"#);
+/// ```
+#[macro_export]
+macro_rules! blockquote {
+    () => {
+        $crate::html::HtmlBlockquote::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlBlockquote::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlBlockquote::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlBlockquote::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlBlockquote::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
