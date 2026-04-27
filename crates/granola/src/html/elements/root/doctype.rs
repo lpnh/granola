@@ -31,3 +31,22 @@ impl HtmlDoctype {
         Self::default()
     }
 }
+
+/// Shorthand for `HtmlDoctype`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let doctype = doctype!();
+///
+/// assert_eq!(doctype.bake(),
+/// r#"<!doctype html>"#);
+/// ```
+#[macro_export]
+macro_rules! doctype {
+    () => {
+        $crate::html::HtmlDoctype::new()
+    };
+}

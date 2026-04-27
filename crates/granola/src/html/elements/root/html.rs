@@ -31,12 +31,38 @@ impl HtmlTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let body: HtmlBody = HtmlBody::new("content");
+/// let body: HtmlBody = HtmlBody::new(bake_newline!("flow content"));
 ///
 /// let html: HtmlRoot = HtmlRoot::new(body).lang("en");
 ///
 /// assert_eq!(html.bake(),
-/// r#"<html lang="en"><body>content</body></html>"#);
+/// r#"<html lang="en">
+///   <body>
+///     flow content
+///   </body>
+/// </html>"#);
+/// ```
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let meta: HtmlMeta = HtmlMeta::empty().charset();
+/// let head: HtmlHead = HtmlHead::new(bake_newline!(meta));
+///
+/// let p: HtmlP = HtmlP::new("Hello, world!");
+/// let body: HtmlBody = HtmlBody::new(bake_newline!(p));
+///
+/// let html: HtmlRoot = HtmlRoot::new((head, body));
+///
+/// assert_eq!(html.bake(),
+/// r#"<html>
+///   <head>
+///     <meta charset="utf-8" />
+///   </head>
+///   <body>
+///     <p>Hello, world!</p>
+///   </body>
+/// </html>"#);
 /// ```
 ///
 /// # Askama template
@@ -44,7 +70,6 @@ impl HtmlTag for () {}
 /// ```askama
 /// <html
 ///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
 ///   {{- data_attrs -}}
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs -}}
@@ -56,7 +81,6 @@ pub struct HtmlRoot<M: HtmlTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
     pub data_attrs: DataAttrs,
     pub event_handlers: EventHandlers,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -111,6 +135,15 @@ impl From<(HtmlHead, HtmlBody)> for HtmlRootContent {
     }
 }
 
+impl From<HtmlHead> for HtmlRootContent {
+    fn from(head: HtmlHead) -> Self {
+        Self {
+            head: Some(head),
+            body: None,
+        }
+    }
+}
+
 impl From<HtmlBody> for HtmlRootContent {
     fn from(body: HtmlBody) -> Self {
         Self {
@@ -118,4 +151,66 @@ impl From<HtmlBody> for HtmlRootContent {
             body: Some(body),
         }
     }
+}
+
+/// Shorthand for `HtmlRoot<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let html = root!().id("html_document");
+///
+/// assert_eq!(html.bake(),
+/// r#"<html id="html_document"></html>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let body = body!(@newline "flow content");
+///
+/// let html = root!(body).lang("en");
+///
+/// assert_eq!(html.bake(),
+/// r#"<html lang="en">
+///   <body>
+///     flow content
+///   </body>
+/// </html>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let meta = meta!().charset();
+/// let head = head!(@newline meta);
+///
+/// let p: HtmlP = HtmlP::new("Hello, world!");
+/// let body = body!(@newline p);
+///
+/// let html = root!(head, body);
+///
+/// assert_eq!(html.bake(),
+/// r#"<html>
+///   <head>
+///     <meta charset="utf-8" />
+///   </head>
+///   <body>
+///     <p>Hello, world!</p>
+///   </body>
+/// </html>"#);
+/// ```
+#[macro_export]
+macro_rules! root {
+    () => {
+        $crate::html::HtmlRoot::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlRoot::<()>::new($content)
+    };
+    ($head: expr, $body: expr $(,)?) => {
+        $crate::html::HtmlRoot::<()>::new(($head, $body))
+    };
 }

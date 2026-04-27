@@ -32,10 +32,12 @@ impl BodyTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let body: HtmlBody = HtmlBody::new("content");
+/// let body: HtmlBody = HtmlBody::new(bake_newline!("flow content"));
 ///
 /// assert_eq!(body.bake(),
-/// r#"<body>content</body>"#);
+/// r#"<body>
+///   flow content
+/// </body>"#);
 /// ```
 ///
 /// # Askama template
@@ -78,4 +80,46 @@ impl<M: BodyTag> HtmlBody<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlBody<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let body = body!().id("document_body");
+///
+/// assert_eq!(body.bake(),
+/// r#"<body id="document_body"></body>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let body = body!(@newline "flow content");
+///
+/// assert_eq!(body.bake(),
+/// r#"<body>
+///   flow content
+/// </body>"#);
+/// ```
+#[macro_export]
+macro_rules! body {
+    () => {
+        $crate::html::HtmlBody::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlBody::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlBody::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlBody::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlBody::<()>::new($crate::bake_inline![$($content),+])
+    };
 }
