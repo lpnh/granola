@@ -79,3 +79,43 @@ impl<M: NoscriptTag> HtmlNoscript<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlNoscript<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let noscript = noscript!().id("noscript");
+///
+/// assert_eq!(noscript.bake(),
+/// r#"<noscript id="noscript"></noscript>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let noscript = noscript!("It's javascript all the way down");
+///
+/// assert_eq!(noscript.bake(),
+/// r#"<noscript>It's javascript all the way down</noscript>"#);
+/// ```
+#[macro_export]
+macro_rules! noscript {
+    () => {
+        $crate::html::HtmlNoscript::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlNoscript::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlNoscript::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlNoscript::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlNoscript::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

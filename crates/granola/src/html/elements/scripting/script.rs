@@ -215,3 +215,45 @@ impl From<ScriptType> for Cow<'static, str> {
         <&'static str>::from(s).into()
     }
 }
+
+/// Shorthand for `HtmlScript<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let script = script!().id("script");
+///
+/// assert_eq!(script.bake(),
+/// r#"<script id="script"></script>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let script = script!(@newline r#"alert("Hello, world!");"#);
+///
+/// assert_eq!(script.bake(),
+/// r#"<script>
+///   alert("Hello, world!");
+/// </script>"#);
+/// ```
+#[macro_export]
+macro_rules! script {
+    () => {
+        $crate::html::HtmlScript::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlScript::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlScript::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlScript::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlScript::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

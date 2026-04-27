@@ -122,3 +122,57 @@ impl<M: CanvasTag> HtmlCanvas<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlCanvas<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let canvas = canvas!().id("graphics_canvas");
+///
+/// assert_eq!(canvas.bake(),
+/// r#"<canvas id="graphics_canvas"></canvas>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let content = r#"
+/// const ctx = document.getElementById("canvas").getContext("2d");
+/// ctx.font = "64px sans";
+/// ctx.fillText(":-)", 10, 62);"#;
+///
+/// let script = script!(content);
+///
+/// let canvas = canvas!("ASCII smiley").id("canvas").width(160).height(80);
+///
+/// let smiley = bake_block![script, canvas];
+///
+/// assert_eq!(smiley,
+/// r#"<script>
+///   const ctx = document.getElementById("canvas").getContext("2d");
+///   ctx.font = "64px sans";
+///   ctx.fillText(":-)", 10, 62);
+/// </script>
+/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#);
+/// ```
+#[macro_export]
+macro_rules! canvas {
+    () => {
+        $crate::html::HtmlCanvas::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlCanvas::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlCanvas::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlCanvas::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlCanvas::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
