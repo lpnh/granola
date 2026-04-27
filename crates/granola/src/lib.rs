@@ -13,9 +13,9 @@ pub mod prelude {
 
 pub mod macros {
     pub use crate::{
-        area, audio, base, body, button, canvas, datalist, del, details, dialog, div, doctype,
-        embed, fieldset, form, head, iframe, img, input, ins, label, legend, li, link, map, meta,
-        meter, noscript, object, ol, optgroup, option, output, p, picture, progress, root, script,
-        select, source, style, summary, textarea, title, track, ul, video,
+        area, audio, base, body, button, canvas, datalist, dd, del, details, dialog, div, dl,
+        doctype, dt, embed, fieldset, form, head, iframe, img, input, ins, label, legend, li, link,
+        map, meta, meter, noscript, object, ol, optgroup, option, output, p, picture, progress,
+        root, script, select, source, style, summary, textarea, title, track, ul, video,
     };
 }

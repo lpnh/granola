@@ -105,3 +105,59 @@ impl<M: DlTag> HtmlDl<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlDl<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let dl = dl!().id("description_list");
+///
+/// assert_eq!(dl.bake(),
+/// r#"<dl id="description_list"></dl>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let dt_1 = dt!("Hiraeth");
+/// let dd_1 = dd!("A longing for a home that no longer exists, or perhaps never did.");
+///
+/// let group_1 = bake_block![dt_1, dd_1];
+///
+/// let dt_2 = dt!("Pålegg");
+/// let dd_2 = dd!("Anything and everything you might put on a slice of bread.");
+///
+/// let group_2 = bake_block![dt_2, dd_2];
+///
+/// let dl = dl!(group_1, "", group_2);
+///
+/// assert_eq!(dl.bake(),
+/// r#"<dl>
+///   <dt>Hiraeth</dt>
+///   <dd>A longing for a home that no longer exists, or perhaps never did.</dd>
+///
+///   <dt>Pålegg</dt>
+///   <dd>Anything and everything you might put on a slice of bread.</dd>
+/// </dl>"#);
+/// ```
+#[macro_export]
+macro_rules! dl {
+    () => {
+        $crate::html::HtmlDl::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDl::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDl::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDl::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDl::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

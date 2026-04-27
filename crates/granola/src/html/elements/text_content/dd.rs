@@ -83,3 +83,47 @@ impl<M: DdTag> HtmlDd<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlDd<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let dd = dd!().id("description_details");
+///
+/// assert_eq!(dd.bake(),
+/// r#"<dd id="description_details"></dd>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let dt = dt!("Hiraeth");
+/// let dd = dd!("A longing for a home that no longer exists, or perhaps never did.");
+///
+/// let term = bake_block![dt, dd];
+///
+/// assert_eq!(term,
+/// r#"<dt>Hiraeth</dt>
+/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#);
+/// ```
+#[macro_export]
+macro_rules! dd {
+    () => {
+        $crate::html::HtmlDd::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDd::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDd::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDd::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDd::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
