@@ -94,6 +94,9 @@ impl<M: AudioTag> HtmlAudio<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s.src(src)
     }
 
@@ -168,7 +171,7 @@ impl<M: AudioTag> HtmlAudio<M> {
         self
     }
 
-    /// Set the `src` attribute
+    /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#src)
     pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {

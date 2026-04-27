@@ -96,6 +96,9 @@ impl<M: VideoTag> HtmlVideo<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s.src(src)
     }
 

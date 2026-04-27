@@ -109,7 +109,7 @@ impl<M: TrackTag> HtmlTrack<M> {
 
     /// Language of the text track.
     ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#srclangrc)
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#srclang)
     pub fn srclang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
         self.specific_attrs = self.specific_attrs.add_attr("srclang", value);
         self
