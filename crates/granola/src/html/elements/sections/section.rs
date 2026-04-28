@@ -97,3 +97,51 @@ impl<M: SectionTag> HtmlSection<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSection<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let section = section!().id("generic_section");
+///
+/// assert_eq!(section.bake(),
+/// r#"<section id="generic_section"></section>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h2 = h2!("Latest news");
+/// let ul = ul!(li!("New café on Oak Street"));
+///
+/// let section = section!(h2, ul);
+///
+/// assert_eq!(section.bake(),
+/// r#"<section>
+///   <h2>Latest news</h2>
+///   <ul>
+///     <li>New café on Oak Street</li>
+///   </ul>
+/// </section>"#);
+/// ```
+#[macro_export]
+macro_rules! section {
+    () => {
+        $crate::html::HtmlSection::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSection::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSection::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSection::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSection::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

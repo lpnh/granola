@@ -103,3 +103,59 @@ impl<M: SearchTag> HtmlSearch<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSearch<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let search = search!().id("generic_search");
+///
+/// assert_eq!(search.bake(),
+/// r#"<search id="generic_search"></search>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let label = label!("Search the haystack").for_id("query");
+/// let input = input!()
+///     .input_type("search")
+///     .id("query")
+///     .name("q")
+///     .placeholder("needle");
+/// let button = button!("Search");
+///
+/// let form = form!(label, input, button).action("/search");
+///
+/// let search = search!(form);
+///
+/// assert_eq!(search.bake(),
+/// r#"<search>
+///   <form action="/search">
+///     <label for="query">Search the haystack</label>
+///     <input id="query" type="search" name="q" placeholder="needle" />
+///     <button>Search</button>
+///   </form>
+/// </search>"#);
+/// ```
+#[macro_export]
+macro_rules! search {
+    () => {
+        $crate::html::HtmlSearch::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSearch::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSearch::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSearch::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSearch::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

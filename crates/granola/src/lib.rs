@@ -18,7 +18,8 @@ pub mod macros {
         doctype, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, head,
         header, hgroup, hr, i, iframe, img, input, ins, kbd, label, legend, li, link, main, map,
         mark, menu, meta, meter, nav, noscript, object, ol, optgroup, option, output, p, picture,
-        pre, progress, q, root, rp, rt, ruby, s, samp, script, select, small, source, span, strong,
-        style, sub, summary, sup, textarea, time, title, track, u, ul, var, video, wbr,
+        pre, progress, q, root, rp, rt, ruby, s, samp, script, search, section, select, small,
+        source, span, strong, style, sub, summary, sup, textarea, time, title, track, u, ul, var,
+        video, wbr,
     };
 }
