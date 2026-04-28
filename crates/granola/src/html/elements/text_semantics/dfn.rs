@@ -90,3 +90,45 @@ impl<M: DfnTag> HtmlDfn<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlDfn<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let dfn = dfn!().id("definition");
+///
+/// assert_eq!(dfn.bake(),
+/// r#"<dfn id="definition"></dfn>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let corro = dfn!("Corro");
+///
+/// let paragraph = p!(@inline corro, " the Unsafe Rusturchin");
+///
+/// assert_eq!(paragraph.bake(),
+/// r#"<p><dfn>Corro</dfn> the Unsafe Rusturchin</p>"#);
+/// ```
+#[macro_export]
+macro_rules! dfn {
+    () => {
+        $crate::html::HtmlDfn::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlDfn::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlDfn::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlDfn::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlDfn::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

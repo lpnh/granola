@@ -72,6 +72,9 @@ impl<M: DataTag> HtmlData<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s
     }
 
@@ -79,6 +82,9 @@ impl<M: DataTag> HtmlData<M> {
         let mut s = Self::default();
         if let Some(class) = M::CLASS {
             s = s.class(class);
+        }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
         }
         s
     }
@@ -90,4 +96,44 @@ impl<M: DataTag> HtmlData<M> {
         self.specific_attrs = self.specific_attrs.add_attr("value", value);
         self
     }
+}
+
+/// Shorthand for `HtmlData<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let data = data!().id("data");
+///
+/// assert_eq!(data.bake(),
+/// r#"<data id="data"></data>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let data = data!("$13.37").value("1337");
+///
+/// assert_eq!(data.bake(),
+/// r#"<data value="1337">$13.37</data>"#);
+/// ```
+#[macro_export]
+macro_rules! data {
+    () => {
+        $crate::html::HtmlData::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlData::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlData::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlData::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlData::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

@@ -88,3 +88,44 @@ impl<M: EmTag> HtmlEm<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlEm<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let em = em!().id("emphasis");
+///
+/// assert_eq!(em.bake(),
+/// r#"<em id="emphasis"></em>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let owned = em!("owned");
+/// let borrow_checker = bake_inline!("I never said he ", owned, " it.");
+///
+/// assert_eq!(borrow_checker,
+/// r#"I never said he <em>owned</em> it."#);
+/// ```
+#[macro_export]
+macro_rules! em {
+    () => {
+        $crate::html::HtmlEm::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlEm::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlEm::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlEm::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlEm::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

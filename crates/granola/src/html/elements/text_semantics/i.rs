@@ -89,3 +89,45 @@ impl<M: ITag> HtmlI<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlI<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let i = i!().id("idiomatic_text");
+///
+/// assert_eq!(i.bake(),
+/// r#"<i id="idiomatic_text"></i>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let voila = i!("voilà");
+///
+/// let quote = bake_inline!["and ", voila, "!"];
+///
+/// assert_eq!(quote,
+/// r#"and <i>voilà</i>!"#);
+/// ```
+#[macro_export]
+macro_rules! i {
+    () => {
+        $crate::html::HtmlI::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlI::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlI::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlI::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlI::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
