@@ -155,3 +155,67 @@ impl<M: TemplateTag> HtmlTemplate<M> {
     //
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootreferencetarget)
 }
+
+/// Shorthand for `HtmlTemplate<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let template = template!().id("content_template");
+///
+/// assert_eq!(template.bake(),
+/// r#"<template id="content_template"></template>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let knock_knock = p!("Knock knock.");
+/// let who_s_there = p!("Who's there?");
+///
+/// let name_slot = slot!().name("setup");
+/// let name_p1 = p!(@inline name_slot, ".");
+/// let name_p2 = p!(@inline name_slot, " who?");
+///
+/// let punchline_slot = slot!().name("punchline");
+/// let punchline = p!(punchline_slot);
+///
+/// let content = bake_block![
+///     knock_knock,
+///     who_s_there,
+///     name_p1,
+///     name_p2,
+///     punchline
+/// ];
+///
+/// let template = template!(content).id("tmpl");
+///
+/// assert_eq!(template.bake(),
+/// r#"<template id="tmpl">
+///   <p>Knock knock.</p>
+///   <p>Who's there?</p>
+///   <p><slot name="setup"></slot>.</p>
+///   <p><slot name="setup"></slot> who?</p>
+///   <p><slot name="punchline"></slot></p>
+/// </template>"#);
+/// ```
+#[macro_export]
+macro_rules! template {
+    () => {
+        $crate::html::HtmlTemplate::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTemplate::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTemplate::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTemplate::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTemplate::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

@@ -89,3 +89,43 @@ impl<M: SlotTag> HtmlSlot<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlSlot<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let slot = slot!().id("web_component_slot");
+///
+/// assert_eq!(slot.bake(),
+/// r#"<slot id="web_component_slot"></slot>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let slot = slot!().name("who");
+///
+/// assert_eq!(slot.bake(),
+/// r#"<slot name="who"></slot>"#);
+/// ```
+#[macro_export]
+macro_rules! slot {
+    () => {
+        $crate::html::HtmlSlot::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSlot::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSlot::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSlot::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSlot::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
