@@ -34,10 +34,13 @@ impl QTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let q: HtmlQ = HtmlQ::new("This element is intended for short quotations");
+/// let q: HtmlQ = HtmlQ::new(bake_newline!("This element is intended for short quotations"))
+///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
 ///
 /// assert_eq!(q.bake(),
-/// r#"<q>This element is intended for short quotations</q>"#);
+/// r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q">
+///   This element is intended for short quotations
+/// </q>"#);
 /// ```
 ///
 /// # Askama template
@@ -96,4 +99,47 @@ impl<M: QTag> HtmlQ<M> {
         self.specific_attrs = self.specific_attrs.add_attr("cite", value);
         self
     }
+}
+
+/// Shorthand for `HtmlQ<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let q = q!().id("inline_quotation");
+///
+/// assert_eq!(q.bake(),
+/// r#"<q id="inline_quotation"></q>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let q = q!(@newline "This element is intended for short quotations")
+///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
+///
+/// assert_eq!(q.bake(),
+/// r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q">
+///   This element is intended for short quotations
+/// </q>"#);
+/// ```
+#[macro_export]
+macro_rules! q {
+    () => {
+        $crate::html::HtmlQ::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlQ::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlQ::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlQ::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlQ::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

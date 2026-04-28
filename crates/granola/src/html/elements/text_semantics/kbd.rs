@@ -87,3 +87,43 @@ impl<M: KbdTag> HtmlKbd<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlKbd<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let kbd = kbd!().id("keyboard_input");
+///
+/// assert_eq!(kbd.bake(),
+/// r#"<kbd id="keyboard_input"></kbd>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let kbd = kbd!("Enter");
+///
+/// assert_eq!(kbd.bake(),
+/// r#"<kbd>Enter</kbd>"#);
+/// ```
+#[macro_export]
+macro_rules! kbd {
+    () => {
+        $crate::html::HtmlKbd::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlKbd::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlKbd::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlKbd::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlKbd::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
