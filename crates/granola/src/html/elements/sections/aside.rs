@@ -92,3 +92,48 @@ impl<M: AsideTag> HtmlAside<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlAside<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let aside = aside!().id("aside");
+///
+/// assert_eq!(aside.bake(),
+/// r#"<aside id="aside"></aside>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let tip = strong!("Tip:");
+/// let content = p!(@inline tip, " trust your senses more than the timer.");
+///
+/// let aside = aside!(@newline content).role("note");
+///
+/// assert_eq!(aside.bake(),
+/// r#"<aside role="note">
+///   <p><strong>Tip:</strong> trust your senses more than the timer.</p>
+/// </aside>"#);
+/// ```
+#[macro_export]
+macro_rules! aside {
+    () => {
+        $crate::html::HtmlAside::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlAside::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlAside::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlAside::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlAside::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

@@ -77,6 +77,9 @@ impl<M: AddressTag> HtmlAddress<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s
     }
 
@@ -90,4 +93,49 @@ impl<M: AddressTag> HtmlAddress<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlAddress<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let address = address!().id("contact_address");
+///
+/// assert_eq!(address.bake(),
+/// r#"<address id="contact_address"></address>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let mail = a!("contact@holmes.co.uk").href("mailto:contact@holmes.co.uk");
+///
+/// let address = address!("221B Baker St, London NW1 6XE ·", mail);
+///
+/// assert_eq!(address.bake(),
+/// r#"<address>
+///   221B Baker St, London NW1 6XE ·
+///   <a href="mailto:contact@holmes.co.uk">contact@holmes.co.uk</a>
+/// </address>"#);
+/// ```
+#[macro_export]
+macro_rules! address {
+    () => {
+        $crate::html::HtmlAddress::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlAddress::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlAddress::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlAddress::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlAddress::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

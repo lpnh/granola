@@ -35,12 +35,13 @@ impl FooterTag for () {}
 /// use granola::prelude::*;
 ///
 /// let content: HtmlSmall = HtmlSmall::new("&copy; 2026 Oats &amp; Ends Café");
+/// let paragraph: HtmlP = HtmlP::new(content);
 ///
-/// let footer: HtmlFooter = HtmlFooter::new(bake_newline!(content));
+/// let footer: HtmlFooter = HtmlFooter::new(bake_newline!(paragraph));
 ///
 /// assert_eq!(footer.bake(),
 /// r#"<footer>
-///   <small>&copy; 2026 Oats &amp; Ends Café</small>
+///   <p><small>&copy; 2026 Oats &amp; Ends Café</small></p>
 /// </footer>"#);
 /// ```
 ///
@@ -90,4 +91,50 @@ impl<M: FooterTag> HtmlFooter<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlFooter<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let footer = footer!().id("footer");
+///
+/// assert_eq!(footer.bake(),
+/// r#"<footer id="footer"></footer>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+///
+/// let content = small!("&copy; 2026 Oats &amp; Ends Café");
+/// let paragraph = p!(content);
+///
+/// let footer = footer!(@newline paragraph);
+///
+/// assert_eq!(footer.bake(),
+/// r#"<footer>
+///   <p><small>&copy; 2026 Oats &amp; Ends Café</small></p>
+/// </footer>"#);
+/// ```
+#[macro_export]
+macro_rules! footer {
+    () => {
+        $crate::html::HtmlFooter::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlFooter::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlFooter::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlFooter::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlFooter::<()>::new($crate::bake_inline![$($content),+])
+    };
 }
