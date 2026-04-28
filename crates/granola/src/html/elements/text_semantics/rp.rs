@@ -91,3 +91,47 @@ impl<M: RpTag> HtmlRp<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlRp<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let rp = rp!().id("ruby_fallback_parenthesis");
+///
+/// assert_eq!(rp.bake(),
+/// r#"<rp id="ruby_fallback_parenthesis"></rp>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let opening_rp = rp!("(");
+/// let rt = rt!("tori");
+/// let closing_rp = rp!(")");
+///
+/// let tori = bake_inline![opening_rp, rt, closing_rp];
+///
+/// assert_eq!(tori,
+/// r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
+/// ```
+#[macro_export]
+macro_rules! rp {
+    () => {
+        $crate::html::HtmlRp::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlRp::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlRp::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlRp::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlRp::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

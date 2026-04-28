@@ -87,3 +87,43 @@ impl<M: RtTag> HtmlRt<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlRt<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let rt = rt!().id("ruby_text");
+///
+/// assert_eq!(rt.bake(),
+/// r#"<rt id="ruby_text"></rt>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let tori = rt!("tori");
+///
+/// assert_eq!(tori.bake(),
+/// r#"<rt>tori</rt>"#);
+/// ```
+#[macro_export]
+macro_rules! rt {
+    () => {
+        $crate::html::HtmlRt::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlRt::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlRt::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlRt::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlRt::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

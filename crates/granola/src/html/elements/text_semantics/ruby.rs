@@ -93,3 +93,47 @@ impl<M: RubyTag> HtmlRuby<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlRuby<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let ruby = ruby!().id("ruby_annotation");
+///
+/// assert_eq!(ruby.bake(),
+/// r#"<ruby id="ruby_annotation"></ruby>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let opening_rp = rp!("(");
+/// let rt = rt!("とり");
+/// let closing_rp = rp!(")");
+///
+/// let ruby = ruby!(@inline "鳥", opening_rp, rt, closing_rp);
+///
+/// assert_eq!(ruby.bake(),
+/// r#"<ruby>鳥<rp>(</rp><rt>とり</rt><rp>)</rp></ruby>"#);
+/// ```
+#[macro_export]
+macro_rules! ruby {
+    () => {
+        $crate::html::HtmlRuby::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlRuby::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlRuby::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlRuby::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlRuby::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
