@@ -104,3 +104,35 @@ impl From<HtmlCol> for TableColumns {
         Self { items: vec![item] }
     }
 }
+
+/// Shorthand for `HtmlCol<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let col = col!().id("table_column");
+///
+/// assert_eq!(col.bake(),
+/// r#"<col id="table_column" />"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let item = col!().class("item");
+/// let description = col!().class("description");
+///
+/// let cols = bake_block![item, description];
+///
+/// assert_eq!(cols,
+/// r#"<col class="item" />
+/// <col class="description" />"#);
+/// ```
+#[macro_export]
+macro_rules! col {
+    () => {
+        $crate::html::HtmlCol::<()>::new()
+    };
+}

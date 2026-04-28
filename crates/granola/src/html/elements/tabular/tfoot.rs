@@ -93,3 +93,44 @@ impl<M: TfootTag> HtmlTfoot<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlTfoot<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let tfoot = tfoot!().id("table_foot");
+///
+/// assert_eq!(tfoot.bake(),
+/// r#"<tfoot id="table_foot"></tfoot>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let td = td!("Don't see what you're after? We'll do our best.").colspan(2);
+/// let tr = tr!(@newline td);
+///
+/// let tfoot = tfoot!(tr);
+///
+/// assert_eq!(tfoot.bake(),
+/// r#"<tfoot>
+///   <tr>
+///     <td colspan="2">Don't see what you're after? We'll do our best.</td>
+///   </tr>
+/// </tfoot>"#);
+/// ```
+#[macro_export]
+macro_rules! tfoot {
+    () => {
+        $crate::html::HtmlTfoot::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTfoot::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTfoot::<()>::new([$first $(, $rest)*])
+    };
+}

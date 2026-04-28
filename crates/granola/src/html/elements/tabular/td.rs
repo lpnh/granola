@@ -113,3 +113,43 @@ impl<M: TdTag> HtmlTd<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlTd<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let td = td!().id("table_data_cell");
+///
+/// assert_eq!(td.bake(),
+/// r#"<td id="table_data_cell"></td>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let td = td!("Melted dark chocolate with milk");
+///
+/// assert_eq!(td.bake(),
+/// r#"<td>Melted dark chocolate with milk</td>"#);
+/// ```
+#[macro_export]
+macro_rules! td {
+    () => {
+        $crate::html::HtmlTd::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTd::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTd::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTd::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTd::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

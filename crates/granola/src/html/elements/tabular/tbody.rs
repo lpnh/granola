@@ -105,3 +105,56 @@ impl<M: TbodyTag> HtmlTbody<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlTbody<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let tbody = tbody!().id("table_body");
+///
+/// assert_eq!(tbody.bake(),
+/// r#"<tbody id="table_body"></tbody>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let th_1 = th!("Black coffee").scope("row");
+/// let td_1 = td!("A good, hot, black coffee");
+///
+/// let black_coffee = tr!(th_1, td_1);
+///
+/// let th_2 = th!("Hot chocolate").scope("row");
+/// let td_2 = td!("Melted dark chocolate with milk");
+///
+/// let hot_chocolate = tr!(th_2, td_2);
+///
+/// let tbody = tbody!(black_coffee, hot_chocolate);
+///
+/// assert_eq!(tbody.bake(),
+/// r#"<tbody>
+///   <tr>
+///     <th scope="row">Black coffee</th>
+///     <td>A good, hot, black coffee</td>
+///   </tr>
+///   <tr>
+///     <th scope="row">Hot chocolate</th>
+///     <td>Melted dark chocolate with milk</td>
+///   </tr>
+/// </tbody>"#);
+/// ```
+#[macro_export]
+macro_rules! tbody {
+    () => {
+        $crate::html::HtmlTbody::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTbody::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTbody::<()>::new([$first $(, $rest)*])
+    };
+}

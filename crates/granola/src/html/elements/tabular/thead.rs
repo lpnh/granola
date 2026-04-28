@@ -96,3 +96,47 @@ impl<M: TheadTag> HtmlThead<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlThead<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let thead = thead!().id("table_head");
+///
+/// assert_eq!(thead.bake(),
+/// r#"<thead id="table_head"></thead>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let item = th!("Item").scope("col");
+/// let description = th!("Description").scope("col");
+///
+/// let tr = tr!(item, description);
+///
+/// let thead = thead!(tr);
+///
+/// assert_eq!(thead.bake(),
+/// r#"<thead>
+///   <tr>
+///     <th scope="col">Item</th>
+///     <th scope="col">Description</th>
+///   </tr>
+/// </thead>"#);
+/// ```
+#[macro_export]
+macro_rules! thead {
+    () => {
+        $crate::html::HtmlThead::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlThead::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlThead::<()>::new([$first $(, $rest)*])
+    };
+}

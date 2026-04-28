@@ -79,3 +79,43 @@ impl<M: CaptionTag> HtmlCaption<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlCaption<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let caption = caption!().id("table_caption");
+///
+/// assert_eq!(caption.bake(),
+/// r#"<caption id="table_caption"></caption>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let caption = caption!("Our favorites, yours to try.");
+///
+/// assert_eq!(caption.bake(),
+/// r#"<caption>Our favorites, yours to try.</caption>"#);
+/// ```
+#[macro_export]
+macro_rules! caption {
+    () => {
+        $crate::html::HtmlCaption::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlCaption::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlCaption::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlCaption::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlCaption::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

@@ -94,3 +94,43 @@ impl<M: ColgroupTag> HtmlColgroup<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlColgroup<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let colgroup = colgroup!().id("table_column_group");
+///
+/// assert_eq!(colgroup.bake(),
+/// r#"<colgroup id="table_column_group"></colgroup>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let item = col!().class("item");
+/// let description = col!().class("description");
+///
+/// let colgroup = colgroup!(item, description);
+///
+/// assert_eq!(colgroup.bake(),
+/// r#"<colgroup>
+///   <col class="item" />
+///   <col class="description" />
+/// </colgroup>"#);
+/// ```
+#[macro_export]
+macro_rules! colgroup {
+    () => {
+        $crate::html::HtmlColgroup::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlColgroup::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlColgroup::<()>::new([$first $(, $rest)*])
+    };
+}

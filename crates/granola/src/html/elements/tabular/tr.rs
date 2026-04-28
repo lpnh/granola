@@ -122,3 +122,49 @@ impl From<HtmlTr> for TableRows {
         Self { items: vec![item] }
     }
 }
+
+/// Shorthand for `HtmlTr<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let tr = tr!().id("table_row");
+///
+/// assert_eq!(tr.bake(),
+/// r#"<tr id="table_row"></tr>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let th = th!("Hot chocolate").scope("row");
+/// let td = td!("Melted dark chocolate with milk");
+///
+/// let tr = tr!(th, td);
+///
+/// assert_eq!(tr.bake(),
+/// r#"<tr>
+///   <th scope="row">Hot chocolate</th>
+///   <td>Melted dark chocolate with milk</td>
+/// </tr>"#);
+/// ```
+#[macro_export]
+macro_rules! tr {
+    () => {
+        $crate::html::HtmlTr::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTr::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTr::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTr::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTr::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

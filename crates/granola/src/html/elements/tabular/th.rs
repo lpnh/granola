@@ -129,3 +129,43 @@ impl<M: ThTag> HtmlTh<M> {
         self
     }
 }
+
+/// Shorthand for `HtmlTh<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let th = th!().id("table_header");
+///
+/// assert_eq!(th.bake(),
+/// r#"<th id="table_header"></th>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let th = th!("Hot chocolate").scope("row");
+///
+/// assert_eq!(th.bake(),
+/// r#"<th scope="row">Hot chocolate</th>"#);
+/// ```
+#[macro_export]
+macro_rules! th {
+    () => {
+        $crate::html::HtmlTh::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTh::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTh::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTh::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTh::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
