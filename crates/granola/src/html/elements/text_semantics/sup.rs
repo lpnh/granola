@@ -89,3 +89,45 @@ impl<M: SupTag> HtmlSup<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSup<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sup = sup!().id("superscript");
+///
+/// assert_eq!(sup.bake(),
+/// r#"<sup id="superscript"></sup>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sup = sup!("e");
+///
+/// let anniv = bake_inline!["100", sup, " anniversaire"];
+///
+/// assert_eq!(anniv,
+/// r#"100<sup>e</sup> anniversaire"#);
+/// ```
+#[macro_export]
+macro_rules! sup {
+    () => {
+        $crate::html::HtmlSup::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSup::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSup::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSup::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSup::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

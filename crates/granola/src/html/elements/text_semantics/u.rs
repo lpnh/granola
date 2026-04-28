@@ -34,10 +34,12 @@ impl UTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let uwu: HtmlU = HtmlU::new("hewwo").spellcheck("false");
+/// let wowwd: HtmlU = HtmlU::new("world");
 ///
-/// assert_eq!(uwu.bake(),
-/// r#"<u spellcheck="false">hewwo</u>"#);
+/// let hewwo_wowwd = bake_inline!["hewwo, ", wowwd, "!"];
+///
+/// assert_eq!(hewwo_wowwd,
+/// r#"hewwo, <u>world</u>!"#);
 /// ```
 ///
 /// # Askama template
@@ -86,4 +88,46 @@ impl<M: UTag> HtmlU<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlU<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let u = u!().id("unarticulated_annotation");
+///
+/// assert_eq!(u.bake(),
+/// r#"<u id="unarticulated_annotation"></u>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let wowwd = u!("world");
+///
+/// let hewwo_wowwd = bake_inline!["hewwo, ", wowwd, "!"];
+///
+/// assert_eq!(hewwo_wowwd,
+/// r#"hewwo, <u>world</u>!"#);
+/// ```
+#[macro_export]
+macro_rules! u {
+    () => {
+        $crate::html::HtmlU::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlU::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlU::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlU::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlU::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

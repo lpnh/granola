@@ -25,10 +25,10 @@ impl TimeTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let time: HtmlTime = HtmlTime::empty().id("datetime");
+/// let time: HtmlTime = HtmlTime::empty().id("time_date");
 ///
 /// assert_eq!(time.bake(),
-/// r#"<time id="datetime"></time>"#);
+/// r#"<time id="time_date"></time>"#);
 /// ```
 ///
 /// ```rust
@@ -96,4 +96,44 @@ impl<M: TimeTag> HtmlTime<M> {
         self.specific_attrs = self.specific_attrs.add_attr("datetime", value);
         self
     }
+}
+
+/// Shorthand for `HtmlTime<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let time = time!().id("time_date");
+///
+/// assert_eq!(time.bake(),
+/// r#"<time id="time_date"></time>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let time = time!("Unix epoch").datetime("1970-01-01T00:00:00Z");
+///
+/// assert_eq!(time.bake(),
+/// r#"<time datetime="1970-01-01T00:00:00Z">Unix epoch</time>"#);
+/// ```
+#[macro_export]
+macro_rules! time {
+    () => {
+        $crate::html::HtmlTime::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlTime::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlTime::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlTime::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlTime::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

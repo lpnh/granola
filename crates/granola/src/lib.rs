@@ -18,6 +18,7 @@ pub mod macros {
         figcaption, figure, form, head, hr, i, iframe, img, input, ins, kbd, label, legend, li,
         link, map, mark, menu, meta, meter, noscript, object, ol, optgroup, option, output, p,
         picture, pre, progress, q, root, rp, rt, ruby, s, samp, script, select, small, source,
-        span, strong, style, summary, textarea, title, track, ul, video, wbr,
+        span, strong, style, sub, summary, sup, textarea, time, title, track, u, ul, var, video,
+        wbr,
     };
 }

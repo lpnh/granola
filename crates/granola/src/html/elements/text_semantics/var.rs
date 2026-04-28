@@ -89,3 +89,45 @@ impl<M: VarTag> HtmlVar<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlVar<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let var = var!().id("variable");
+///
+/// assert_eq!(var.bake(),
+/// r#"<var id="variable"></var>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let var = var!("a");
+///
+/// let triangle = bake_inline!["An equilateral triangle with side ", var];
+///
+/// assert_eq!(triangle,
+/// r#"An equilateral triangle with side <var>a</var>"#);
+/// ```
+#[macro_export]
+macro_rules! var {
+    () => {
+        $crate::html::HtmlVar::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlVar::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlVar::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlVar::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlVar::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

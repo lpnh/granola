@@ -89,3 +89,45 @@ impl<M: SubTag> HtmlSub<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSub<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sub = sub!().id("subscript");
+///
+/// assert_eq!(sub.bake(),
+/// r#"<sub id="subscript"></sub>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let sub = sub!("2");
+///
+/// let water = bake_inline!["H", sub, "O"];
+///
+/// assert_eq!(water,
+/// r#"H<sub>2</sub>O"#);
+/// ```
+#[macro_export]
+macro_rules! sub {
+    () => {
+        $crate::html::HtmlSub::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSub::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSub::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSub::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSub::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
