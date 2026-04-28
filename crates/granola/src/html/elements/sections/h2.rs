@@ -87,3 +87,43 @@ impl<M: H2Tag> HtmlH2<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlH2<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h2 = h2!().id("html_section_heading");
+///
+/// assert_eq!(h2.bake(),
+/// r#"<h2 id="html_section_heading"></h2>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h2 = h2!("Error Handling");
+///
+/// assert_eq!(h2.bake(),
+/// r#"<h2>Error Handling</h2>"#);
+/// ```
+#[macro_export]
+macro_rules! h2 {
+    () => {
+        $crate::html::HtmlH2::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlH2::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlH2::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlH2::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlH2::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

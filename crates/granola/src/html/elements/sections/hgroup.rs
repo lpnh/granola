@@ -102,3 +102,58 @@ impl<M: HgroupTag> HtmlHgroup<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlHgroup<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let hgroup = hgroup!().id("heading_group");
+///
+/// assert_eq!(hgroup.bake(),
+/// r#"<hgroup id="heading_group"></hgroup>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let heading = h2!("Capítulo VIII.");
+///
+/// let subtitle = "Del buen suceso que el valeroso don Quijote tuvo en la espantable y
+/// jamás imaginada aventura de los molinos de viento, con otros sucesos
+/// dignos de felice recordación";
+///
+/// let paragraph = p!(subtitle);
+///
+/// let hgroup = hgroup!(heading, paragraph);
+///
+/// assert_eq!(hgroup.bake(),
+/// r#"<hgroup>
+///   <h2>Capítulo VIII.</h2>
+///   <p>
+///     Del buen suceso que el valeroso don Quijote tuvo en la espantable y
+///     jamás imaginada aventura de los molinos de viento, con otros sucesos
+///     dignos de felice recordación
+///   </p>
+/// </hgroup>"#);
+/// ```
+#[macro_export]
+macro_rules! hgroup {
+    () => {
+        $crate::html::HtmlHgroup::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlHgroup::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlHgroup::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlHgroup::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlHgroup::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

@@ -87,3 +87,43 @@ impl<M: H4Tag> HtmlH4<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlH4<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h4 = h4!().id("html_section_heading");
+///
+/// assert_eq!(h4.bake(),
+/// r#"<h4 id="html_section_heading"></h4>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h4 = h4!("In fable and literature");
+///
+/// assert_eq!(h4.bake(),
+/// r#"<h4>In fable and literature</h4>"#);
+/// ```
+#[macro_export]
+macro_rules! h4 {
+    () => {
+        $crate::html::HtmlH4::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlH4::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlH4::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlH4::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlH4::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

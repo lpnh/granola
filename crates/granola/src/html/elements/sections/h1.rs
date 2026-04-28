@@ -87,3 +87,43 @@ impl<M: H1Tag> HtmlH1<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlH1<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h1 = h1!().id("html_section_heading");
+///
+/// assert_eq!(h1.bake(),
+/// r#"<h1 id="html_section_heading"></h1>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h1 = h1!("The Rust Programming Language");
+///
+/// assert_eq!(h1.bake(),
+/// r#"<h1>The Rust Programming Language</h1>"#);
+/// ```
+#[macro_export]
+macro_rules! h1 {
+    () => {
+        $crate::html::HtmlH1::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlH1::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlH1::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlH1::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlH1::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

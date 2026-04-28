@@ -91,3 +91,47 @@ impl<M: HeaderTag> HtmlHeader<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlHeader<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let header = header!().id("header");
+///
+/// assert_eq!(header.bake(),
+/// r#"<header id="header"></header>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let logo = a!("Oats &amp; Ends").href("/");
+///
+/// let header = header!(@newline logo);
+///
+/// assert_eq!(header.bake(),
+/// r#"<header>
+///   <a href="/">Oats &amp; Ends</a>
+/// </header>"#);
+/// ```
+#[macro_export]
+macro_rules! header {
+    () => {
+        $crate::html::HtmlHeader::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlHeader::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlHeader::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlHeader::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlHeader::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

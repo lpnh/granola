@@ -91,3 +91,45 @@ impl<M: H3Tag> HtmlH3<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlH3<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let h3 = h3!().id("html_section_heading");
+///
+/// assert_eq!(h3.bake(),
+/// r#"<h3 id="html_section_heading"></h3>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let panic = code!("panic!");
+///
+/// let h3 = h3!(@inline "Unrecoverable Errors with ", panic);
+///
+/// assert_eq!(h3.bake(),
+/// r#"<h3>Unrecoverable Errors with <code>panic!</code></h3>"#);
+/// ```
+#[macro_export]
+macro_rules! h3 {
+    () => {
+        $crate::html::HtmlH3::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlH3::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlH3::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlH3::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlH3::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

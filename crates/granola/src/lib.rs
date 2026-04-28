@@ -15,10 +15,10 @@ pub mod macros {
     pub use crate::{
         a, abbr, address, area, aside, audio, b, base, bdi, bdo, blockquote, body, br, button,
         canvas, cite, code, data, datalist, dd, del, details, dfn, dialog, div, dl, doctype, dt,
-        em, embed, fieldset, figcaption, figure, footer, form, head, hr, i, iframe, img, input,
-        ins, kbd, label, legend, li, link, map, mark, menu, meta, meter, noscript, object, ol,
-        optgroup, option, output, p, picture, pre, progress, q, root, rp, rt, ruby, s, samp,
-        script, select, small, source, span, strong, style, sub, summary, sup, textarea, time,
-        title, track, u, ul, var, video, wbr,
+        em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, head, header,
+        hgroup, hr, i, iframe, img, input, ins, kbd, label, legend, li, link, map, mark, menu,
+        meta, meter, noscript, object, ol, optgroup, option, output, p, picture, pre, progress, q,
+        root, rp, rt, ruby, s, samp, script, select, small, source, span, strong, style, sub,
+        summary, sup, textarea, time, title, track, u, ul, var, video, wbr,
     };
 }
