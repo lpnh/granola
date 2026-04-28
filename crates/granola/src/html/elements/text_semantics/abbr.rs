@@ -87,3 +87,43 @@ impl<M: AbbrTag> HtmlAbbr<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlAbbr<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let abbr = abbr!().id("abbreviation");
+///
+/// assert_eq!(abbr.bake(),
+/// r#"<abbr id="abbreviation"></abbr>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let abbr = abbr!("TMNT").title("Teenage Mutant Ninja Turtles");
+///
+/// assert_eq!(abbr.bake(),
+/// r#"<abbr title="Teenage Mutant Ninja Turtles">TMNT</abbr>"#);
+/// ```
+#[macro_export]
+macro_rules! abbr {
+    () => {
+        $crate::html::HtmlAbbr::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlAbbr::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlAbbr::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlAbbr::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlAbbr::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

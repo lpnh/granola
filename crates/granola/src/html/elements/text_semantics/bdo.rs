@@ -88,3 +88,43 @@ impl<M: BdoTag> HtmlBdo<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlBdo<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let bdo = bdo!().id("bidirectional_text_override");
+///
+/// assert_eq!(bdo.bake(),
+/// r#"<bdo id="bidirectional_text_override"></bdo>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let bdo = bdo!("looking-glass").dir("rtl");
+///
+/// assert_eq!(bdo.bake(),
+/// r#"<bdo dir="rtl">looking-glass</bdo>"#);
+/// ```
+#[macro_export]
+macro_rules! bdo {
+    () => {
+        $crate::html::HtmlBdo::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlBdo::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlBdo::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlBdo::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlBdo::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

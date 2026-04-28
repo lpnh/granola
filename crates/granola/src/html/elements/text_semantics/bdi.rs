@@ -90,3 +90,45 @@ impl<M: BdiTag> HtmlBdi<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlBdi<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let bdi = bdi!().id("bidirectional_isolate");
+///
+/// assert_eq!(bdi.bake(),
+/// r#"<bdi id="bidirectional_isolate"></bdi>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let gal = bdi!("גל גדות");
+///
+/// let notification = bake_inline![gal, " liked your post"];
+///
+/// assert_eq!(notification,
+/// r#"<bdi>גל גדות</bdi> liked your post"#);
+/// ```
+#[macro_export]
+macro_rules! bdi {
+    () => {
+        $crate::html::HtmlBdi::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlBdi::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlBdi::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlBdi::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlBdi::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

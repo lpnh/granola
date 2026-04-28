@@ -91,3 +91,47 @@ impl<M: BTag> HtmlB<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlB<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let b = b!().id("bring_attention_to");
+///
+/// assert_eq!(b.bake(),
+/// r#"<b id="bring_attention_to"></b>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let flour = b!("flour");
+/// let water = b!("water");
+/// let salt = b!("salt");
+///
+/// let recipe = bake_inline!["Mix ", flour, ", ", water, ", and ", salt, "."];
+///
+/// assert_eq!(recipe,
+/// r#"Mix <b>flour</b>, <b>water</b>, and <b>salt</b>."#);
+/// ```
+#[macro_export]
+macro_rules! b {
+    () => {
+        $crate::html::HtmlB::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlB::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlB::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlB::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlB::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
