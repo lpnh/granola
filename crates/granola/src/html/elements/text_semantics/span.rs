@@ -34,10 +34,10 @@ impl SpanTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let span: HtmlSpan = HtmlSpan::new("Attention");
+/// let span: HtmlSpan = HtmlSpan::new("aesthetic").class("tracking-widest");
 ///
 /// assert_eq!(span.bake(),
-/// r#"<span>Attention</span>"#);
+/// r#"<span class="tracking-widest">aesthetic</span>"#);
 /// ```
 ///
 /// # Askama template
@@ -86,4 +86,44 @@ impl<M: SpanTag> HtmlSpan<M> {
         }
         s
     }
+}
+
+/// Shorthand for `HtmlSpan<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let span = span!().id("content_span");
+///
+/// assert_eq!(span.bake(),
+/// r#"<span id="content_span"></span>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let span = span!("aesthetic").class("tracking-widest");
+///
+/// assert_eq!(span.bake(),
+/// r#"<span class="tracking-widest">aesthetic</span>"#);
+/// ```
+#[macro_export]
+macro_rules! span {
+    () => {
+        $crate::html::HtmlSpan::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSpan::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSpan::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSpan::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSpan::<()>::new($crate::bake_inline![$($content),+])
+    };
 }

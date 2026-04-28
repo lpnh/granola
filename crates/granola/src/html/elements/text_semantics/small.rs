@@ -89,3 +89,45 @@ impl<M: SmallTag> HtmlSmall<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSmall<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let small = small!().id("side_comment");
+///
+/// assert_eq!(small.bake(),
+/// r#"<small id="side_comment"></small>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let unlicense = "This is free and unencumbered software released into the public domain.";
+///
+/// let small = small!(unlicense);
+///
+/// assert_eq!(small.bake(),
+/// r#"<small>This is free and unencumbered software released into the public domain.</small>"#);
+/// ```
+#[macro_export]
+macro_rules! small {
+    () => {
+        $crate::html::HtmlSmall::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSmall::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSmall::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSmall::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSmall::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

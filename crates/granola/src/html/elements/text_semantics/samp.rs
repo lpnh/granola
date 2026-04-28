@@ -87,3 +87,43 @@ impl<M: SampTag> HtmlSamp<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlSamp<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let samp = samp!().id("sample_output");
+///
+/// assert_eq!(samp.bake(),
+/// r#"<samp id="sample_output"></samp>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let error = samp!("No such file or directory");
+///
+/// assert_eq!(error.bake(),
+/// r#"<samp>No such file or directory</samp>"#);
+/// ```
+#[macro_export]
+macro_rules! samp {
+    () => {
+        $crate::html::HtmlSamp::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlSamp::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlSamp::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlSamp::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlSamp::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

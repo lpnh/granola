@@ -89,3 +89,45 @@ impl<M: STag> HtmlS<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlS<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let s = s!().id("strikethrough");
+///
+/// assert_eq!(s.bake(),
+/// r#"<s id="strikethrough"></s>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let nine = s!("nine");
+///
+/// let solar_system = bake_inline!["Our solar system has ", nine ," eight planets"];
+///
+/// assert_eq!(solar_system,
+/// r#"Our solar system has <s>nine</s> eight planets"#);
+/// ```
+#[macro_export]
+macro_rules! s {
+    () => {
+        $crate::html::HtmlS::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlS::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlS::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlS::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlS::<()>::new($crate::bake_inline![$($content),+])
+    };
+}
