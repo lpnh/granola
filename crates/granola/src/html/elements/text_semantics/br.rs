@@ -91,10 +91,10 @@ impl<M: BrTag> HtmlBr<M> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let roses = bake_inline!["Roses are red,", br!()];
-/// let violets = "Violets are blue.";
-///
-/// let poem = p!(roses, violets);
+/// let poem = p![
+///     bake_inline!["Roses are red,", br!()],
+///     "Violets are blue.",
+/// ];
 ///
 /// assert_eq!(poem.bake(),
 /// r#"<p>
