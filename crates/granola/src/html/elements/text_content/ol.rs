@@ -1,9 +1,5 @@
-use askama::Template;
-use std::{
-    borrow::Cow,
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -12,7 +8,7 @@ pub trait OlTag: Default + Clone + Debug + 'static {
     /// Permitted ARIA roles: directory, group, listbox, menu, menubar, none, presentation,
     ///     radiogroup, tablist, toolbar, tree
     const ROLE: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = ListItems;
+    type Content: FastWritable + Default + Clone + Debug = ListItems;
 }
 
 impl OlTag for () {}

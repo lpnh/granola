@@ -1,9 +1,5 @@
-use askama::Template;
-use std::{
-    borrow::Cow,
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -12,7 +8,7 @@ pub trait FormTag: Default + Clone + Debug + 'static {
     const METHOD: Option<FormMethod> = None;
     /// Permitted ARIA roles: search, none or presentation
     const ROLE: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = Cow<'static, str>;
+    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
 }
 
 impl FormTag for () {}

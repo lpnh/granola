@@ -1,8 +1,5 @@
-use askama::Template;
-use std::{
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -10,7 +7,7 @@ pub trait TbodyTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
     /// Permitted ARIA roles: any
     const ROLE: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = TableRows;
+    type Content: FastWritable + Default + Clone + Debug = TableRows;
 }
 
 impl TbodyTag for () {}

@@ -1,14 +1,11 @@
-use askama::Template;
-use std::{
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
 pub trait HtmlTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = HtmlRootContent;
+    type Content: FastWritable + Default + Clone + Debug = HtmlRootContent;
 }
 
 impl HtmlTag for () {}

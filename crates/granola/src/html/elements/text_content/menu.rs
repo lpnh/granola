@@ -1,8 +1,5 @@
-use askama::Template;
-use std::{
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -11,7 +8,7 @@ pub trait MenuTag: Default + Clone + Debug + 'static {
     /// Permitted ARIA roles: directory, group, listbox, menu, menubar, none, presentation,
     ///     radiogroup, tablist, toolbar or tree
     const ROLE: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = ListItems;
+    type Content: FastWritable + Default + Clone + Debug = ListItems;
 }
 
 impl MenuTag for () {}

@@ -1,14 +1,11 @@
-use askama::Template;
-use std::{
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
 pub trait ColgroupTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = TableColumns;
+    type Content: FastWritable + Default + Clone + Debug = TableColumns;
 }
 
 impl ColgroupTag for () {}

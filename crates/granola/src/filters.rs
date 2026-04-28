@@ -1,4 +1,4 @@
-use askama::{FastWritable, Values};
+use askama::{FastWritable, NO_VALUES, Values};
 use std::fmt::{self, Display, Formatter, Write};
 
 /// Decides between inline and block rendering of element content in a single
@@ -10,7 +10,7 @@ use std::fmt::{self, Display, Formatter, Write};
 ///   - Lines that are exactly `\n` or `\r\n` are blank and pass through without indentation
 ///   - `indent_width` is capped at 16
 #[askama::filter_fn]
-pub fn kirei<S: Display>(
+pub fn kirei<S: FastWritable>(
     source: S,
     _env: &dyn Values,
     indent_width: usize,
@@ -23,7 +23,7 @@ pub fn kirei<S: Display>(
 
 /// Renders an optional value as an HTML attribute. See [`OptAttr`].
 #[askama::filter_fn]
-pub fn bake_attr<'a, V: Display>(
+pub fn bake_attr<'a, V: FastWritable>(
     value: &'a Option<V>,
     _env: &dyn Values,
     name: &'a str,
@@ -50,18 +50,19 @@ pub struct Kirei<S> {
     indent_width: usize,
 }
 
-impl<S: Display> Display for Kirei<S> {
+// Use [`FastWritable::write_into`] instead
+impl<S: FastWritable> Display for Kirei<S> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let mut writer = KireiWriter::kireine(f, self.indent_width);
-        write!(writer, "{}", self.source)?;
-        writer.finish()
+        self.write_into(f, NO_VALUES).map_err(|_| fmt::Error)
     }
 }
 
 impl<S: FastWritable> FastWritable for Kirei<S> {
     fn write_into(&self, dest: &mut dyn Write, values: &dyn Values) -> askama::Result<()> {
-        let mut writer = KireiWriter::kireine(dest, self.indent_width);
+        let mut writer = KireiWriter::new(dest, self.indent_width);
+
         self.source.write_into(&mut writer, values)?;
+
         Ok(writer.finish()?)
     }
 }
@@ -76,10 +77,10 @@ fn indent_str(width: usize) -> &'static str {
 /// Buffers until a newline is seen, then switches to streaming block mode.
 enum KireiState {
     Undecided(String),
-    /// `is_new_line` tracks whether the last byte written was `\n`, so the
+    /// `is_newline` tracks whether the last byte written was `\n`, so the
     /// closing newline isn't duplicated when content already ends with one.
     Block {
-        is_new_line: bool,
+        is_newline: bool,
     },
 }
 
@@ -91,7 +92,7 @@ struct KireiWriter<'a, W: Write + ?Sized> {
 }
 
 impl<'a, W: Write + ?Sized> KireiWriter<'a, W> {
-    fn kireine(dest: &'a mut W, indent_width: usize) -> Self {
+    fn new(dest: &'a mut W, indent_width: usize) -> Self {
         KireiWriter {
             dest,
             indent: indent_str(indent_width),
@@ -108,8 +109,8 @@ impl<'a, W: Write + ?Sized> KireiWriter<'a, W> {
                     self.dest.write_str(&buffer)?;
                 }
             }
-            KireiState::Block { is_new_line } => {
-                if !is_new_line {
+            KireiState::Block { is_newline } => {
+                if !is_newline {
                     self.dest.write_char('\n')?;
                 }
             }
@@ -121,8 +122,8 @@ impl<'a, W: Write + ?Sized> KireiWriter<'a, W> {
 impl<W: Write + ?Sized> Write for KireiWriter<'_, W> {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         let buffer = match &mut self.state {
-            KireiState::Block { is_new_line } => {
-                return write_indented(self.dest, s, self.indent, is_new_line);
+            KireiState::Block { is_newline } => {
+                return write_indented(self.dest, s, self.indent, is_newline);
             }
             KireiState::Undecided(buffer) => {
                 buffer.push_str(s);
@@ -139,34 +140,34 @@ impl<W: Write + ?Sized> Write for KireiWriter<'_, W> {
             self.dest.write_char('\n')?;
         }
 
-        let mut is_new_line = true;
+        let mut is_newline = true;
 
-        let result = write_indented(self.dest, &buffer, self.indent, &mut is_new_line);
+        let result = write_indented(self.dest, &buffer, self.indent, &mut is_newline);
 
-        self.state = KireiState::Block { is_new_line };
+        self.state = KireiState::Block { is_newline };
 
         result
     }
 }
 
-/// Writes `s` to `dest`, prefixing each line with `indent` when `is_new_line`
+/// Writes `s` to `dest`, prefixing each line with `indent` when `is_newline`
 /// is set — except lines whose only content is the terminator (`\n` or
-/// `\r\n`), which pass through unindented. Updates `is_new_line` to reflect
+/// `\r\n`), which pass through unindented. Updates `is_newline` to reflect
 /// whether the last byte written was `\n`.
 fn write_indented<W: Write + ?Sized>(
     dest: &mut W,
     s: &str,
     indent: &str,
-    is_new_line: &mut bool,
+    is_newline: &mut bool,
 ) -> fmt::Result {
     for chunk in s.split_inclusive('\n') {
-        if *is_new_line && !matches!(chunk, "\n" | "\r\n") {
+        if *is_newline && !matches!(chunk, "\n" | "\r\n") {
             dest.write_str(indent)?;
         }
 
         dest.write_str(chunk)?;
 
-        *is_new_line = chunk.ends_with('\n');
+        *is_newline = chunk.ends_with('\n');
     }
     Ok(())
 }
@@ -177,26 +178,20 @@ pub struct OptAttr<'a, V> {
     name: &'a str,
 }
 
-impl<V: Display> Display for OptAttr<'_, V> {
+// Use [`FastWritable::write_into`] instead
+impl<V: FastWritable> Display for OptAttr<'_, V> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        if let Some(v) = self.value {
-            f.write_char(' ')?;
-            f.write_str(self.name)?;
-            f.write_str("=\"")?;
-            write!(f, "{v}")?;
-            f.write_char('"')?;
-        }
-        Ok(())
+        self.write_into(f, NO_VALUES).map_err(|_| fmt::Error)
     }
 }
 
-impl<V: Display> FastWritable for OptAttr<'_, V> {
-    fn write_into(&self, dest: &mut dyn Write, _values: &dyn Values) -> askama::Result<()> {
+impl<V: FastWritable> FastWritable for OptAttr<'_, V> {
+    fn write_into(&self, dest: &mut dyn Write, values: &dyn Values) -> askama::Result<()> {
         if let Some(v) = self.value {
             dest.write_char(' ')?;
             dest.write_str(self.name)?;
             dest.write_str("=\"")?;
-            write!(dest, "{v}")?;
+            v.write_into(dest, values)?;
             dest.write_char('"')?;
         }
         Ok(())
@@ -209,13 +204,10 @@ pub struct BoolAttr<'a> {
     name: &'a str,
 }
 
+// Use [`FastWritable::write_into`] instead
 impl Display for BoolAttr<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        if self.value {
-            f.write_char(' ')?;
-            f.write_str(self.name)?;
-        }
-        Ok(())
+        self.write_into(f, NO_VALUES).map_err(|_| fmt::Error)
     }
 }
 
@@ -230,366 +222,357 @@ impl FastWritable for BoolAttr<'_> {
 }
 
 #[cfg(test)]
-mod kirei_tests {
-    use super::Kirei;
-    use std::fmt::{self, Display, Formatter};
+mod opt_attr_tests {
+    use askama::FastWritable;
+    use std::borrow::Cow;
 
-    fn kirei(s: &str, indent: usize) -> String {
-        Kirei {
-            source: s,
-            indent_width: indent,
-        }
-        .to_string()
-    }
+    use super::OptAttr;
 
-    struct AskamaIndent<'a> {
-        source: &'a str,
-        indent_width: usize,
-    }
+    #[test]
+    fn value_is_some() {
+        let value = Some("bar");
 
-    impl Display for AskamaIndent<'_> {
-        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-            askama::filters::indent(self.source, self.indent_width, true, false)
-                .unwrap()
-                .fmt(f)
-        }
-    }
+        let attr = OptAttr {
+            value: &value,
+            name: "foo",
+        };
 
-    fn askama(s: &str, indent: usize) -> String {
-        AskamaIndent {
-            source: s,
-            indent_width: indent,
-        }
-        .to_string()
+        let mut buf = String::new();
+
+        attr.write_into(&mut buf, &()).unwrap();
+
+        assert_eq!(buf, r#" foo="bar""#);
     }
 
     #[test]
-    fn test_1() {
-        assert_eq!(kirei("", 2), "");
-    }
+    fn value_is_none() {
+        let value: Option<Cow<'static, str>> = None;
 
-    #[test]
-    fn test_2() {
-        assert_eq!(kirei("hello", 2), "hello");
-    }
+        let attr = OptAttr {
+            value: &value,
+            name: "foo",
+        };
 
-    #[test]
-    fn test_3() {
-        assert_eq!(kirei("hello\nworld", 4), "\n    hello\n    world\n");
-    }
+        let mut buf = String::new();
 
-    #[test]
-    fn test_4() {
-        struct Chunked;
-        impl Display for Chunked {
-            fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-                f.write_str("in")?;
-                f.write_str("line")
-            }
-        }
-        let out = Kirei {
-            source: Chunked,
-            indent_width: 2,
-        }
-        .to_string();
-        assert_eq!(out, "inline");
-    }
+        attr.write_into(&mut buf, &()).unwrap();
 
-    #[test]
-    fn test_5() {
-        struct Chunked;
-        impl Display for Chunked {
-            fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-                f.write_str("hello\n")?;
-                f.write_str("wor")?;
-                f.write_str("ld\n")
-            }
-        }
-        let out = Kirei {
-            source: Chunked,
-            indent_width: 2,
-        }
-        .to_string();
-        assert_eq!(out, "\n  hello\n  world\n");
-    }
-
-    #[test]
-    fn test_6() {
-        assert_eq!(kirei("a\n\nb", 2), "\n  a\n\n  b\n");
-    }
-
-    #[test]
-    fn test_7() {
-        assert_eq!(kirei("\n", 2), "\n");
-    }
-
-    #[test]
-    fn test_8() {
-        assert_eq!(kirei("\r\n", 2), "\r\n");
-    }
-
-    #[test]
-    fn test_9() {
-        assert_eq!(
-            kirei("a\nb", 20),
-            format!("\n{}a\n{}b\n", " ".repeat(16), " ".repeat(16))
-        );
-    }
-
-    #[test]
-    fn test_10() {
-        const INPUT: &str = "hello\ngoodbye";
-
-        const KIREI_OUT: &str = "\n  hello\n  goodbye\n";
-        const ASKAMA_OUT: &str = "  hello\n  goodbye";
-
-        assert_eq!(kirei(INPUT, 2), KIREI_OUT);
-        assert_eq!(askama(INPUT, 2), ASKAMA_OUT);
-
-        assert_ne!(KIREI_OUT, ASKAMA_OUT);
-    }
-
-    #[test]
-    fn test_11() {
-        const INPUT: &str = "no newlines here";
-
-        assert_eq!(kirei(INPUT, 2), INPUT);
-
-        assert_ne!(askama(INPUT, 2), INPUT);
-    }
-
-    #[test]
-    fn test_12() {
-        const INPUT: &str = "\nhello\ngoodbye";
-
-        const KIREI_OUT: &str = "\n  hello\n  goodbye\n";
-        const ASKAMA_OUT: &str = "\n  hello\n  goodbye";
-
-        assert_eq!(kirei(INPUT, 2), KIREI_OUT);
-        assert_eq!(askama(INPUT, 2), ASKAMA_OUT);
-
-        assert_ne!(KIREI_OUT, ASKAMA_OUT);
-    }
-
-    #[test]
-    fn test_13() {
-        const INPUT: &str = "  hello\ngoodbye\n";
-
-        const KIREI_OUT: &str = "\n    hello\n  goodbye\n";
-        const ASKAMA_OUT: &str = "    hello\n  goodbye\n";
-
-        assert_eq!(kirei(INPUT, 2), KIREI_OUT);
-        assert_eq!(askama(INPUT, 2), ASKAMA_OUT);
-
-        assert_ne!(KIREI_OUT, ASKAMA_OUT);
-    }
-
-    #[test]
-    fn test_14() {
-        assert_eq!(kirei("a\nb", 0), "\na\nb\n");
-    }
-
-    #[test]
-    fn test_15() {
-        assert_eq!(kirei("\nfoo", 2), "\n  foo\n");
-    }
-
-    #[test]
-    fn test_16() {
-        assert_eq!(kirei("a\n\n\nb", 2), "\n  a\n\n\n  b\n");
-    }
-
-    #[test]
-    fn test_17() {
-        assert_eq!(kirei("  \nfoo", 2), "\n    \n  foo\n");
-    }
-
-    #[test]
-    fn test_18() {
-        assert_eq!(kirei("a\r\nb\r\n", 2), "\n  a\r\n  b\r\n");
-    }
-
-    #[test]
-    fn test_19() {
-        assert_eq!(kirei("a\r\n\r\nb", 2), "\n  a\r\n\r\n  b\n");
+        assert_eq!(buf, "");
     }
 }
 
 #[cfg(test)]
-mod ws_integration_tests {
-    use crate::prelude::*;
+mod bool_attr_tests {
+    use askama::FastWritable;
 
-    fn em() -> HtmlEm {
-        HtmlEm::new("emphasis")
-    }
-    fn i() -> HtmlI {
-        HtmlI::new("idiomatic_text")
+    use super::BoolAttr;
+
+    #[test]
+    fn value_is_true() {
+        let attr = BoolAttr {
+            value: true,
+            name: "disabled",
+        };
+
+        let mut buf = String::new();
+
+        attr.write_into(&mut buf, &()).unwrap();
+
+        assert_eq!(buf, " disabled");
     }
 
     #[test]
-    fn test_1() {
-        let p: HtmlP = HtmlP::new("");
-        assert_eq!(p.bake(), "<p></p>");
+    fn value_is_false() {
+        let attr = BoolAttr {
+            value: false,
+            name: "disabled",
+        };
+
+        let mut buf = String::new();
+
+        attr.write_into(&mut buf, &()).unwrap();
+
+        assert_eq!(buf, "");
+    }
+}
+
+#[cfg(test)]
+mod test_util {
+    use askama::FastWritable;
+
+    use super::Kirei;
+
+    pub(super) fn kirei(s: &str, indent: usize) -> String {
+        let mut buf = String::new();
+
+        Kirei {
+            source: s,
+            indent_width: indent,
+        }
+        .write_into(&mut buf, &())
+        .unwrap();
+
+        buf
+    }
+}
+
+#[cfg(test)]
+mod kirei_ws_only_tests {
+    use super::test_util::kirei;
+
+    #[test]
+    fn empty() {
+        assert_eq!(kirei("", 4), "");
     }
 
     #[test]
-    fn test_2() {
-        let p: HtmlP = HtmlP::new("hello");
-        assert_eq!(p.bake(), "<p>hello</p>");
+    fn only_whitespace() {
+        assert_eq!(kirei("   ", 4), "   ");
     }
 
     #[test]
-    fn test_3() {
-        let p: HtmlP = HtmlP::new("hello\nworld");
+    fn single_tab() {
+        assert_eq!(kirei("\t", 4), "\t");
+    }
+
+    #[test]
+    fn multiple_tabs() {
+        assert_eq!(kirei("\t\t\t", 4), "\t\t\t");
+    }
+
+    #[test]
+    fn single_newline() {
+        assert_eq!(kirei("\n", 4), "\n");
+    }
+
+    #[test]
+    fn multiple_newlines() {
+        assert_eq!(kirei("\n\n\n", 4), "\n\n\n");
+    }
+
+    #[test]
+    fn single_crlf() {
+        assert_eq!(kirei("\r\n", 4), "\r\n");
+    }
+
+    #[test]
+    fn multiple_crlf() {
+        assert_eq!(kirei("\r\n\r\n\r\n", 4), "\r\n\r\n\r\n");
+    }
+}
+
+#[cfg(test)]
+mod kirei_inline_tests {
+    use super::test_util::kirei;
+
+    #[test]
+    fn single_word() {
+        assert_eq!(kirei("halloween", 4), "halloween");
+    }
+
+    #[test]
+    fn words_surrounded_by_ws() {
+        assert_eq!(kirei("   hello   world   ", 4), "   hello   world   ");
+    }
+
+    #[test]
+    fn words_surrounded_by_multiple_tabs() {
         assert_eq!(
-            p.bake(),
-            "\
-<p>
-  hello
-  world
-</p>"
+            kirei("\t\t\thello\t\t\tworld\t\t\t", 4),
+            "\t\t\thello\t\t\tworld\t\t\t"
+        );
+    }
+}
+
+#[cfg(test)]
+mod kirei_block_tests {
+    use super::test_util::kirei;
+
+    #[test]
+    fn newline_start() {
+        assert_eq!(kirei("\nhalloween", 4), "\n    halloween\n");
+    }
+
+    #[test]
+    fn newline_middle() {
+        assert_eq!(kirei("hello\nworld", 4), "\n    hello\n    world\n");
+    }
+
+    #[test]
+    fn newline_end() {
+        assert_eq!(kirei("halloween\n", 4), "\n    halloween\n");
+    }
+
+    #[test]
+    fn multiple_newline_start() {
+        assert_eq!(kirei("\n\n\nhalloween", 4), "\n\n\n    halloween\n");
+    }
+
+    #[test]
+    fn multiple_newline_middle() {
+        assert_eq!(kirei("hello\n\n\nworld", 4), "\n    hello\n\n\n    world\n");
+    }
+
+    #[test]
+    fn multiple_newline_end() {
+        assert_eq!(kirei("halloween\n\n\n", 4), "\n    halloween\n\n\n");
+    }
+
+    #[test]
+    fn crlf_start() {
+        assert_eq!(kirei("\r\nhalloween", 4), "\r\n    halloween\n");
+    }
+
+    #[test]
+    fn crlf_middle() {
+        assert_eq!(kirei("hello\r\nworld", 4), "\n    hello\r\n    world\n");
+    }
+
+    #[test]
+    fn crlf_end() {
+        assert_eq!(kirei("halloween\r\n", 4), "\n    halloween\r\n");
+    }
+
+    #[test]
+    fn multiple_crlf_start() {
+        assert_eq!(
+            kirei("\r\n\r\n\r\nhalloween", 4),
+            "\r\n\r\n\r\n    halloween\n"
         );
     }
 
     #[test]
-    fn test_4() {
-        let content = bake_inline!["The ", em(), " element."];
-        let paragraph: HtmlP = HtmlP::new(content);
-        assert_eq!(paragraph.bake(), "<p>The <em>emphasis</em> element.</p>");
-    }
-
-    #[test]
-    fn test_5() {
-        let content = bake_inline![em(), " and ", i(), "."];
-        let paragraph: HtmlP = HtmlP::new(content);
+    fn multiple_crlf_middle() {
         assert_eq!(
-            paragraph.bake(),
-            "<p><em>emphasis</em> and <i>idiomatic_text</i>.</p>"
+            kirei("hello\r\n\r\n\r\nworld", 4),
+            "\n    hello\r\n\r\n\r\n    world\n"
         );
     }
 
     #[test]
-    fn test_6() {
-        let content = bake_block!["Items:", em(), i()];
-        let paragraph: HtmlP = HtmlP::new(content);
+    fn multiple_crlf_end() {
         assert_eq!(
-            paragraph.bake(),
-            "\
-<p>
-  Items:
-  <em>emphasis</em>
-  <i>idiomatic_text</i>
-</p>"
+            kirei("halloween\r\n\r\n\r\n", 4),
+            "\n    halloween\r\n\r\n\r\n"
         );
+    }
+}
+
+#[cfg(test)]
+mod kirei_indent_tests {
+    use super::test_util::kirei;
+
+    #[test]
+    fn no_indent_zero_arg() {
+        assert_eq!(kirei("hello\nworld", 0), "\nhello\nworld\n");
     }
 
     #[test]
-    fn test_7() {
-        let inner: HtmlEm = HtmlEm::new("really");
-        let outer: HtmlEm = HtmlEm::new(inner);
-        assert_eq!(outer.bake(), "<em><em>really</em></em>");
+    fn leading_indent_zero_arg() {
+        assert_eq!(kirei("    hello\nworld", 0), "\n    hello\nworld\n");
     }
 
     #[test]
-    fn test_8() {
-        let really_surprised = bake_block!["really", "surprised"];
-        let inner: HtmlEm = HtmlEm::new(really_surprised);
-        let outer: HtmlEm = HtmlEm::new(inner);
-        assert_eq!(
-            outer.bake(),
-            "\
-<em>
-  <em>
-    really
-    surprised
-  </em>
-</em>"
-        );
+    fn leading_indent_zero_arg_2() {
+        assert_eq!(kirei("hello\n    world", 0), "\nhello\n    world\n");
     }
 
     #[test]
-    fn test_9() {
-        let e2: HtmlEm = HtmlEm::new("really");
-        let e1: HtmlEm = HtmlEm::new(bake_block!["really", e2]);
-        let paragraph: HtmlP = HtmlP::new(e1);
-        assert_eq!(
-            paragraph.bake(),
-            "\
-<p>
-  <em>
-    really
-    <em>really</em>
-  </em>
-</p>"
-        );
+    fn trailing_indent_zero_arg() {
+        assert_eq!(kirei("hello    \nworld", 0), "\nhello    \nworld\n");
     }
 
     #[test]
-    fn test_10() {
-        let span: HtmlSpan = HtmlSpan::new("really\nsurprised");
-        let paragraph: HtmlP = HtmlP::new(span);
-        assert_eq!(
-            paragraph.bake(),
-            "\
-<p>
-  <span>
-    really
-    surprised
-  </span>
-</p>"
-        );
+    fn trailing_indent_zero_arg_2() {
+        assert_eq!(kirei("hello\nworld    ", 0), "\nhello\nworld    \n");
     }
 
     #[test]
-    fn test_11() {
-        let line_1 = bake_inline!["The ", em(), " element."];
-        let line_2 = bake_inline!["The ", i(), " element."];
-        let content = bake_block![line_1, line_2];
-        let paragraph: HtmlP = HtmlP::new(content);
-        assert_eq!(
-            paragraph.bake(),
-            "\
-<p>
-  The <em>emphasis</em> element.
-  The <i>idiomatic_text</i> element.
-</p>"
-        );
+    fn leading_indent() {
+        assert_eq!(kirei("    hello\nworld", 2), "\n      hello\n  world\n");
     }
 
     #[test]
-    fn test_12() {
-        let span_2: HtmlSpan = HtmlSpan::new("really surprised");
-        let span_1: HtmlSpan = HtmlSpan::new("hello\nworld");
-        let content = bake_block![span_1, span_2];
-        let paragraph: HtmlP = HtmlP::new(content);
-        assert_eq!(
-            paragraph.bake(),
-            "\
-<p>
-  <span>
-    hello
-    world
-  </span>
-  <span>really surprised</span>
-</p>"
-        );
+    fn leading_indent_2() {
+        assert_eq!(kirei("hello\n    world", 2), "\n  hello\n      world\n");
     }
 
     #[test]
-    fn test_13() {
-        let span_2: HtmlSpan = HtmlSpan::new("really surprised");
-        let span_1: HtmlSpan = HtmlSpan::new("hello\nworld");
-        let content = bake_inline![span_1, span_2];
-        let paragraph: HtmlP = HtmlP::new(content);
+    fn trailing_indent() {
+        assert_eq!(kirei("hello    \nworld", 2), "\n  hello    \n  world\n");
+    }
+
+    #[test]
+    fn trailing_indent_2() {
+        assert_eq!(kirei("hello\nworld    ", 2), "\n  hello\n  world    \n");
+    }
+
+    #[test]
+    fn indent_caps_at_max() {
         assert_eq!(
-            paragraph.bake(),
-            "\
-<p>
-  <span>
-    hello
-    world
-  </span><span>really surprised</span>
-</p>"
+            kirei("foo\nbar", 42),
+            format!("\n{}foo\n{}bar\n", " ".repeat(16), " ".repeat(16))
         );
+    }
+}
+
+#[cfg(test)]
+mod kirei_state_tests {
+    use askama::{FastWritable, Values};
+    use std::fmt::Write;
+
+    use super::Kirei;
+
+    #[test]
+    fn inline() {
+        struct Baz;
+
+        impl FastWritable for Baz {
+            fn write_into(&self, dest: &mut dyn Write, _: &dyn Values) -> askama::Result<()> {
+                dest.write_str("halloween")?;
+                dest.write_str(" ")?;
+                dest.write_str("hello")?;
+                dest.write_str(" ")?;
+                dest.write_str("world")?;
+                Ok(())
+            }
+        }
+
+        let mut buf = String::new();
+
+        Kirei {
+            source: Baz,
+            indent_width: 4,
+        }
+        .write_into(&mut buf, &())
+        .unwrap();
+
+        assert_eq!(buf, "halloween hello world");
+    }
+
+    #[test]
+    fn block() {
+        struct Foo;
+
+        impl FastWritable for Foo {
+            fn write_into(&self, dest: &mut dyn Write, _: &dyn Values) -> askama::Result<()> {
+                dest.write_str("halloween")?;
+                dest.write_str(" ")?;
+                dest.write_str("hello\n")?;
+                dest.write_str("world")?;
+                Ok(())
+            }
+        }
+
+        let mut buf = String::new();
+
+        Kirei {
+            source: Foo,
+            indent_width: 4,
+        }
+        .write_into(&mut buf, &())
+        .unwrap();
+
+        assert_eq!(buf, "\n    halloween hello\n    world\n");
     }
 }

@@ -1,9 +1,5 @@
-use askama::Template;
-use std::{
-    borrow::Cow,
-    fmt::{Debug, Display},
-    marker::PhantomData,
-};
+use askama::{FastWritable, Template};
+use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -12,7 +8,7 @@ pub trait LiTag: Default + Clone + Debug + 'static {
     /// Permitted ARIA roles: menuitem, menuitemcheckbox, menuitemradio, option, none, presentation,
     ///     radio, separator, tab, treeitem
     const ROLE: Option<&'static str> = None;
-    type Content: Display + Default + Clone + Debug = Cow<'static, str>;
+    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
 }
 
 impl LiTag for () {}

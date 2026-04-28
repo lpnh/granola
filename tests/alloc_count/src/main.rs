@@ -216,7 +216,7 @@ mod alloc_tests {
     #[test]
     fn root_example() {
         let (opt, naive) = super::root_example();
-        assert_eq!((opt.allocs, opt.bytes), (27, 2461));
+        assert_eq!((opt.allocs, opt.bytes), (27, 2368));
         assert_eq!((naive.allocs, naive.bytes), (30, 2419));
     }
 
@@ -282,7 +282,7 @@ mod alloc_tests_empty {
     #[test]
     fn root_empty() {
         let (opt, naive) = super::root_empty();
-        assert_eq!((opt.allocs, opt.bytes), (16, 859));
+        assert_eq!((opt.allocs, opt.bytes), (16, 814));
         assert_eq!((naive.allocs, naive.bytes), (18, 601));
     }
 
