@@ -79,3 +79,43 @@ impl<M: MainTag> HtmlMain<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlMain<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let main = main!().id("main");
+///
+/// assert_eq!(main.bake(),
+/// r#"<main id="main"></main>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let main = main!("hello, world!");
+///
+/// assert_eq!(main.bake(),
+/// r#"<main>hello, world!</main>"#);
+/// ```
+#[macro_export]
+macro_rules! main {
+    () => {
+        $crate::html::HtmlMain::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlMain::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlMain::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlMain::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlMain::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

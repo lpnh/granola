@@ -106,3 +106,60 @@ impl<M: ArticleTag> HtmlArticle<M> {
         s
     }
 }
+
+/// Shorthand for `HtmlArticle<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let article = article!().id("article_contents");
+///
+/// assert_eq!(article.bake(),
+/// r#"<article id="article_contents"></article>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let heading = h2!("New Café");
+///
+/// let paragraph = p![
+/// "Oats &amp; Ends opened last week on Oak Street,
+/// at the corner of Elm Avenue, bringing new aromas to the block.",
+/// "Its cozy atmosphere draws in passersby looking to treat themselves to
+/// a cup or two of good, hot black coffee."
+/// ];
+///
+/// let article = article!(heading, paragraph);
+///
+/// assert_eq!(article.bake(),
+/// r#"<article>
+///   <h2>New Café</h2>
+///   <p>
+///     Oats &amp; Ends opened last week on Oak Street,
+///     at the corner of Elm Avenue, bringing new aromas to the block.
+///     Its cozy atmosphere draws in passersby looking to treat themselves to
+///     a cup or two of good, hot black coffee.
+///   </p>
+/// </article>"#);
+/// ```
+#[macro_export]
+macro_rules! article {
+    () => {
+        $crate::html::HtmlArticle::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlArticle::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlArticle::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlArticle::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlArticle::<()>::new($crate::bake_inline![$($content),+])
+    };
+}

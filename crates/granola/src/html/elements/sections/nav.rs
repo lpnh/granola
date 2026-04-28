@@ -9,6 +9,8 @@ use crate::{filters, prelude::*};
 
 pub trait NavTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
+    /// Permitted ARIA roles: menu, menubar, none, presentation, tablist
+    const ROLE: Option<&'static str> = None;
     type Content: Display + Default + Clone + Debug = Cow<'static, str>;
 }
 
@@ -85,6 +87,9 @@ impl<M: NavTag> HtmlNav<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s
     }
 
@@ -93,6 +98,65 @@ impl<M: NavTag> HtmlNav<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
+        if let Some(role) = M::ROLE {
+            s = s.role(role);
+        }
         s
     }
+}
+
+/// Shorthand for `HtmlNav<()>`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let nav = nav!().id("navigation_section");
+///
+/// assert_eq!(nav.bake(),
+/// r#"<nav id="navigation_section"></nav>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let location = a!("Oak Street, corner of Elm Avenue").href("/location");
+/// let menu = a!("the menu").href("/menu");
+/// let note = a!("note").href("/contact");
+///
+/// let paragraph = p![
+///     bake_inline!["You can find us at ", location, "."],
+///     bake_inline!["Everything we make and love is on ", menu, "."],
+///     bake_inline!["Have a thought? Send us a ", note, "."],
+/// ];
+///
+/// let nav = nav!(paragraph).aria_label("Site navigation");
+///
+/// assert_eq!(nav.bake(),
+/// r#"<nav aria-label="Site navigation">
+///   <p>
+///     You can find us at <a href="/location">Oak Street, corner of Elm Avenue</a>.
+///     Everything we make and love is on <a href="/menu">the menu</a>.
+///     Have a thought? Send us a <a href="/contact">note</a>.
+///   </p>
+/// </nav>"#);
+/// ```
+#[macro_export]
+macro_rules! nav {
+    () => {
+        $crate::html::HtmlNav::<()>::empty()
+    };
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlNav::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlNav::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlNav::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlNav::<()>::new($crate::bake_inline![$($content),+])
+    };
 }
