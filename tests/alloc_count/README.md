@@ -3,7 +3,22 @@
 ## TL;DR
 
 2 to 3 fewer allocations on average, with occasional higher byte usage.
-It ain't much but it's honest work
+It ain't much but it's honest work.
+
+## How
+
+`opt` leverages Askama's `Template::SIZE_HINT` for tight pre-allocation:
+
+- `bake()` is just a wrapper around `askama::Template::render()`, which does
+  `String::new() + try_reserve(SIZE_HINT)` before writing.
+- `bake_block!` / `bake_inline!` / `bake_newline!` extend the same idea to
+  multi-item content via autoref-specialization: each item reserves
+  `Template::SIZE_HINT` or `str::len()` before being appended.
+
+`naive` skips both: a fresh empty `String` is grown by raw `render_into` /
+`push_str` calls with no upfront capacity hints.
+
+The wins here are thanks to Askama.
 
 ## Snapshot
 

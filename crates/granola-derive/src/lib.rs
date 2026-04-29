@@ -24,11 +24,7 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             /// so the only way this fails is if the template itself errors.
             /// See [`askama::Error`].
             pub fn bake(&self) -> ::std::string::String {
-                let mut buf = ::std::string::String::with_capacity(
-                    <Self as ::askama::Template>::SIZE_HINT,
-                );
-                ::askama::Template::render_into(self, &mut buf).unwrap();
-                buf
+                ::askama::Template::render(self).unwrap()
             }
         }
 
