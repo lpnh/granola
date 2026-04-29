@@ -1,14 +1,12 @@
 use askama::{FastWritable, NO_VALUES, Values};
 use std::fmt::{self, Display, Formatter, Write};
 
-/// Decides between inline and block rendering of element content in a single
-/// streaming pass.
+/// Handles inline and block rendering.
 ///
-/// - Empty → nothing
-/// - No newlines → inline
-/// - Has newlines → block, each non-blank line indented by `indent_width` spaces
-///   - Lines that are exactly `\n` or `\r\n` are blank and pass through without indentation
-///   - `indent_width` is capped at 16
+/// - No newline: keeps the content untouched
+/// - Has newline: indent the content, ensuring it's enclosed by newlines
+///     - Blank lines, i.e. `\n` or `\r\n`, pass through without indentation
+///     - The indentation is capped at 16
 #[askama::filter_fn]
 pub fn kirei<S: FastWritable>(
     source: S,
@@ -28,7 +26,7 @@ pub fn bake_attr<'a, V: FastWritable>(
     _env: &dyn Values,
     name: &'a str,
 ) -> askama::Result<OptAttr<'a, V>> {
-    Ok(OptAttr { value, name })
+    Ok(OptAttr { name, value })
 }
 
 /// Renders a boolean as an HTML boolean attribute. See [`BoolAttr`].
@@ -39,21 +37,24 @@ pub fn bake_bool_attr<'a>(
     name: &'a str,
 ) -> askama::Result<BoolAttr<'a>> {
     Ok(BoolAttr {
-        value: *value,
         name,
+        value: *value,
     })
 }
 
-/// Return type of [`kirei`].
+/// The content type after being piped into [`kirei`] filter.
 pub struct Kirei<S> {
     source: S,
     indent_width: usize,
 }
 
-// Use [`FastWritable::write_into`] instead
+/// Forwards to [`write_into`].
+///
+/// [`write_into`]: FastWritable::write_into
 impl<S: FastWritable> Display for Kirei<S> {
+    #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.write_into(f, NO_VALUES).map_err(|_| fmt::Error)
+        self.write_into(f, NO_VALUES).map_err(Into::into)
     }
 }
 
@@ -63,7 +64,7 @@ impl<S: FastWritable> FastWritable for Kirei<S> {
 
         self.source.write_into(&mut writer, values)?;
 
-        Ok(writer.finish()?)
+        writer.finish().map_err(Into::into)
     }
 }
 
@@ -74,17 +75,13 @@ fn indent_str(width: usize) -> &'static str {
     &SPACES[..width.min(MAX_INDENT)]
 }
 
-/// Buffers until a newline is seen, then switches to streaming block mode.
+// Buffers until a newline is seen, then switches to streaming block mode.
 enum KireiState {
-    Undecided(String),
-    /// `is_newline` tracks whether the last byte written was `\n`, so the
-    /// closing newline isn't duplicated when content already ends with one.
-    Block {
-        is_newline: bool,
-    },
+    Inline(String),
+    Block { ends_with_newline: bool },
 }
 
-/// `Write` adapter implementing the [`kirei`] streaming state machine.
+// `Write` adapter implementing the `kirei` streaming state machine.
 struct KireiWriter<'a, W: Write + ?Sized> {
     dest: &'a mut W,
     indent: &'static str,
@@ -93,24 +90,24 @@ struct KireiWriter<'a, W: Write + ?Sized> {
 
 impl<'a, W: Write + ?Sized> KireiWriter<'a, W> {
     fn new(dest: &'a mut W, indent_width: usize) -> Self {
-        KireiWriter {
+        Self {
             dest,
             indent: indent_str(indent_width),
-            state: KireiState::Undecided(String::new()),
+            state: KireiState::Inline(String::new()),
         }
     }
 
-    /// Flushes buffered inline content, or appends the closing newline for
-    /// block output.
+    // Inline: Flush buffered content
+    // Block: Ensure trailing newline
     fn finish(self) -> fmt::Result {
         match self.state {
-            KireiState::Undecided(buffer) => {
+            KireiState::Inline(buffer) => {
                 if !buffer.is_empty() {
                     self.dest.write_str(&buffer)?;
                 }
             }
-            KireiState::Block { is_newline } => {
-                if !is_newline {
+            KireiState::Block { ends_with_newline } => {
+                if !ends_with_newline {
                     self.dest.write_char('\n')?;
                 }
             }
@@ -122,15 +119,15 @@ impl<'a, W: Write + ?Sized> KireiWriter<'a, W> {
 impl<W: Write + ?Sized> Write for KireiWriter<'_, W> {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         let buffer = match &mut self.state {
-            KireiState::Block { is_newline } => {
-                return write_indented(self.dest, s, self.indent, is_newline);
-            }
-            KireiState::Undecided(buffer) => {
+            KireiState::Inline(buffer) => {
                 buffer.push_str(s);
                 if !s.contains('\n') {
                     return Ok(());
                 }
                 std::mem::take(buffer)
+            }
+            KireiState::Block { ends_with_newline } => {
+                return write_block(self.dest, s, self.indent, ends_with_newline);
             }
         };
 
@@ -140,48 +137,47 @@ impl<W: Write + ?Sized> Write for KireiWriter<'_, W> {
             self.dest.write_char('\n')?;
         }
 
-        let mut is_newline = true;
+        let mut ends_with_newline = true;
 
-        let result = write_indented(self.dest, &buffer, self.indent, &mut is_newline);
+        let result = write_block(self.dest, &buffer, self.indent, &mut ends_with_newline);
 
-        self.state = KireiState::Block { is_newline };
+        self.state = KireiState::Block { ends_with_newline };
 
         result
     }
 }
 
-/// Writes `s` to `dest`, prefixing each line with `indent` when `is_newline`
-/// is set — except lines whose only content is the terminator (`\n` or
-/// `\r\n`), which pass through unindented. Updates `is_newline` to reflect
-/// whether the last byte written was `\n`.
-fn write_indented<W: Write + ?Sized>(
+fn write_block<W: Write + ?Sized>(
     dest: &mut W,
     s: &str,
     indent: &str,
-    is_newline: &mut bool,
+    ends_with_newline: &mut bool,
 ) -> fmt::Result {
-    for chunk in s.split_inclusive('\n') {
-        if *is_newline && !matches!(chunk, "\n" | "\r\n") {
+    for line in s.split_inclusive('\n') {
+        if *ends_with_newline && !matches!(line, "\n" | "\r\n") {
             dest.write_str(indent)?;
         }
 
-        dest.write_str(chunk)?;
+        dest.write_str(line)?;
 
-        *is_newline = chunk.ends_with('\n');
+        *ends_with_newline = line.ends_with('\n');
     }
     Ok(())
 }
 
 /// Renders ` name="value"` when `Some`, nothing when `None`.
 pub struct OptAttr<'a, V> {
-    value: &'a Option<V>,
     name: &'a str,
+    value: &'a Option<V>,
 }
 
-// Use [`FastWritable::write_into`] instead
+/// Forwards to [`write_into`].
+///
+/// [`write_into`]: FastWritable::write_into
 impl<V: FastWritable> Display for OptAttr<'_, V> {
+    #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.write_into(f, NO_VALUES).map_err(|_| fmt::Error)
+        self.write_into(f, NO_VALUES).map_err(Into::into)
     }
 }
 
@@ -200,14 +196,17 @@ impl<V: FastWritable> FastWritable for OptAttr<'_, V> {
 
 /// Renders ` name` when `true`, nothing when `false`.
 pub struct BoolAttr<'a> {
-    value: bool,
     name: &'a str,
+    value: bool,
 }
 
-// Use [`FastWritable::write_into`] instead
+/// Forwards to [`write_into`].
+///
+/// [`write_into`]: FastWritable::write_into
 impl Display for BoolAttr<'_> {
+    #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.write_into(f, NO_VALUES).map_err(|_| fmt::Error)
+        self.write_into(f, NO_VALUES).map_err(Into::into)
     }
 }
 
@@ -233,8 +232,8 @@ mod opt_attr_tests {
         let value = Some("bar");
 
         let attr = OptAttr {
-            value: &value,
             name: "foo",
+            value: &value,
         };
 
         let mut buf = String::new();
@@ -249,8 +248,8 @@ mod opt_attr_tests {
         let value: Option<Cow<'static, str>> = None;
 
         let attr = OptAttr {
-            value: &value,
             name: "foo",
+            value: &value,
         };
 
         let mut buf = String::new();
@@ -270,8 +269,8 @@ mod bool_attr_tests {
     #[test]
     fn value_is_true() {
         let attr = BoolAttr {
-            value: true,
             name: "disabled",
+            value: true,
         };
 
         let mut buf = String::new();
@@ -284,8 +283,8 @@ mod bool_attr_tests {
     #[test]
     fn value_is_false() {
         let attr = BoolAttr {
-            value: false,
             name: "disabled",
+            value: false,
         };
 
         let mut buf = String::new();
@@ -326,7 +325,7 @@ mod kirei_ws_only_tests {
     }
 
     #[test]
-    fn only_whitespace() {
+    fn space() {
         assert_eq!(kirei("   ", 4), "   ");
     }
 
@@ -525,9 +524,9 @@ mod kirei_state_tests {
 
     #[test]
     fn inline() {
-        struct Baz;
+        struct Foo;
 
-        impl FastWritable for Baz {
+        impl FastWritable for Foo {
             fn write_into(&self, dest: &mut dyn Write, _: &dyn Values) -> askama::Result<()> {
                 dest.write_str("halloween")?;
                 dest.write_str(" ")?;
@@ -541,7 +540,7 @@ mod kirei_state_tests {
         let mut buf = String::new();
 
         Kirei {
-            source: Baz,
+            source: Foo,
             indent_width: 4,
         }
         .write_into(&mut buf, &())
@@ -552,9 +551,9 @@ mod kirei_state_tests {
 
     #[test]
     fn block() {
-        struct Foo;
+        struct Bar;
 
-        impl FastWritable for Foo {
+        impl FastWritable for Bar {
             fn write_into(&self, dest: &mut dyn Write, _: &dyn Values) -> askama::Result<()> {
                 dest.write_str("halloween")?;
                 dest.write_str(" ")?;
@@ -567,7 +566,7 @@ mod kirei_state_tests {
         let mut buf = String::new();
 
         Kirei {
-            source: Foo,
+            source: Bar,
             indent_width: 4,
         }
         .write_into(&mut buf, &())
