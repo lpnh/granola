@@ -4,7 +4,9 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::prelude::*;
 
 pub trait MetaTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
+    fn recipe(element: HtmlMeta<Self>) -> HtmlMeta<Self> {
+        element
+    }
 }
 
 impl MetaTag for () {}
@@ -56,19 +58,15 @@ pub struct HtmlMeta<M: MetaTag = ()> {
 
 impl<M: MetaTag> HtmlMeta<M> {
     pub fn new(content: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s.content(content)
+        let element = Self::default();
+
+        M::recipe(element).content(content)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Character encoding declaration.

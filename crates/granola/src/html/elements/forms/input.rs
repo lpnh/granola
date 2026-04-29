@@ -3,19 +3,26 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::prelude::*;
 
+/// # Permitted ARIA roles
+///
+/// type=button:
+///     checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio,
+///     option, radio, switch, tab
+/// type=checkbox:
+///     button when used with aria-pressed, menuitemcheckbox, option, switch
+/// type=image:
+///     link, menuitem, menuitemcheckbox, menuitemradio, radio, switch
+/// type=radio:
+///     menuitemradio
+/// type=text (with no list attribute):
+///     combobox, searchbox, spinbutton
+/// type=color|date|datetime-local|email|file|hidden|month|number|password|
+/// range|reset|search|submit|tel|url|week or text with list attribute:
+///     no role permitted
 pub trait InputTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles:
-    ///     type=button: checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio,
-    ///     option, radio, switch, tab
-    ///     type=checkbox: button when used with aria-pressed, menuitemcheckbox, option, switch
-    ///     type=image: link, menuitem, menuitemcheckbox, menuitemradio, radio, switch
-    ///     type=radio: menuitemradio
-    ///     type=text with no list attribute: combobox, searchbox, spinbutton
-    ///     type=color|date|datetime-local|email|file|hidden|month|number|password|range|reset|search|submit|tel|url|week
-    ///     or text with list attribute: no role permitted
-    const ROLE: Option<&'static str> = None;
-    const TYPE: Option<InputType> = None;
+    fn recipe(element: HtmlInput<Self>) -> HtmlInput<Self> {
+        element
+    }
 }
 
 impl InputTag for () {}
@@ -67,31 +74,19 @@ pub struct HtmlInput<M: InputTag = ()> {
 
 impl<M: InputTag> HtmlInput<M> {
     pub fn new(name: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        if let Some(t) = M::TYPE {
-            s = s.input_type(t);
-        }
-        s.name(name)
+        let element = Self::default();
+
+        M::recipe(element).name(name)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        if let Some(t) = M::TYPE {
-            s = s.input_type(t);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
+    }
+
+    pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
+        Self::empty().value(value)
     }
 
     pub fn from_type(input_type: impl Into<InputType>) -> Self {
@@ -475,6 +470,9 @@ macro_rules! input {
     };
     ($content: expr $(,)?) => {
         $crate::html::HtmlInput::<()>::new($content)
+    };
+    (@from_value $value: expr $(,)?) => {
+        $crate::html::HtmlInput::<()>::from_value($value)
     };
     (@from_type $type: expr $(,)?) => {
         $crate::html::HtmlInput::<()>::from_type($type)
