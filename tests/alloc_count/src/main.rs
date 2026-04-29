@@ -20,6 +20,7 @@ fn main() {
 }
 
 fn snippets() {
+    #[allow(clippy::type_complexity)]
     let snippets: &[(&str, fn() -> (Stats, Stats))] = &[
         ("dialog", dialog_example),
         ("div", div_example),
@@ -39,6 +40,7 @@ fn snippets() {
 }
 
 fn snippets_empty() {
+    #[allow(clippy::type_complexity)]
     let snippets: &[(&str, fn() -> (Stats, Stats))] = &[
         ("dialog", dialog_empty),
         ("div", div_empty),

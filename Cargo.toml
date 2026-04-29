@@ -18,16 +18,6 @@ askama = { git = "https://github.com/askama-rs/askama.git", features = [
 indexmap = "2.14.0"
 strum = { version = "0.28.0", features = ["derive"] }
 
-[workspace.lints.clippy]
-doc_markdown = "warn"
-manual_let_else = "warn"
-redundant_closure_for_method_calls = "warn"
-redundant_else = "warn"
-semicolon_if_nothing_returned = "warn"
-type_complexity = "allow"
-too_many_arguments = "allow"
-undocumented_unsafe_blocks = "warn"
-
 [workspace.lints.rust]
 unsafe_code = "deny"
 unused_qualifications = "warn"
