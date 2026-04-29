@@ -5,7 +5,7 @@ use syn::DeriveInput;
 /// Derive macro for templates.
 ///
 /// Implements:
-/// - `bake()` via `askama::Template::render_into`.
+/// - `bake()` via `askama::Template::render`.
 /// - `From<T> for Cow<'static, str>` via `bake()`.
 #[proc_macro_derive(Granola)]
 pub fn granola_derive(input: TokenStream) -> TokenStream {
@@ -19,7 +19,7 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             ///
             /// # Panics
             ///
-            /// Panics if [`askama::Template::render_into`] returns an error.
+            /// Panics if [`askama::Template::render`] returns an error.
             /// Writing into a [`String`] via [`core::fmt::Write`] is infallible,
             /// so the only way this fails is if the template itself errors.
             /// See [`askama::Error`].
