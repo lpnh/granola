@@ -3,7 +3,9 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// Permitted ARIA roles: any
+/// # Permitted ARIA roles
+///
+/// any
 pub trait ThTag: Default + Clone + Debug + 'static {
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
 
