@@ -4,8 +4,11 @@ use std::{fmt::Debug, marker::PhantomData};
 use crate::{filters, prelude::*};
 
 pub trait HtmlTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = HtmlRootContent;
+
+    fn recipe(element: HtmlRoot<Self>) -> HtmlRoot<Self> {
+        element
+    }
 }
 
 impl HtmlTag for () {}
@@ -85,22 +88,18 @@ pub struct HtmlRoot<M: HtmlTag = ()> {
 
 impl<M: HtmlTag> HtmlRoot<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 }
 
@@ -116,15 +115,15 @@ impl<M: HtmlTag> HtmlRoot<M> {
 /// {{ b }}
 /// {%- endif -%}
 /// ```
-#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
+#[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct HtmlRootContent {
-    head: Option<HtmlHead>,
-    body: Option<HtmlBody>,
+pub struct HtmlRootContent<H: HeadTag = (), B: BodyTag = ()> {
+    pub head: Option<HtmlHead<H>>,
+    pub body: Option<HtmlBody<B>>,
 }
 
-impl From<(HtmlHead, HtmlBody)> for HtmlRootContent {
-    fn from((head, body): (HtmlHead, HtmlBody)) -> Self {
+impl<H: HeadTag, B: BodyTag> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootContent<H, B> {
+    fn from((head, body): (HtmlHead<H>, HtmlBody<B>)) -> Self {
         Self {
             head: Some(head),
             body: Some(body),
@@ -132,8 +131,8 @@ impl From<(HtmlHead, HtmlBody)> for HtmlRootContent {
     }
 }
 
-impl From<HtmlHead> for HtmlRootContent {
-    fn from(head: HtmlHead) -> Self {
+impl<H: HeadTag> From<HtmlHead<H>> for HtmlRootContent<H> {
+    fn from(head: HtmlHead<H>) -> Self {
         Self {
             head: Some(head),
             body: None,
@@ -141,8 +140,8 @@ impl From<HtmlHead> for HtmlRootContent {
     }
 }
 
-impl From<HtmlBody> for HtmlRootContent {
-    fn from(body: HtmlBody) -> Self {
+impl<B: BodyTag> From<HtmlBody<B>> for HtmlRootContent<(), B> {
+    fn from(body: HtmlBody<B>) -> Self {
         Self {
             head: None,
             body: Some(body),

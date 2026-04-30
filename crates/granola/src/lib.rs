@@ -6,6 +6,7 @@ pub mod filters;
 pub mod homemade;
 pub mod html;
 pub mod oven;
+pub mod templates;
 
 pub mod prelude {
     pub use super::{Granola, MutAttrs, html::*};

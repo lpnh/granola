@@ -6,6 +6,10 @@ use crate::{filters, prelude::*};
 pub trait BodyTag: Default + Clone + Debug + 'static {
     const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlBody<Self>) -> HtmlBody<Self> {
+        element
+    }
 }
 
 impl BodyTag for () {}
@@ -66,7 +70,7 @@ impl<M: BodyTag> HtmlBody<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
-        s
+        M::recipe(s)
     }
 
     pub fn empty() -> Self {
@@ -74,7 +78,7 @@ impl<M: BodyTag> HtmlBody<M> {
         if let Some(class) = M::CLASS {
             s = s.class(class);
         }
-        s
+        M::recipe(s)
     }
 }
 
