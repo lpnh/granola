@@ -10,12 +10,18 @@ use crate::{filters, prelude::*};
 pub trait ButtonTag: Default + Clone + Debug + 'static {
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
 
-    fn recipe(element: HtmlButton<Self>) -> HtmlButton<Self> {
+    fn recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
         element
     }
 }
 
 impl ButtonTag for () {}
+
+impl<A: ButtonTag, B: ButtonTag> ButtonTag for (A, B) {
+    fn recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
+        B::recipe(A::recipe(element))
+    }
+}
 
 /// The HTML `<button>` element.
 ///
@@ -266,10 +272,27 @@ macro_rules! button {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlButton::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlButton::<()>::new($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlButton::<()>::new($crate::bake_inline![$($content),+])
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::empty()
+    };
+    (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::new($content)
+    };
+    (@recipe $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@recipe $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::new($crate::bake_newline!($content))
+    };
+    (@recipe $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::new($crate::bake_inline![$($content),+])
     };
 }

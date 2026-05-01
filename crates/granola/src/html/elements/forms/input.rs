@@ -20,12 +20,18 @@ use crate::prelude::*;
 /// range|reset|search|submit|tel|url|week or text with list attribute:
 ///     no role permitted
 pub trait InputTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlInput<Self>) -> HtmlInput<Self> {
+    fn recipe<R: InputTag>(element: HtmlInput<R>) -> HtmlInput<R> {
         element
     }
 }
 
 impl InputTag for () {}
+
+impl<A: InputTag, B: InputTag> InputTag for (A, B) {
+    fn recipe<R: InputTag>(element: HtmlInput<R>) -> HtmlInput<R> {
+        B::recipe(A::recipe(element))
+    }
+}
 
 /// The HTML `<input>` element.
 ///
@@ -471,10 +477,24 @@ macro_rules! input {
     ($content: expr $(,)?) => {
         $crate::html::HtmlInput::<()>::new($content)
     };
+
     (@from_value $value: expr $(,)?) => {
         $crate::html::HtmlInput::<()>::from_value($value)
     };
     (@from_type $type: expr $(,)?) => {
         $crate::html::HtmlInput::<()>::from_type($type)
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::empty()
+    };
+    (@recipe $($r:ty),+ ; $name:expr $(,)?) => {
+        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::new($name)
+    };
+    (@recipe $($r:ty),+ ; @from_value $value:expr $(,)?) => {
+        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::from_value($value)
+    };
+    (@recipe $($r:ty),+ ; @from_type $type:expr $(,)?) => {
+        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::from_type($type)
     };
 }

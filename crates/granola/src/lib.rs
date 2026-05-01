@@ -10,7 +10,7 @@ pub mod templates;
 
 pub mod prelude {
     pub use super::{Granola, MutAttrs, html::*};
-    pub use crate::{bake_block, bake_inline, bake_newline};
+    pub use crate::{bake_block, bake_inline, bake_newline, rec};
 }
 
 pub mod macros {

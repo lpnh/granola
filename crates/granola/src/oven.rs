@@ -233,6 +233,31 @@ mod oven_tests {
     }
 }
 
+/// Recursively right-folds a list of types into a nested tuple.
+///
+/// A single type passes through unchanged.
+/// Two or more types become `(A, (B, (C, …)))`.
+///
+/// It facilitates recipe composition.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// type SubmitPost = (Submit, Post);
+///
+/// let input: HtmlInput<SubmitPost> = HtmlInput::from_value("Send");
+///
+/// assert_eq!(input.bake(),
+/// r#"<input type="submit" formmethod="post" value="Send" />"#);
+/// ```
+#[macro_export]
+macro_rules! rec {
+    ($a:ty) => { $a };
+    ($a:ty, $($rest:ty),+) => { ($a, $crate::rec!($($rest),+)) };
+}
+
 // The SIZE_HINT-based preallocation depends on two things:
 //
 // 1. Askama's `Template::SIZE_HINT` is a tight estimate

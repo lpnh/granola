@@ -35,13 +35,13 @@ impl FormTag for Dialog {
 }
 
 impl ButtonTag for Dialog {
-    fn recipe(form: HtmlButton<Self>) -> HtmlButton<Self> {
-        form.formmethod("dialog")
+    fn recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
+        button.formmethod("dialog")
     }
 }
 
 impl InputTag for Dialog {
-    fn recipe(form: HtmlInput<Self>) -> HtmlInput<Self> {
-        form.formmethod("dialog")
+    fn recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
+        input.formmethod("dialog")
     }
 }

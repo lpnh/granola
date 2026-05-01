@@ -35,13 +35,13 @@ impl FormTag for Get {
 }
 
 impl ButtonTag for Get {
-    fn recipe(form: HtmlButton<Self>) -> HtmlButton<Self> {
-        form.formmethod("get")
+    fn recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
+        button.formmethod("get")
     }
 }
 
 impl InputTag for Get {
-    fn recipe(form: HtmlInput<Self>) -> HtmlInput<Self> {
-        form.formmethod("get")
+    fn recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
+        input.formmethod("get")
     }
 }

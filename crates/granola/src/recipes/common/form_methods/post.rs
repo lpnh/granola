@@ -35,13 +35,13 @@ impl FormTag for Post {
 }
 
 impl ButtonTag for Post {
-    fn recipe(form: HtmlButton<Self>) -> HtmlButton<Self> {
+    fn recipe<R: ButtonTag>(form: HtmlButton<R>) -> HtmlButton<R> {
         form.formmethod("post")
     }
 }
 
 impl InputTag for Post {
-    fn recipe(form: HtmlInput<Self>) -> HtmlInput<Self> {
+    fn recipe<R: InputTag>(form: HtmlInput<R>) -> HtmlInput<R> {
         form.formmethod("post")
     }
 }
