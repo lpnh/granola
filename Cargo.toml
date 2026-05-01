@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/granola", "crates/granola-derive", "tests/alloc_count"]
+members = ["crates/granola", "crates/granola-derive", "examples/hello_world", "tests/alloc_count"]
 default-members = ["crates/granola"]
 
 [workspace.package]
