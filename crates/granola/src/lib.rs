@@ -3,9 +3,9 @@
 pub use granola_derive::{Granola, MutAttrs};
 
 pub mod filters;
-pub mod homemade;
 pub mod html;
 pub mod oven;
+pub mod recipes;
 pub mod templates;
 
 pub mod prelude {

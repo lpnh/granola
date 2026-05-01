@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let form: HtmlForm<Get> = HtmlForm::empty();
 ///
@@ -14,7 +14,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let button: HtmlButton<Get> = HtmlButton::new("Search");
 ///

@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let charset: HtmlMeta<Charset> = HtmlMeta::empty();
 ///
@@ -26,7 +26,7 @@ impl MetaTag for Charset {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let viewport: HtmlMeta<Viewport> = HtmlMeta::new("width=device-width, initial-scale=1");
 ///
@@ -47,7 +47,7 @@ impl MetaTag for Viewport {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let robots: HtmlMeta<Robots> = HtmlMeta::new("noindex, nofollow");
 ///

@@ -1,16 +1,16 @@
 use askama::Template;
 use std::borrow::Cow;
 
-use crate::{homemade::*, prelude::*, templates::*};
+use crate::{prelude::*, recipes::*, templates::*};
 
 /// The base template recipe
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*, templates::*};
+/// use granola::{recipes::*, prelude::*, templates::*};
 ///
-/// let tmpl: TmplBase<Base> = TmplBase::empty();
+/// let tmpl: TmplBase<Homemade> = TmplBase::empty();
 ///
 /// assert_eq!(tmpl.bake(),
 /// r#"<!doctype html>
@@ -24,11 +24,11 @@ use crate::{homemade::*, prelude::*, templates::*};
 /// ```
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*, templates::*};
+/// use granola::{recipes::*, prelude::*, templates::*};
 ///
 /// let body: HtmlBody = HtmlBody::new(bake_newline!("Hello, world!"));
 ///
-/// let tmpl: TmplBase<Base> = TmplBase::new(body)
+/// let tmpl: TmplBase<Homemade> = TmplBase::new(body)
 ///     .lang("en")
 ///     .meta(HtmlMeta::<Robots>::new("noindex, nofollow"))
 ///     .title("Home")
@@ -50,14 +50,14 @@ use crate::{homemade::*, prelude::*, templates::*};
 /// </html>"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
-pub struct Base;
+pub struct Homemade;
 
-impl HtmlTag for Base {
-    type Content = HtmlRootContent<Base>;
+impl HtmlTag for Homemade {
+    type Content = HtmlRootContent<Homemade>;
 
     fn recipe(mut element: HtmlRoot<Self>) -> HtmlRoot<Self> {
         if element.content.head.is_none() {
-            element.content.head = Some(HtmlHead::<Base>::empty());
+            element.content.head = Some(HtmlHead::<Homemade>::empty());
         }
         if element.content.body.is_none() {
             element.content.body = Some(HtmlBody::empty());
@@ -66,7 +66,7 @@ impl HtmlTag for Base {
     }
 }
 
-impl From<HtmlBody> for HtmlRootContent<Base> {
+impl From<HtmlBody> for HtmlRootContent<Homemade> {
     fn from(body: HtmlBody) -> Self {
         Self {
             head: None,
@@ -75,7 +75,7 @@ impl From<HtmlBody> for HtmlRootContent<Base> {
     }
 }
 
-impl HeadTag for Base {
+impl HeadTag for Homemade {
     type Content = BaseHeadContent;
 
     fn recipe(mut element: HtmlHead<Self>) -> HtmlHead<Self> {
@@ -114,7 +114,7 @@ pub struct BaseHeadContent {
     pub style: Vec<String>,
 }
 
-impl TmplBase<Base> {
+impl TmplBase<Homemade> {
     pub fn lang(mut self, lang: impl Into<Cow<'static, str>>) -> Self {
         self.html_root = self.html_root.lang(lang);
         self
@@ -124,7 +124,7 @@ impl TmplBase<Base> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Base>::empty)
+            .get_or_insert_with(HtmlHead::<Homemade>::empty)
             .content
             .meta
             .push(meta.bake());
@@ -135,7 +135,7 @@ impl TmplBase<Base> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Base>::empty)
+            .get_or_insert_with(HtmlHead::<Homemade>::empty)
             .content
             .title = Some(HtmlTitle::new(title));
         self
@@ -145,7 +145,7 @@ impl TmplBase<Base> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Base>::empty)
+            .get_or_insert_with(HtmlHead::<Homemade>::empty)
             .content
             .style
             .push(style.bake());

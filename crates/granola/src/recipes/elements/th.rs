@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let th: HtmlTh<Col> = HtmlTh::new("Item");
 ///
@@ -26,7 +26,7 @@ impl ThTag for Col {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let th: HtmlTh<Row> = HtmlTh::new("Hot chocolate");
 ///

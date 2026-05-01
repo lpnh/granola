@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{recipes::*, prelude::*};
 ///
 /// let button: HtmlButton<Button> = HtmlButton::new("Enjoy");
 /// let input: HtmlInput<Button> = HtmlInput::from_value("Enjoy");
