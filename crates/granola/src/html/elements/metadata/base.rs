@@ -4,7 +4,9 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::prelude::*;
 
 pub trait BaseTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
+    fn recipe(element: HtmlBase<Self>) -> HtmlBase<Self> {
+        element
+    }
 }
 
 impl BaseTag for () {}
@@ -56,19 +58,15 @@ pub struct HtmlBase<M: BaseTag = ()> {
 
 impl<M: BaseTag> HtmlBase<M> {
     pub fn new(href: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s.href(href)
+        let element = Self::default().href(href);
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Document base URL.

@@ -3,11 +3,15 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
+/// # Permitted ARIA roles
+///
+/// any
 pub trait SampTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles: any
-    const ROLE: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlSamp<Self>) -> HtmlSamp<Self> {
+        element
+    }
 }
 
 impl SampTag for () {}
@@ -59,28 +63,18 @@ pub struct HtmlSamp<M: SampTag = ()> {
 
 impl<M: SampTag> HtmlSamp<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 }
 

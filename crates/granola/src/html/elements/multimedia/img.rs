@@ -3,15 +3,17 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::prelude::*;
 
+/// # Permitted ARIA roles
+///
+/// with non-empty alt attribute:
+///   button, checkbox, link, menuitem, menuitemcheckbox, menuitemradio, option,
+///   progressbar, scrollbar, separator, slider, switch, tab, treeitem
+/// with empty alt attribute: none or presentation
+/// with no alt attribute: no role permitted
 pub trait ImgTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles:
-    ///     - with non-empty alt attribute:
-    ///         button, checkbox, link, menuitem, menuitemcheckbox, menuitemradio, option,
-    ///         progressbar, scrollbar, separator, slider, switch, tab, treeitem
-    ///     - with empty alt attribute: none or presentation
-    ///     - with no alt attribute: no role permitted
-    const ROLE: Option<&'static str> = None;
+    fn recipe(element: HtmlImg<Self>) -> HtmlImg<Self> {
+        element
+    }
 }
 
 impl ImgTag for () {}
@@ -63,36 +65,21 @@ pub struct HtmlImg<M: ImgTag = ()> {
 
 impl<M: ImgTag> HtmlImg<M> {
     pub fn new(src: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s.src(src).alt(alt)
+        let element = Self::default().src(src).alt(alt);
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s.src(src)
+        let element = Self::default().src(src);
+
+        M::recipe(element)
     }
 
     /// Replacement text for use when images are not available.

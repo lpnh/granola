@@ -4,8 +4,11 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::{filters, prelude::*};
 
 pub trait SlotTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlSlot<Self>) -> HtmlSlot<Self> {
+        element
+    }
 }
 
 impl SlotTag for () {}
@@ -59,22 +62,18 @@ pub struct HtmlSlot<M: SlotTag = ()> {
 
 impl<M: SlotTag> HtmlSlot<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Name of shadow tree slot.

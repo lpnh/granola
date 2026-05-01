@@ -4,8 +4,11 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::{filters, prelude::*};
 
 pub trait MapTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Areas;
+
+    fn recipe(element: HtmlMap<Self>) -> HtmlMap<Self> {
+        element
+    }
 }
 
 impl MapTag for () {}
@@ -73,22 +76,18 @@ pub struct HtmlMap<M: MapTag = ()> {
 
 impl<M: MapTag> HtmlMap<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Name of image map to reference from the usemap attribute.

@@ -4,7 +4,9 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::prelude::*;
 
 pub trait LinkTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
+    fn recipe(element: HtmlLink<Self>) -> HtmlLink<Self> {
+        element
+    }
 }
 
 impl LinkTag for () {}
@@ -56,19 +58,15 @@ pub struct HtmlLink<M: LinkTag = ()> {
 
 impl<M: LinkTag> HtmlLink<M> {
     pub fn new(href: impl Into<Cow<'static, str>>, rel: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s.href(href).rel(rel)
+        let element = Self::default().href(href).rel(rel);
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Destination for a preload request (for `rel="preload"` and `rel="modulepreload"`).

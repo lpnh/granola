@@ -4,8 +4,11 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::{filters, prelude::*};
 
 pub trait SummaryTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlSummary<Self>) -> HtmlSummary<Self> {
+        element
+    }
 }
 
 impl SummaryTag for () {}
@@ -57,22 +60,18 @@ pub struct HtmlSummary<M: SummaryTag = ()> {
 
 impl<M: SummaryTag> HtmlSummary<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 }
 

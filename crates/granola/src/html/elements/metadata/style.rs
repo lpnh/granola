@@ -4,8 +4,11 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::{filters, prelude::*};
 
 pub trait StyleTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlStyle<Self>) -> HtmlStyle<Self> {
+        element
+    }
 }
 
 impl StyleTag for () {}
@@ -70,22 +73,18 @@ pub struct HtmlStyle<M: StyleTag = ()> {
 
 impl<M: StyleTag> HtmlStyle<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Whether the element is potentially render-blocking.

@@ -3,11 +3,15 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
+/// # Permitted ARIA roles
+///
+/// application, document, img, none, presentation
 pub trait IframeTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles: application, document, img, none, presentation
-    const ROLE: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlIframe<Self>) -> HtmlIframe<Self> {
+        element
+    }
 }
 
 impl IframeTag for () {}
@@ -30,7 +34,7 @@ impl IframeTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let iframe: HtmlIframe = HtmlIframe::new("https://w.wiki/LJK7")
+/// let iframe: HtmlIframe = HtmlIframe::from_src("https://w.wiki/LJK7")
 ///     .title("Pedestrians crossing an intersection.");
 ///
 /// assert_eq!(iframe.bake(),
@@ -61,26 +65,25 @@ pub struct HtmlIframe<M: IframeTag = ()> {
 }
 
 impl<M: IframeTag> HtmlIframe<M> {
-    pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s.src(src)
+    pub fn new(content: impl Into<M::Content>) -> Self {
+        let element = Self {
+            content: content.into(),
+            ..Default::default()
+        };
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
+    }
+
+    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+        let element = Self::default().src(src);
+
+        M::recipe(element)
     }
 
     /// Permissions policy to be applied to the iframe's contents.
@@ -194,7 +197,8 @@ impl<M: IframeTag> HtmlIframe<M> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let iframe = iframe!("https://w.wiki/LJK7").title("Pedestrians crossing an intersection.");
+/// let iframe = iframe!(@from_src "https://w.wiki/LJK7")
+///     .title("Pedestrians crossing an intersection.");
 ///
 /// assert_eq!(iframe.bake(),
 /// r#"<iframe title="Pedestrians crossing an intersection." src="https://w.wiki/LJK7"></iframe>"#);
@@ -204,7 +208,19 @@ macro_rules! iframe {
     () => {
         $crate::html::HtmlIframe::<()>::empty()
     };
-    ($src: expr $(,)?) => {
-        $crate::html::HtmlIframe::<()>::new($src)
+    ($content: expr $(,)?) => {
+        $crate::html::HtmlIframe::<()>::new($content)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::html::HtmlIframe::<()>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlIframe::<()>::new($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlIframe::<()>::new($crate::bake_inline![$($content),+])
+    };
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlIframe::<()>::from_src($src)
     };
 }

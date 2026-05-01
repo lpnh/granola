@@ -4,7 +4,9 @@ use std::{fmt::Debug, marker::PhantomData};
 use crate::prelude::*;
 
 pub trait ColTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
+    fn recipe(element: HtmlCol<Self>) -> HtmlCol<Self> {
+        element
+    }
 }
 
 impl ColTag for () {}
@@ -60,11 +62,9 @@ pub struct HtmlCol<M: ColTag = ()> {
 
 impl<M: ColTag> HtmlCol<M> {
     pub fn new() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Number of columns spanned by the element.

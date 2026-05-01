@@ -4,7 +4,9 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::prelude::*;
 
 pub trait SourceTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
+    fn recipe(element: HtmlSource<Self>) -> HtmlSource<Self> {
+        element
+    }
 }
 
 impl SourceTag for () {}
@@ -56,19 +58,15 @@ pub struct HtmlSource<M: SourceTag = ()> {
 
 impl<M: SourceTag> HtmlSource<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s.src(src)
+        let element = Self::default().src(src);
+
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 
     /// Vertical dimension.

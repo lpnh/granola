@@ -3,10 +3,13 @@ use std::{fmt::Debug, marker::PhantomData};
 
 use crate::prelude::*;
 
+/// # Permitted ARIA roles
+///
+/// none, presentation
 pub trait BrTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
-    /// Permitted ARIA roles: none, presentation
-    const ROLE: Option<&'static str> = None;
+    fn recipe(element: HtmlBr<Self>) -> HtmlBr<Self> {
+        element
+    }
 }
 
 impl BrTag for () {}
@@ -64,14 +67,9 @@ pub struct HtmlBr<M: BrTag = ()> {
 
 impl<M: BrTag> HtmlBr<M> {
     pub fn new() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        if let Some(role) = M::ROLE {
-            s = s.role(role);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
     }
 }
 

@@ -4,8 +4,11 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 use crate::{filters, prelude::*};
 
 pub trait OptionTag: Default + Clone + Debug + 'static {
-    const CLASS: Option<&'static str> = None;
     type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
+
+    fn recipe(element: HtmlOption<Self>) -> HtmlOption<Self> {
+        element
+    }
 }
 
 impl OptionTag for () {}
@@ -59,30 +62,24 @@ pub struct HtmlOption<M: OptionTag = ()> {
 
 impl<M: OptionTag> HtmlOption<M> {
     pub fn new(content: impl Into<M::Content>) -> Self {
-        let mut s = Self {
+        let element = Self {
             content: content.into(),
             ..Default::default()
         };
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
-    }
 
-    pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s.value(value)
+        M::recipe(element)
     }
 
     pub fn empty() -> Self {
-        let mut s = Self::default();
-        if let Some(class) = M::CLASS {
-            s = s.class(class);
-        }
-        s
+        let element = Self::default();
+
+        M::recipe(element)
+    }
+
+    pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
+        let element = Self::default().value(value);
+
+        M::recipe(element)
     }
 
     /// Whether the form control is disabled.
