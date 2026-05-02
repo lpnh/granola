@@ -3,14 +3,14 @@ use std::borrow::Cow;
 
 use crate::{prelude::*, recipes::*, templates::*};
 
-/// The base template recipe
+/// The recipe for the [`TmplBase`] template.
 ///
 /// # Example
 ///
 /// ```rust
 /// use granola::{recipes::*, prelude::*, templates::*};
 ///
-/// let tmpl: TmplBase<Homemade> = TmplBase::empty();
+/// let tmpl: TmplBase<Homemade> = TmplBase::from_recipe();
 ///
 /// assert_eq!(tmpl.bake(),
 /// r#"<!doctype html>
@@ -53,23 +53,24 @@ use crate::{prelude::*, recipes::*, templates::*};
 pub struct Homemade;
 
 impl HtmlTag for Homemade {
-    type Content = HtmlRootContent<Homemade>;
+    type Content = HtmlRootContent<Homemade, ()>;
 
-    fn recipe(mut element: HtmlRoot<Self>) -> HtmlRoot<Self> {
-        if element.content.head.is_none() {
-            element.content.head = Some(HtmlHead::<Homemade>::empty());
-        }
-        if element.content.body.is_none() {
-            element.content.body = Some(HtmlBody::empty());
-        }
+    fn content_recipe(content: &mut Self::Content) {
+        content
+            .head
+            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe);
+        content.body.get_or_insert_with(HtmlBody::from_recipe);
+    }
+
+    fn decoration_recipe<R: HtmlTag>(element: HtmlRoot<R>) -> HtmlRoot<R> {
         element
     }
 }
 
-impl From<HtmlBody> for HtmlRootContent<Homemade> {
+impl From<HtmlBody> for HtmlRootContent<Homemade, ()> {
     fn from(body: HtmlBody) -> Self {
         Self {
-            head: None,
+            head: Some(HtmlHead::<Homemade>::from_recipe()),
             body: Some(body),
         }
     }
@@ -78,15 +79,14 @@ impl From<HtmlBody> for HtmlRootContent<Homemade> {
 impl HeadTag for Homemade {
     type Content = BaseHeadContent;
 
-    fn recipe(mut element: HtmlHead<Self>) -> HtmlHead<Self> {
-        element
-            .content
-            .meta
-            .push(HtmlMeta::<Charset>::empty().bake());
-        element
-            .content
+    fn content_recipe(content: &mut Self::Content) {
+        content.meta.push(HtmlMeta::<Charset>::empty().bake());
+        content
             .meta
             .push(HtmlMeta::<Viewport>::new("width=device-width, initial-scale=1").bake());
+    }
+
+    fn decoration_recipe<R: HeadTag>(element: HtmlHead<R>) -> HtmlHead<R> {
         element
     }
 }
@@ -124,7 +124,7 @@ impl TmplBase<Homemade> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Homemade>::empty)
+            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
             .meta
             .push(meta.bake());
@@ -135,7 +135,7 @@ impl TmplBase<Homemade> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Homemade>::empty)
+            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
             .title = Some(HtmlTitle::new(title));
         self
@@ -145,7 +145,7 @@ impl TmplBase<Homemade> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Homemade>::empty)
+            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
             .style
             .push(style.bake());

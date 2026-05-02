@@ -1,20 +1,11 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// # Permitted ARIA roles
-///
-/// any
-pub trait PTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlP<Self>) -> HtmlP<Self> {
-        element
-    }
-}
-
-impl PTag for () {}
+// # Permitted ARIA roles
+//
+// any
 
 /// The HTML `<p>` element.
 ///
@@ -50,8 +41,9 @@ impl PTag for () {}
 ///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</p>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = PTag, content = Cow<'static, str>)]
 pub struct HtmlP<M: PTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -59,23 +51,6 @@ pub struct HtmlP<M: PTag = ()> {
     pub data_attrs: DataAttrs,
     pub event_handlers: EventHandlers,
     pub global_aria_attrs: GlobalAriaAttrs,
-}
-
-impl<M: PTag> HtmlP<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
 }
 
 /// Shorthand for `HtmlP<()>`.
@@ -110,10 +85,28 @@ macro_rules! p {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlP::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlP::<()>::new($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlP::<()>::new($crate::bake_inline![$($content),+])
+    };
+
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlP::<$crate::rec!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlP::<$crate::rec!($($r),+)>::new($content)
+    };
+    (@recipe $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlP::<$crate::rec!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@recipe $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlP::<$crate::rec!($($r),+)>::new($crate::bake_newline!($content))
+    };
+    (@recipe $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlP::<$crate::rec!($($r),+)>::new($crate::bake_inline![$($content),+])
     };
 }

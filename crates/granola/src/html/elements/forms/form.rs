@@ -1,20 +1,11 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// # Permitted ARIA roles
-///
-/// search, none or presentation
-pub trait FormTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlForm<Self>) -> HtmlForm<Self> {
-        element
-    }
-}
-
-impl FormTag for () {}
+// # Permitted ARIA roles
+//
+// search, none or presentation
 
 /// The HTML `<form>` element.
 ///
@@ -61,8 +52,9 @@ impl FormTag for () {}
 ///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</form>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = FormTag, content = Cow<'static, str>)]
 pub struct HtmlForm<M: FormTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -74,21 +66,6 @@ pub struct HtmlForm<M: FormTag = ()> {
 }
 
 impl<M: FormTag> HtmlForm<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     /// Character encodings to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#accept-charset)
@@ -232,10 +209,28 @@ macro_rules! form {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlForm::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlForm::<()>::new($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlForm::<()>::new($crate::bake_inline![$($content),+])
+    };
+
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlForm::<$crate::rec!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlForm::<$crate::rec!($($r),+)>::new($content)
+    };
+    (@recipe $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlForm::<$crate::rec!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+    };
+    (@recipe $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlForm::<$crate::rec!($($r),+)>::new($crate::bake_newline!($content))
+    };
+    (@recipe $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlForm::<$crate::rec!($($r),+)>::new($crate::bake_inline![$($content),+])
     };
 }

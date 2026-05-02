@@ -1,27 +1,12 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// # Permitted ARIA roles
-///
-/// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio, option,
-/// radio, switch, tab
-pub trait ButtonTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
-        element
-    }
-}
-
-impl ButtonTag for () {}
-
-impl<A: ButtonTag, B: ButtonTag> ButtonTag for (A, B) {
-    fn recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
-        B::recipe(A::recipe(element))
-    }
-}
+// # Permitted ARIA roles
+//
+// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio, option,
+// radio, switch, tab
 
 /// The HTML `<button>` element.
 ///
@@ -62,8 +47,9 @@ impl<A: ButtonTag, B: ButtonTag> ButtonTag for (A, B) {
 ///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</button>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ButtonTag, content = Cow<'static, str>)]
 pub struct HtmlButton<M: ButtonTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -75,21 +61,6 @@ pub struct HtmlButton<M: ButtonTag = ()> {
 }
 
 impl<M: ButtonTag> HtmlButton<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     /// Indicates to the targeted element which action to take.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#command)
@@ -281,7 +252,7 @@ macro_rules! button {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::empty()
+        $crate::html::HtmlButton::<$crate::rec!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
         $crate::html::HtmlButton::<$crate::rec!($($r),+)>::new($content)

@@ -19,13 +19,13 @@ use crate::prelude::*;
 pub struct Submit;
 
 impl ButtonTag for Submit {
-    fn recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
+    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
         button.button_type("submit")
     }
 }
 
 impl InputTag for Submit {
-    fn recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
+    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
         input.input_type("submit")
     }
 }

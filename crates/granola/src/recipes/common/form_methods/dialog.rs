@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let form: HtmlForm<Dialog> = HtmlForm::empty();
+/// let form: HtmlForm<Dialog> = HtmlForm::from_recipe();
 ///
 /// assert_eq!(form.bake(),
 /// r#"<form method="dialog"></form>"#);
@@ -29,19 +29,19 @@ use crate::prelude::*;
 pub struct Dialog;
 
 impl FormTag for Dialog {
-    fn recipe(form: HtmlForm<Self>) -> HtmlForm<Self> {
+    fn decoration_recipe<R: FormTag>(form: HtmlForm<R>) -> HtmlForm<R> {
         form.method("dialog")
     }
 }
 
 impl ButtonTag for Dialog {
-    fn recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
+    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
         button.formmethod("dialog")
     }
 }
 
 impl InputTag for Dialog {
-    fn recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
+    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
         input.formmethod("dialog")
     }
 }

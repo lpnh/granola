@@ -56,4 +56,10 @@ impl<M: HtmlTag> TmplBase<M> {
             html_root: HtmlRoot::<M>::empty(),
         }
     }
+
+    pub fn from_recipe() -> Self {
+        Self {
+            html_root: HtmlRoot::<M>::from_recipe(),
+        }
+    }
 }

@@ -19,13 +19,13 @@ use crate::prelude::*;
 pub struct Reset;
 
 impl ButtonTag for Reset {
-    fn recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
+    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
         button.button_type("reset")
     }
 }
 
 impl InputTag for Reset {
-    fn recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
+    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
         input.input_type("reset")
     }
 }

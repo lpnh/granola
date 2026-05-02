@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let form: HtmlForm<Get> = HtmlForm::empty();
+/// let form: HtmlForm<Get> = HtmlForm::from_recipe();
 ///
 /// assert_eq!(form.bake(),
 /// r#"<form method="get"></form>"#);
@@ -29,19 +29,19 @@ use crate::prelude::*;
 pub struct Get;
 
 impl FormTag for Get {
-    fn recipe(form: HtmlForm<Self>) -> HtmlForm<Self> {
+    fn decoration_recipe<R: FormTag>(form: HtmlForm<R>) -> HtmlForm<R> {
         form.method("get")
     }
 }
 
 impl ButtonTag for Get {
-    fn recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
+    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
         button.formmethod("get")
     }
 }
 
 impl InputTag for Get {
-    fn recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
+    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
         input.formmethod("get")
     }
 }

@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait HtmlTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = HtmlRootContent;
-
-    fn recipe(element: HtmlRoot<Self>) -> HtmlRoot<Self> {
-        element
-    }
-}
-
-impl HtmlTag for () {}
 
 /// The HTML `<html>` element.
 ///
@@ -22,7 +12,7 @@ impl HtmlTag for () {}
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let html: HtmlRoot = HtmlRoot::empty().id("html_document");
+/// let html: HtmlRoot = HtmlRoot::from_recipe().id("html_document");
 ///
 /// assert_eq!(html.bake(),
 /// r#"<html id="html_document"></html>"#);
@@ -75,8 +65,9 @@ impl HtmlTag for () {}
 ///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</html>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = HtmlTag, content = HtmlRootContent)]
 pub struct HtmlRoot<M: HtmlTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -84,23 +75,6 @@ pub struct HtmlRoot<M: HtmlTag = ()> {
     pub data_attrs: DataAttrs,
     pub event_handlers: EventHandlers,
     pub global_aria_attrs: GlobalAriaAttrs,
-}
-
-impl<M: HtmlTag> HtmlRoot<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
 }
 
 /// One HTML `<head>` element, followed by one `<body>` element.
@@ -208,5 +182,15 @@ macro_rules! root {
     };
     ($head: expr, $body: expr $(,)?) => {
         $crate::html::HtmlRoot::<()>::new(($head, $body))
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlRoot::<$crate::rec!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlRoot::<$crate::rec!($($r),+)>::new($content)
+    };
+    (@recipe $($r:ty),+ ; $head:expr, $body:expr $(,)?) => {
+        $crate::html::HtmlRoot::<$crate::rec!($($r),+)>::new(($head, $body))
     };
 }

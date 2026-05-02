@@ -3,35 +3,22 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::prelude::*;
 
-/// # Permitted ARIA roles
-///
-/// type=button:
-///     checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio,
-///     option, radio, switch, tab
-/// type=checkbox:
-///     button when used with aria-pressed, menuitemcheckbox, option, switch
-/// type=image:
-///     link, menuitem, menuitemcheckbox, menuitemradio, radio, switch
-/// type=radio:
-///     menuitemradio
-/// type=text (with no list attribute):
-///     combobox, searchbox, spinbutton
-/// type=color|date|datetime-local|email|file|hidden|month|number|password|
-/// range|reset|search|submit|tel|url|week or text with list attribute:
-///     no role permitted
-pub trait InputTag: Default + Clone + Debug + 'static {
-    fn recipe<R: InputTag>(element: HtmlInput<R>) -> HtmlInput<R> {
-        element
-    }
-}
-
-impl InputTag for () {}
-
-impl<A: InputTag, B: InputTag> InputTag for (A, B) {
-    fn recipe<R: InputTag>(element: HtmlInput<R>) -> HtmlInput<R> {
-        B::recipe(A::recipe(element))
-    }
-}
+// # Permitted ARIA roles
+//
+// type=button:
+//     checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio,
+//     option, radio, switch, tab
+// type=checkbox:
+//     button when used with aria-pressed, menuitemcheckbox, option, switch
+// type=image:
+//     link, menuitem, menuitemcheckbox, menuitemradio, radio, switch
+// type=radio:
+//     menuitemradio
+// type=text (with no list attribute):
+//     combobox, searchbox, spinbutton
+// type=color|date|datetime-local|email|file|hidden|month|number|password|
+// range|reset|search|submit|tel|url|week or text with list attribute:
+//     no role permitted
 
 /// The HTML `<input>` element.
 ///
@@ -67,8 +54,9 @@ impl<A: InputTag, B: InputTag> InputTag for (A, B) {
 ///   {{- event_handlers -}}
 ///   {{- global_aria_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = InputTag)]
 pub struct HtmlInput<M: InputTag = ()> {
     _marker: PhantomData<M>,
     pub global_attrs: GlobalAttrs,
@@ -80,23 +68,15 @@ pub struct HtmlInput<M: InputTag = ()> {
 
 impl<M: InputTag> HtmlInput<M> {
     pub fn new(name: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default();
-
-        M::recipe(element).name(name)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
+        Self::from_recipe().name(name)
     }
 
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
-        Self::empty().value(value)
+        Self::from_recipe().value(value)
     }
 
     pub fn from_type(input_type: impl Into<InputType>) -> Self {
-        Self::empty().input_type(input_type.into())
+        Self::from_recipe().input_type(input_type.into())
     }
 
     pub fn validate(self) -> Self {
@@ -486,7 +466,7 @@ macro_rules! input {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::empty()
+        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $name:expr $(,)?) => {
         $crate::html::HtmlInput::<$crate::rec!($($r),+)>::new($name)
