@@ -4,6 +4,85 @@ use std::borrow::Cow;
 
 use crate::filters;
 
+use super::{GlobalAriaAttrs, HasGlobalAriaAttrs};
+
+/// The HTML global, event handler, and aria attributes.
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- global_attrs -}}
+/// {{- data_attrs -}}
+/// {{- event_handlers -}}
+/// {{- global_aria_attrs -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct Attrs {
+    pub global_attrs: GlobalAttrs,
+    pub data_attrs: DataAttrs,
+    pub event_handlers: EventHandlers,
+    pub global_aria_attrs: GlobalAriaAttrs,
+}
+
+impl HasGlobalAttrs for Attrs {
+    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
+        &mut self.global_attrs
+    }
+}
+
+impl HasDataAttrs for Attrs {
+    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
+        &mut self.data_attrs
+    }
+}
+
+impl HasEventHandlers for Attrs {
+    fn event_handlers_mut(&mut self) -> &mut EventHandlers {
+        &mut self.event_handlers
+    }
+}
+
+impl HasGlobalAriaAttrs for Attrs {
+    fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs {
+        &mut self.global_aria_attrs
+    }
+}
+
+pub trait HasAttrs: Sized {
+    fn attrs_mut(&mut self) -> &mut Attrs;
+}
+
+impl HasAttrs for &mut Attrs {
+    fn attrs_mut(&mut self) -> &mut Attrs {
+        self
+    }
+}
+
+impl<T: HasAttrs> HasGlobalAttrs for T {
+    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
+        self.attrs_mut().global_attrs_mut()
+    }
+}
+
+impl<T: HasAttrs> HasDataAttrs for T {
+    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
+        self.attrs_mut().data_attrs_mut()
+    }
+}
+
+impl<T: HasAttrs> HasEventHandlers for T {
+    fn event_handlers_mut(&mut self) -> &mut EventHandlers {
+        self.attrs_mut().event_handlers_mut()
+    }
+}
+
+impl<T: HasAttrs> HasGlobalAriaAttrs for T {
+    fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs {
+        self.attrs_mut().global_aria_attrs_mut()
+    }
+}
+
 /// The HTML global attributes.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes)
@@ -396,6 +475,18 @@ impl SpecificAttrs {
     pub fn add_bool_attr(mut self, key: impl Into<Cow<'static, str>>) -> Self {
         self.bool_attrs_set.insert(key.into());
         self
+    }
+
+    pub fn set_attr(
+        &mut self,
+        key: impl Into<Cow<'static, str>>,
+        value: impl Into<Cow<'static, str>>,
+    ) {
+        self.attrs_map.insert(key.into(), value.into());
+    }
+
+    pub fn set_bool_attr(&mut self, key: impl Into<Cow<'static, str>>) {
+        self.bool_attrs_set.insert(key.into());
     }
 }
 

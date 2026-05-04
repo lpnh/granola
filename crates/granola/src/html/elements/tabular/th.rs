@@ -1,20 +1,11 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// # Permitted ARIA roles
-///
-/// any
-pub trait ThTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlTh<Self>) -> HtmlTh<Self> {
-        element
-    }
-}
-
-impl ThTag for () {}
+// # Permitted ARIA roles
+//
+// any
 
 /// The HTML `<th>` element.
 ///
@@ -44,79 +35,98 @@ impl ThTag for () {}
 ///
 /// ```askama
 /// <th
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</th>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ThTag, content = Cow<'static, str>, specific = ThAttrs)]
 pub struct HtmlTh<M: ThTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: ThAttrs,
 }
 
-impl<M: ThTag> HtmlTh<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// # Askama template
+///
+/// ```askama
+/// {{- abbr | bake_attr("abbr") -}}
+/// {{- colspan | bake_attr("colspan") -}}
+/// {{- headers | bake_attr("headers") -}}
+/// {{- rowspan | bake_attr("rowspan") -}}
+/// {{- scope | bake_attr("scope") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct ThAttrs {
+    abbr: Option<Cow<'static, str>>,
+    colspan: Option<u32>,
+    headers: Option<Cow<'static, str>>,
+    rowspan: Option<u32>,
+    scope: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasThAttrs: Sized {
+    fn th_attrs_mut(&mut self) -> &mut ThAttrs;
 
     /// Alternative label to use for the header cell when referencing the cell in other contexts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#abbr)
-    pub fn abbr(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("abbr", value);
+    fn abbr(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.th_attrs_mut().abbr = Some(value.into());
         self
     }
 
     /// Number of columns that the cell is to span.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#colspan)
-    pub fn colspan(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("colspan", value.to_string());
+    fn colspan(mut self, value: u32) -> Self {
+        self.th_attrs_mut().colspan = Some(value);
         self
     }
 
     /// The header cells for this cell.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#headers)
-    pub fn headers(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("headers", value);
+    fn headers(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.th_attrs_mut().headers = Some(value.into());
         self
     }
 
     /// Number of rows that the cell is to span.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#rowspan)
-    pub fn rowspan(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rowspan", value.to_string());
+    fn rowspan(mut self, value: u32) -> Self {
+        self.th_attrs_mut().rowspan = Some(value);
         self
     }
 
     /// Specifies which cells the header cell applies to.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#scope)
-    pub fn scope(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("scope", value);
+    fn scope(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.th_attrs_mut().scope = Some(value.into());
         self
+    }
+}
+
+impl HasThAttrs for ThAttrs {
+    fn th_attrs_mut(&mut self) -> &mut ThAttrs {
+        self
+    }
+}
+
+impl HasThAttrs for &mut ThAttrs {
+    fn th_attrs_mut(&mut self) -> &mut ThAttrs {
+        self
+    }
+}
+
+impl<M: ThTag> HasThAttrs for HtmlTh<M> {
+    fn th_attrs_mut(&mut self) -> &mut ThAttrs {
+        &mut self.specific_attrs
     }
 }
 

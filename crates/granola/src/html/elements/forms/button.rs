@@ -40,24 +40,18 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <button
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</button>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ButtonTag, content = Cow<'static, str>)]
+#[recipe(name = ButtonTag, content = Cow<'static, str>, specific = SpecificAttrs)]
 pub struct HtmlButton<M: ButtonTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
+    pub attrs: Attrs,
     pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
 }
 
 impl<M: ButtonTag> HtmlButton<M> {

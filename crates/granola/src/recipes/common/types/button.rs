@@ -19,13 +19,13 @@ use crate::prelude::*;
 pub struct Button;
 
 impl ButtonTag for Button {
-    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
-        button.button_type("button")
+    fn specific_recipe(specific: &mut SpecificAttrs) {
+        specific.set_attr("type", ButtonType::Button);
     }
 }
 
 impl InputTag for Button {
-    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
-        input.input_type("button")
+    fn specific_recipe(specific: &mut SpecificAttrs) {
+        specific.set_attr("type", InputType::Button);
     }
 }

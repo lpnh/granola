@@ -48,22 +48,16 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// <input
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = InputTag)]
+#[recipe(name = InputTag, specific = SpecificAttrs)]
 pub struct HtmlInput<M: InputTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
+    pub attrs: Attrs,
     pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
 }
 
 impl<M: InputTag> HtmlInput<M> {

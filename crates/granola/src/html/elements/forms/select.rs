@@ -1,20 +1,11 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// # Permitted ARIA roles
-///
-/// menu (with no multiple attribute and no size attribute greater than 1)
-pub trait SelectTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlSelect<Self>) -> HtmlSelect<Self> {
-        element
-    }
-}
-
-impl SelectTag for () {}
+// # Permitted ARIA roles
+//
+// menu (with no multiple attribute and no size attribute greater than 1)
 
 /// The HTML `<select>` element.
 ///
@@ -50,101 +41,118 @@ impl SelectTag for () {}
 ///
 /// ```askama
 /// <select
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</select>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = SelectTag, content = Cow<'static, str>, specific = SelectAttrs)]
 pub struct HtmlSelect<M: SelectTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: SelectAttrs,
 }
 
-impl<M: SelectTag> HtmlSelect<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// # Askama template
+///
+/// ```askama
+/// {{- autocomplete | bake_attr("autocomplete") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- form | bake_attr("form") -}}
+/// {{- multiple | bake_bool_attr("multiple") -}}
+/// {{- name | bake_attr("name") -}}
+/// {{- required | bake_bool_attr("required") -}}
+/// {{- size | bake_attr("size") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct SelectAttrs {
+    autocomplete: Option<Cow<'static, str>>,
+    disabled: bool,
+    form: Option<Cow<'static, str>>,
+    multiple: bool,
+    name: Option<Cow<'static, str>>,
+    required: bool,
+    size: Option<u32>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasSelectAttrs: Sized {
+    fn select_attrs_mut(&mut self) -> &mut SelectAttrs;
 
     /// Hint for form autofill feature.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
-    pub fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("autocomplete", value);
+    fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.select_attrs_mut().autocomplete = Some(value.into());
         self
     }
 
     /// Whether the form control is disabled.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled)
-    pub fn disabled(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("disabled");
-        }
+    fn disabled(mut self, value: bool) -> Self {
+        self.select_attrs_mut().disabled = value;
         self
     }
 
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    pub fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("form", value);
+    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.select_attrs_mut().form = Some(value.into());
         self
     }
 
     /// Whether to allow multiple values.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/multiple)
-    pub fn multiple(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("multiple");
-        }
+    fn multiple(mut self, value: bool) -> Self {
+        self.select_attrs_mut().multiple = value;
         self
     }
 
     /// Name of the element to use for form submission and in the `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select#name)
-    pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value);
+    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.select_attrs_mut().name = Some(value.into());
         self
     }
 
     /// Whether the control is required for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/required)
-    pub fn required(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("required");
-        }
+    fn required(mut self, value: bool) -> Self {
+        self.select_attrs_mut().required = value;
         self
     }
 
     /// Size of the control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/size)
-    pub fn size(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("size", value.to_string());
+    fn size(mut self, value: u32) -> Self {
+        self.select_attrs_mut().size = Some(value);
         self
+    }
+}
+
+impl HasSelectAttrs for SelectAttrs {
+    fn select_attrs_mut(&mut self) -> &mut SelectAttrs {
+        self
+    }
+}
+
+impl HasSelectAttrs for &mut SelectAttrs {
+    fn select_attrs_mut(&mut self) -> &mut SelectAttrs {
+        self
+    }
+}
+
+impl<M: SelectTag> HasSelectAttrs for HtmlSelect<M> {
+    fn select_attrs_mut(&mut self) -> &mut SelectAttrs {
+        &mut self.specific_attrs
     }
 }
 

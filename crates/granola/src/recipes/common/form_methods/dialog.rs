@@ -29,19 +29,19 @@ use crate::prelude::*;
 pub struct Dialog;
 
 impl FormTag for Dialog {
-    fn decoration_recipe<R: FormTag>(form: HtmlForm<R>) -> HtmlForm<R> {
-        form.method("dialog")
+    fn specific_recipe(form_attrs: &mut FormAttrs) {
+        form_attrs.method(FormMethod::Dialog);
     }
 }
 
 impl ButtonTag for Dialog {
-    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
-        button.formmethod("dialog")
+    fn specific_recipe(attrs: &mut SpecificAttrs) {
+        attrs.set_attr("formmethod", FormMethod::Dialog);
     }
 }
 
 impl InputTag for Dialog {
-    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
-        input.formmethod("dialog")
+    fn specific_recipe(attrs: &mut SpecificAttrs) {
+        attrs.set_attr("formmethod", FormMethod::Dialog);
     }
 }

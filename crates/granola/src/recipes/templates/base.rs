@@ -62,9 +62,7 @@ impl HtmlTag for Homemade {
         content.body.get_or_insert_with(HtmlBody::from_recipe);
     }
 
-    fn decoration_recipe<R: HtmlTag>(element: HtmlRoot<R>) -> HtmlRoot<R> {
-        element
-    }
+
 }
 
 impl From<HtmlBody> for HtmlRootContent<Homemade, ()> {
@@ -86,9 +84,7 @@ impl HeadTag for Homemade {
             .push(HtmlMeta::<Viewport>::new("width=device-width, initial-scale=1").bake());
     }
 
-    fn decoration_recipe<R: HeadTag>(element: HtmlHead<R>) -> HtmlHead<R> {
-        element
-    }
+
 }
 
 /// [`HtmlHead`] content for the [`Base`] recipe

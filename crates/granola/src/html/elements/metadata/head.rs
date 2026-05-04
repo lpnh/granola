@@ -41,22 +41,16 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <head
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
+///   {{- attrs -}}
 /// >{{ content | kirei(2) }}</head>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = HeadTag, content = Cow<'static, str>)]
 pub struct HtmlHead<M: HeadTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
 }
 
 /// Shorthand for `HtmlHead<()>`.

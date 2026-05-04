@@ -29,19 +29,19 @@ use crate::prelude::*;
 pub struct Get;
 
 impl FormTag for Get {
-    fn decoration_recipe<R: FormTag>(form: HtmlForm<R>) -> HtmlForm<R> {
-        form.method("get")
+    fn specific_recipe(form_attrs: &mut FormAttrs) {
+        form_attrs.method(FormMethod::Get);
     }
 }
 
 impl ButtonTag for Get {
-    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
-        button.formmethod("get")
+    fn specific_recipe(specific: &mut SpecificAttrs) {
+        specific.set_attr("formmethod", FormMethod::Get);
     }
 }
 
 impl InputTag for Get {
-    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
-        input.formmethod("get")
+    fn specific_recipe(specific: &mut SpecificAttrs) {
+        specific.set_attr("formmethod", FormMethod::Get);
     }
 }

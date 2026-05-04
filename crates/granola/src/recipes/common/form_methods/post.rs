@@ -29,19 +29,19 @@ use crate::prelude::*;
 pub struct Post;
 
 impl FormTag for Post {
-    fn decoration_recipe<R: FormTag>(form: HtmlForm<R>) -> HtmlForm<R> {
-        form.method("post")
+    fn specific_recipe(form_attrs: &mut FormAttrs) {
+        form_attrs.method(FormMethod::Post);
     }
 }
 
 impl ButtonTag for Post {
-    fn decoration_recipe<R: ButtonTag>(button: HtmlButton<R>) -> HtmlButton<R> {
-        button.formmethod("post")
+    fn specific_recipe(specific: &mut SpecificAttrs) {
+        specific.set_attr("formmethod", FormMethod::Post);
     }
 }
 
 impl InputTag for Post {
-    fn decoration_recipe<R: InputTag>(input: HtmlInput<R>) -> HtmlInput<R> {
-        input.formmethod("post")
+    fn specific_recipe(specific: &mut SpecificAttrs) {
+        specific.set_attr("formmethod", FormMethod::Post);
     }
 }

@@ -34,23 +34,15 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <p
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</p>
+/// <p{{ attrs }}>{{ content | kirei(2) }}</p>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = PTag, content = Cow<'static, str>)]
 pub struct HtmlP<M: PTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
 }
 
 /// Shorthand for `HtmlP<()>`.

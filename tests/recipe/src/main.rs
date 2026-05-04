@@ -23,8 +23,8 @@ impl HtmlTag for FooRecipe {
         }
     }
 
-    fn decoration_recipe<R: HtmlTag>(element: HtmlRoot<R>) -> HtmlRoot<R> {
-        element.class("dark").id("foo-html")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.class("dark").id("foo-html");
     }
 }
 
@@ -35,14 +35,14 @@ impl PTag for FooRecipe {
         *content = bake_block![content, "Content from FooRecipe"];
     }
 
-    fn decoration_recipe<R: PTag>(element: HtmlP<R>) -> HtmlP<R> {
-        element.class("text-lg").id("foo-p")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.class("text-lg").id("foo-p");
     }
 }
 
 impl ButtonTag for FooRecipe {
-    fn decoration_recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
-        element.class("rounded-full").id("foo-button")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.class("rounded-full").id("foo-button");
     }
 }
 
@@ -52,22 +52,22 @@ struct BarRecipe;
 impl HtmlTag for BarRecipe {
     type Content = HtmlRootContent<Homemade, ()>;
 
-    fn decoration_recipe<R: HtmlTag>(element: HtmlRoot<R>) -> HtmlRoot<R> {
-        element.add_data("foo", "bar").id("bar-html")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.add_data("foo", "bar").id("bar-html");
     }
 }
 
 impl PTag for BarRecipe {
     type Content = String;
 
-    fn decoration_recipe<R: PTag>(element: HtmlP<R>) -> HtmlP<R> {
-        element.add_data("foo", "bar").id("bar-p")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.add_data("foo", "bar").id("bar-p");
     }
 }
 
 impl ButtonTag for BarRecipe {
-    fn decoration_recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
-        element.add_data("foo", "bar").id("bar-button")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.add_data("foo", "bar").id("bar-button");
     }
 }
 
@@ -77,8 +77,8 @@ struct OneLastRecipe;
 impl HtmlTag for OneLastRecipe {
     type Content = HtmlRootContent<Homemade, ()>;
 
-    fn decoration_recipe<R: HtmlTag>(element: HtmlRoot<R>) -> HtmlRoot<R> {
-        element.add_data("recipe", "last")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.add_data("recipe", "last");
     }
 }
 
@@ -89,14 +89,14 @@ impl PTag for OneLastRecipe {
         *content = bake_newline!("Content from OneLastRecipe");
     }
 
-    fn decoration_recipe<R: PTag>(element: HtmlP<R>) -> HtmlP<R> {
-        element.add_data("recipe", "last")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.add_data("recipe", "last");
     }
 }
 
 impl ButtonTag for OneLastRecipe {
-    fn decoration_recipe<R: ButtonTag>(element: HtmlButton<R>) -> HtmlButton<R> {
-        element.add_data("recipe", "last")
+    fn decoration_recipe(attrs: &mut Attrs) {
+        attrs.add_data("recipe", "last");
     }
 }
 
@@ -249,7 +249,7 @@ mod recipe_tests {
 
         assert_eq!(
             button.bake(),
-            r#"<button class="rounded-full" id="bar-button" type="reset" data-foo="bar" data-recipe="last"></button>"#
+            r#"<button class="rounded-full" id="bar-button" data-foo="bar" data-recipe="last" type="reset"></button>"#
         );
         assert_eq!(
             p.bake(),
@@ -315,7 +315,7 @@ mod recipe_tests {
 
         assert_eq!(
             button.bake(),
-            r#"<button class="rounded-full" id="bar-button" type="reset" data-foo="bar" data-recipe="last">Dismiss</button>"#
+            r#"<button class="rounded-full" id="bar-button" data-foo="bar" data-recipe="last" type="reset">Dismiss</button>"#
         );
         assert_eq!(
             html_root.bake(),

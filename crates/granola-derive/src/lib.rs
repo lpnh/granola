@@ -88,12 +88,14 @@ pub fn granola_attrs_derive(input: TokenStream) -> TokenStream {
 struct RecipeArgs {
     name: Ident,
     content: Option<Type>,
+    specific: Option<Type>,
 }
 
 impl Parse for RecipeArgs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let mut name: Option<Ident> = None;
         let mut content: Option<Type> = None;
+        let mut specific: Option<Type> = None;
 
         while !input.is_empty() {
             let key: Ident = input.parse()?;
@@ -103,6 +105,7 @@ impl Parse for RecipeArgs {
             match key.to_string().as_str() {
                 "name" => name = Some(input.parse()?),
                 "content" => content = Some(input.parse()?),
+                "specific" => specific = Some(input.parse()?),
                 _ => return Err(syn::Error::new(key_span, format!("unknown key `{key}`"))),
             }
 
@@ -119,6 +122,7 @@ impl Parse for RecipeArgs {
                 )
             })?,
             content,
+            specific,
         })
     }
 }
@@ -142,8 +146,8 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
     let trait_name = &args.name;
 
-    if let Some(default_content) = args.content {
-        quote! {
+    match (args.content, args.specific) {
+        (Some(default_content), Some(specific_type)) => quote! {
             pub trait #trait_name:
                 ::std::default::Default
                 + ::std::clone::Clone
@@ -157,10 +161,8 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     + ::std::fmt::Debug = #default_content;
 
                 fn content_recipe(_content: &mut Self::Content) {}
-
-                fn decoration_recipe<R: #trait_name>(element: #struct_name<R>) -> #struct_name<R> {
-                    element
-                }
+                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
+                fn specific_recipe(_specific: &mut #specific_type) {}
             }
 
             impl #trait_name for () {}
@@ -177,8 +179,20 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     B::content_recipe(content);
                 }
 
-                fn decoration_recipe<R: #trait_name>(element: #struct_name<R>) -> #struct_name<R> {
-                    B::decoration_recipe(A::decoration_recipe(element))
+                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
+                    A::decoration_recipe(attrs);
+                    B::decoration_recipe(attrs);
+                }
+
+                fn specific_recipe(specific: &mut #specific_type) {
+                    A::specific_recipe(specific);
+                    B::specific_recipe(specific);
+                }
+            }
+
+            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
+                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
+                    &mut self.attrs
                 }
             }
 
@@ -192,43 +206,66 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 pub fn from_recipe() -> Self {
                     let mut content = <M::Content as ::std::default::Default>::default();
                     M::content_recipe(&mut content);
-                    let element = Self {
-                        content,
-                        ..::std::default::Default::default()
-                    };
-                    M::decoration_recipe(element)
+                    let mut attrs = crate::html::Attrs::default();
+                    M::decoration_recipe(&mut attrs);
+                    let mut specific_attrs = #specific_type::default();
+                    M::specific_recipe(&mut specific_attrs);
+                    Self { content, attrs, specific_attrs, ..::std::default::Default::default() }
                 }
 
                 pub fn new(content: impl ::std::convert::Into<M::Content>) -> Self {
                     let mut content = content.into();
                     M::content_recipe(&mut content);
-                    let element = Self {
-                        content,
-                        ..::std::default::Default::default()
-                    };
-                    M::decoration_recipe(element)
+                    let mut attrs = crate::html::Attrs::default();
+                    M::decoration_recipe(&mut attrs);
+                    let mut specific_attrs = #specific_type::default();
+                    M::specific_recipe(&mut specific_attrs);
+                    Self { content, attrs, specific_attrs, ..::std::default::Default::default() }
                 }
             }
         }
-        .into()
-    } else {
-        quote! {
+        .into(),
+
+        (Some(default_content), None) => quote! {
             pub trait #trait_name:
                 ::std::default::Default
                 + ::std::clone::Clone
                 + ::std::fmt::Debug
                 + 'static
             {
-                fn decoration_recipe<R: #trait_name>(element: #struct_name<R>) -> #struct_name<R> {
-                    element
-                }
+                type Content:
+                    ::askama::FastWritable
+                    + ::std::default::Default
+                    + ::std::clone::Clone
+                    + ::std::fmt::Debug = #default_content;
+
+                fn content_recipe(_content: &mut Self::Content) {}
+                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
             }
 
             impl #trait_name for () {}
 
-            impl<A: #trait_name, B: #trait_name> #trait_name for (A, B) {
-                fn decoration_recipe<R: #trait_name>(element: #struct_name<R>) -> #struct_name<R> {
-                    B::decoration_recipe(A::decoration_recipe(element))
+            impl<A, B> #trait_name for (A, B)
+            where
+                A: #trait_name,
+                B: #trait_name<Content = A::Content>,
+            {
+                type Content = A::Content;
+
+                fn content_recipe(content: &mut Self::Content) {
+                    A::content_recipe(content);
+                    B::content_recipe(content);
+                }
+
+                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
+                    A::decoration_recipe(attrs);
+                    B::decoration_recipe(attrs);
+                }
+            }
+
+            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
+                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
+                    &mut self.attrs
                 }
             }
 
@@ -240,13 +277,112 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 }
 
                 pub fn from_recipe() -> Self {
-                    let element = Self {
-                        ..::std::default::Default::default()
-                    };
-                    M::decoration_recipe(element)
+                    let mut content = <M::Content as ::std::default::Default>::default();
+                    M::content_recipe(&mut content);
+                    let mut attrs = crate::html::Attrs::default();
+                    M::decoration_recipe(&mut attrs);
+                    Self { content, attrs, ..::std::default::Default::default() }
+                }
+
+                pub fn new(content: impl ::std::convert::Into<M::Content>) -> Self {
+                    let mut content = content.into();
+                    M::content_recipe(&mut content);
+                    let mut attrs = crate::html::Attrs::default();
+                    M::decoration_recipe(&mut attrs);
+                    Self { content, attrs, ..::std::default::Default::default() }
                 }
             }
         }
-        .into()
+        .into(),
+
+        (None, Some(specific_type)) => quote! {
+            pub trait #trait_name:
+                ::std::default::Default
+                + ::std::clone::Clone
+                + ::std::fmt::Debug
+                + 'static
+            {
+                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
+                fn specific_recipe(_specific: &mut #specific_type) {}
+            }
+
+            impl #trait_name for () {}
+
+            impl<A: #trait_name, B: #trait_name> #trait_name for (A, B) {
+                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
+                    A::decoration_recipe(attrs);
+                    B::decoration_recipe(attrs);
+                }
+
+                fn specific_recipe(specific: &mut #specific_type) {
+                    A::specific_recipe(specific);
+                    B::specific_recipe(specific);
+                }
+            }
+
+            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
+                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
+                    &mut self.attrs
+                }
+            }
+
+            impl #impl_generics #struct_name #ty_generics #where_clause {
+                pub fn empty() -> Self {
+                    Self {
+                        ..::std::default::Default::default()
+                    }
+                }
+
+                pub fn from_recipe() -> Self {
+                    let mut attrs = crate::html::Attrs::default();
+                    M::decoration_recipe(&mut attrs);
+                    let mut specific_attrs = #specific_type::default();
+                    M::specific_recipe(&mut specific_attrs);
+                    Self { attrs, specific_attrs, ..::std::default::Default::default() }
+                }
+            }
+        }
+        .into(),
+
+        (None, None) => quote! {
+            pub trait #trait_name:
+                ::std::default::Default
+                + ::std::clone::Clone
+                + ::std::fmt::Debug
+                + 'static
+            {
+                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
+            }
+
+            impl #trait_name for () {}
+
+            impl<A: #trait_name, B: #trait_name> #trait_name for (A, B) {
+                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
+                    A::decoration_recipe(attrs);
+                    B::decoration_recipe(attrs);
+                }
+            }
+
+            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
+                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
+                    &mut self.attrs
+                }
+            }
+
+            impl #impl_generics #struct_name #ty_generics #where_clause {
+                pub fn empty() -> Self {
+                    Self {
+                        ..::std::default::Default::default()
+                    }
+                }
+
+                pub fn from_recipe() -> Self {
+                    let mut attrs = crate::html::Attrs::default();
+                    M::decoration_recipe(&mut attrs);
+                    Self { attrs, ..::std::default::Default::default() }
+                }
+            }
+        }
+        .into(),
     }
 }

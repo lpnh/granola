@@ -45,99 +45,138 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <form
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</form>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = FormTag, content = Cow<'static, str>)]
+#[recipe(name = FormTag, content = Cow<'static, str>, specific = FormAttrs)]
 pub struct HtmlForm<M: FormTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: FormAttrs,
 }
 
-impl<M: FormTag> HtmlForm<M> {
+/// # Askama template
+///
+/// ```askama
+/// {{- accept_charset | bake_attr("accept-charset") -}}
+/// {{- action | bake_attr("action") -}}
+/// {{- autocomplete | bake_attr("autocomplete") -}}
+/// {{- enctype | bake_attr("enctype") -}}
+/// {{- method | bake_attr("method") -}}
+/// {{- name | bake_attr("name") -}}
+/// {{- novalidate | bake_bool_attr("novalidate") -}}
+/// {{- rel | bake_attr("rel") -}}
+/// {{- target | bake_attr("target") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct FormAttrs {
+    pub accept_charset: Option<Cow<'static, str>>,
+    pub action: Option<Cow<'static, str>>,
+    pub autocomplete: Option<Cow<'static, str>>,
+    pub enctype: Option<Cow<'static, str>>,
+    pub method: Option<Cow<'static, str>>,
+    pub name: Option<Cow<'static, str>>,
+    pub novalidate: bool,
+    pub rel: Option<Cow<'static, str>>,
+    pub target: Option<Cow<'static, str>>,
+}
+
+pub trait HasFormAttrs: Sized {
+    fn form_attrs_mut(&mut self) -> &mut FormAttrs;
+
     /// Character encodings to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#accept-charset)
-    pub fn accept_charset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("accept-charset", value);
+    fn accept_charset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().accept_charset = Some(value.into());
         self
     }
 
     /// URL to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#action)
-    pub fn action(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("action", value);
+    fn action(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().action = Some(value.into());
         self
     }
 
     /// Default setting for autofill feature for controls in the form.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
-    pub fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("autocomplete", value);
+    fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().autocomplete = Some(value.into());
         self
     }
 
     /// Entry list encoding type to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#enctype)
-    pub fn enctype(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("enctype", value);
+    fn enctype(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().enctype = Some(value.into());
         self
     }
 
     /// Variant to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#method)
-    pub fn method(mut self, value: impl Into<FormMethod>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("method", value.into());
+    fn method(mut self, value: impl Into<FormMethod>) -> Self {
+        self.form_attrs_mut().method = Some(value.into().into());
         self
     }
 
     /// Name of form to use in the `document.forms` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#name)
-    pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value);
+    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().name = Some(value.into());
         self
     }
 
     /// Bypass form control validation for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#novalidate)
-    pub fn novalidate(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("novalidate");
-        }
+    fn novalidate(mut self, value: bool) -> Self {
+        self.form_attrs_mut().novalidate = value;
         self
     }
 
     /// Controls the annotations and what kinds of links the form creates.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
+    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().rel = Some(value.into());
         self
     }
 
     /// Navigable for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#target)
-    pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value);
+    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().target = Some(value.into());
         self
+    }
+}
+
+impl HasFormAttrs for FormAttrs {
+    fn form_attrs_mut(&mut self) -> &mut FormAttrs {
+        self
+    }
+}
+
+impl HasFormAttrs for &mut FormAttrs {
+    fn form_attrs_mut(&mut self) -> &mut FormAttrs {
+        self
+    }
+}
+
+impl<M: FormTag> HasFormAttrs for HtmlForm<M> {
+    fn form_attrs_mut(&mut self) -> &mut FormAttrs {
+        &mut self.specific_attrs
     }
 }
 
