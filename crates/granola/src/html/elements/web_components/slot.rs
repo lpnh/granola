@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait SlotTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlSlot<Self>) -> HtmlSlot<Self> {
-        element
-    }
-}
-
-impl SlotTag for () {}
 
 /// The HTML `<slot>` element.
 ///
@@ -41,51 +31,66 @@ impl SlotTag for () {}
 ///
 /// ```askama
 /// <slot
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</slot>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = SlotTag, content = Cow<'static, str>, specific = SlotAttrs)]
 pub struct HtmlSlot<M: SlotTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: SlotAttrs,
 }
 
-impl<M: SlotTag> HtmlSlot<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<slot>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/slot#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- name | bake_attr("name") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct SlotAttrs {
+    pub name: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasSlotAttrs: Sized {
+    fn slot_attrs_mut(&mut self) -> &mut SlotAttrs;
 
     /// Name of shadow tree slot.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/slot#name)
-    pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value);
+    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.slot_attrs_mut().name = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlSlot<()>`.
+impl HasSlotAttrs for SlotAttrs {
+    fn slot_attrs_mut(&mut self) -> &mut SlotAttrs {
+        self
+    }
+}
+
+impl HasSlotAttrs for &mut SlotAttrs {
+    fn slot_attrs_mut(&mut self) -> &mut SlotAttrs {
+        self
+    }
+}
+
+impl<M: SlotTag> HasSlotAttrs for HtmlSlot<M> {
+    fn slot_attrs_mut(&mut self) -> &mut SlotAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlSlot`.
 ///
 /// # Example
 ///
@@ -117,6 +122,7 @@ macro_rules! slot {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlSlot::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlSlot::<()>::new($crate::bake_newline!($content))
     };

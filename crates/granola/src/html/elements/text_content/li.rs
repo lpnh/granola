@@ -1,21 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// menuitem, menuitemcheckbox, menuitemradio, option, none, presentation,
-///     radio, separator, tab, treeitem
-pub trait LiTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlLi<Self>) -> HtmlLi<Self> {
-        element
-    }
-}
-
-impl LiTag for () {}
 
 /// The HTML `<li>` element.
 ///
@@ -49,47 +35,66 @@ impl LiTag for () {}
 ///
 /// ```askama
 /// <li
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</li>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = LiTag, content = Cow<'static, str>, specific = LiAttrs)]
 pub struct HtmlLi<M: LiTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// menuitem, menuitemcheckbox, menuitemradio, option, none, presentation,
+    ///     radio, separator, tab, treeitem
+    pub attrs: Attrs,
+    pub specific_attrs: LiAttrs,
 }
 
-impl<M: LiTag> HtmlLi<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<li>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/li#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- value | bake_attr("value") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct LiAttrs {
+    value: Option<u32>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasLiAttrs: Sized {
+    fn li_attrs_mut(&mut self) -> &mut LiAttrs;
 
     /// Ordinal value of the list item.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/li#value)
-    pub fn value(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("value", value.to_string());
+    fn value(mut self, value: u32) -> Self {
+        self.li_attrs_mut().value = Some(value);
         self
+    }
+}
+
+impl HasLiAttrs for LiAttrs {
+    fn li_attrs_mut(&mut self) -> &mut LiAttrs {
+        self
+    }
+}
+
+impl HasLiAttrs for &mut LiAttrs {
+    fn li_attrs_mut(&mut self) -> &mut LiAttrs {
+        self
+    }
+}
+
+impl<M: LiTag> HasLiAttrs for HtmlLi<M> {
+    fn li_attrs_mut(&mut self) -> &mut LiAttrs {
+        &mut self.specific_attrs
     }
 }
 
@@ -102,7 +107,7 @@ impl<M: LiTag> HtmlLi<M> {
 /// {{ li -}}
 /// {%- endfor -%}
 /// ```
-#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
+#[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ListItems {
     items: Vec<HtmlLi>,
@@ -122,7 +127,7 @@ impl From<HtmlLi> for ListItems {
     }
 }
 
-/// Shorthand for `HtmlLi<()>`.
+/// Shorthand for `HtmlLi`.
 ///
 /// # Example
 ///
@@ -158,6 +163,7 @@ macro_rules! li {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlLi::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlLi::<()>::new($crate::bake_newline!($content))
     };

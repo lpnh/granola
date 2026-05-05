@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// tab, presentation or none
-pub trait H4Tag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlH4<Self>) -> HtmlH4<Self> {
-        element
-    }
-}
-
-impl H4Tag for () {}
 
 /// The HTML `<h4>` element.
 ///
@@ -43,42 +30,21 @@ impl H4Tag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <h4
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</h4>
+/// <h4{{ attrs }}>{{ content | kirei(2) }}</h4>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = H4Tag, content = Cow<'static, str>)]
 pub struct HtmlH4<M: H4Tag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// tab, presentation or none
+    pub attrs: Attrs,
 }
 
-impl<M: H4Tag> HtmlH4<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlH4<()>`.
+/// Shorthand for `HtmlH4`.
 ///
 /// # Example
 ///
@@ -110,6 +76,7 @@ macro_rules! h4 {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlH4::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlH4::<()>::new($crate::bake_newline!($content))
     };

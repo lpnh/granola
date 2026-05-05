@@ -115,7 +115,7 @@ impl<B: BodyTag> From<HtmlBody<B>> for HtmlRootContent<(), B> {
     }
 }
 
-/// Shorthand for `HtmlRoot<()>`.
+/// Shorthand for `HtmlRoot`.
 ///
 /// # Example
 ///

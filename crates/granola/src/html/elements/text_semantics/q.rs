@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait QTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlQ<Self>) -> HtmlQ<Self> {
-        element
-    }
-}
-
-impl QTag for () {}
 
 /// The HTML `<q>` element.
 ///
@@ -47,51 +34,69 @@ impl QTag for () {}
 ///
 /// ```askama
 /// <q
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</q>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = QTag, content = Cow<'static, str>)]
 pub struct HtmlQ<M: QTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
+    pub specific_attrs: QAttrs,
 }
 
-impl<M: QTag> HtmlQ<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<q>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- cite | bake_attr("cite") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct QAttrs {
+    pub cite: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasQAttrs: Sized {
+    fn q_attrs_mut(&mut self) -> &mut QAttrs;
 
     /// Link to the source of the quotation or more information about the edit.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q#cite)
-    pub fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("cite", value);
+    fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.q_attrs_mut().cite = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlQ<()>`.
+impl HasQAttrs for QAttrs {
+    fn q_attrs_mut(&mut self) -> &mut QAttrs {
+        self
+    }
+}
+
+impl HasQAttrs for &mut QAttrs {
+    fn q_attrs_mut(&mut self) -> &mut QAttrs {
+        self
+    }
+}
+
+impl<M: QTag> HasQAttrs for HtmlQ<M> {
+    fn q_attrs_mut(&mut self) -> &mut QAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlQ`.
 ///
 /// # Example
 ///
@@ -126,6 +131,7 @@ macro_rules! q {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlQ::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlQ::<()>::new($crate::bake_newline!($content))
     };

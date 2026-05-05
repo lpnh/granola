@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait BlockquoteTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlBlockquote<Self>) -> HtmlBlockquote<Self> {
-        element
-    }
-}
-
-impl BlockquoteTag for () {}
 
 /// The HTML `<blockquote>` element.
 ///
@@ -61,51 +48,69 @@ impl BlockquoteTag for () {}
 ///
 /// ```askama
 /// <blockquote
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</blockquote>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = BlockquoteTag, content = Cow<'static, str>, specific = BlockquoteAttrs)]
 pub struct HtmlBlockquote<M: BlockquoteTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
+    pub specific_attrs: BlockquoteAttrs,
 }
 
-impl<M: BlockquoteTag> HtmlBlockquote<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<blockquote>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- cite | bake_attr("cite") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct BlockquoteAttrs {
+    pub cite: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasBlockquoteAttrs: Sized {
+    fn blockquote_attrs_mut(&mut self) -> &mut BlockquoteAttrs;
 
     /// Link to the source of the quotation or more information about the edit.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote#cite)
-    pub fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("cite", value);
+    fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.blockquote_attrs_mut().cite = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlBlockquote<()>`.
+impl HasBlockquoteAttrs for BlockquoteAttrs {
+    fn blockquote_attrs_mut(&mut self) -> &mut BlockquoteAttrs {
+        self
+    }
+}
+
+impl HasBlockquoteAttrs for &mut BlockquoteAttrs {
+    fn blockquote_attrs_mut(&mut self) -> &mut BlockquoteAttrs {
+        self
+    }
+}
+
+impl<M: BlockquoteTag> HasBlockquoteAttrs for HtmlBlockquote<M> {
+    fn blockquote_attrs_mut(&mut self) -> &mut BlockquoteAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlBlockquote`.
 ///
 /// # Example
 ///

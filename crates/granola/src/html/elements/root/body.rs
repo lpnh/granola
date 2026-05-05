@@ -43,7 +43,7 @@ pub struct HtmlBody<M: BodyTag = ()> {
     pub attrs: Attrs,
 }
 
-/// Shorthand for `HtmlBody<()>`.
+/// Shorthand for `HtmlBody`.
 ///
 /// # Example
 ///
@@ -77,6 +77,7 @@ macro_rules! body {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlBody::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlBody::<()>::new($crate::bake_newline!($content))
     };

@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// feed, none, note, presentation, region, search
-pub trait AsideTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlAside<Self>) -> HtmlAside<Self> {
-        element
-    }
-}
-
-impl AsideTag for () {}
 
 /// The HTML `<aside>` element.
 ///
@@ -48,42 +35,21 @@ impl AsideTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <aside
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</aside>
+/// <aside{{ attrs }}>{{ content | kirei(2) }}</aside>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = AsideTag, content = Cow<'static, str>)]
 pub struct HtmlAside<M: AsideTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// feed, none, note, presentation, region, search
+    pub attrs: Attrs,
 }
 
-impl<M: AsideTag> HtmlAside<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlAside<()>`.
+/// Shorthand for `HtmlAside`.
 ///
 /// # Example
 ///

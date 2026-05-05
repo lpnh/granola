@@ -1,18 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
-use crate::prelude::*;
-
-/// # Permitted ARIA roles
-///
-/// application, document, img, none, presentation
-pub trait EmbedTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlEmbed<Self>) -> HtmlEmbed<Self> {
-        element
-    }
-}
-
-impl EmbedTag for () {}
+use crate::{filters, prelude::*};
 
 /// The HTML `<embed />` element.
 ///
@@ -45,70 +34,115 @@ impl EmbedTag for () {}
 ///
 /// ```askama
 /// <embed
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = EmbedTag, specific = EmbedAttrs)]
 pub struct HtmlEmbed<M: EmbedTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// application, document, img, none, presentation
+    pub attrs: Attrs,
+    pub specific_attrs: EmbedAttrs,
 }
 
 impl<M: EmbedTag> HtmlEmbed<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().src(src);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = EmbedAttrs::default().src(src);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
 
-    pub fn empty() -> Self {
-        let element = Self::default();
+/// The HTML `<embed />` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- height | bake_attr("height") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- mime_type | bake_attr("type") -}}
+/// {{- width | bake_attr("width") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct EmbedAttrs {
+    pub height: Option<u32>,
+    pub src: Option<Cow<'static, str>>,
+    pub mime_type: Option<Cow<'static, str>>,
+    pub width: Option<u32>,
+}
 
-        M::recipe(element)
-    }
+pub trait HasEmbedAttrs: Sized {
+    fn embed_attrs_mut(&mut self) -> &mut EmbedAttrs;
 
     /// Vertical dimension.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#height)
-    pub fn height(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("height", value.to_string());
+    fn height(mut self, value: u32) -> Self {
+        self.embed_attrs_mut().height = Some(value);
         self
     }
 
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#src)
-    pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("src", value);
+    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.embed_attrs_mut().src = Some(value.into());
         self
     }
 
     /// Type of embedded resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#type)
-    pub fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("type", value);
+    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.embed_attrs_mut().mime_type = Some(value.into());
         self
     }
 
     /// Horizontal dimension.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#width)
-    pub fn width(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("width", value.to_string());
+    fn width(mut self, value: u32) -> Self {
+        self.embed_attrs_mut().width = Some(value);
         self
     }
 }
 
-/// Shorthand for `HtmlEmbed<()>`.
+impl HasEmbedAttrs for EmbedAttrs {
+    fn embed_attrs_mut(&mut self) -> &mut EmbedAttrs {
+        self
+    }
+}
+
+impl HasEmbedAttrs for &mut EmbedAttrs {
+    fn embed_attrs_mut(&mut self) -> &mut EmbedAttrs {
+        self
+    }
+}
+
+impl<M: EmbedTag> HasEmbedAttrs for HtmlEmbed<M> {
+    fn embed_attrs_mut(&mut self) -> &mut EmbedAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlEmbed`.
 ///
 /// # Example
 ///
@@ -139,5 +173,12 @@ macro_rules! embed {
     };
     ($src: expr $(,)?) => {
         $crate::html::HtmlEmbed::<()>::new($src)
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlDel::<$crate::rec!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $src:expr $(,)?) => {
+        $crate::html::HtmlDel::<$crate::rec!($($r),+)>::new($src)
     };
 }

@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let charset: HtmlMeta<Charset> = HtmlMeta::empty();
+/// let charset: HtmlMeta<Charset> = HtmlMeta::from_recipe();
 ///
 /// assert_eq!(charset.bake(),
 /// r#"<meta charset="utf-8" />"#);
@@ -16,8 +16,8 @@ use crate::prelude::*;
 pub struct Charset;
 
 impl MetaTag for Charset {
-    fn recipe(m: HtmlMeta<Self>) -> HtmlMeta<Self> {
-        m.charset()
+    fn specific_recipe(meta_attrs: &mut MetaAttrs) {
+        meta_attrs.charset();
     }
 }
 
@@ -37,8 +37,8 @@ impl MetaTag for Charset {
 pub struct Viewport;
 
 impl MetaTag for Viewport {
-    fn recipe(meta: HtmlMeta<Self>) -> HtmlMeta<Self> {
-        meta.name("viewport")
+    fn specific_recipe(meta_attrs: &mut MetaAttrs) {
+        meta_attrs.name("viewport");
     }
 }
 
@@ -58,7 +58,7 @@ impl MetaTag for Viewport {
 pub struct Robots;
 
 impl MetaTag for Robots {
-    fn recipe(meta: HtmlMeta<Self>) -> HtmlMeta<Self> {
-        meta.name("robots")
+    fn specific_recipe(meta_attrs: &mut MetaAttrs) {
+        meta_attrs.name("robots");
     }
 }

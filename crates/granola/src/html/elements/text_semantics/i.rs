@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait ITag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlI<Self>) -> HtmlI<Self> {
-        element
-    }
-}
-
-impl ITag for () {}
 
 /// The HTML `<i>` element.
 ///
@@ -45,42 +32,21 @@ impl ITag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <i
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</i>
+/// <i{{ attrs }}>{{ content | kirei(2) }}</i>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ITag, content = Cow<'static, str>)]
 pub struct HtmlI<M: ITag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
 }
 
-impl<M: ITag> HtmlI<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlI<()>`.
+/// Shorthand for `HtmlI`.
 ///
 /// # Example
 ///

@@ -12,7 +12,7 @@ use super::{GlobalAriaAttrs, HasGlobalAriaAttrs};
 ///
 /// ```askama
 /// {{- global_attrs -}}
-/// {{- data_attrs -}}
+/// {{- custom_data_attrs -}}
 /// {{- event_handlers -}}
 /// {{- global_aria_attrs -}}
 /// ```
@@ -20,7 +20,7 @@ use super::{GlobalAriaAttrs, HasGlobalAriaAttrs};
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct Attrs {
     pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
     pub event_handlers: EventHandlers,
     pub global_aria_attrs: GlobalAriaAttrs,
 }
@@ -31,9 +31,9 @@ impl HasGlobalAttrs for Attrs {
     }
 }
 
-impl HasDataAttrs for Attrs {
-    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
-        &mut self.data_attrs
+impl HasCustomDataAttrs for Attrs {
+    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
+        &mut self.custom_data_attrs
     }
 }
 
@@ -65,9 +65,9 @@ impl<T: HasAttrs> HasGlobalAttrs for T {
     }
 }
 
-impl<T: HasAttrs> HasDataAttrs for T {
-    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
-        self.attrs_mut().data_attrs_mut()
+impl<T: HasAttrs> HasCustomDataAttrs for T {
+    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
+        self.attrs_mut().custom_data_attrs_mut()
     }
 }
 
@@ -500,12 +500,12 @@ impl SpecificAttrs {
 /// use granola::prelude::*;
 ///
 /// let img: HtmlImg = HtmlImg::from_src("ship.png")
-///     .add_data("ship-id", "1337")
-///     .add_data("weapons", "laserI laserII")
-///     .add_data("shields", "72%")
-///     .add_data("x", "414354")
-///     .add_data("y", "85160")
-///     .add_data("z", "31940");
+///     .custom_data("ship-id", "1337")
+///     .custom_data("weapons", "laserI laserII")
+///     .custom_data("shields", "72%")
+///     .custom_data("x", "414354")
+///     .custom_data("y", "85160")
+///     .custom_data("z", "31940");
 ///
 /// assert_eq!(img.bake(),
 /// r#"<img src="ship.png" data-ship-id="1337" data-weapons="laserI laserII" data-shields="72%" data-x="414354" data-y="85160" data-z="31940" />"#);
@@ -518,25 +518,26 @@ impl SpecificAttrs {
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct DataAttrs {
+pub struct CustomDataAttrs {
     map: IndexMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
-impl DataAttrs {
+impl CustomDataAttrs {
     fn insert(&mut self, attr: Cow<'static, str>, value: Cow<'static, str>) {
         self.map.insert(attr, value);
     }
 }
 
-pub trait HasDataAttrs: Sized {
-    fn data_attrs_mut(&mut self) -> &mut DataAttrs;
+pub trait HasCustomDataAttrs: Sized {
+    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs;
 
-    fn add_data(
+    fn custom_data(
         mut self,
         attr: impl Into<Cow<'static, str>>,
         value: impl Into<Cow<'static, str>>,
     ) -> Self {
-        self.data_attrs_mut().insert(attr.into(), value.into());
+        self.custom_data_attrs_mut()
+            .insert(attr.into(), value.into());
         self
     }
 }

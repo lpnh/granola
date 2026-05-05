@@ -1,15 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
-use crate::prelude::*;
-
-pub trait TrackTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlTrack<Self>) -> HtmlTrack<Self> {
-        element
-    }
-}
-
-impl TrackTag for () {}
+use crate::{filters, prelude::*};
 
 /// The HTML `<track />` element.
 ///
@@ -41,80 +33,122 @@ impl TrackTag for () {}
 ///
 /// ```askama
 /// <track
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = TrackTag, specific = TrackAttrs)]
 pub struct HtmlTrack<M: TrackTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: TrackAttrs,
 }
 
 impl<M: TrackTag> HtmlTrack<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().src(src);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = TrackAttrs::default().src(src);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
 
-    pub fn empty() -> Self {
-        let element = Self::default();
+/// The HTML `<track />` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- enabled | bake_bool_attr("default") -}}
+/// {{- kind | bake_attr("kind") -}}
+/// {{- label | bake_attr("label") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- srclang | bake_attr("srclang") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct TrackAttrs {
+    pub enabled: bool,
+    pub kind: Option<Cow<'static, str>>,
+    pub label: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
+    pub srclang: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
+pub trait HasTrackAttrs: Sized {
+    fn track_attrs_mut(&mut self) -> &mut TrackAttrs;
 
     /// Enable the track if no other text track is more suitable.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#default)
-    pub fn enabled(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("default");
-        }
+    fn enabled(mut self, value: bool) -> Self {
+        self.track_attrs_mut().enabled = value;
         self
     }
 
     /// The type of text track.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#kind)
-    pub fn kind(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("kind", value);
+    fn kind(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.track_attrs_mut().kind = Some(value.into());
         self
     }
 
     /// User-visible label.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#label)
-    pub fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("label", value);
+    fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.track_attrs_mut().label = Some(value.into());
         self
     }
 
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#src)
-    pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("src", value);
+    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.track_attrs_mut().src = Some(value.into());
         self
     }
 
     /// Language of the text track.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#srclang)
-    pub fn srclang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("srclang", value);
+    fn srclang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.track_attrs_mut().srclang = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlTrack<()>`.
+impl HasTrackAttrs for TrackAttrs {
+    fn track_attrs_mut(&mut self) -> &mut TrackAttrs {
+        self
+    }
+}
+
+impl HasTrackAttrs for &mut TrackAttrs {
+    fn track_attrs_mut(&mut self) -> &mut TrackAttrs {
+        self
+    }
+}
+
+impl<M: TrackTag> HasTrackAttrs for HtmlTrack<M> {
+    fn track_attrs_mut(&mut self) -> &mut TrackAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlTrack`.
 ///
 /// # Example
 ///

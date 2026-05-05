@@ -1,22 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// when href attribute is present: button, checkbox, menuitem, menuitemcheckbox,
-/// menuitemradio, option, radio, switch, tab, treeitem
-/// when href attribute is not present: any
-pub trait ATag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlA<Self>) -> HtmlA<Self> {
-        element
-    }
-}
-
-impl ATag for () {}
 
 /// The HTML `<a>` element.
 ///
@@ -46,107 +31,143 @@ impl ATag for () {}
 ///
 /// ```askama
 /// <a
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</a>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ATag, content = Cow<'static, str>, specific = AAttrs)]
 pub struct HtmlA<M: ATag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// when href attribute is present: button, checkbox, menuitem, menuitemcheckbox,
+    /// menuitemradio, option, radio, switch, tab, treeitem
+    /// when href attribute is not present: any
+    pub attrs: Attrs,
+    pub specific_attrs: AAttrs,
 }
 
-impl<M: ATag> HtmlA<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<todo>` element specific attributes.
+///
+/// [MDN Documentation]()
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- download | bake_attr("download") -}}
+/// {{- href | bake_attr("href") -}}
+/// {{- hreflang | bake_attr("hreflang") -}}
+/// {{- lang | bake_attr("lang") -}}
+/// {{- ping | bake_attr("ping") -}}
+/// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
+/// {{- rel | bake_attr("rel") -}}
+/// {{- target | bake_attr("target") -}}
+/// {{- mime_type | bake_attr("type") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct AAttrs {
+    pub download: Option<Cow<'static, str>>,
+    pub href: Option<Cow<'static, str>>,
+    pub hreflang: Option<Cow<'static, str>>,
+    pub lang: Option<Cow<'static, str>>,
+    pub ping: Option<Cow<'static, str>>,
+    pub referrerpolicy: Option<Cow<'static, str>>,
+    pub rel: Option<Cow<'static, str>>,
+    pub target: Option<Cow<'static, str>>,
+    pub mime_type: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasAAttrs: Sized {
+    fn a_attrs_mut(&mut self) -> &mut AAttrs;
 
     /// Whether to download the resource instead of navigating to it, and its filename if so.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#download)
-    pub fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("download", value);
+    fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().download = Some(value.into());
         self
     }
 
     /// Address of the hyperlink.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#href)
-    pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value);
+    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().href = Some(value.into());
         self
     }
 
     /// Language of the linked resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#hreflang)
-    pub fn hreflang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("hreflang", value);
+    fn hreflang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().hreflang = Some(value.into());
         self
     }
 
     /// URLs to ping.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#ping)
-    pub fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("ping", value);
+    fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().ping = Some(value.into());
         self
     }
 
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#referrerpolicy)
-    pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
+    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
 
     /// Relationship between the location in the document containing the hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
+    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().rel = Some(value.into());
         self
     }
 
     /// Navigable for hyperlink navigation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target)
-    pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value);
+    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().target = Some(value.into());
         self
     }
 
     /// Hint for the type of the referenced resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#type)
-    pub fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("type", value);
+    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().mime_type = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlA<()>`.
+impl HasAAttrs for AAttrs {
+    fn a_attrs_mut(&mut self) -> &mut AAttrs {
+        self
+    }
+}
+
+impl HasAAttrs for &mut AAttrs {
+    fn a_attrs_mut(&mut self) -> &mut AAttrs {
+        self
+    }
+}
+
+impl<M: ATag> HasAAttrs for HtmlA<M> {
+    fn a_attrs_mut(&mut self) -> &mut AAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlA`.
 ///
 /// # Example
 ///
@@ -178,6 +199,7 @@ macro_rules! a {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlA::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlA::<()>::new($crate::bake_newline!($content))
     };

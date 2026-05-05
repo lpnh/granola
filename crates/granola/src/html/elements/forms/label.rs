@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait LabelTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlLabel<Self>) -> HtmlLabel<Self> {
-        element
-    }
-}
-
-impl LabelTag for () {}
 
 /// The HTML `<label>` element.
 ///
@@ -48,55 +38,66 @@ impl LabelTag for () {}
 ///
 /// ```askama
 /// <label
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</label>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = LabelTag, content = Cow<'static, str>, specific = LabelAttrs)]
 pub struct HtmlLabel<M: LabelTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: LabelAttrs,
 }
 
-impl<M: LabelTag> HtmlLabel<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<label>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- for_id | bake_attr("for") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct LabelAttrs {
+    pub for_id: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
-    pub fn validate(self) -> Self {
-        self.class("validator")
-    }
-
-    /// Associate the label with form control.
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/for)
-    pub fn for_id(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("for", value);
+impl HasLabelAttrs for LabelAttrs {
+    fn label_attrs_mut(&mut self) -> &mut LabelAttrs {
         self
     }
 }
 
-/// Shorthand for `HtmlLabel<()>`.
+impl HasLabelAttrs for &mut LabelAttrs {
+    fn label_attrs_mut(&mut self) -> &mut LabelAttrs {
+        self
+    }
+}
+
+impl<M: LabelTag> HasLabelAttrs for HtmlLabel<M> {
+    fn label_attrs_mut(&mut self) -> &mut LabelAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+pub trait HasLabelAttrs: Sized {
+    fn label_attrs_mut(&mut self) -> &mut LabelAttrs;
+
+    /// Associate the label with form control.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/for)
+    fn for_id(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.label_attrs_mut().for_id = Some(value.into());
+        self
+    }
+}
+
+/// Shorthand for `HtmlLabel`.
 ///
 /// # Example
 ///
@@ -133,6 +134,7 @@ macro_rules! label {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlLabel::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlLabel::<()>::new($crate::bake_newline!($content))
     };

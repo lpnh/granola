@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait TimeTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlTime<Self>) -> HtmlTime<Self> {
-        element
-    }
-}
-
-impl TimeTag for () {}
 
 /// The HTML `<time>` element.
 ///
@@ -44,51 +31,69 @@ impl TimeTag for () {}
 ///
 /// ```askama
 /// <time
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</time>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = TimeTag, content = Cow<'static, str>, specific = TimeAttrs)]
 pub struct HtmlTime<M: TimeTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
+    pub specific_attrs: TimeAttrs,
 }
 
-impl<M: TimeTag> HtmlTime<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<time>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/time#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- datetime | bake_attr("datetime") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct TimeAttrs {
+    pub datetime: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasTimeAttrs: Sized {
+    fn time_attrs_mut(&mut self) -> &mut TimeAttrs;
 
     /// Machine-readable datetime representation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
-    pub fn datetime(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("datetime", value);
+    fn datetime(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.time_attrs_mut().datetime = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlTime<()>`.
+impl HasTimeAttrs for TimeAttrs {
+    fn time_attrs_mut(&mut self) -> &mut TimeAttrs {
+        self
+    }
+}
+
+impl HasTimeAttrs for &mut TimeAttrs {
+    fn time_attrs_mut(&mut self) -> &mut TimeAttrs {
+        self
+    }
+}
+
+impl<M: TimeTag> HasTimeAttrs for HtmlTime<M> {
+    fn time_attrs_mut(&mut self) -> &mut TimeAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlTime`.
 ///
 /// # Example
 ///
@@ -120,6 +125,7 @@ macro_rules! time {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlTime::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlTime::<()>::new($crate::bake_newline!($content))
     };

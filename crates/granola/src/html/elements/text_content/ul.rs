@@ -1,21 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// directory, group, listbox, menu, menubar, none, presentation,
-///     radiogroup, tablist, toolbar, tree
-pub trait UlTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = ListItems;
-
-    fn recipe(element: HtmlUl<Self>) -> HtmlUl<Self> {
-        element
-    }
-}
-
-impl UlTag for () {}
 
 /// The HTML `<ul>` element.
 ///
@@ -54,42 +40,22 @@ impl UlTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <ul
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</ul>
+/// <ul{{ attrs }}>{{ content | kirei(2) }}</ul>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = UlTag, content = ListItems)]
 pub struct HtmlUl<M: UlTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// directory, group, listbox, menu, menubar, none, presentation,
+    /// radiogroup, tablist, toolbar, tree
+    pub attrs: Attrs,
 }
 
-impl<M: UlTag> HtmlUl<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlUl<()>`.
+/// Shorthand for `HtmlUl`.
 ///
 /// # Example
 ///

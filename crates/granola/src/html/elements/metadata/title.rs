@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait TitleTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlTitle<Self>) -> HtmlTitle<Self> {
-        element
-    }
-}
-
-impl TitleTag for () {}
 
 /// The HTML `<title>` element.
 ///
@@ -40,42 +30,18 @@ impl TitleTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <title
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</title>
+/// <title{{ attrs }}>{{ content | kirei(2) }}</title>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = TitleTag, content = Cow<'static, str>)]
 pub struct HtmlTitle<M: TitleTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
 }
 
-impl<M: TitleTag> HtmlTitle<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlTitle<()>`.
+/// Shorthand for `HtmlTitle`.
 ///
 /// # Example
 ///
@@ -107,6 +73,7 @@ macro_rules! title {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlTitle::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlTitle::<()>::new($crate::bake_newline!($content))
     };

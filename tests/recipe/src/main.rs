@@ -53,7 +53,7 @@ impl HtmlTag for BarRecipe {
     type Content = HtmlRootContent<Homemade, ()>;
 
     fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.add_data("foo", "bar").id("bar-html");
+        attrs.custom_data("foo", "bar").id("bar-html");
     }
 }
 
@@ -61,13 +61,13 @@ impl PTag for BarRecipe {
     type Content = String;
 
     fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.add_data("foo", "bar").id("bar-p");
+        attrs.custom_data("foo", "bar").id("bar-p");
     }
 }
 
 impl ButtonTag for BarRecipe {
     fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.add_data("foo", "bar").id("bar-button");
+        attrs.custom_data("foo", "bar").id("bar-button");
     }
 }
 
@@ -78,7 +78,7 @@ impl HtmlTag for OneLastRecipe {
     type Content = HtmlRootContent<Homemade, ()>;
 
     fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.add_data("recipe", "last");
+        attrs.custom_data("recipe", "last");
     }
 }
 
@@ -90,13 +90,13 @@ impl PTag for OneLastRecipe {
     }
 
     fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.add_data("recipe", "last");
+        attrs.custom_data("recipe", "last");
     }
 }
 
 impl ButtonTag for OneLastRecipe {
     fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.add_data("recipe", "last");
+        attrs.custom_data("recipe", "last");
     }
 }
 

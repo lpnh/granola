@@ -3,17 +3,6 @@ use std::{fmt::Debug, marker::PhantomData};
 
 use crate::prelude::*;
 
-/// # Permitted ARIA roles
-///
-/// presentation or none
-pub trait HrTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlHr<Self>) -> HtmlHr<Self> {
-        element
-    }
-}
-
-impl HrTag for () {}
-
 /// The HTML `<hr>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/hr)
@@ -50,31 +39,20 @@ impl HrTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <hr
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+/// <hr{{ attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = HrTag)]
 pub struct HtmlHr<M: HrTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// presentation or none
+    pub attrs: Attrs,
 }
 
-impl<M: HrTag> HtmlHr<M> {
-    pub fn new() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlHr<()>`.
+/// Shorthand for `HtmlHr`.
 ///
 /// # Example
 ///

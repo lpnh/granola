@@ -1,17 +1,9 @@
 use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
-pub trait SourceTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlSource<Self>) -> HtmlSource<Self> {
-        element
-    }
-}
-
-impl SourceTag for () {}
-
-/// The HTML `<source />` element
+/// The HTML `<source />` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source)
 ///
@@ -39,94 +31,142 @@ impl SourceTag for () {}
 ///
 /// ```askama
 /// <source
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = SourceTag, specific = SourceAttrs)]
 pub struct HtmlSource<M: SourceTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: SourceAttrs,
 }
 
 impl<M: SourceTag> HtmlSource<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().src(src);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = SourceAttrs::default().src(src);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
 
-    pub fn empty() -> Self {
-        let element = Self::default();
+/// The HTML `<source />` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- height | bake_attr("height") -}}
+/// {{- media | bake_attr("media") -}}
+/// {{- sizes | bake_attr("sizes") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- srcset | bake_attr("srcset") -}}
+/// {{- mime_type | bake_attr("type") -}}
+/// {{- width | bake_attr("width") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct SourceAttrs {
+    pub height: Option<u32>,
+    pub media: Option<Cow<'static, str>>,
+    pub sizes: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
+    pub srcset: Option<Cow<'static, str>>,
+    pub mime_type: Option<Cow<'static, str>>,
+    pub width: Option<u32>,
+}
 
-        M::recipe(element)
-    }
+pub trait HasSourceAttrs: Sized {
+    fn source_attrs_mut(&mut self) -> &mut SourceAttrs;
 
     /// Vertical dimension.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#height)
-    pub fn height(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("height", value.to_string());
+    fn height(mut self, value: u32) -> Self {
+        self.source_attrs_mut().height = Some(value);
         self
     }
 
     /// Applicable media.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#media)
-    pub fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("media", value);
+    fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.source_attrs_mut().media = Some(value.into());
         self
     }
 
     /// Image sizes for different page layouts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#sizes)
-    pub fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("sizes", value);
+    fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.source_attrs_mut().sizes = Some(value.into());
         self
     }
 
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#src)
-    pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("src", value);
+    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.source_attrs_mut().src = Some(value.into());
         self
     }
 
     /// Images to use in different situations, e.g., high-resolution displays, small monitors, etc.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#srcset)
-    pub fn srcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("srcset", value);
+    fn srcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.source_attrs_mut().srcset = Some(value.into());
         self
     }
 
     /// Type of embedded resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#type)
-    pub fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("type", value);
+    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.source_attrs_mut().mime_type = Some(value.into());
         self
     }
 
     /// Horizontal dimension.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#width)
-    pub fn width(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("width", value.to_string());
+    fn width(mut self, value: u32) -> Self {
+        self.source_attrs_mut().width = Some(value);
         self
     }
 }
 
-/// Shorthand for `HtmlSource<()>`.
+impl HasSourceAttrs for SourceAttrs {
+    fn source_attrs_mut(&mut self) -> &mut SourceAttrs {
+        self
+    }
+}
+
+impl HasSourceAttrs for &mut SourceAttrs {
+    fn source_attrs_mut(&mut self) -> &mut SourceAttrs {
+        self
+    }
+}
+
+impl<M: SourceTag> HasSourceAttrs for HtmlSource<M> {
+    fn source_attrs_mut(&mut self) -> &mut SourceAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlSource`.
 ///
 /// # Example
 ///
@@ -154,5 +194,12 @@ macro_rules! source {
     };
     ($src: expr $(,)?) => {
         $crate::html::HtmlSource::<()>::new($src)
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlObject::<$crate::rec!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $src:expr $(,)?) => {
+        $crate::html::HtmlObject::<$crate::rec!($($r),+)>::new($src)
     };
 }

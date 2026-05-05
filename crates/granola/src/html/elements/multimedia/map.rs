@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait MapTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Areas;
-
-    fn recipe(element: HtmlMap<Self>) -> HtmlMap<Self> {
-        element
-    }
-}
-
-impl MapTag for () {}
 
 /// The HTML `<map>` element.
 ///
@@ -55,51 +45,66 @@ impl MapTag for () {}
 ///
 /// ```askama
 /// <map
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</map>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = MapTag, content = Areas, specific = MapAttrs)]
 pub struct HtmlMap<M: MapTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: MapAttrs,
 }
 
-impl<M: MapTag> HtmlMap<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<map>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/map#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- name | bake_attr("name") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct MapAttrs {
+    pub name: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasMapAttrs: Sized {
+    fn map_attrs_mut(&mut self) -> &mut MapAttrs;
 
     /// Name of image map to reference from the usemap attribute.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/map#name)
-    pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value);
+    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.map_attrs_mut().name = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlMap<()>`.
+impl HasMapAttrs for MapAttrs {
+    fn map_attrs_mut(&mut self) -> &mut MapAttrs {
+        self
+    }
+}
+
+impl HasMapAttrs for &mut MapAttrs {
+    fn map_attrs_mut(&mut self) -> &mut MapAttrs {
+        self
+    }
+}
+
+impl<M: MapTag> HasMapAttrs for HtmlMap<M> {
+    fn map_attrs_mut(&mut self) -> &mut MapAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlMap`.
 ///
 /// # Example
 ///

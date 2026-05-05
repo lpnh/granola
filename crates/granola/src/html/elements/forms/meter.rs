@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait MeterTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlMeter<Self>) -> HtmlMeter<Self> {
-        element
-    }
-}
-
-impl MeterTag for () {}
 
 /// The HTML `<meter>` element.
 ///
@@ -49,91 +39,116 @@ impl MeterTag for () {}
 ///
 /// ```askama
 /// <meter
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</meter>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = MeterTag, content = Cow<'static, str>, specific = MeterAttrs)]
 pub struct HtmlMeter<M: MeterTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: MeterAttrs,
 }
 
-impl<M: MeterTag> HtmlMeter<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<meter>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- high | bake_attr("high") -}}
+/// {{- low | bake_attr("low") -}}
+/// {{- max | bake_attr("max") -}}
+/// {{- min | bake_attr("min") -}}
+/// {{- optimum | bake_attr("optimum") -}}
+/// {{- value | bake_attr("value") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct MeterAttrs {
+    pub high: Option<Cow<'static, str>>,
+    pub low: Option<Cow<'static, str>>,
+    pub max: Option<Cow<'static, str>>,
+    pub min: Option<Cow<'static, str>>,
+    pub optimum: Option<Cow<'static, str>>,
+    pub value: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasMeterAttrs: Sized {
+    fn meter_attrs_mut(&mut self) -> &mut MeterAttrs;
 
     /// Low limit of high range.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#high)
-    pub fn high(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("high", value.to_string());
+    fn high(mut self, value: f64) -> Self {
+        self.meter_attrs_mut().high = Some(value.to_string().into());
         self
     }
 
     /// High limit of low range.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#low)
-    pub fn low(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("low", value.to_string());
+    fn low(mut self, value: f64) -> Self {
+        self.meter_attrs_mut().low = Some(value.to_string().into());
         self
     }
 
     /// Upper bound of range.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/max)
-    pub fn max(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("max", value.to_string());
+    fn max(mut self, value: f64) -> Self {
+        self.meter_attrs_mut().max = Some(value.to_string().into());
         self
     }
 
     /// Lower bound of range.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/min)
-    pub fn min(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("min", value.to_string());
+    fn min(mut self, value: f64) -> Self {
+        self.meter_attrs_mut().min = Some(value.to_string().into());
         self
     }
 
     /// Optimum value in gauge.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#optimum)
-    pub fn optimum(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("optimum", value.to_string());
+    fn optimum(mut self, value: f64) -> Self {
+        self.meter_attrs_mut().optimum = Some(value.to_string().into());
         self
     }
 
     /// Current value of the element.
     ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#value)
-    pub fn value(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("value", value.to_string());
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#value.to_string().into())
+    fn value(mut self, value: f64) -> Self {
+        self.meter_attrs_mut().optimum = Some(value.to_string().into());
         self
     }
 }
 
-/// Shorthand for `HtmlMeter<()>`.
+impl HasMeterAttrs for MeterAttrs {
+    fn meter_attrs_mut(&mut self) -> &mut MeterAttrs {
+        self
+    }
+}
+
+impl HasMeterAttrs for &mut MeterAttrs {
+    fn meter_attrs_mut(&mut self) -> &mut MeterAttrs {
+        self
+    }
+}
+
+impl<M: MeterTag> HasMeterAttrs for HtmlMeter<M> {
+    fn meter_attrs_mut(&mut self) -> &mut MeterAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlMeter`.
 ///
 /// # Example
 ///

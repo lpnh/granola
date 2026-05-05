@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait ColgroupTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = TableColumns;
-
-    fn recipe(element: HtmlColgroup<Self>) -> HtmlColgroup<Self> {
-        element
-    }
-}
-
-impl ColgroupTag for () {}
 
 /// The HTML `<colgroup>` element.
 ///
@@ -47,51 +37,66 @@ impl ColgroupTag for () {}
 ///
 /// ```askama
 /// <colgroup
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</colgroup>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ColgroupTag, content = TableColumns, specific = ColgroupAttrs)]
 pub struct HtmlColgroup<M: ColgroupTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: ColgroupAttrs,
 }
 
-impl<M: ColgroupTag> HtmlColgroup<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<span>` element specific attributes.
+///
+/// [MDN Documentation]()
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- span | bake_attr("span") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct ColgroupAttrs {
+    pub span: Option<u32>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasColgroupAttrs: Sized {
+    fn colgroup_attrs_mut(&mut self) -> &mut ColgroupAttrs;
 
     /// Number of columns spanned by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/colgroup#span)
-    pub fn span(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("span", value.to_string());
+    fn span(mut self, value: u32) -> Self {
+        self.colgroup_attrs_mut().span = Some(value);
         self
     }
 }
 
-/// Shorthand for `HtmlColgroup<()>`.
+impl HasColgroupAttrs for ColgroupAttrs {
+    fn colgroup_attrs_mut(&mut self) -> &mut ColgroupAttrs {
+        self
+    }
+}
+
+impl HasColgroupAttrs for &mut ColgroupAttrs {
+    fn colgroup_attrs_mut(&mut self) -> &mut ColgroupAttrs {
+        self
+    }
+}
+
+impl<M: ColgroupTag> HasColgroupAttrs for HtmlColgroup<M> {
+    fn colgroup_attrs_mut(&mut self) -> &mut ColgroupAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlColgroup`.
 ///
 /// # Example
 ///

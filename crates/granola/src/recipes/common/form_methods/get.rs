@@ -35,13 +35,13 @@ impl FormTag for Get {
 }
 
 impl ButtonTag for Get {
-    fn specific_recipe(specific: &mut SpecificAttrs) {
-        specific.set_attr("formmethod", FormMethod::Get);
+    fn specific_recipe(button_attrs: &mut ButtonAttrs) {
+        button_attrs.formmethod(FormMethod::Get);
     }
 }
 
 impl InputTag for Get {
-    fn specific_recipe(specific: &mut SpecificAttrs) {
-        specific.set_attr("formmethod", FormMethod::Get);
+    fn specific_recipe(input_attrs: &mut InputAttrs) {
+        input_attrs.formmethod(FormMethod::Get);
     }
 }

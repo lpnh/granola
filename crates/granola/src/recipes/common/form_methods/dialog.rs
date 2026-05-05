@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `method="dialog"` and `formmethod="dialog"` recipe
+/// The `method="dialog"` and `formmethod="dialog"` recipe.
 ///
 /// # Example
 ///
@@ -35,13 +35,13 @@ impl FormTag for Dialog {
 }
 
 impl ButtonTag for Dialog {
-    fn specific_recipe(attrs: &mut SpecificAttrs) {
-        attrs.set_attr("formmethod", FormMethod::Dialog);
+    fn specific_recipe(button_attrs: &mut ButtonAttrs) {
+        button_attrs.formmethod(FormMethod::Dialog);
     }
 }
 
 impl InputTag for Dialog {
-    fn specific_recipe(attrs: &mut SpecificAttrs) {
-        attrs.set_attr("formmethod", FormMethod::Dialog);
+    fn specific_recipe(input_attrs: &mut InputAttrs) {
+        input_attrs.formmethod(FormMethod::Dialog);
     }
 }

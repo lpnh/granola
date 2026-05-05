@@ -40,9 +40,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <head
-///   {{- attrs -}}
-/// >{{ content | kirei(2) }}</head>
+/// <head{{ attrs }}>{{ content | kirei(2) }}</head>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -53,7 +51,7 @@ pub struct HtmlHead<M: HeadTag = ()> {
     pub attrs: Attrs,
 }
 
-/// Shorthand for `HtmlHead<()>`.
+/// Shorthand for `HtmlHead`.
 ///
 /// # Example
 ///

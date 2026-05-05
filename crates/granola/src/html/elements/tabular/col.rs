@@ -1,15 +1,7 @@
 use askama::Template;
 use std::{fmt::Debug, marker::PhantomData};
 
-use crate::prelude::*;
-
-pub trait ColTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlCol<Self>) -> HtmlCol<Self> {
-        element
-    }
-}
-
-impl ColTag for () {}
+use crate::{filters, prelude::*};
 
 /// The HTML `<col />` element.
 ///
@@ -43,36 +35,60 @@ impl ColTag for () {}
 ///
 /// ```askama
 /// <col
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ColTag, specific = ColAttrs)]
 pub struct HtmlCol<M: ColTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: ColAttrs,
 }
 
-impl<M: ColTag> HtmlCol<M> {
-    pub fn new() -> Self {
-        let element = Self::default();
+/// The HTML `<col>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/col#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- span | bake_attr("span") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct ColAttrs {
+    pub span: Option<u32>,
+}
 
-        M::recipe(element)
-    }
+pub trait HasColAttrs: Sized {
+    fn col_attrs_mut(&mut self) -> &mut ColAttrs;
 
     /// Number of columns spanned by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/col#span)
-    pub fn span(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("span", value.to_string());
+    fn span(mut self, value: u32) -> Self {
+        self.col_attrs_mut().span = Some(value);
         self
+    }
+}
+
+impl HasColAttrs for ColAttrs {
+    fn col_attrs_mut(&mut self) -> &mut ColAttrs {
+        self
+    }
+}
+
+impl HasColAttrs for &mut ColAttrs {
+    fn col_attrs_mut(&mut self) -> &mut ColAttrs {
+        self
+    }
+}
+
+impl<M: ColTag> HasColAttrs for HtmlCol<M> {
+    fn col_attrs_mut(&mut self) -> &mut ColAttrs {
+        &mut self.specific_attrs
     }
 }
 
@@ -85,7 +101,7 @@ impl<M: ColTag> HtmlCol<M> {
 /// {{ col -}}
 /// {%- endfor -%}
 /// ```
-#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
+#[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TableColumns {
     items: Vec<HtmlCol>,
@@ -105,7 +121,7 @@ impl From<HtmlCol> for TableColumns {
     }
 }
 
-/// Shorthand for `HtmlCol<()>`.
+/// Shorthand for `HtmlCol`.
 ///
 /// # Example
 ///

@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// application
-pub trait AudioTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlAudio<Self>) -> HtmlAudio<Self> {
-        element
-    }
-}
-
-impl AudioTag for () {}
 
 /// The HTML `<audio>` element.
 ///
@@ -44,64 +31,84 @@ impl AudioTag for () {}
 ///
 /// ```askama
 /// <audio
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</audio>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = AudioTag, content = Cow<'static, str>, specific = AudioAttrs)]
 pub struct HtmlAudio<M: AudioTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// application
+    pub attrs: Attrs,
+    pub specific_attrs: AudioAttrs,
 }
 
 impl<M: AudioTag> HtmlAudio<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().src(src);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = AudioAttrs::default().src(src);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
+
+/// The HTML `<audio>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- autoplay | bake_bool_attr("autoplay") -}}
+/// {{- controls | bake_bool_attr("controls") -}}
+/// {{- crossorigin | bake_attr("crossorigin") -}}
+/// {{- media_loop | bake_bool_attr("loop") -}}
+/// {{- muted | bake_bool_attr("muted") -}}
+/// {{- preload | bake_attr("preload") -}}
+/// {{- src | bake_attr("src") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct AudioAttrs {
+    pub autoplay: bool,
+    pub controls: bool,
+    pub crossorigin: Option<Cow<'static, str>>,
+    pub media_loop: bool,
+    pub muted: bool,
+    pub preload: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
+}
+
+pub trait HasAudioAttrs: Sized {
+    fn audio_attrs_mut(&mut self) -> &mut AudioAttrs;
 
     /// Hint that the media resource can be started automatically when the page is loaded.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#autoplay)
-    pub fn autoplay(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("autoplay");
-        }
+    fn autoplay(mut self, value: bool) -> Self {
+        self.audio_attrs_mut().autoplay = value;
         self
     }
 
     /// Show user agent controls.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#controls)
-    pub fn controls(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("controls");
-        }
+    fn controls(mut self, value: bool) -> Self {
+        self.audio_attrs_mut().controls = value;
         self
     }
 
@@ -112,60 +119,71 @@ impl<M: AudioTag> HtmlAudio<M> {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
+    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.audio_attrs_mut().crossorigin = Some(value.into());
         self
     }
 
     // NOTE: Include `disableremoteplayback` in the future.
+    //
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#disableremoteplayback)
 
-    /// Used when determining loading deferral.
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#loading)
-    pub fn loading(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("loading", value);
-        self
-    }
+    // NOTE: Include `loading` in the future.
+    //
+    // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#loading)
 
     /// Whether to loop the media resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#loop)
-    pub fn loop_(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("loop");
-        }
+    fn media_loop(mut self, value: bool) -> Self {
+        self.audio_attrs_mut().media_loop = value;
         self
     }
 
     /// Whether to mute the media resource by default.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#muted)
-    pub fn muted(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("muted");
-        }
+    fn muted(mut self, value: bool) -> Self {
+        self.audio_attrs_mut().muted = value;
         self
     }
 
     /// Hints how much buffering the media resource will likely need.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#preload)
-    pub fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("preload", value);
+    fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.audio_attrs_mut().preload = Some(value.into());
         self
     }
 
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#src)
-    pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("src", value);
+    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.audio_attrs_mut().src = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlAudio<()>`.
+impl HasAudioAttrs for AudioAttrs {
+    fn audio_attrs_mut(&mut self) -> &mut AudioAttrs {
+        self
+    }
+}
+
+impl HasAudioAttrs for &mut AudioAttrs {
+    fn audio_attrs_mut(&mut self) -> &mut AudioAttrs {
+        self
+    }
+}
+
+impl<M: AudioTag> HasAudioAttrs for HtmlAudio<M> {
+    fn audio_attrs_mut(&mut self) -> &mut AudioAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlAudio`.
 ///
 /// # Example
 ///
@@ -197,12 +215,14 @@ macro_rules! audio {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlAudio::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlAudio::<()>::new($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlAudio::<()>::new($crate::bake_inline![$($content),+])
     };
+
     (@from_src $src: expr $(,)?) => {
         $crate::html::HtmlAudio::<()>::from_src($src)
     };

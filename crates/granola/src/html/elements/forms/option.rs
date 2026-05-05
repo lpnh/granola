@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait OptionTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlOption<Self>) -> HtmlOption<Self> {
-        element
-    }
-}
-
-impl OptionTag for () {}
 
 /// The HTML `<option>` element.
 ///
@@ -41,81 +31,110 @@ impl OptionTag for () {}
 ///
 /// ```askama
 /// <option
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</option>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = OptionTag, content = Cow<'static, str>, specific = OptionAttrs)]
 pub struct HtmlOption<M: OptionTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: OptionAttrs,
 }
 
 impl<M: OptionTag> HtmlOption<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().value(value);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = OptionAttrs::default().value(value);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
+
+/// The HTML `<option>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- label | bake_attr("label") -}}
+/// {{- selected | bake_bool_attr("selected") -}}
+/// {{- value | bake_attr("value") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct OptionAttrs {
+    pub disabled: bool,
+    pub label: Option<Cow<'static, str>>,
+    pub selected: bool,
+    pub value: Option<Cow<'static, str>>,
+}
+
+pub trait HasOptionAttrs: Sized {
+    fn option_attrs_mut(&mut self) -> &mut OptionAttrs;
 
     /// Whether the form control is disabled.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled)
-    pub fn disabled(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("disabled");
-        }
+    fn disabled(mut self, value: bool) -> Self {
+        self.option_attrs_mut().disabled = value;
         self
     }
 
     /// User-visible label.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#label)
-    pub fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("label", value);
+    fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.option_attrs_mut().label = Some(value.into());
         self
     }
 
     /// Whether the option is selected by default.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#selected)
-    pub fn selected(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("selected");
-        }
+    fn selected(mut self, value: bool) -> Self {
+        self.option_attrs_mut().selected = value;
         self
     }
 
     /// Value to be used for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#value)
-    pub fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("value", value);
+    fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.option_attrs_mut().value = Some(value.into());
         self
+    }
+}
+
+impl HasOptionAttrs for OptionAttrs {
+    fn option_attrs_mut(&mut self) -> &mut OptionAttrs {
+        self
+    }
+}
+
+impl HasOptionAttrs for &mut OptionAttrs {
+    fn option_attrs_mut(&mut self) -> &mut OptionAttrs {
+        self
+    }
+}
+
+impl<M: OptionTag> HasOptionAttrs for HtmlOption<M> {
+    fn option_attrs_mut(&mut self) -> &mut OptionAttrs {
+        &mut self.specific_attrs
     }
 }
 
@@ -130,7 +149,7 @@ impl<M: OptionTag> HtmlOption<M> {
 /// {% endif -%}
 /// {%- endfor -%}
 /// ```
-#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
+#[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct Options {
     items: Vec<HtmlOption>,
@@ -144,7 +163,7 @@ impl<I: IntoIterator<Item = HtmlOption>> From<I> for Options {
     }
 }
 
-/// Shorthand for `HtmlOption<()>`.
+/// Shorthand for `HtmlOption`.
 ///
 /// # Example
 ///
@@ -176,6 +195,7 @@ macro_rules! option {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlOption::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlOption::<()>::new($crate::bake_newline!($content))
     };

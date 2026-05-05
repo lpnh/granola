@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// alertdialog
-pub trait DialogTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlDialog<Self>) -> HtmlDialog<Self> {
-        element
-    }
-}
-
-impl DialogTag for () {}
 
 /// The HTML `<dialog>` element.
 ///
@@ -57,61 +44,79 @@ impl DialogTag for () {}
 ///
 /// ```askama
 /// <dialog
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</dialog>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = DialogTag, content = Cow<'static, str>, specific = DialogAttrs)]
 pub struct HtmlDialog<M: DialogTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// alertdialog
+    pub attrs: Attrs,
+    pub specific_attrs: DialogAttrs,
 }
 
-impl<M: DialogTag> HtmlDialog<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<dialog>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- closedby | bake_attr("closedby") -}}
+/// {{- open | bake_bool_attr("open") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct DialogAttrs {
+    pub closedby: Option<Cow<'static, str>>,
+    pub open: bool,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasDialogAttrs: Sized {
+    fn dialog_attrs_mut(&mut self) -> &mut DialogAttrs;
 
     /// Which user actions will close the dialog.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog#closedby)
-    pub fn closedby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("closedby", value);
+    fn closedby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.dialog_attrs_mut().closedby = Some(value.into());
         self
     }
 
     /// Whether the dialog box is showing.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog#open)
-    pub fn open(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("open");
-        }
+    fn open(mut self, value: bool) -> Self {
+        self.dialog_attrs_mut().open = value;
         self
     }
 }
 
-/// Shorthand for `HtmlDialog<()>`.
+impl HasDialogAttrs for DialogAttrs {
+    fn dialog_attrs_mut(&mut self) -> &mut DialogAttrs {
+        self
+    }
+}
+
+impl HasDialogAttrs for &mut DialogAttrs {
+    fn dialog_attrs_mut(&mut self) -> &mut DialogAttrs {
+        self
+    }
+}
+
+impl<M: DialogTag> HasDialogAttrs for HtmlDialog<M> {
+    fn dialog_attrs_mut(&mut self) -> &mut DialogAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlDialog`.
 ///
 /// # Example
 ///
@@ -152,6 +157,7 @@ macro_rules! dialog {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlDialog::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlDialog::<()>::new($crate::bake_newline!($content))
     };

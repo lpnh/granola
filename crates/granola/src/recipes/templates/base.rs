@@ -61,8 +61,6 @@ impl HtmlTag for Homemade {
             .get_or_insert_with(HtmlHead::<Homemade>::from_recipe);
         content.body.get_or_insert_with(HtmlBody::from_recipe);
     }
-
-
 }
 
 impl From<HtmlBody> for HtmlRootContent<Homemade, ()> {
@@ -78,13 +76,11 @@ impl HeadTag for Homemade {
     type Content = BaseHeadContent;
 
     fn content_recipe(content: &mut Self::Content) {
-        content.meta.push(HtmlMeta::<Charset>::empty().bake());
+        content.meta.push(HtmlMeta::<Charset>::from_recipe().bake());
         content
             .meta
             .push(HtmlMeta::<Viewport>::new("width=device-width, initial-scale=1").bake());
     }
-
-
 }
 
 /// [`HtmlHead`] content for the [`Base`] recipe

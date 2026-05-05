@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// any
-
 /// The HTML `<p>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/p)
@@ -42,10 +38,13 @@ use crate::{filters, prelude::*};
 pub struct HtmlP<M: PTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// any
     pub attrs: Attrs,
 }
 
-/// Shorthand for `HtmlP<()>`.
+/// Shorthand for `HtmlP`.
 ///
 /// # Example
 ///

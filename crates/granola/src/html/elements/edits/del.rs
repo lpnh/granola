@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// any
-
 /// The HTML `<del>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/del)
@@ -49,10 +45,17 @@ use crate::{filters, prelude::*};
 pub struct HtmlDel<M: DelTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// any
     pub attrs: Attrs,
     pub specific_attrs: DelAttrs,
 }
 
+/// The HTML `<del>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/del#attributes)
+///
 /// # Askama template
 ///
 /// ```askama
@@ -104,7 +107,7 @@ impl<M: DelTag> HasDelAttrs for HtmlDel<M> {
     }
 }
 
-/// Shorthand for `HtmlDel<()>`.
+/// Shorthand for `HtmlDel`.
 ///
 /// # Example
 ///

@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait ScriptTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlScript<Self>) -> HtmlScript<Self> {
-        element
-    }
-}
-
-impl ScriptTag for () {}
 
 /// The HTML `<script>` element.
 ///
@@ -43,129 +33,170 @@ impl ScriptTag for () {}
 ///
 /// ```askama
 /// <script
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</script>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ScriptTag, content = Cow<'static, str>, specific = ScriptAttrs)]
 pub struct HtmlScript<M: ScriptTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: ScriptAttrs,
 }
 
 impl<M: ScriptTag> HtmlScript<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        Self::empty().src(src)
+        let mut attrs = Attrs::default();
+
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = ScriptAttrs::default().src(src);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
+
+/// The HTML `<script>` element specific attributes.
+///
+/// [MDN Documentation]()
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- async_script | bake_bool_attr("async") -}}
+/// {{- blocking | bake_attr("blocking") -}}
+/// {{- crossorigin | bake_attr("crossorigin") -}}
+/// {{- defer | bake_bool_attr("defer") -}}
+/// {{- fetchpriority | bake_attr("fetchpriority") -}}
+/// {{- integrity | bake_attr("integrity") -}}
+/// {{- nomodule | bake_bool_attr("nomodule") -}}
+/// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- script_type | bake_attr("type") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct ScriptAttrs {
+    pub async_script: bool,
+    pub blocking: Option<Cow<'static, str>>,
+    pub crossorigin: Option<Cow<'static, str>>,
+    pub defer: bool,
+    pub fetchpriority: Option<Cow<'static, str>>,
+    pub integrity: Option<Cow<'static, str>>,
+    pub nomodule: bool,
+    pub referrerpolicy: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
+    pub script_type: Option<Cow<'static, str>>,
+}
+
+pub trait HasScriptAttrs: Sized {
+    fn script_attrs_mut(&mut self) -> &mut ScriptAttrs;
 
     /// Execute script when available, without blocking while fetching.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#async)
-    pub fn async_(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("async");
-        }
+    fn async_script(mut self, value: bool) -> Self {
+        self.script_attrs_mut().async_script = value;
         self
     }
 
     /// Whether the element is potentially render-blocking.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#blocking)
-    pub fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("blocking", value);
+    fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().blocking = Some(value.into());
         self
     }
 
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
+    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().crossorigin = Some(value.into());
         self
     }
 
     /// Defer script execution.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#defer)
-    pub fn defer(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("defer");
-        }
+    fn defer(mut self, value: bool) -> Self {
+        self.script_attrs_mut().defer = value;
         self
     }
 
     /// Sets the priority for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
-    pub fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("fetchpriority", value);
+    fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().fetchpriority = Some(value.into());
         self
     }
 
     /// Integrity metadata used in Subresource Integrity checks.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#integrity)
-    pub fn integrity(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("integrity", value);
+    fn integrity(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().integrity = Some(value.into());
         self
     }
 
     /// Prevents execution in user agents that support module scripts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#nomodule)
-    pub fn nomodule(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("nomodule");
-        }
+    fn nomodule(mut self, value: bool) -> Self {
+        self.script_attrs_mut().nomodule = value;
         self
     }
 
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#referrerpolicy)
-    pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
+    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
 
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#src)
-    pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("src", value);
+    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().src = Some(value.into());
         self
     }
 
     /// Type of script.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type)
-    pub fn script_type(mut self, value: impl Into<ScriptType>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("type", value.into());
+    fn script_type(mut self, value: impl Into<ScriptType>) -> Self {
+        self.script_attrs_mut().script_type = Some(value.into().into());
         self
+    }
+}
+
+impl HasScriptAttrs for ScriptAttrs {
+    fn script_attrs_mut(&mut self) -> &mut ScriptAttrs {
+        self
+    }
+}
+
+impl HasScriptAttrs for &mut ScriptAttrs {
+    fn script_attrs_mut(&mut self) -> &mut ScriptAttrs {
+        self
+    }
+}
+
+impl<M: ScriptTag> HasScriptAttrs for HtmlScript<M> {
+    fn script_attrs_mut(&mut self) -> &mut ScriptAttrs {
+        &mut self.specific_attrs
     }
 }
 
@@ -210,7 +241,7 @@ impl From<ScriptType> for Cow<'static, str> {
     }
 }
 
-/// Shorthand for `HtmlScript<()>`.
+/// Shorthand for `HtmlScript`.
 ///
 /// # Example
 ///
@@ -244,6 +275,7 @@ macro_rules! script {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlScript::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlScript::<()>::new($crate::bake_newline!($content))
     };

@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait StyleTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlStyle<Self>) -> HtmlStyle<Self> {
-        element
-    }
-}
-
-impl StyleTag for () {}
 
 /// The HTML `<style>` element.
 ///
@@ -52,59 +42,76 @@ impl StyleTag for () {}
 ///
 /// ```askama
 /// <style
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</style>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = StyleTag, content = Cow<'static, str>, specific = StyleAttrs)]
 pub struct HtmlStyle<M: StyleTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: StyleAttrs,
 }
 
-impl<M: StyleTag> HtmlStyle<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<style>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- blocking | bake_attr("blocking") -}}
+/// {{- media | bake_attr("media") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct StyleAttrs {
+    pub blocking: Option<Cow<'static, str>>,
+    pub media: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasStyleAttrs: Sized {
+    fn style_attrs_mut(&mut self) -> &mut StyleAttrs;
 
     /// Whether the element is potentially render-blocking.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#blocking)
-    pub fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("blocking", value);
+    fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.style_attrs_mut().blocking = Some(value.into());
         self
     }
 
     /// Applicable media.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#media)
-    pub fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("media", value);
+    fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.style_attrs_mut().media = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlStyle<()>`.
+impl HasStyleAttrs for StyleAttrs {
+    fn style_attrs_mut(&mut self) -> &mut StyleAttrs {
+        self
+    }
+}
+
+impl HasStyleAttrs for &mut StyleAttrs {
+    fn style_attrs_mut(&mut self) -> &mut StyleAttrs {
+        self
+    }
+}
+
+impl<M: StyleTag> HasStyleAttrs for HtmlStyle<M> {
+    fn style_attrs_mut(&mut self) -> &mut StyleAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlStyle`.
 ///
 /// # Example
 ///

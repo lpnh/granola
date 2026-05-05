@@ -1,21 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// directory, group, listbox, menu, menubar, none, presentation,
-///     radiogroup, tablist, toolbar, tree
-pub trait OlTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = ListItems;
-
-    fn recipe(element: HtmlOl<Self>) -> HtmlOl<Self> {
-        element
-    }
-}
-
-impl OlTag for () {}
 
 /// The HTML `<ol>` element.
 ///
@@ -55,69 +41,90 @@ impl OlTag for () {}
 ///
 /// ```askama
 /// <ol
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</ol>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = OlTag, content = ListItems, specific = OlAttrs)]
 pub struct HtmlOl<M: OlTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// directory, group, listbox, menu, menubar, none, presentation,
+    /// radiogroup, tablist, toolbar, tree
+    pub attrs: Attrs,
+    pub specific_attrs: OlAttrs,
 }
 
-impl<M: OlTag> HtmlOl<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<ol>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- reversed | bake_bool_attr("reversed") -}}
+/// {{- start | bake_attr("start") -}}
+/// {{- list_type | bake_attr("type") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct OlAttrs {
+    pub reversed: bool,
+    pub start: Option<i32>,
+    pub list_type: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasOlAttrs: Sized {
+    fn ol_attrs_mut(&mut self) -> &mut OlAttrs;
 
     /// Number the list backwards.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#reversed)
-    pub fn reversed(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("reversed");
-        }
+    fn reversed(mut self, value: bool) -> Self {
+        self.ol_attrs_mut().reversed = value;
         self
     }
 
     /// Starting value of the list.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#start)
-    pub fn start(mut self, value: i32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("start", value.to_string());
+    fn start(mut self, value: i32) -> Self {
+        self.ol_attrs_mut().start = Some(value);
         self
     }
 
     /// Kind of list marker.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#type)
-    pub fn list_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("type", value);
+    fn list_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.ol_attrs_mut().list_type = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlOl<()>`.
+impl HasOlAttrs for OlAttrs {
+    fn ol_attrs_mut(&mut self) -> &mut OlAttrs {
+        self
+    }
+}
+
+impl HasOlAttrs for &mut OlAttrs {
+    fn ol_attrs_mut(&mut self) -> &mut OlAttrs {
+        self
+    }
+}
+
+impl<M: OlTag> HasOlAttrs for HtmlOl<M> {
+    fn ol_attrs_mut(&mut self) -> &mut OlAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlOl`.
 ///
 /// # Example
 ///

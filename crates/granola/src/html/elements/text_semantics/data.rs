@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait DataTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlData<Self>) -> HtmlData<Self> {
-        element
-    }
-}
-
-impl DataTag for () {}
 
 /// The HTML `<data>` element.
 ///
@@ -44,51 +31,69 @@ impl DataTag for () {}
 ///
 /// ```askama
 /// <data
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</data>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = DataTag, content = Cow<'static, str>, specific = DataAttrs)]
 pub struct HtmlData<M: DataTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
+    pub specific_attrs: DataAttrs,
 }
 
-impl<M: DataTag> HtmlData<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<data>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/data#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- value | bake_attr("value") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct DataAttrs {
+    pub value: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasDataAttrs: Sized {
+    fn data_attrs_mut(&mut self) -> &mut DataAttrs;
 
     /// Machine-readable value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data#value)
-    pub fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("value", value);
+    fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.data_attrs_mut().value = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlData<()>`.
+impl HasDataAttrs for DataAttrs {
+    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
+        self
+    }
+}
+
+impl HasDataAttrs for &mut DataAttrs {
+    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
+        self
+    }
+}
+
+impl<M: DataTag> HasDataAttrs for HtmlData<M> {
+    fn data_attrs_mut(&mut self) -> &mut DataAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlData`.
 ///
 /// # Example
 ///
@@ -120,6 +125,7 @@ macro_rules! data {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlData::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlData::<()>::new($crate::bake_newline!($content))
     };

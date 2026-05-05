@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait TemplateTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlTemplate<Self>) -> HtmlTemplate<Self> {
-        element
-    }
-}
-
-impl TemplateTag for () {}
 
 /// The HTML `<template>` element.
 ///
@@ -59,90 +49,84 @@ impl TemplateTag for () {}
 ///
 /// ```askama
 /// <template
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</template>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = TemplateTag, content = Cow<'static, str>, specific = TemplateAttrs)]
 pub struct HtmlTemplate<M: TemplateTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: TemplateAttrs,
 }
 
-impl<M: TemplateTag> HtmlTemplate<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<template>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- shadowrootclonable | bake_bool_attr("shadowrootclonable") -}}
+/// {{- shadowrootcustomelementregistry | bake_bool_attr("shadowrootcustomelementregistry") -}}
+/// {{- shadowrootdelegatesfocus | bake_bool_attr("shadowrootdelegatesfocus") -}}
+/// {{- shadowrootdelegatesfocus | bake_bool_attr("shadowrootdelegatesfocus") -}}
+/// {{- shadowrootmode | bake_attr("shadowrootmode") -}}
+/// {{- shadowrootserializable | bake_bool_attr("shadowrootserializable") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct TemplateAttrs {
+    pub shadowrootclonable: bool,
+    pub shadowrootcustomelementregistry: bool,
+    pub shadowrootdelegatesfocus: bool,
+    pub shadowrootmode: Option<Cow<'static, str>>,
+    pub shadowrootserializable: bool,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasTemplateAttrs: Sized {
+    fn template_attrs_mut(&mut self) -> &mut TemplateAttrs;
 
     /// Sets clonable on a declarative shadow root.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootclonable)
-    pub fn shadowrootclonable(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("shadowrootclonable");
-        }
+    fn shadowrootclonable(mut self, value: bool) -> Self {
+        self.template_attrs_mut().shadowrootclonable = value;
         self
     }
 
     /// Enables declarative shadow roots to indicate they will use a custom element registry.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootcustomelementregistry)
-    pub fn shadowrootcustomelementregistry(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self
-                .specific_attrs
-                .add_bool_attr("shadowrootcustomelementregistry");
-        }
+    fn shadowrootcustomelementregistry(mut self, value: bool) -> Self {
+        self.template_attrs_mut().shadowrootcustomelementregistry = value;
         self
     }
 
     /// Sets delegates focus on a declarative shadow root.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootdelegatesfocus)
-    pub fn shadowrootdelegatesfocus(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self
-                .specific_attrs
-                .add_bool_attr("shadowrootdelegatesfocus");
-        }
+    fn shadowrootdelegatesfocus(mut self, value: bool) -> Self {
+        self.template_attrs_mut().shadowrootdelegatesfocus = value;
         self
     }
 
     /// Enables streaming declarative shadow roots.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootmode)
-    pub fn shadowrootmode(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("shadowrootmode", value);
+    fn shadowrootmode(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.template_attrs_mut().shadowrootmode = Some(value.into());
         self
     }
 
     /// Sets serializable on a declarative shadow root.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootserializable)
-    pub fn shadowrootserializable(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("shadowrootserializable");
-        }
+    fn shadowrootserializable(mut self, value: bool) -> Self {
+        self.template_attrs_mut().shadowrootserializable = value;
         self
     }
 
@@ -151,7 +135,25 @@ impl<M: TemplateTag> HtmlTemplate<M> {
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootreferencetarget)
 }
 
-/// Shorthand for `HtmlTemplate<()>`.
+impl HasTemplateAttrs for TemplateAttrs {
+    fn template_attrs_mut(&mut self) -> &mut TemplateAttrs {
+        self
+    }
+}
+
+impl HasTemplateAttrs for &mut TemplateAttrs {
+    fn template_attrs_mut(&mut self) -> &mut TemplateAttrs {
+        self
+    }
+}
+
+impl<M: TemplateTag> HasTemplateAttrs for HtmlTemplate<M> {
+    fn template_attrs_mut(&mut self) -> &mut TemplateAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlTemplate`.
 ///
 /// # Example
 ///
@@ -207,6 +209,7 @@ macro_rules! template {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlTemplate::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlTemplate::<()>::new($crate::bake_newline!($content))
     };

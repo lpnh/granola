@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait ProgressTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlProgress<Self>) -> HtmlProgress<Self> {
-        element
-    }
-}
-
-impl ProgressTag for () {}
 
 /// The HTML `<progress>` element.
 ///
@@ -44,67 +34,84 @@ impl ProgressTag for () {}
 ///
 /// ```askama
 /// <progress
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</progress>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = ProgressTag, content = Cow<'static, str>, specific = ProgressAttrs)]
 pub struct HtmlProgress<M: ProgressTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: ProgressAttrs,
 }
 
 impl<M: ProgressTag> HtmlProgress<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     /// If there is no value attribute, the progress bar is indeterminate; this indicates that an
     /// activity is ongoing with no indication of how long it is expected to take.
     pub fn indeterminate() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
+        Self::empty()
     }
+}
+
+/// The HTML `<progress>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- max | bake_attr("max") -}}
+/// {{- value | bake_attr("value") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct ProgressAttrs {
+    pub max: Option<Cow<'static, str>>,
+    pub value: Option<Cow<'static, str>>,
+}
+
+pub trait HasProgressAttrs: Sized {
+    fn progress_attrs_mut(&mut self) -> &mut ProgressAttrs;
 
     /// Upper bound of range.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/max)
-    pub fn max(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("max", value.to_string());
+    fn max(mut self, value: f64) -> Self {
+        self.progress_attrs_mut().max = Some(value.to_string().into());
         self
     }
 
     /// Current value of the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress#value)
-    pub fn value(mut self, value: f64) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("value", value.to_string());
+    fn value(mut self, value: f64) -> Self {
+        self.progress_attrs_mut().value = Some(value.to_string().into());
         self
     }
 }
 
-/// Shorthand for `HtmlProgress<()>`.
+impl HasProgressAttrs for ProgressAttrs {
+    fn progress_attrs_mut(&mut self) -> &mut ProgressAttrs {
+        self
+    }
+}
+
+impl HasProgressAttrs for &mut ProgressAttrs {
+    fn progress_attrs_mut(&mut self) -> &mut ProgressAttrs {
+        self
+    }
+}
+
+impl<M: ProgressTag> HasProgressAttrs for HtmlProgress<M> {
+    fn progress_attrs_mut(&mut self) -> &mut ProgressAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlProgress`.
 ///
 /// # Example
 ///
@@ -136,6 +143,7 @@ macro_rules! progress {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlProgress::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlProgress::<()>::new($crate::bake_newline!($content))
     };

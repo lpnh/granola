@@ -1,15 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
-use crate::prelude::*;
-
-pub trait BaseTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlBase<Self>) -> HtmlBase<Self> {
-        element
-    }
-}
-
-impl BaseTag for () {}
+use crate::{filters, prelude::*};
 
 /// The HTML `<base />` element.
 ///
@@ -39,54 +31,92 @@ impl BaseTag for () {}
 ///
 /// ```askama
 /// <base
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = BaseTag, specific = BaseAttrs)]
 pub struct HtmlBase<M: BaseTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: BaseAttrs,
 }
 
 impl<M: BaseTag> HtmlBase<M> {
     pub fn new(href: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().href(href);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = BaseAttrs::default().href(href);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
 
-    pub fn empty() -> Self {
-        let element = Self::default();
+/// The HTML `<todo>` element specific attributes.
+///
+/// [MDN Documentation]()
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- href | bake_attr("href") -}}
+/// {{- target | bake_attr("target") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct BaseAttrs {
+    pub href: Option<Cow<'static, str>>,
+    pub target: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
+pub trait HasBaseAttrs: Sized {
+    fn base_attrs_mut(&mut self) -> &mut BaseAttrs;
 
     /// Document base URL.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#href)
-    pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value);
+    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.base_attrs_mut().href = Some(value.into());
         self
     }
 
     /// Default navigable for hyperlink navigation and form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#target)
-    pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value);
+    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.base_attrs_mut().target = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlBase<()>`.
+impl HasBaseAttrs for BaseAttrs {
+    fn base_attrs_mut(&mut self) -> &mut BaseAttrs {
+        self
+    }
+}
+
+impl HasBaseAttrs for &mut BaseAttrs {
+    fn base_attrs_mut(&mut self) -> &mut BaseAttrs {
+        self
+    }
+}
+
+impl<M: BaseTag> HasBaseAttrs for HtmlBase<M> {
+    fn base_attrs_mut(&mut self) -> &mut BaseAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlBase`.
 ///
 /// # Example
 ///

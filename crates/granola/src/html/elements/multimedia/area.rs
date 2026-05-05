@@ -1,15 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
-use crate::prelude::*;
-
-pub trait AreaTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlArea<Self>) -> HtmlArea<Self> {
-        element
-    }
-}
-
-impl AreaTag for () {}
+use crate::{filters, prelude::*};
 
 /// The HTML `<area />` element.
 ///
@@ -41,115 +33,184 @@ impl AreaTag for () {}
 ///
 /// ```askama
 /// <area
-///   {{- global_attrs -}}
-///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+///   {{- attrs -}}
+///   {{- specific_attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = AreaTag, specific = AreaAttrs)]
 pub struct HtmlArea<M: AreaTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: AreaAttrs,
 }
 
 impl<M: AreaTag> HtmlArea<M> {
     pub fn new(href: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().href(href).alt(alt);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
-    }
+        M::decoration_recipe(&mut attrs);
 
-    pub fn empty() -> Self {
-        let element = Self::default();
+        let mut specific_attrs = AreaAttrs::default().href(href).alt(alt);
 
-        M::recipe(element)
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
 
     pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().href(href);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = AreaAttrs::default().href(href);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
+
+/// The HTML `<area>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- alt | bake_attr("alt") -}}
+/// {{- coords | bake_attr("coords") -}}
+/// {{- download | bake_attr("download") -}}
+/// {{- href | bake_attr("href") -}}
+/// {{- hreflang | bake_attr("hreflang") -}}
+/// {{- lang | bake_attr("lang") -}}
+/// {{- ping | bake_attr("ping") -}}
+/// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
+/// {{- rel | bake_attr("rel") -}}
+/// {{- shape | bake_attr("shape") -}}
+/// {{- target | bake_attr("target") -}}
+/// {{- mime_type | bake_attr("type") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct AreaAttrs {
+    pub alt: Option<Cow<'static, str>>,
+    pub coords: Option<Cow<'static, str>>,
+    pub download: Option<Cow<'static, str>>,
+    pub href: Option<Cow<'static, str>>,
+    pub hreflang: Option<Cow<'static, str>>,
+    pub lang: Option<Cow<'static, str>>,
+    pub ping: Option<Cow<'static, str>>,
+    pub referrerpolicy: Option<Cow<'static, str>>,
+    pub rel: Option<Cow<'static, str>>,
+    pub shape: Option<Cow<'static, str>>,
+    pub target: Option<Cow<'static, str>>,
+    pub mime_type: Option<Cow<'static, str>>,
+}
+
+pub trait HasAreaAttrs: Sized {
+    fn area_attrs_mut(&mut self) -> &mut AreaAttrs;
 
     /// Replacement text for use when images are not available.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#alt)
-    pub fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("alt", value);
+    fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().alt = Some(value.into());
         self
     }
 
     /// Coordinates for the shape to be created in an image map.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#coords)
-    pub fn coords(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("coords", value);
+    fn coords(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().coords = Some(value.into());
         self
     }
 
     /// Whether to download the resource instead of navigating to it, and its filename if so.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#download)
-    pub fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("download", value);
+    fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().download = Some(value.into());
         self
     }
 
     /// Address of the hyperlink.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#href)
-    pub fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("href", value);
+    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().href = Some(value.into());
         self
     }
 
     // NOTE: Include `interestfor` in the future.
+    //
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#interestfor)
 
     /// URLs to ping.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#ping)
-    pub fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("ping", value);
+    fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().ping = Some(value.into());
         self
     }
 
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#referrerpolicy)
-    pub fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("referrerpolicy", value);
+    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
 
     /// Relationship between the location in the document containing the hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    pub fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rel", value);
+    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().rel = Some(value.into());
         self
     }
 
     /// The kind of shape to be created in an image map.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#shape)
-    pub fn shape(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("shape", value);
+    fn shape(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().shape = Some(value.into());
         self
     }
 
     /// Navigable for hyperlink navigation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#target)
-    pub fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("target", value);
+    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.area_attrs_mut().target = Some(value.into());
         self
+    }
+}
+
+impl HasAreaAttrs for AreaAttrs {
+    fn area_attrs_mut(&mut self) -> &mut AreaAttrs {
+        self
+    }
+}
+
+impl HasAreaAttrs for &mut AreaAttrs {
+    fn area_attrs_mut(&mut self) -> &mut AreaAttrs {
+        self
+    }
+}
+
+impl<M: AreaTag> HasAreaAttrs for HtmlArea<M> {
+    fn area_attrs_mut(&mut self) -> &mut AreaAttrs {
+        &mut self.specific_attrs
     }
 }
 
@@ -158,7 +219,7 @@ impl<M: AreaTag> HtmlArea<M> {
 /// {{ area -}}
 /// {%- endfor -%}
 /// ```
-#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
+#[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct Areas {
     items: Vec<HtmlArea>,
@@ -178,7 +239,7 @@ impl From<HtmlArea> for Areas {
     }
 }
 
-/// Shorthand for `HtmlArea<()>`.
+/// Shorthand for `HtmlArea`.
 ///
 /// # Example
 ///

@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// any
-
 /// The HTML `<th>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th)
@@ -45,10 +41,17 @@ use crate::{filters, prelude::*};
 pub struct HtmlTh<M: ThTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// any
     pub attrs: Attrs,
     pub specific_attrs: ThAttrs,
 }
 
+/// The HTML `<th>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#attributes)
+///
 /// # Askama template
 ///
 /// ```askama
@@ -130,7 +133,7 @@ impl<M: ThTag> HasThAttrs for HtmlTh<M> {
     }
 }
 
-/// Shorthand for `HtmlTh<()>`.
+/// Shorthand for `HtmlTh`.
 ///
 /// # Example
 ///
@@ -162,6 +165,7 @@ macro_rules! th {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlTh::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlTh::<()>::new($crate::bake_newline!($content))
     };

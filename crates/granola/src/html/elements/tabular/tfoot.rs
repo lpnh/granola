@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait TfootTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = TableRows;
-
-    fn recipe(element: HtmlTfoot<Self>) -> HtmlTfoot<Self> {
-        element
-    }
-}
-
-impl TfootTag for () {}
 
 /// The HTML `<tfoot>` element.
 ///
@@ -50,42 +37,21 @@ impl TfootTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <tfoot
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</tfoot>
+/// <tfoot{{ attrs }}>{{ content | kirei(2) }}</tfoot>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = TfootTag, content = TableRows)]
 pub struct HtmlTfoot<M: TfootTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
 }
 
-impl<M: TfootTag> HtmlTfoot<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlTfoot<()>`.
+/// Shorthand for `HtmlTfoot`.
 ///
 /// # Example
 ///

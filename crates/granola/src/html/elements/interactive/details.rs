@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait DetailsTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlDetails<Self>) -> HtmlDetails<Self> {
-        element
-    }
-}
-
-impl DetailsTag for () {}
 
 /// The HTML `<details>` element.
 ///
@@ -46,61 +36,76 @@ impl DetailsTag for () {}
 ///
 /// ```askama
 /// <details
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</details>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = DetailsTag, content = Cow<'static, str>, specific = DetailsAttrs)]
 pub struct HtmlDetails<M: DetailsTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: DetailsAttrs,
 }
 
-impl<M: DetailsTag> HtmlDetails<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<details>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- name | bake_attr("name") -}}
+/// {{- open | bake_bool_attr("open") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct DetailsAttrs {
+    pub name: Option<Cow<'static, str>>,
+    pub open: bool,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasDetailsAttrs: Sized {
+    fn details_attrs_mut(&mut self) -> &mut DetailsAttrs;
 
     /// Name of group of mutually-exclusive details elements.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details#name)
-    pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value);
+    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.details_attrs_mut().name = Some(value.into());
         self
     }
 
     /// Whether the details are visible.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details#open)
-    pub fn open(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("open");
-        }
+    fn open(mut self, value: bool) -> Self {
+        self.details_attrs_mut().open = value;
         self
     }
 }
 
-/// Shorthand for `HtmlDetails<()>`.
+impl HasDetailsAttrs for DetailsAttrs {
+    fn details_attrs_mut(&mut self) -> &mut DetailsAttrs {
+        self
+    }
+}
+
+impl HasDetailsAttrs for &mut DetailsAttrs {
+    fn details_attrs_mut(&mut self) -> &mut DetailsAttrs {
+        self
+    }
+}
+
+impl<M: DetailsTag> HasDetailsAttrs for HtmlDetails<M> {
+    fn details_attrs_mut(&mut self) -> &mut DetailsAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlDetails`.
 ///
 /// # Example
 ///
@@ -137,6 +142,7 @@ macro_rules! details {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlDetails::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlDetails::<()>::new($crate::bake_newline!($content))
     };

@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// menu (with no multiple attribute and no size attribute greater than 1)
-
 /// The HTML `<select>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select)
@@ -51,10 +47,17 @@ use crate::{filters, prelude::*};
 pub struct HtmlSelect<M: SelectTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// menu (with no multiple attribute and no size attribute greater than 1)
     pub attrs: Attrs,
     pub specific_attrs: SelectAttrs,
 }
 
+/// The HTML `<select>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select#attributes)
+///
 /// # Askama template
 ///
 /// ```askama
@@ -156,7 +159,7 @@ impl<M: SelectTag> HasSelectAttrs for HtmlSelect<M> {
     }
 }
 
-/// Shorthand for `HtmlSelect<()>`.
+/// Shorthand for `HtmlSelect`.
 ///
 /// # Example
 ///

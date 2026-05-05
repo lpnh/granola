@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// search, none or presentation
-
 /// The HTML `<form>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form)
@@ -55,10 +51,17 @@ use crate::{filters, prelude::*};
 pub struct HtmlForm<M: FormTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// search, none or presentation
     pub attrs: Attrs,
     pub specific_attrs: FormAttrs,
 }
 
+/// The HTML `<form>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#attributes)
+///
 /// # Askama template
 ///
 /// ```askama
@@ -206,7 +209,7 @@ impl From<FormMethod> for Cow<'static, str> {
     }
 }
 
-/// Shorthand for `HtmlForm<()>`.
+/// Shorthand for `HtmlForm`.
 ///
 /// # Example
 ///

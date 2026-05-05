@@ -3,17 +3,6 @@ use std::{fmt::Debug, marker::PhantomData};
 
 use crate::prelude::*;
 
-/// # Permitted ARIA roles
-///
-/// none, presentation
-pub trait BrTag: Default + Clone + Debug + 'static {
-    fn recipe(element: HtmlBr<Self>) -> HtmlBr<Self> {
-        element
-    }
-}
-
-impl BrTag for () {}
-
 /// The HTML `<br />` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/br)
@@ -49,31 +38,20 @@ impl BrTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <br
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs }} />
+/// <br{{ attrs }} />
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = BrTag)]
 pub struct HtmlBr<M: BrTag = ()> {
     _marker: PhantomData<M>,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// none, presentation
+    pub attrs: Attrs,
 }
 
-impl<M: BrTag> HtmlBr<M> {
-    pub fn new() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlBr<()>`.
+/// Shorthand for `HtmlBr`.
 ///
 /// # Example
 ///
@@ -104,5 +82,9 @@ impl<M: BrTag> HtmlBr<M> {
 macro_rules! br {
     () => {
         $crate::html::HtmlBr::<()>::new()
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlAbbr::<$crate::rec!($($r),+)>::from_recipe()
     };
 }

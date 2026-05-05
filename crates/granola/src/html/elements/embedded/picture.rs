@@ -1,19 +1,9 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-pub trait PictureTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlPicture<Self>) -> HtmlPicture<Self> {
-        element
-    }
-}
-
-impl PictureTag for () {}
-
-/// The HTML `<picture>` element
+/// The HTML `<picture>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/picture)
 ///
@@ -48,42 +38,18 @@ impl PictureTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <picture
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</picture>
+/// <picture{{ attrs }}>{{ content | kirei(2) }}</picture>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = PictureTag, content = Cow<'static, str>)]
 pub struct HtmlPicture<M: PictureTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
 }
 
-impl<M: PictureTag> HtmlPicture<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlPicture<()>`.
+/// Shorthand for `HtmlPicture`.
 ///
 /// # Example
 ///
@@ -123,6 +89,7 @@ macro_rules! picture {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlPicture::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlPicture::<()>::new($crate::bake_newline!($content))
     };

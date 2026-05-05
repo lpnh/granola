@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// any
-
 /// The HTML `<abbr>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/abbr)
@@ -42,10 +38,13 @@ use crate::{filters, prelude::*};
 pub struct HtmlAbbr<M: AbbrTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// any
     pub attrs: Attrs,
 }
 
-/// Shorthand for `HtmlAbbr<()>`.
+/// Shorthand for `HtmlAbbr`.
 ///
 /// # Example
 ///

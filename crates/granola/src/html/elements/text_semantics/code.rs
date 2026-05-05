@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait CodeTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlCode<Self>) -> HtmlCode<Self> {
-        element
-    }
-}
-
-impl CodeTag for () {}
 
 /// The HTML `<code>` element.
 ///
@@ -43,42 +30,21 @@ impl CodeTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <code
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</code>
+/// <code{{ attrs }}>{{ content | kirei(2) }}</code>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = CodeTag, content = Cow<'static, str>)]
 pub struct HtmlCode<M: CodeTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
 }
 
-impl<M: CodeTag> HtmlCode<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlCode<()>`.
+/// Shorthand for `HtmlCode`.
 ///
 /// # Example
 ///
@@ -110,6 +76,7 @@ macro_rules! code {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlCode::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlCode::<()>::new($crate::bake_newline!($content))
     };

@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// any
-pub trait AddressTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlAddress<Self>) -> HtmlAddress<Self> {
-        element
-    }
-}
-
-impl AddressTag for () {}
 
 /// The HTML `<address>` element.
 ///
@@ -50,42 +37,21 @@ impl AddressTag for () {}
 /// # Askama template
 ///
 /// ```askama
-/// <address
-///   {{- global_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
-/// >{{ content | kirei(2) }}</address>
+/// <address{{ attrs }}>{{ content | kirei(2) }}</address>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = AddressTag, content = Cow<'static, str>)]
 pub struct HtmlAddress<M: AddressTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// any
+    pub attrs: Attrs,
 }
 
-impl<M: AddressTag> HtmlAddress<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-}
-
-/// Shorthand for `HtmlAddress<()>`.
+/// Shorthand for `HtmlAddress`.
 ///
 /// # Example
 ///
@@ -122,6 +88,7 @@ macro_rules! address {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlAddress::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlAddress::<()>::new($crate::bake_newline!($content))
     };

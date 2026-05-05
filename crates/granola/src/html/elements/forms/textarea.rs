@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait TextareaTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlTextarea<Self>) -> HtmlTextarea<Self> {
-        element
-    }
-}
-
-impl TextareaTag for () {}
 
 /// The HTML `<textarea>` element.
 ///
@@ -43,58 +33,75 @@ impl TextareaTag for () {}
 ///
 /// ```askama
 /// <textarea
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</textarea>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = TextareaTag, content = Cow<'static, str>)]
 pub struct HtmlTextarea<M: TextareaTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: TextareaAttrs,
 }
 
-impl<M: TextareaTag> HtmlTextarea<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<textarea>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- autocomplete | bake_attr("autocomplete") -}}
+/// {{- cols | bake_attr("cols") -}}
+/// {{- dirname | bake_attr("dirname") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- form | bake_attr("form") -}}
+/// {{- maxlength | bake_attr("maxlength") -}}
+/// {{- minlength | bake_attr("minlength") -}}
+/// {{- name | bake_attr("name") -}}
+/// {{- placeholder | bake_attr("placeholder") -}}
+/// {{- readonly | bake_bool_attr("readonly") -}}
+/// {{- required | bake_bool_attr("required") -}}
+/// {{- rows | bake_attr("rows") -}}
+/// {{- wrap | bake_attr("wrap") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct TextareaAttrs {
+    pub autocomplete: Option<Cow<'static, str>>,
+    pub cols: Option<u32>,
+    pub dirname: Option<Cow<'static, str>>,
+    pub disabled: bool,
+    pub form: Option<Cow<'static, str>>,
+    pub maxlength: Option<u32>,
+    pub minlength: Option<u32>,
+    pub name: Option<Cow<'static, str>>,
+    pub placeholder: Option<Cow<'static, str>>,
+    pub readonly: bool,
+    pub required: bool,
+    pub rows: Option<u32>,
+    pub wrap: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
-    pub fn validate(self) -> Self {
-        self.class("validator")
-    }
+pub trait HasTextareaAttrs: Sized {
+    fn textarea_attrs_mut(&mut self) -> &mut TextareaAttrs;
 
     /// Hint for form autofill feature.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
-    pub fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("autocomplete", value);
+    fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.textarea_attrs_mut().autocomplete = Some(value.into());
         self
     }
 
     /// Maximum number of characters per line.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#cols)
-    pub fn cols(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("cols", value.to_string());
+    fn cols(mut self, value: u32) -> Self {
+        self.textarea_attrs_mut().cols = Some(value);
         self
     }
 
@@ -102,99 +109,111 @@ impl<M: TextareaTag> HtmlTextarea<M> {
     /// submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/dirname)
-    pub fn dirname(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("dirname", value);
+    fn dirname(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.textarea_attrs_mut().dirname = Some(value.into());
         self
     }
 
     /// Whether the form control is disabled.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled)
-    pub fn disabled(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("disabled");
-        }
+    fn disabled(mut self, value: bool) -> Self {
+        self.textarea_attrs_mut().disabled = value;
         self
     }
 
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    pub fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("form", value);
+    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.textarea_attrs_mut().form = Some(value.into());
         self
     }
 
     /// Maximum length of value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/maxlength)
-    pub fn maxlength(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("maxlength", value.to_string());
+    fn maxlength(mut self, value: u32) -> Self {
+        self.textarea_attrs_mut().maxlength = Some(value);
         self
     }
 
     /// Minimum length of value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/minlength)
-    pub fn minlength(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("minlength", value.to_string());
+    fn minlength(mut self, value: u32) -> Self {
+        self.textarea_attrs_mut().minlength = Some(value);
         self
     }
 
     /// Name of the element to use for form submission and in the `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#name)
-    pub fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("name", value);
+    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.textarea_attrs_mut().name = Some(value.into());
         self
     }
 
     /// User-visible label to be placed within the form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder)
-    pub fn placeholder(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("placeholder", value);
+    fn placeholder(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.textarea_attrs_mut().placeholder = Some(value.into());
         self
     }
 
     /// Whether to allow the value to be edited by the user.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/readonly)
-    pub fn readonly(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("readonly");
-        }
+    fn readonly(mut self, value: bool) -> Self {
+        self.textarea_attrs_mut().readonly = value;
         self
     }
 
     /// Whether the control is required for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/required)
-    pub fn required(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("required");
-        }
+    fn required(mut self, value: bool) -> Self {
+        self.textarea_attrs_mut().required = value;
         self
     }
 
     /// Number of lines to show.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#rows)
-    pub fn rows(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("rows", value.to_string());
+    fn rows(mut self, value: u32) -> Self {
+        self.textarea_attrs_mut().rows = Some(value);
         self
     }
 
     /// How the value of the form control is to be wrapped for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#wrap)
-    pub fn wrap(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("wrap", value);
+    fn wrap(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.textarea_attrs_mut().wrap = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlTextarea<()>`.
+impl HasTextareaAttrs for TextareaAttrs {
+    fn textarea_attrs_mut(&mut self) -> &mut TextareaAttrs {
+        self
+    }
+}
+
+impl HasTextareaAttrs for &mut TextareaAttrs {
+    fn textarea_attrs_mut(&mut self) -> &mut TextareaAttrs {
+        self
+    }
+}
+
+impl<M: TextareaTag> HasTextareaAttrs for HtmlTextarea<M> {
+    fn textarea_attrs_mut(&mut self) -> &mut TextareaAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlTextarea`.
 ///
 /// # Example
 ///

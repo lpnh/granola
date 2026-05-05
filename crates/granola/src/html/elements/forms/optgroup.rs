@@ -1,17 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-pub trait OptgroupTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Options;
-
-    fn recipe(element: HtmlOptgroup<Self>) -> HtmlOptgroup<Self> {
-        element
-    }
-}
-
-impl OptgroupTag for () {}
 
 /// The HTML `<optgroup>` element.
 ///
@@ -51,61 +41,76 @@ impl OptgroupTag for () {}
 ///
 /// ```askama
 /// <optgroup
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</optgroup>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = OptgroupTag, content = Options, specific = OptgroupAttrs)]
 pub struct HtmlOptgroup<M: OptgroupTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    pub attrs: Attrs,
+    pub specific_attrs: OptgroupAttrs,
 }
 
-impl<M: OptgroupTag> HtmlOptgroup<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
+/// The HTML `<optgroup>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/optgroup#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- label | bake_attr("label") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct OptgroupAttrs {
+    pub disabled: bool,
+    pub label: Option<Cow<'static, str>>,
+}
 
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
+pub trait HasOptgroupAttrs: Sized {
+    fn optgroup_attrs_mut(&mut self) -> &mut OptgroupAttrs;
 
     /// Whether the form control is disabled.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled)
-    pub fn disabled(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("disabled");
-        }
+    fn disabled(mut self, value: bool) -> Self {
+        self.optgroup_attrs_mut().disabled = value;
         self
     }
 
     /// User-visible label.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/optgroup#label)
-    pub fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("label", value);
+    fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.optgroup_attrs_mut().label = Some(value.into());
         self
     }
 }
 
-/// Shorthand for `HtmlOptgroup<()>`.
+impl HasOptgroupAttrs for OptgroupAttrs {
+    fn optgroup_attrs_mut(&mut self) -> &mut OptgroupAttrs {
+        self
+    }
+}
+
+impl HasOptgroupAttrs for &mut OptgroupAttrs {
+    fn optgroup_attrs_mut(&mut self) -> &mut OptgroupAttrs {
+        self
+    }
+}
+
+impl<M: OptgroupTag> HasOptgroupAttrs for HtmlOptgroup<M> {
+    fn optgroup_attrs_mut(&mut self) -> &mut OptgroupAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlOptgroup`.
 ///
 /// # Example
 ///

@@ -3,10 +3,6 @@ use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-// # Permitted ARIA roles
-//
-// any
-
 /// The HTML `<ins>` element.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ins)
@@ -49,10 +45,17 @@ use crate::{filters, prelude::*};
 pub struct HtmlIns<M: InsTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
+    /// # Permitted ARIA roles
+    ///
+    /// any
     pub attrs: Attrs,
     pub specific_attrs: InsAttrs,
 }
 
+/// The HTML `<ins>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ins#attributes)
+///
 /// # Askama template
 ///
 /// ```askama
@@ -104,7 +107,7 @@ impl<M: InsTag> HasInsAttrs for HtmlIns<M> {
     }
 }
 
-/// Shorthand for `HtmlIns<()>`.
+/// Shorthand for `HtmlIns`.
 ///
 /// # Example
 ///

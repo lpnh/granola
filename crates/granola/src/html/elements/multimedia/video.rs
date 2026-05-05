@@ -1,20 +1,7 @@
-use askama::{FastWritable, Template};
+use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
-
-/// # Permitted ARIA roles
-///
-/// application
-pub trait VideoTag: Default + Clone + Debug + 'static {
-    type Content: FastWritable + Default + Clone + Debug = Cow<'static, str>;
-
-    fn recipe(element: HtmlVideo<Self>) -> HtmlVideo<Self> {
-        element
-    }
-}
-
-impl VideoTag for () {}
 
 /// The HTML `<video>` element.
 ///
@@ -46,64 +33,91 @@ impl VideoTag for () {}
 ///
 /// ```askama
 /// <video
-///   {{- global_attrs -}}
+///   {{- attrs -}}
 ///   {{- specific_attrs -}}
-///   {{- data_attrs -}}
-///   {{- event_handlers -}}
-///   {{- global_aria_attrs -}}
 /// >{{ content | kirei(2) }}</video>
 /// ```
-#[derive(Debug, Clone, PartialEq, Default, Template, Granola, MutAttrs)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
+#[recipe(name = VideoTag, content = Cow<'static, str>, specific = VideoAttrs)]
 pub struct HtmlVideo<M: VideoTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub global_attrs: GlobalAttrs,
-    pub specific_attrs: SpecificAttrs,
-    pub data_attrs: DataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
+    /// # Permitted ARIA roles
+    ///
+    /// application
+    pub attrs: Attrs,
+    pub specific_attrs: VideoAttrs,
 }
 
 impl<M: VideoTag> HtmlVideo<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
-        let element = Self {
-            content: content.into(),
-            ..Default::default()
-        };
-
-        M::recipe(element)
-    }
-
-    pub fn empty() -> Self {
-        let element = Self::default();
-
-        M::recipe(element)
-    }
-
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let element = Self::default().src(src);
+        let mut attrs = Attrs::default();
 
-        M::recipe(element)
+        M::decoration_recipe(&mut attrs);
+
+        let mut specific_attrs = VideoAttrs::default().src(src);
+
+        M::specific_recipe(&mut specific_attrs);
+
+        Self {
+            attrs,
+            specific_attrs,
+            ..Default::default()
+        }
     }
+}
+
+/// The HTML `<video>` element specific attributes.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#attributes)
+///
+/// # Askama template
+///
+/// ```askama
+/// {{- autoplay | bake_bool_attr("autoplay") -}}
+/// {{- controls | bake_bool_attr("controls") -}}
+/// {{- crossorigin | bake_attr("crossorigin") -}}
+/// {{- media_loop | bake_bool_attr("loop") -}}
+/// {{- muted | bake_bool_attr("muted") -}}
+/// {{- playsinline | bake_bool_attr("playsinline") -}}
+/// {{- poster | bake_attr("poster") -}}
+/// {{- preload | bake_attr("preload") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- width | bake_attr("width") -}}
+/// ```
+#[derive(Debug, Clone, Default, Template)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct VideoAttrs {
+    pub autoplay: bool,
+    pub controls: bool,
+    pub crossorigin: Option<Cow<'static, str>>,
+    pub height: Option<u32>,
+    pub media_loop: bool,
+    pub muted: bool,
+    pub playsinline: bool,
+    pub poster: Option<Cow<'static, str>>,
+    pub preload: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
+    pub width: Option<u32>,
+}
+
+pub trait HasVideoAttrs: Sized {
+    fn video_attrs_mut(&mut self) -> &mut VideoAttrs;
 
     /// Hint that the media resource can be started automatically when the page is loaded.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#autoplay)
-    pub fn autoplay(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("autoplay");
-        }
+    fn autoplay(mut self, value: bool) -> Self {
+        self.video_attrs_mut().autoplay = value;
         self
     }
 
     /// Show user agent controls.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#controls)
-    pub fn controls(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("controls");
-        }
+    fn controls(mut self, value: bool) -> Self {
+        self.video_attrs_mut().controls = value;
         self
     }
 
@@ -114,15 +128,16 @@ impl<M: VideoTag> HtmlVideo<M> {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    pub fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("crossorigin", value);
+    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.video_attrs_mut().crossorigin = Some(value.into());
         self
     }
+
     /// Vertical dimension.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#height)
-    pub fn height(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("height", value.to_string());
+    fn height(mut self, value: u32) -> Self {
+        self.video_attrs_mut().height = Some(value);
         self
     }
 
@@ -133,67 +148,79 @@ impl<M: VideoTag> HtmlVideo<M> {
     /// Whether to loop the media resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#loop)
-    pub fn loop_(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("loop");
-        }
+    fn media_loop(mut self, value: bool) -> Self {
+        self.video_attrs_mut().media_loop = value;
         self
     }
 
     /// Whether to mute the media resource by default.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#muted)
-    pub fn muted(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("muted");
-        }
+    fn muted(mut self, value: bool) -> Self {
+        self.video_attrs_mut().muted = value;
         self
     }
 
     /// Encourage the user agent to display video content within the element's playback area.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#playsinline)
-    pub fn playsinline(mut self, value: bool) -> Self {
-        if value {
-            self.specific_attrs = self.specific_attrs.add_bool_attr("playsinline");
-        }
+    fn playsinline(mut self, value: bool) -> Self {
+        self.video_attrs_mut().playsinline = value;
         self
     }
 
     /// Poster frame to show prior to video playback.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#poster)
-    pub fn poster(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("poster", value);
+    fn poster(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.video_attrs_mut().poster = Some(value.into());
         self
     }
 
     /// Hints how much buffering the media resource will likely need.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#preload)
-    pub fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("preload", value);
+    fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.video_attrs_mut().preload = Some(value.into());
         self
     }
 
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#src)
-    pub fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("src", value);
+    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.video_attrs_mut().src = Some(value.into());
         self
     }
 
     /// Horizontal dimension.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#width)
-    pub fn width(mut self, value: u32) -> Self {
-        self.specific_attrs = self.specific_attrs.add_attr("width", value.to_string());
+    fn width(mut self, value: u32) -> Self {
+        self.video_attrs_mut().width = Some(value);
         self
     }
 }
 
-/// Shorthand for `HtmlVideo<()>`.
+impl HasVideoAttrs for VideoAttrs {
+    fn video_attrs_mut(&mut self) -> &mut VideoAttrs {
+        self
+    }
+}
+
+impl HasVideoAttrs for &mut VideoAttrs {
+    fn video_attrs_mut(&mut self) -> &mut VideoAttrs {
+        self
+    }
+}
+
+impl<M: VideoTag> HasVideoAttrs for HtmlVideo<M> {
+    fn video_attrs_mut(&mut self) -> &mut VideoAttrs {
+        &mut self.specific_attrs
+    }
+}
+
+/// Shorthand for `HtmlVideo`.
 ///
 /// # Example
 ///
@@ -227,12 +254,14 @@ macro_rules! video {
     ($first: expr $(, $rest: expr)+ $(,)?) => {
         $crate::html::HtmlVideo::<()>::new($crate::bake_block![$first $(, $rest)*])
     };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlVideo::<()>::new($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlVideo::<()>::new($crate::bake_inline![$($content),+])
     };
+
     (@from_src $src: expr $(,)?) => {
         $crate::html::HtmlVideo::<()>::from_src($src)
     };
