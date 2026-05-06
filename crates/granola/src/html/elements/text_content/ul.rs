@@ -40,7 +40,12 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <ul{{ attrs }}>{{ content | kirei(2) }}</ul>
+/// <ul
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
+/// >{{ content | kirei(2) }}</ul>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -52,7 +57,10 @@ pub struct HtmlUl<M: UlTag = ()> {
     ///
     /// directory, group, listbox, menu, menubar, none, presentation,
     /// radiogroup, tablist, toolbar, tree
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// Shorthand for `HtmlUl`.

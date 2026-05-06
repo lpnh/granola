@@ -31,16 +31,22 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <link
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LinkTag, specific = LinkAttrs)]
+#[recipe(name = LinkTag, attrs = LinkAttrs)]
 pub struct HtmlLink<M: LinkTag = ()> {
     _marker: PhantomData<M>,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: LinkAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<link />` element specific attributes.
@@ -53,7 +59,6 @@ pub struct HtmlLink<M: LinkTag = ()> {
 /// {{- preload_as | bake_attr("as") -}}
 /// {{- blocking | bake_attr("blocking") -}}
 /// {{- crossorigin | bake_attr("crossorigin") -}}
-/// {{- disabled | bake_bool_attr("defer") -}}
 /// {{- fetchpriority | bake_attr("fetchpriority") -}}
 /// {{- href | bake_attr("href") -}}
 /// {{- hreflang | bake_attr("hreflang") -}}
@@ -65,6 +70,7 @@ pub struct HtmlLink<M: LinkTag = ()> {
 /// {{- rel | bake_attr("rel") -}}
 /// {{- sizes | bake_attr("sizes") -}}
 /// {{- mime_type | bake_attr("type") -}}
+/// {{- disabled | bake_bool_attr("defer") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -72,7 +78,6 @@ pub struct LinkAttrs {
     pub preload_as: Option<Cow<'static, str>>,
     pub blocking: Option<Cow<'static, str>>,
     pub crossorigin: Option<Cow<'static, str>>,
-    pub disabled: bool,
     pub fetchpriority: Option<Cow<'static, str>>,
     pub href: Option<Cow<'static, str>>,
     pub hreflang: Option<Cow<'static, str>>,
@@ -84,6 +89,61 @@ pub struct LinkAttrs {
     pub rel: Option<Cow<'static, str>>,
     pub sizes: Option<Cow<'static, str>>,
     pub mime_type: Option<Cow<'static, str>>,
+    pub disabled: bool,
+}
+
+impl<M: LinkTag> HtmlLink<M> {
+    pub fn new(href: impl Into<Cow<'static, str>>, rel: impl Into<Cow<'static, str>>) -> Self {
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
+
+        let mut specific_attrs = LinkAttrs::default().href(href).rel(rel);
+        M::specific_attrs_recipe(&mut specific_attrs);
+
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
+
+        Self {
+            global_attrs,
+            specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
+            ..Default::default()
+        }
+    }
+
+    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
+
+        let mut specific_attrs = LinkAttrs::default().href(href);
+        M::specific_attrs_recipe(&mut specific_attrs);
+
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
+
+        Self {
+            global_attrs,
+            specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
+            ..Default::default()
+        }
+    }
 }
 
 pub trait HasLinkAttrs: Sized {

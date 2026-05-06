@@ -30,7 +30,12 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <noscript{{ attrs }}>{{ content | kirei(2) }}</noscript>
+/// <noscript
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
+/// >{{ content | kirei(2) }}</noscript>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -38,7 +43,10 @@ use crate::{filters, prelude::*};
 pub struct HtmlNoscript<M: NoscriptTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// Shorthand for `HtmlNoscript`.

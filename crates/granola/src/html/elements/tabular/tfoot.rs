@@ -37,7 +37,12 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <tfoot{{ attrs }}>{{ content | kirei(2) }}</tfoot>
+/// <tfoot
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
+/// >{{ content | kirei(2) }}</tfoot>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -48,7 +53,10 @@ pub struct HtmlTfoot<M: TfootTag = ()> {
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// Shorthand for `HtmlTfoot`.

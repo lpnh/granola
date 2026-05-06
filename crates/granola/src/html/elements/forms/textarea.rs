@@ -33,8 +33,11 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <textarea
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</textarea>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
@@ -43,8 +46,11 @@ use crate::{filters, prelude::*};
 pub struct HtmlTextarea<M: TextareaTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: TextareaAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<textarea>` element specific attributes.
@@ -57,16 +63,16 @@ pub struct HtmlTextarea<M: TextareaTag = ()> {
 /// {{- autocomplete | bake_attr("autocomplete") -}}
 /// {{- cols | bake_attr("cols") -}}
 /// {{- dirname | bake_attr("dirname") -}}
-/// {{- disabled | bake_bool_attr("disabled") -}}
 /// {{- form | bake_attr("form") -}}
 /// {{- maxlength | bake_attr("maxlength") -}}
 /// {{- minlength | bake_attr("minlength") -}}
 /// {{- name | bake_attr("name") -}}
 /// {{- placeholder | bake_attr("placeholder") -}}
-/// {{- readonly | bake_bool_attr("readonly") -}}
-/// {{- required | bake_bool_attr("required") -}}
 /// {{- rows | bake_attr("rows") -}}
 /// {{- wrap | bake_attr("wrap") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- readonly | bake_bool_attr("readonly") -}}
+/// {{- required | bake_bool_attr("required") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -74,16 +80,16 @@ pub struct TextareaAttrs {
     pub autocomplete: Option<Cow<'static, str>>,
     pub cols: Option<u32>,
     pub dirname: Option<Cow<'static, str>>,
-    pub disabled: bool,
     pub form: Option<Cow<'static, str>>,
     pub maxlength: Option<u32>,
     pub minlength: Option<u32>,
     pub name: Option<Cow<'static, str>>,
     pub placeholder: Option<Cow<'static, str>>,
-    pub readonly: bool,
-    pub required: bool,
     pub rows: Option<u32>,
     pub wrap: Option<Cow<'static, str>>,
+    pub disabled: bool,
+    pub readonly: bool,
+    pub required: bool,
 }
 
 pub trait HasTextareaAttrs: Sized {

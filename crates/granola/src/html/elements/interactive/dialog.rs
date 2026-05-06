@@ -44,21 +44,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <dialog
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</dialog>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DialogTag, content = Cow<'static, str>, specific = DialogAttrs)]
+#[recipe(name = DialogTag, content = Cow<'static, str>, attrs = DialogAttrs)]
 pub struct HtmlDialog<M: DialogTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// alertdialog
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: DialogAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<dialog>` element specific attributes.

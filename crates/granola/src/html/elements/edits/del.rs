@@ -26,7 +26,7 @@ use crate::{filters, prelude::*};
 ///     .cite("https://github.com/rust-lang/rust/pull/62672");
 ///
 /// assert_eq!(del.bake(),
-/// r#"<del cite="https://github.com/rust-lang/rust/pull/62672" datetime="2019-11-07">
+/// r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">
 ///   try!
 /// </del>"#);
 /// ```
@@ -35,21 +35,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <del
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</del>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DelTag, content = Cow<'static, str>, specific = DelAttrs)]
+#[recipe(name = DelTag, content = Cow<'static, str>, attrs = DelAttrs)]
 pub struct HtmlDel<M: DelTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: DelAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<del>` element specific attributes.
@@ -59,14 +65,14 @@ pub struct HtmlDel<M: DelTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- cite | bake_attr("cite") -}}
 /// {{- datetime | bake_attr("datetime") -}}
+/// {{- cite | bake_attr("cite") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct DelAttrs {
-    pub cite: Option<Cow<'static, str>>,
     pub datetime: Option<Cow<'static, str>>,
+    pub cite: Option<Cow<'static, str>>,
 }
 
 pub trait HasDelAttrs: Sized {

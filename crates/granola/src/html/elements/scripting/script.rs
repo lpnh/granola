@@ -33,33 +33,49 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <script
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</script>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ScriptTag, content = Cow<'static, str>, specific = ScriptAttrs)]
+#[recipe(name = ScriptTag, content = Cow<'static, str>, attrs = ScriptAttrs)]
 pub struct HtmlScript<M: ScriptTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ScriptAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: ScriptTag> HtmlScript<M> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = ScriptAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -72,30 +88,30 @@ impl<M: ScriptTag> HtmlScript<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- async_script | bake_bool_attr("async") -}}
+/// {{- script_type | bake_attr("type") -}}
+/// {{- src | bake_attr("src") -}}
 /// {{- blocking | bake_attr("blocking") -}}
 /// {{- crossorigin | bake_attr("crossorigin") -}}
-/// {{- defer | bake_bool_attr("defer") -}}
 /// {{- fetchpriority | bake_attr("fetchpriority") -}}
 /// {{- integrity | bake_attr("integrity") -}}
-/// {{- nomodule | bake_bool_attr("nomodule") -}}
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
-/// {{- src | bake_attr("src") -}}
-/// {{- script_type | bake_attr("type") -}}
+/// {{- async_script | bake_bool_attr("async") -}}
+/// {{- defer | bake_bool_attr("defer") -}}
+/// {{- nomodule | bake_bool_attr("nomodule") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ScriptAttrs {
-    pub async_script: bool,
+    pub script_type: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
     pub blocking: Option<Cow<'static, str>>,
     pub crossorigin: Option<Cow<'static, str>>,
-    pub defer: bool,
     pub fetchpriority: Option<Cow<'static, str>>,
     pub integrity: Option<Cow<'static, str>>,
-    pub nomodule: bool,
     pub referrerpolicy: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
-    pub script_type: Option<Cow<'static, str>>,
+    pub async_script: bool,
+    pub defer: bool,
+    pub nomodule: bool,
 }
 
 pub trait HasScriptAttrs: Sized {

@@ -35,16 +35,28 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <col
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ColTag, specific = ColAttrs)]
+#[recipe(name = ColTag, attrs = ColAttrs)]
 pub struct HtmlCol<M: ColTag = ()> {
     _marker: PhantomData<M>,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ColAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
+}
+
+impl<M: ColTag> HtmlCol<M> {
+    pub fn new() -> Self {
+        Self::from_recipe()
+    }
 }
 
 /// The HTML `<col>` element specific attributes.

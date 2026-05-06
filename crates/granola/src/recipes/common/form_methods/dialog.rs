@@ -23,25 +23,25 @@ use crate::prelude::*;
 /// assert_eq!(button.bake(),
 /// r#"<button formmethod="dialog">Ok</button>"#);
 /// assert_eq!(input.bake(),
-/// r#"<input formmethod="dialog" type="submit" value="Ok" />"#);
+/// r#"<input type="submit" value="Ok" formmethod="dialog" />"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Dialog;
 
 impl FormTag for Dialog {
-    fn specific_recipe(form_attrs: &mut FormAttrs) {
+    fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
         form_attrs.method(FormMethod::Dialog);
     }
 }
 
 impl ButtonTag for Dialog {
-    fn specific_recipe(button_attrs: &mut ButtonAttrs) {
+    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.formmethod(FormMethod::Dialog);
     }
 }
 
 impl InputTag for Dialog {
-    fn specific_recipe(input_attrs: &mut InputAttrs) {
+    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.formmethod(FormMethod::Dialog);
     }
 }

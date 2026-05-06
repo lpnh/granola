@@ -23,8 +23,8 @@ impl HtmlTag for FooRecipe {
         }
     }
 
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.class("dark").id("foo-html");
+    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
+        global_attrs.class("dark").id("foo-html");
     }
 }
 
@@ -35,14 +35,14 @@ impl PTag for FooRecipe {
         *content = bake_block![content, "Content from FooRecipe"];
     }
 
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.class("text-lg").id("foo-p");
+    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
+        global_attrs.class("text-lg").id("foo-p");
     }
 }
 
 impl ButtonTag for FooRecipe {
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.class("rounded-full").id("foo-button");
+    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
+        global_attrs.class("rounded-full").id("foo-button");
     }
 }
 
@@ -52,22 +52,34 @@ struct BarRecipe;
 impl HtmlTag for BarRecipe {
     type Content = HtmlRootContent<Homemade, ()>;
 
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.custom_data("foo", "bar").id("bar-html");
+    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
+        global_attrs.id("bar-html");
+    }
+
+    fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
+        custom_data_attrs.custom_data("foo", "bar");
     }
 }
 
 impl PTag for BarRecipe {
     type Content = String;
 
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.custom_data("foo", "bar").id("bar-p");
+    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
+        global_attrs.id("bar-p");
+    }
+
+    fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
+        custom_data_attrs.custom_data("foo", "bar");
     }
 }
 
 impl ButtonTag for BarRecipe {
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.custom_data("foo", "bar").id("bar-button");
+    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
+        global_attrs.id("bar-button");
+    }
+
+    fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
+        custom_data_attrs.custom_data("foo", "bar");
     }
 }
 
@@ -77,8 +89,8 @@ struct OneLastRecipe;
 impl HtmlTag for OneLastRecipe {
     type Content = HtmlRootContent<Homemade, ()>;
 
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.custom_data("recipe", "last");
+    fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
+        custom_data_attrs.custom_data("recipe", "last");
     }
 }
 
@@ -89,14 +101,14 @@ impl PTag for OneLastRecipe {
         *content = bake_newline!("Content from OneLastRecipe");
     }
 
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.custom_data("recipe", "last");
+    fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
+        custom_data_attrs.custom_data("recipe", "last");
     }
 }
 
 impl ButtonTag for OneLastRecipe {
-    fn decoration_recipe(attrs: &mut Attrs) {
-        attrs.custom_data("recipe", "last");
+    fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
+        custom_data_attrs.custom_data("recipe", "last");
     }
 }
 
@@ -249,7 +261,7 @@ mod recipe_tests {
 
         assert_eq!(
             button.bake(),
-            r#"<button class="rounded-full" id="bar-button" data-foo="bar" data-recipe="last" type="reset"></button>"#
+            r#"<button class="rounded-full" id="bar-button" type="reset" data-foo="bar" data-recipe="last"></button>"#
         );
         assert_eq!(
             p.bake(),
@@ -315,7 +327,7 @@ mod recipe_tests {
 
         assert_eq!(
             button.bake(),
-            r#"<button class="rounded-full" id="bar-button" data-foo="bar" data-recipe="last" type="reset">Dismiss</button>"#
+            r#"<button class="rounded-full" id="bar-button" type="reset" data-foo="bar" data-recipe="last">Dismiss</button>"#
         );
         assert_eq!(
             html_root.bake(),

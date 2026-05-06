@@ -31,12 +31,15 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <input
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = InputTag, specific = InputAttrs)]
+#[recipe(name = InputTag, attrs = InputAttrs)]
 pub struct HtmlInput<M: InputTag = ()> {
     _marker: PhantomData<M>,
     /// # Permitted ARIA roles
@@ -55,55 +58,88 @@ pub struct HtmlInput<M: InputTag = ()> {
     /// type=color|date|datetime-local|email|file|hidden|month|number|password|
     /// range|reset|search|submit|tel|url|week or text with list attribute:
     ///     no role permitted
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: InputAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: InputTag> HtmlInput<M> {
     pub fn new(name: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = InputAttrs::default().name(name);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
 
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = InputAttrs::default().value(value);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
 
     pub fn from_type(input_type: impl Into<InputType>) -> Self {
-        let mut attrs = Attrs::default();
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
-        M::decoration_recipe(&mut attrs);
+        let mut specific_attrs = InputAttrs::default().input_type(input_type);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        let mut specific_attrs = InputAttrs::default().input_type(input_type.into());
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -116,75 +152,109 @@ impl<M: InputTag> HtmlInput<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- accept | bake_attr("accept") -}}
-/// {{- alpha | bake_bool_attr("alpha") -}}
-/// {{- autocomplete | bake_attr("autocomplete") -}}
-/// {{- checked | bake_bool_attr("checked") -}}
-/// {{- dirname | bake_attr("dirname") -}}
-/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- input_type | bake_attr("type") -}}
+/// {{- name | bake_attr("name") -}}
 /// {{- form | bake_attr("form") -}}
+/// {{- value | bake_attr("value") -}}
+/// {{- autocomplete | bake_attr("autocomplete") -}}
+/// {{- list | bake_attr("list") -}}
+/// {{- placeholder | bake_attr("placeholder") -}}
+/// {{- min | bake_attr("min") -}}
+/// {{- max | bake_attr("max") -}}
+/// {{- step | bake_attr("step") -}}
+/// {{- minlength | bake_attr("minlength") -}}
+/// {{- maxlength | bake_attr("maxlength") -}}
+/// {{- pattern | bake_attr("pattern") -}}
+/// {{- size | bake_attr("size") -}}
+/// {{- dirname | bake_attr("dirname") -}}
 /// {{- formaction | bake_attr("formaction") -}}
 /// {{- formenctype | bake_attr("formenctype") -}}
 /// {{- formmethod | bake_attr("formmethod") -}}
-/// {{- formnovalidate | bake_bool_attr("formnovalidate") -}}
 /// {{- formtarget | bake_attr("formtarget") -}}
-/// {{- height | bake_attr("height") -}}
-/// {{- list | bake_attr("list") -}}
-/// {{- max | bake_attr("max") -}}
-/// {{- maxlength | bake_attr("maxlength") -}}
-/// {{- min | bake_attr("min") -}}
-/// {{- minlength | bake_attr("minlength") -}}
-/// {{- multiple | bake_bool_attr("multiple") -}}
-/// {{- name | bake_attr("name") -}}
-/// {{- pattern | bake_attr("pattern") -}}
-/// {{- placeholder | bake_attr("placeholder") -}}
 /// {{- popovertarget | bake_attr("popovertarget") -}}
 /// {{- popovertargetaction | bake_attr("popovertargetaction") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- alt | bake_attr("alt") -}}
+/// {{- width | bake_attr("name") -}}
+/// {{- height | bake_attr("height") -}}
+/// {{- accept | bake_attr("accept") -}}
+/// {{- alpha | bake_bool_attr("alpha") -}}
+/// {{- multiple | bake_bool_attr("multiple") -}}
+/// {{- formnovalidate | bake_bool_attr("formnovalidate") -}}
+/// {{- checked | bake_bool_attr("checked") -}}
 /// {{- readonly | bake_bool_attr("readonly") -}}
 /// {{- required | bake_bool_attr("required") -}}
-/// {{- size | bake_attr("size") -}}
-/// {{- src | bake_attr("src") -}}
-/// {{- step | bake_attr("step") -}}
-/// {{- input_type | bake_attr("type") -}}
-/// {{- value | bake_attr("value") -}}
-/// {{- width | bake_attr("name") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct InputAttrs {
-    pub accept: Option<Cow<'static, str>>,
-    pub alpha: bool,
-    pub alt: Option<Cow<'static, str>>,
-    pub autocomplete: Option<Cow<'static, str>>,
-    pub checked: bool,
-    pub dirname: Option<Cow<'static, str>>,
-    pub disabled: bool,
-    pub form: Option<Cow<'static, str>>,
-    pub formaction: Option<Cow<'static, str>>,
-    pub formenctype: Option<Cow<'static, str>>,
-    pub formmethod: Option<Cow<'static, str>>,
-    pub formnovalidate: bool,
-    pub formtarget: Option<Cow<'static, str>>,
-    pub height: Option<u32>,
-    pub list: Option<Cow<'static, str>>,
-    pub max: Option<Cow<'static, str>>,
-    pub maxlength: Option<u32>,
-    pub min: Option<Cow<'static, str>>,
-    pub minlength: Option<u32>,
-    pub multiple: bool,
-    pub name: Option<Cow<'static, str>>,
-    pub pattern: Option<Cow<'static, str>>,
-    pub placeholder: Option<Cow<'static, str>>,
-    pub popovertarget: Option<Cow<'static, str>>,
-    pub popovertargetaction: Option<Cow<'static, str>>,
-    pub readonly: bool,
-    pub required: bool,
-    pub size: Option<u32>,
-    pub src: Option<Cow<'static, str>>,
-    pub step: Option<Cow<'static, str>>,
+    /// Available for all input types.
     pub input_type: Option<Cow<'static, str>>,
+    /// Available for all input types.
+    pub name: Option<Cow<'static, str>>,
+    /// Available for all input types.
+    pub form: Option<Cow<'static, str>>,
+    /// Available for all input types except image.
     pub value: Option<Cow<'static, str>>,
+    /// Available for all input types except checkbox, radio, and button.
+    pub autocomplete: Option<Cow<'static, str>>,
+    /// Available for all input types except hidden, password, checkbox, radio, and button.
+    pub list: Option<Cow<'static, str>>,
+    /// Available for text, search, url, tel, email, password, and number input types.
+    pub placeholder: Option<Cow<'static, str>>,
+    /// Available for date, month, week, time, datetime-local, number, and range input types.
+    pub min: Option<Cow<'static, str>>,
+    /// Available for date, month, week, time, datetime-local, number, and range input types.
+    pub max: Option<Cow<'static, str>>,
+    /// Available for date, month, week, time, datetime-local, number, and range input types.
+    pub step: Option<Cow<'static, str>>,
+    /// Available for text, search, url, tel, email, and password input types.
+    pub minlength: Option<u32>,
+    /// Available for text, search, url, tel, email, and password input types.
+    pub maxlength: Option<u32>,
+    /// Available for text, search, url, tel, email, and password input types.
+    pub pattern: Option<Cow<'static, str>>,
+    /// Available for text, search, url, tel, email, and password input types.
+    pub size: Option<u32>,
+    /// Available for hidden, text, search, url, tel, and email input types.
+    pub dirname: Option<Cow<'static, str>>,
+    /// Available for the image and submit input types.
+    pub formaction: Option<Cow<'static, str>>,
+    /// Available for the image and submit input types.
+    pub formenctype: Option<Cow<'static, str>>,
+    /// Available for the image and submit input types.
+    pub formmethod: Option<Cow<'static, str>>,
+    /// Available for the image and submit input types.
+    pub formtarget: Option<Cow<'static, str>>,
+    /// Available for the button input type.
+    pub popovertarget: Option<Cow<'static, str>>,
+    /// Available for the button input type.
+    pub popovertargetaction: Option<Cow<'static, str>>,
+    /// Available for the image input type.
+    pub src: Option<Cow<'static, str>>,
+    /// Available for the image input type.
+    pub alt: Option<Cow<'static, str>>,
+    /// Available for the image input type.
     pub width: Option<u32>,
+    /// Available for the image input type.
+    pub height: Option<u32>,
+    /// Available for the file input type.
+    pub accept: Option<Cow<'static, str>>,
+    /// Available for the color input type.
+    pub alpha: bool,
+    /// Available for the email and file input types.
+    pub multiple: bool,
+    /// Available for the image and submit input types.
+    pub formnovalidate: bool,
+    /// Available for the checkbox and radio input types.
+    pub checked: bool,
+    /// Available for all input types except hidden, range, color, checkbox, radio, and button.
+    pub readonly: bool,
+    /// Available for all input types except hidden, range, color, and button.
+    pub required: bool,
+    /// Available for all input types.
+    pub disabled: bool,
 }
 
 pub trait HasInputAttrs: Sized {
@@ -229,6 +299,10 @@ pub trait HasInputAttrs: Sized {
         self.input_attrs_mut().checked = value;
         self
     }
+
+    // NOTE: Include `colorspace` in the future.
+    //
+    // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#colorspace)
 
     /// Name of form control to use for sending the element's directionality in form
     /// submission.

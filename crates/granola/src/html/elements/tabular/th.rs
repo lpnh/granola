@@ -31,21 +31,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <th
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</th>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ThTag, content = Cow<'static, str>, specific = ThAttrs)]
+#[recipe(name = ThTag, content = Cow<'static, str>, attrs = ThAttrs)]
 pub struct HtmlTh<M: ThTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ThAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<th>` element specific attributes.

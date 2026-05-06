@@ -30,7 +30,12 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <h1{{ attrs }}>{{ content | kirei(2) }}</h1>
+/// <h1
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
+/// >{{ content | kirei(2) }}</h1>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -41,7 +46,10 @@ pub struct HtmlH1<M: H1Tag = ()> {
     /// # Permitted ARIA roles
     ///
     /// tab, presentation or none
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// Shorthand for `HtmlH1`.

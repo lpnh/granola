@@ -26,54 +26,80 @@ use crate::{filters, prelude::*};
 ///     .coords("300,63,470,357,130,357");
 ///
 /// assert_eq!(area.bake(),
-/// r#"<area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />"#);
+/// r#"<area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
 /// <area
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AreaTag, specific = AreaAttrs)]
+#[recipe(name = AreaTag, attrs = AreaAttrs)]
 pub struct HtmlArea<M: AreaTag = ()> {
     _marker: PhantomData<M>,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: AreaAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: AreaTag> HtmlArea<M> {
     pub fn new(href: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = AreaAttrs::default().href(href).alt(alt);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
 
     pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = AreaAttrs::default().href(href);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -86,32 +112,32 @@ impl<M: AreaTag> HtmlArea<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- alt | bake_attr("alt") -}}
+/// {{- shape | bake_attr("shape") -}}
 /// {{- coords | bake_attr("coords") -}}
-/// {{- download | bake_attr("download") -}}
 /// {{- href | bake_attr("href") -}}
+/// {{- alt | bake_attr("alt") -}}
+/// {{- download | bake_attr("download") -}}
 /// {{- hreflang | bake_attr("hreflang") -}}
 /// {{- lang | bake_attr("lang") -}}
 /// {{- ping | bake_attr("ping") -}}
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
 /// {{- rel | bake_attr("rel") -}}
-/// {{- shape | bake_attr("shape") -}}
 /// {{- target | bake_attr("target") -}}
 /// {{- mime_type | bake_attr("type") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AreaAttrs {
-    pub alt: Option<Cow<'static, str>>,
+    pub shape: Option<Cow<'static, str>>,
     pub coords: Option<Cow<'static, str>>,
-    pub download: Option<Cow<'static, str>>,
     pub href: Option<Cow<'static, str>>,
+    pub alt: Option<Cow<'static, str>>,
+    pub download: Option<Cow<'static, str>>,
     pub hreflang: Option<Cow<'static, str>>,
     pub lang: Option<Cow<'static, str>>,
     pub ping: Option<Cow<'static, str>>,
     pub referrerpolicy: Option<Cow<'static, str>>,
     pub rel: Option<Cow<'static, str>>,
-    pub shape: Option<Cow<'static, str>>,
     pub target: Option<Cow<'static, str>>,
     pub mime_type: Option<Cow<'static, str>>,
 }
@@ -260,7 +286,7 @@ impl From<HtmlArea> for Areas {
 ///     .coords("300,63,470,357,130,357");
 ///
 /// assert_eq!(area.bake(),
-/// r#"<area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />"#);
+/// r#"<area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />"#);
 /// ```
 #[macro_export]
 macro_rules! area {

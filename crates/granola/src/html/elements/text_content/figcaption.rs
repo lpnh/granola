@@ -35,7 +35,12 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <figcaption{{ attrs }}>{{ content | kirei(2) }}</figcaption>
+/// <figcaption
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
+/// >{{ content | kirei(2) }}</figcaption>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -46,7 +51,10 @@ pub struct HtmlFigcaption<M: FigcaptionTag = ()> {
     /// # Permitted ARIA roles
     ///
     /// group, none, presentation
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// Shorthand for `HtmlFigcaption`.

@@ -35,13 +35,16 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <button
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</button>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ButtonTag, content = Cow<'static, str>, specific = ButtonAttrs)]
+#[recipe(name = ButtonTag, content = Cow<'static, str>, attrs = ButtonAttrs)]
 pub struct HtmlButton<M: ButtonTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -49,8 +52,11 @@ pub struct HtmlButton<M: ButtonTag = ()> {
     ///
     /// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio, option,
     /// radio, switch, tab
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ButtonAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<button>` element specific attributes.
@@ -60,38 +66,38 @@ pub struct HtmlButton<M: ButtonTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- command | bake_attr("command") -}}
+/// {{- button_type | bake_attr("type") -}}
+/// {{- name | bake_attr("name") -}}
+/// {{- value | bake_attr("value") -}}
 /// {{- commandfor | bake_attr("commandfor") -}}
-/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- command | bake_attr("command") -}}
 /// {{- form | bake_attr("form") -}}
 /// {{- formaction | bake_attr("formaction") -}}
 /// {{- formenctype | bake_attr("formenctype") -}}
 /// {{- formmethod | bake_attr("formmethod") -}}
-/// {{- formnovalidate | bake_bool_attr("formnovalidate") -}}
 /// {{- formtarget | bake_attr("formtarget") -}}
-/// {{- name | bake_attr("name") -}}
 /// {{- popovertarget | bake_attr("popovertarget") -}}
 /// {{- popovertargetaction | bake_attr("popovertargetaction") -}}
-/// {{- button_type | bake_attr("type") -}}
-/// {{- value | bake_attr("value") -}}
+/// {{- formnovalidate | bake_bool_attr("formnovalidate") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ButtonAttrs {
-    pub command: Option<Cow<'static, str>>,
+    pub button_type: Option<Cow<'static, str>>,
+    pub name: Option<Cow<'static, str>>,
+    pub value: Option<Cow<'static, str>>,
     pub commandfor: Option<Cow<'static, str>>,
-    pub disabled: bool,
+    pub command: Option<Cow<'static, str>>,
     pub form: Option<Cow<'static, str>>,
     pub formaction: Option<Cow<'static, str>>,
     pub formenctype: Option<Cow<'static, str>>,
     pub formmethod: Option<Cow<'static, str>>,
-    pub formnovalidate: bool,
     pub formtarget: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
     pub popovertarget: Option<Cow<'static, str>>,
     pub popovertargetaction: Option<Cow<'static, str>>,
-    pub button_type: Option<Cow<'static, str>>,
-    pub value: Option<Cow<'static, str>>,
+    pub formnovalidate: bool,
+    pub disabled: bool,
 }
 
 pub trait HasButtonAttrs: Sized {

@@ -44,58 +44,17 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
     .into()
 }
 
-/// Derive macro for HTML elements.
-///
-/// Implements the mutable accessors for:
-/// - `GlobalAttrs`
-/// - `DataAttrs`
-/// - `EventHandlers`
-/// - `GlobalAriaAttrs`
-#[proc_macro_derive(MutAttrs)]
-pub fn granola_attrs_derive(input: TokenStream) -> TokenStream {
-    let input: DeriveInput = syn::parse_macro_input!(input);
-    let name = &input.ident;
-    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-
-    quote! {
-        impl #impl_generics crate::html::HasGlobalAttrs for #name #ty_generics #where_clause {
-            fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
-                &mut self.global_attrs
-            }
-        }
-
-        impl #impl_generics crate::html::HasDataAttrs for #name #ty_generics #where_clause {
-            fn data_attrs_mut(&mut self) -> &mut crate::html::DataAttrs {
-                &mut self.data_attrs
-            }
-        }
-
-        impl #impl_generics crate::html::HasEventHandlers for #name #ty_generics #where_clause {
-            fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
-                &mut self.event_handlers
-            }
-        }
-
-        impl #impl_generics crate::html::HasGlobalAriaAttrs for #name #ty_generics #where_clause {
-            fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
-                &mut self.global_aria_attrs
-            }
-        }
-    }
-    .into()
-}
-
 struct RecipeArgs {
-    name: Ident,
-    content: Option<Type>,
-    specific: Option<Type>,
+    recipe_name: Ident,
+    content_type: Option<Type>,
+    specific_attrs: Option<Type>,
 }
 
 impl Parse for RecipeArgs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let mut name: Option<Ident> = None;
-        let mut content: Option<Type> = None;
-        let mut specific: Option<Type> = None;
+        let mut recipe_name: Option<Ident> = None;
+        let mut content_type: Option<Type> = None;
+        let mut specific_attrs: Option<Type> = None;
 
         while !input.is_empty() {
             let key: Ident = input.parse()?;
@@ -103,9 +62,9 @@ impl Parse for RecipeArgs {
             input.parse::<Token![=]>()?;
 
             match key.to_string().as_str() {
-                "name" => name = Some(input.parse()?),
-                "content" => content = Some(input.parse()?),
-                "specific" => specific = Some(input.parse()?),
+                "name" => recipe_name = Some(input.parse()?),
+                "content" => content_type = Some(input.parse()?),
+                "attrs" => specific_attrs = Some(input.parse()?),
                 _ => return Err(syn::Error::new(key_span, format!("unknown key `{key}`"))),
             }
 
@@ -115,14 +74,14 @@ impl Parse for RecipeArgs {
         }
 
         Ok(RecipeArgs {
-            name: name.ok_or_else(|| {
+            recipe_name: recipe_name.ok_or_else(|| {
                 syn::Error::new(
                     Span::call_site(),
                     "`name` is required in #[recipe(name = ...)]",
                 )
             })?,
-            content,
-            specific,
+            content_type,
+            specific_attrs,
         })
     }
 }
@@ -144,10 +103,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         .parse_args()
         .expect("failed to parse #[recipe(...)]");
 
-    let trait_name = &args.name;
+    let trait_name = &args.recipe_name;
 
-    match (args.content, args.specific) {
-        (Some(default_content), Some(specific_type)) => quote! {
+    match (args.content_type, args.specific_attrs) {
+        (Some(default_content_type), Some(specific_attrs_type)) => quote! {
             pub trait #trait_name:
                 ::std::default::Default
                 + ::std::clone::Clone
@@ -158,11 +117,14 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     ::askama::FastWritable
                     + ::std::default::Default
                     + ::std::clone::Clone
-                    + ::std::fmt::Debug = #default_content;
+                    + ::std::fmt::Debug = #default_content_type;
 
                 fn content_recipe(_content: &mut Self::Content) {}
-                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
-                fn specific_recipe(_specific: &mut #specific_type) {}
+                fn global_attrs_recipe(_global_attrs: &mut crate::html::GlobalAttrs) {}
+                fn specific_attrs_recipe(_specific_attrs: &mut #specific_attrs_type) {}
+                fn global_aria_attrs_recipe(_global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {}
+                fn custom_data_attrs_recipe(_custom_data_attrs: &mut crate::html::CustomDataAttrs) {}
+                fn event_handlers_recipe(_event_handlers: &mut crate::html::EventHandlers) {}
             }
 
             impl #trait_name for () {}
@@ -179,20 +141,53 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     B::content_recipe(content);
                 }
 
-                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
-                    A::decoration_recipe(attrs);
-                    B::decoration_recipe(attrs);
+                fn global_attrs_recipe(global_attrs: &mut crate::html::GlobalAttrs) {
+                    A::global_attrs_recipe(global_attrs);
+                    B::global_attrs_recipe(global_attrs);
                 }
 
-                fn specific_recipe(specific: &mut #specific_type) {
-                    A::specific_recipe(specific);
-                    B::specific_recipe(specific);
+                fn global_aria_attrs_recipe(global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {
+                    A::global_aria_attrs_recipe(global_aria_attrs);
+                    B::global_aria_attrs_recipe(global_aria_attrs);
+                }
+
+                fn custom_data_attrs_recipe(custom_data_attrs: &mut crate::html::CustomDataAttrs) {
+                    A::custom_data_attrs_recipe(custom_data_attrs);
+                    B::custom_data_attrs_recipe(custom_data_attrs);
+                }
+
+                fn event_handlers_recipe(event_handlers: &mut crate::html::EventHandlers) {
+                    A::event_handlers_recipe(event_handlers);
+                    B::event_handlers_recipe(event_handlers);
+                }
+
+                fn specific_attrs_recipe(specific_attrs: &mut #specific_attrs_type) {
+                    A::specific_attrs_recipe(specific_attrs);
+                    B::specific_attrs_recipe(specific_attrs);
                 }
             }
 
-            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
-                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
-                    &mut self.attrs
+            impl #impl_generics crate::html::HasGlobalAttrs for #struct_name #ty_generics #where_clause {
+                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
+                    &mut self.global_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasGlobalAriaAttrs for #struct_name #ty_generics #where_clause {
+                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
+                    &mut self.global_aria_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasCustomDataAttrs for #struct_name #ty_generics #where_clause {
+                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
+                    &mut self.custom_data_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasEventHandlers for #struct_name #ty_generics #where_clause {
+                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
+                    &mut self.event_handlers
                 }
             }
 
@@ -206,27 +201,55 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 pub fn from_recipe() -> Self {
                     let mut content = <M::Content as ::std::default::Default>::default();
                     M::content_recipe(&mut content);
-                    let mut attrs = crate::html::Attrs::default();
-                    M::decoration_recipe(&mut attrs);
-                    let mut specific_attrs = #specific_type::default();
-                    M::specific_recipe(&mut specific_attrs);
-                    Self { content, attrs, specific_attrs, ..::std::default::Default::default() }
+                    let mut global_attrs = crate::html::GlobalAttrs::default();
+                    M::global_attrs_recipe(&mut global_attrs);
+                    let mut specific_attrs = #specific_attrs_type::default();
+                    M::specific_attrs_recipe(&mut specific_attrs);
+                    let mut global_aria_attrs = crate::html::GlobalAriaAttrs::default();
+                    M::global_aria_attrs_recipe(&mut global_aria_attrs);
+                    let mut custom_data_attrs = crate::html::CustomDataAttrs::default();
+                    M::custom_data_attrs_recipe(&mut custom_data_attrs);
+                    let mut event_handlers = crate::html::EventHandlers::default();
+                    M::event_handlers_recipe(&mut event_handlers);
+                    Self {
+                        content,
+                        global_attrs,
+                        specific_attrs,
+                        global_aria_attrs,
+                        custom_data_attrs,
+                        event_handlers,
+                        ..::std::default::Default::default()
+                    }
                 }
 
                 pub fn new(content: impl ::std::convert::Into<M::Content>) -> Self {
                     let mut content = content.into();
                     M::content_recipe(&mut content);
-                    let mut attrs = crate::html::Attrs::default();
-                    M::decoration_recipe(&mut attrs);
-                    let mut specific_attrs = #specific_type::default();
-                    M::specific_recipe(&mut specific_attrs);
-                    Self { content, attrs, specific_attrs, ..::std::default::Default::default() }
+                    let mut global_attrs = crate::html::GlobalAttrs::default();
+                    M::global_attrs_recipe(&mut global_attrs);
+                    let mut specific_attrs = #specific_attrs_type::default();
+                    M::specific_attrs_recipe(&mut specific_attrs);
+                    let mut global_aria_attrs = crate::html::GlobalAriaAttrs::default();
+                    M::global_aria_attrs_recipe(&mut global_aria_attrs);
+                    let mut custom_data_attrs = crate::html::CustomDataAttrs::default();
+                    M::custom_data_attrs_recipe(&mut custom_data_attrs);
+                    let mut event_handlers = crate::html::EventHandlers::default();
+                    M::event_handlers_recipe(&mut event_handlers);
+                    Self {
+                        content,
+                        global_attrs,
+                        specific_attrs,
+                        global_aria_attrs,
+                        custom_data_attrs,
+                        event_handlers,
+                        ..::std::default::Default::default()
+                    }
                 }
             }
         }
         .into(),
 
-        (Some(default_content), None) => quote! {
+        (Some(default_content_type), None) => quote! {
             pub trait #trait_name:
                 ::std::default::Default
                 + ::std::clone::Clone
@@ -237,10 +260,13 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     ::askama::FastWritable
                     + ::std::default::Default
                     + ::std::clone::Clone
-                    + ::std::fmt::Debug = #default_content;
+                    + ::std::fmt::Debug = #default_content_type;
 
                 fn content_recipe(_content: &mut Self::Content) {}
-                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
+                fn global_attrs_recipe(_global_attrs: &mut crate::html::GlobalAttrs) {}
+                fn global_aria_attrs_recipe(_global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {}
+                fn custom_data_attrs_recipe(_custom_data_attrs: &mut crate::html::CustomDataAttrs) {}
+                fn event_handlers_recipe(_event_handlers: &mut crate::html::EventHandlers) {}
             }
 
             impl #trait_name for () {}
@@ -257,15 +283,48 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     B::content_recipe(content);
                 }
 
-                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
-                    A::decoration_recipe(attrs);
-                    B::decoration_recipe(attrs);
+                fn global_attrs_recipe(global_attrs: &mut crate::html::GlobalAttrs) {
+                    A::global_attrs_recipe(global_attrs);
+                    B::global_attrs_recipe(global_attrs);
+                }
+
+                fn global_aria_attrs_recipe(global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {
+                    A::global_aria_attrs_recipe(global_aria_attrs);
+                    B::global_aria_attrs_recipe(global_aria_attrs);
+                }
+
+                fn custom_data_attrs_recipe(custom_data_attrs: &mut crate::html::CustomDataAttrs) {
+                    A::custom_data_attrs_recipe(custom_data_attrs);
+                    B::custom_data_attrs_recipe(custom_data_attrs);
+                }
+
+                fn event_handlers_recipe(event_handlers: &mut crate::html::EventHandlers) {
+                    A::event_handlers_recipe(event_handlers);
+                    B::event_handlers_recipe(event_handlers);
                 }
             }
 
-            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
-                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
-                    &mut self.attrs
+            impl #impl_generics crate::html::HasGlobalAttrs for #struct_name #ty_generics #where_clause {
+                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
+                    &mut self.global_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasGlobalAriaAttrs for #struct_name #ty_generics #where_clause {
+                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
+                    &mut self.global_aria_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasCustomDataAttrs for #struct_name #ty_generics #where_clause {
+                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
+                    &mut self.custom_data_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasEventHandlers for #struct_name #ty_generics #where_clause {
+                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
+                    &mut self.event_handlers
                 }
             }
 
@@ -279,50 +338,113 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 pub fn from_recipe() -> Self {
                     let mut content = <M::Content as ::std::default::Default>::default();
                     M::content_recipe(&mut content);
-                    let mut attrs = crate::html::Attrs::default();
-                    M::decoration_recipe(&mut attrs);
-                    Self { content, attrs, ..::std::default::Default::default() }
+                    let mut global_attrs = crate::html::GlobalAttrs::default();
+                    M::global_attrs_recipe(&mut global_attrs);
+                    let mut global_aria_attrs = crate::html::GlobalAriaAttrs::default();
+                    M::global_aria_attrs_recipe(&mut global_aria_attrs);
+                    let mut custom_data_attrs = crate::html::CustomDataAttrs::default();
+                    M::custom_data_attrs_recipe(&mut custom_data_attrs);
+                    let mut event_handlers = crate::html::EventHandlers::default();
+                    M::event_handlers_recipe(&mut event_handlers);
+                    Self {
+                        content,
+                        global_attrs,
+                        global_aria_attrs,
+                        custom_data_attrs,
+                        event_handlers,
+                        ..::std::default::Default::default()
+                    }
+
                 }
 
                 pub fn new(content: impl ::std::convert::Into<M::Content>) -> Self {
                     let mut content = content.into();
                     M::content_recipe(&mut content);
-                    let mut attrs = crate::html::Attrs::default();
-                    M::decoration_recipe(&mut attrs);
-                    Self { content, attrs, ..::std::default::Default::default() }
+                    let mut global_attrs = crate::html::GlobalAttrs::default();
+                    M::global_attrs_recipe(&mut global_attrs);
+                    let mut global_aria_attrs = crate::html::GlobalAriaAttrs::default();
+                    M::global_aria_attrs_recipe(&mut global_aria_attrs);
+                    let mut custom_data_attrs = crate::html::CustomDataAttrs::default();
+                    M::custom_data_attrs_recipe(&mut custom_data_attrs);
+                    let mut event_handlers = crate::html::EventHandlers::default();
+                    M::event_handlers_recipe(&mut event_handlers);
+                    Self {
+                        content,
+                        global_attrs,
+                        global_aria_attrs,
+                        custom_data_attrs,
+                        event_handlers,
+                        ..::std::default::Default::default()
+                    }
                 }
             }
         }
         .into(),
 
-        (None, Some(specific_type)) => quote! {
+        (None, Some(specific_attrs_type)) => quote! {
             pub trait #trait_name:
                 ::std::default::Default
                 + ::std::clone::Clone
                 + ::std::fmt::Debug
                 + 'static
             {
-                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
-                fn specific_recipe(_specific: &mut #specific_type) {}
+                fn global_attrs_recipe(_global_attrs: &mut crate::html::GlobalAttrs) {}
+                fn specific_attrs_recipe(_specific_attrs: &mut #specific_attrs_type) {}
+                fn global_aria_attrs_recipe(_global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {}
+                fn custom_data_attrs_recipe(_custom_data_attrs: &mut crate::html::CustomDataAttrs) {}
+                fn event_handlers_recipe(_event_handlers: &mut crate::html::EventHandlers) {}
             }
 
             impl #trait_name for () {}
 
             impl<A: #trait_name, B: #trait_name> #trait_name for (A, B) {
-                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
-                    A::decoration_recipe(attrs);
-                    B::decoration_recipe(attrs);
+                fn global_attrs_recipe(global_attrs: &mut crate::html::GlobalAttrs) {
+                    A::global_attrs_recipe(global_attrs);
+                    B::global_attrs_recipe(global_attrs);
                 }
 
-                fn specific_recipe(specific: &mut #specific_type) {
-                    A::specific_recipe(specific);
-                    B::specific_recipe(specific);
+                fn global_aria_attrs_recipe(global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {
+                    A::global_aria_attrs_recipe(global_aria_attrs);
+                    B::global_aria_attrs_recipe(global_aria_attrs);
+                }
+
+                fn custom_data_attrs_recipe(custom_data_attrs: &mut crate::html::CustomDataAttrs) {
+                    A::custom_data_attrs_recipe(custom_data_attrs);
+                    B::custom_data_attrs_recipe(custom_data_attrs);
+                }
+
+                fn event_handlers_recipe(event_handlers: &mut crate::html::EventHandlers) {
+                    A::event_handlers_recipe(event_handlers);
+                    B::event_handlers_recipe(event_handlers);
+                }
+
+                fn specific_attrs_recipe(specific_attrs: &mut #specific_attrs_type) {
+                    A::specific_attrs_recipe(specific_attrs);
+                    B::specific_attrs_recipe(specific_attrs);
                 }
             }
 
-            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
-                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
-                    &mut self.attrs
+            impl #impl_generics crate::html::HasGlobalAttrs for #struct_name #ty_generics #where_clause {
+                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
+                    &mut self.global_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasGlobalAriaAttrs for #struct_name #ty_generics #where_clause {
+                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
+                    &mut self.global_aria_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasCustomDataAttrs for #struct_name #ty_generics #where_clause {
+                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
+                    &mut self.custom_data_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasEventHandlers for #struct_name #ty_generics #where_clause {
+                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
+                    &mut self.event_handlers
                 }
             }
 
@@ -334,11 +456,24 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 }
 
                 pub fn from_recipe() -> Self {
-                    let mut attrs = crate::html::Attrs::default();
-                    M::decoration_recipe(&mut attrs);
-                    let mut specific_attrs = #specific_type::default();
-                    M::specific_recipe(&mut specific_attrs);
-                    Self { attrs, specific_attrs, ..::std::default::Default::default() }
+                    let mut global_attrs = crate::html::GlobalAttrs::default();
+                    M::global_attrs_recipe(&mut global_attrs);
+                    let mut specific_attrs = #specific_attrs_type::default();
+                    M::specific_attrs_recipe(&mut specific_attrs);
+                    let mut global_aria_attrs = crate::html::GlobalAriaAttrs::default();
+                    M::global_aria_attrs_recipe(&mut global_aria_attrs);
+                    let mut custom_data_attrs = crate::html::CustomDataAttrs::default();
+                    M::custom_data_attrs_recipe(&mut custom_data_attrs);
+                    let mut event_handlers = crate::html::EventHandlers::default();
+                    M::event_handlers_recipe(&mut event_handlers);
+                    Self {
+                        global_attrs,
+                        specific_attrs,
+                        global_aria_attrs,
+                        custom_data_attrs,
+                        event_handlers,
+                        ..::std::default::Default::default()
+                    }
                 }
             }
         }
@@ -351,21 +486,57 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 + ::std::fmt::Debug
                 + 'static
             {
-                fn decoration_recipe(_attrs: &mut crate::html::Attrs) {}
+                fn global_attrs_recipe(_global_attrs: &mut crate::html::GlobalAttrs) {}
+                fn global_aria_attrs_recipe(_global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {}
+                fn custom_data_attrs_recipe(_custom_data_attrs: &mut crate::html::CustomDataAttrs) {}
+                fn event_handlers_recipe(_event_handlers: &mut crate::html::EventHandlers) {}
             }
 
             impl #trait_name for () {}
 
             impl<A: #trait_name, B: #trait_name> #trait_name for (A, B) {
-                fn decoration_recipe(attrs: &mut crate::html::Attrs) {
-                    A::decoration_recipe(attrs);
-                    B::decoration_recipe(attrs);
+                fn global_attrs_recipe(global_attrs: &mut crate::html::GlobalAttrs) {
+                    A::global_attrs_recipe(global_attrs);
+                    B::global_attrs_recipe(global_attrs);
+                }
+
+                fn global_aria_attrs_recipe(global_aria_attrs: &mut crate::html::GlobalAriaAttrs) {
+                    A::global_aria_attrs_recipe(global_aria_attrs);
+                    B::global_aria_attrs_recipe(global_aria_attrs);
+                }
+
+                fn custom_data_attrs_recipe(custom_data_attrs: &mut crate::html::CustomDataAttrs) {
+                    A::custom_data_attrs_recipe(custom_data_attrs);
+                    B::custom_data_attrs_recipe(custom_data_attrs);
+                }
+
+                fn event_handlers_recipe(event_handlers: &mut crate::html::EventHandlers) {
+                    A::event_handlers_recipe(event_handlers);
+                    B::event_handlers_recipe(event_handlers);
                 }
             }
 
-            impl #impl_generics crate::html::HasAttrs for #struct_name #ty_generics #where_clause {
-                fn attrs_mut(&mut self) -> &mut crate::html::Attrs {
-                    &mut self.attrs
+            impl #impl_generics crate::html::HasGlobalAttrs for #struct_name #ty_generics #where_clause {
+                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
+                    &mut self.global_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasGlobalAriaAttrs for #struct_name #ty_generics #where_clause {
+                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
+                    &mut self.global_aria_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasCustomDataAttrs for #struct_name #ty_generics #where_clause {
+                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
+                    &mut self.custom_data_attrs
+                }
+            }
+
+            impl #impl_generics crate::html::HasEventHandlers for #struct_name #ty_generics #where_clause {
+                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
+                    &mut self.event_handlers
                 }
             }
 
@@ -377,9 +548,21 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 }
 
                 pub fn from_recipe() -> Self {
-                    let mut attrs = crate::html::Attrs::default();
-                    M::decoration_recipe(&mut attrs);
-                    Self { attrs, ..::std::default::Default::default() }
+                    let mut global_attrs = crate::html::GlobalAttrs::default();
+                    M::global_attrs_recipe(&mut global_attrs);
+                    let mut global_aria_attrs = crate::html::GlobalAriaAttrs::default();
+                    M::global_aria_attrs_recipe(&mut global_aria_attrs);
+                    let mut custom_data_attrs = crate::html::CustomDataAttrs::default();
+                    M::custom_data_attrs_recipe(&mut custom_data_attrs);
+                    let mut event_handlers = crate::html::EventHandlers::default();
+                    M::event_handlers_recipe(&mut event_handlers);
+                    Self {
+                        global_attrs,
+                        global_aria_attrs,
+                        custom_data_attrs,
+                        event_handlers,
+                        ..::std::default::Default::default()
+                    }
                 }
             }
         }

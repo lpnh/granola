@@ -49,18 +49,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <template
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</template>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TemplateTag, content = Cow<'static, str>, specific = TemplateAttrs)]
+#[recipe(name = TemplateTag, content = Cow<'static, str>, attrs = TemplateAttrs)]
 pub struct HtmlTemplate<M: TemplateTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: TemplateAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<template>` element specific attributes.
@@ -70,20 +76,20 @@ pub struct HtmlTemplate<M: TemplateTag = ()> {
 /// # Askama template
 ///
 /// ```askama
+/// {{- shadowrootmode | bake_attr("shadowrootmode") -}}
 /// {{- shadowrootclonable | bake_bool_attr("shadowrootclonable") -}}
 /// {{- shadowrootcustomelementregistry | bake_bool_attr("shadowrootcustomelementregistry") -}}
 /// {{- shadowrootdelegatesfocus | bake_bool_attr("shadowrootdelegatesfocus") -}}
 /// {{- shadowrootdelegatesfocus | bake_bool_attr("shadowrootdelegatesfocus") -}}
-/// {{- shadowrootmode | bake_attr("shadowrootmode") -}}
 /// {{- shadowrootserializable | bake_bool_attr("shadowrootserializable") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TemplateAttrs {
+    pub shadowrootmode: Option<Cow<'static, str>>,
     pub shadowrootclonable: bool,
     pub shadowrootcustomelementregistry: bool,
     pub shadowrootdelegatesfocus: bool,
-    pub shadowrootmode: Option<Cow<'static, str>>,
     pub shadowrootserializable: bool,
 }
 

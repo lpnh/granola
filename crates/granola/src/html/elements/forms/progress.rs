@@ -34,18 +34,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <progress
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</progress>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ProgressTag, content = Cow<'static, str>, specific = ProgressAttrs)]
+#[recipe(name = ProgressTag, content = Cow<'static, str>, attrs = ProgressAttrs)]
 pub struct HtmlProgress<M: ProgressTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ProgressAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: ProgressTag> HtmlProgress<M> {

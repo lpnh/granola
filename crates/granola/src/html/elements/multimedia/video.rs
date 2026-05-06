@@ -33,36 +33,52 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <video
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</video>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = VideoTag, content = Cow<'static, str>, specific = VideoAttrs)]
+#[recipe(name = VideoTag, content = Cow<'static, str>, attrs = VideoAttrs)]
 pub struct HtmlVideo<M: VideoTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// application
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: VideoAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: VideoTag> HtmlVideo<M> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = VideoAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -75,31 +91,32 @@ impl<M: VideoTag> HtmlVideo<M> {
 /// # Askama template
 ///
 /// ```askama
+/// {{- src | bake_attr("src") -}}
+/// {{- poster | bake_attr("poster") -}}
+/// {{- width | bake_attr("width") -}}
+/// {{- height | bake_attr("height") -}}
+/// {{- crossorigin | bake_attr("crossorigin") -}}
+/// {{- preload | bake_attr("preload") -}}
 /// {{- autoplay | bake_bool_attr("autoplay") -}}
 /// {{- controls | bake_bool_attr("controls") -}}
-/// {{- crossorigin | bake_attr("crossorigin") -}}
 /// {{- media_loop | bake_bool_attr("loop") -}}
 /// {{- muted | bake_bool_attr("muted") -}}
 /// {{- playsinline | bake_bool_attr("playsinline") -}}
-/// {{- poster | bake_attr("poster") -}}
-/// {{- preload | bake_attr("preload") -}}
-/// {{- src | bake_attr("src") -}}
-/// {{- width | bake_attr("width") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct VideoAttrs {
+    pub src: Option<Cow<'static, str>>,
+    pub poster: Option<Cow<'static, str>>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
+    pub crossorigin: Option<Cow<'static, str>>,
+    pub preload: Option<Cow<'static, str>>,
     pub autoplay: bool,
     pub controls: bool,
-    pub crossorigin: Option<Cow<'static, str>>,
-    pub height: Option<u32>,
     pub media_loop: bool,
     pub muted: bool,
     pub playsinline: bool,
-    pub poster: Option<Cow<'static, str>>,
-    pub preload: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
-    pub width: Option<u32>,
 }
 
 pub trait HasVideoAttrs: Sized {

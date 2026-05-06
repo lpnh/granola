@@ -37,21 +37,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <select
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</select>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SelectTag, content = Cow<'static, str>, specific = SelectAttrs)]
+#[recipe(name = SelectTag, content = Cow<'static, str>, attrs = SelectAttrs)]
 pub struct HtmlSelect<M: SelectTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// menu (with no multiple attribute and no size attribute greater than 1)
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: SelectAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<select>` element specific attributes.
@@ -62,23 +68,23 @@ pub struct HtmlSelect<M: SelectTag = ()> {
 ///
 /// ```askama
 /// {{- autocomplete | bake_attr("autocomplete") -}}
-/// {{- disabled | bake_bool_attr("disabled") -}}
 /// {{- form | bake_attr("form") -}}
-/// {{- multiple | bake_bool_attr("multiple") -}}
 /// {{- name | bake_attr("name") -}}
-/// {{- required | bake_bool_attr("required") -}}
 /// {{- size | bake_attr("size") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- multiple | bake_bool_attr("multiple") -}}
+/// {{- required | bake_bool_attr("required") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SelectAttrs {
     autocomplete: Option<Cow<'static, str>>,
-    disabled: bool,
     form: Option<Cow<'static, str>>,
-    multiple: bool,
     name: Option<Cow<'static, str>>,
-    required: bool,
     size: Option<u32>,
+    disabled: bool,
+    multiple: bool,
+    required: bool,
 }
 
 pub trait HasSelectAttrs: Sized {

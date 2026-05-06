@@ -26,38 +26,54 @@ use crate::{filters, prelude::*};
 ///     .enabled(true);
 ///
 /// assert_eq!(track.bake(),
-/// r#"<track src="der_himmel_uber_berlin.vtt" kind="captions" default />"#);
+/// r#"<track kind="captions" src="der_himmel_uber_berlin.vtt" default />"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
 /// <track
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TrackTag, specific = TrackAttrs)]
+#[recipe(name = TrackTag, attrs = TrackAttrs)]
 pub struct HtmlTrack<M: TrackTag = ()> {
     _marker: PhantomData<M>,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: TrackAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: TrackTag> HtmlTrack<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = TrackAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -70,20 +86,20 @@ impl<M: TrackTag> HtmlTrack<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- enabled | bake_bool_attr("default") -}}
 /// {{- kind | bake_attr("kind") -}}
-/// {{- label | bake_attr("label") -}}
 /// {{- src | bake_attr("src") -}}
 /// {{- srclang | bake_attr("srclang") -}}
+/// {{- label | bake_attr("label") -}}
+/// {{- enabled | bake_bool_attr("default") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TrackAttrs {
-    pub enabled: bool,
     pub kind: Option<Cow<'static, str>>,
-    pub label: Option<Cow<'static, str>>,
     pub src: Option<Cow<'static, str>>,
     pub srclang: Option<Cow<'static, str>>,
+    pub label: Option<Cow<'static, str>>,
+    pub enabled: bool,
 }
 
 pub trait HasTrackAttrs: Sized {
@@ -167,7 +183,7 @@ impl<M: TrackTag> HasTrackAttrs for HtmlTrack<M> {
 /// let track = track!("der_himmel_uber_berlin.vtt").kind("captions").enabled(true);
 ///
 /// assert_eq!(track.bake(),
-/// r#"<track src="der_himmel_uber_berlin.vtt" kind="captions" default />"#);
+/// r#"<track kind="captions" src="der_himmel_uber_berlin.vtt" default />"#);
 /// ```
 #[macro_export]
 macro_rules! track {

@@ -48,21 +48,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <blockquote
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</blockquote>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = BlockquoteTag, content = Cow<'static, str>, specific = BlockquoteAttrs)]
+#[recipe(name = BlockquoteTag, content = Cow<'static, str>, attrs = BlockquoteAttrs)]
 pub struct HtmlBlockquote<M: BlockquoteTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: BlockquoteAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<blockquote>` element specific attributes.

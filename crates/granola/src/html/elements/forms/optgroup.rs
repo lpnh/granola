@@ -41,18 +41,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <optgroup
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</optgroup>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OptgroupTag, content = Options, specific = OptgroupAttrs)]
+#[recipe(name = OptgroupTag, content = Options, attrs = OptgroupAttrs)]
 pub struct HtmlOptgroup<M: OptgroupTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: OptgroupAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<optgroup>` element specific attributes.
@@ -62,14 +68,14 @@ pub struct HtmlOptgroup<M: OptgroupTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- disabled | bake_bool_attr("disabled") -}}
 /// {{- label | bake_attr("label") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OptgroupAttrs {
-    pub disabled: bool,
     pub label: Option<Cow<'static, str>>,
+    pub disabled: bool,
 }
 
 pub trait HasOptgroupAttrs: Sized {

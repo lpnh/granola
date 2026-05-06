@@ -32,36 +32,52 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <iframe
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</iframe>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = IframeTag, content = Cow<'static, str>, specific = IframeAttrs)]
+#[recipe(name = IframeTag, content = Cow<'static, str>, attrs = IframeAttrs)]
 pub struct HtmlIframe<M: IframeTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// application, document, img, none, presentation
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: IframeAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: IframeTag> HtmlIframe<M> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = IframeAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -74,30 +90,30 @@ impl<M: IframeTag> HtmlIframe<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- allow | bake_attr("allow") -}}
-/// {{- allowfullscreen | bake_bool_attr("allowfullscreen") -}}
+/// {{- src | bake_attr("src") -}}
+/// {{- width | bake_attr("width") -}}
 /// {{- height | bake_attr("height") -}}
+/// {{- allow | bake_attr("allow") -}}
 /// {{- loading | bake_attr("loading") -}}
 /// {{- name | bake_attr("name") -}}
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
 /// {{- sandbox | bake_attr("sandbox") -}}
-/// {{- src | bake_attr("src") -}}
 /// {{- srcdoc | bake_attr("srcdoc") -}}
-/// {{- width | bake_attr("width") -}}
+/// {{- allowfullscreen | bake_bool_attr("allowfullscreen") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct IframeAttrs {
-    pub allow: Option<Cow<'static, str>>,
-    pub allowfullscreen: bool,
+    pub src: Option<Cow<'static, str>>,
+    pub width: Option<u32>,
     pub height: Option<u32>,
+    pub allow: Option<Cow<'static, str>>,
     pub loading: Option<Cow<'static, str>>,
     pub name: Option<Cow<'static, str>>,
     pub referrerpolicy: Option<Cow<'static, str>>,
     pub sandbox: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
     pub srcdoc: Option<Cow<'static, str>>,
-    pub width: Option<u32>,
+    pub allowfullscreen: bool,
 }
 
 pub trait HasIframeAttrs: Sized {

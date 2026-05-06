@@ -35,46 +35,52 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <object
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</object>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ObjectTag, content = Cow<'static, str>, specific = ObjectAttrs)]
+#[recipe(name = ObjectTag, content = Cow<'static, str>, attrs = ObjectAttrs)]
 pub struct HtmlObject<M: ObjectTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// application, document, img
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ObjectAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
-/// The HTML `<todo>` element specific attributes.
+/// The HTML `<object>` element specific attributes.
 ///
-/// [MDN Documentation]()
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#attributes)
 ///
 /// # Askama template
 ///
 /// ```askama
-/// {{- data | bake_attr("data") -}}
-/// {{- form | bake_attr("form") -}}
-/// {{- height | bake_attr("height") -}}
-/// {{- name | bake_attr("name") -}}
 /// {{- mime_type | bake_attr("type") -}}
+/// {{- data | bake_attr("data") -}}
 /// {{- width | bake_attr("width") -}}
+/// {{- height | bake_attr("height") -}}
+/// {{- form | bake_attr("form") -}}
+/// {{- name | bake_attr("name") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ObjectAttrs {
-    pub data: Option<Cow<'static, str>>,
-    pub form: Option<Cow<'static, str>>,
-    pub height: Option<u32>,
-    pub name: Option<Cow<'static, str>>,
     pub mime_type: Option<Cow<'static, str>>,
+    pub data: Option<Cow<'static, str>>,
     pub width: Option<u32>,
+    pub height: Option<u32>,
+    pub form: Option<Cow<'static, str>>,
+    pub name: Option<Cow<'static, str>>,
 }
 
 pub trait HasObjectAttrs: Sized {

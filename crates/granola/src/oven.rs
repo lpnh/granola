@@ -186,7 +186,7 @@ macro_rules! bake_newline {
 /// let input: HtmlInput<SubmitPost> = HtmlInput::from_value("Send");
 ///
 /// assert_eq!(input.bake(),
-/// r#"<input type="submit" formmethod="post" value="Send" />"#);
+/// r#"<input type="submit" value="Send" formmethod="post" />"#);
 /// ```
 #[macro_export]
 macro_rules! rec {
@@ -269,84 +269,72 @@ mod oven_tests {
 // Two fixtures per element:
 // - small fixture (fits in HINT): String capacity == HINT
 // - larger fixture (exceeds HINT): String capacity <= 2 * HINT
-// #[cfg(test)]
-// mod preallocation_tests {
-//     use crate::prelude::*;
-//     use askama::Template;
-//
-//     const IMG_HINT: usize = <HtmlImg as Template>::SIZE_HINT;
-//     const P_HINT: usize = <HtmlP as Template>::SIZE_HINT;
-//
-//     fn img_empty() -> HtmlImg {
-//         HtmlImg::empty()
-//     }
-//
-//     fn img_with_src() -> HtmlImg {
-//         HtmlImg::from_src("https://example.com/")
-//     }
-//
-//     fn p_empty() -> HtmlP {
-//         HtmlP::empty()
-//     }
-//
-//     fn p_with_span() -> HtmlP {
-//         let span: HtmlSpan = HtmlSpan::new("hello, world!");
-//         HtmlP::new(span)
-//     }
-//
-//     #[test]
-//     fn probe_p_hint() {
-//         use crate::html::Attrs;
-//         let attrs_hint = <Attrs as Template>::SIZE_HINT;
-//         eprintln!("P_HINT={P_HINT}  Attrs::SIZE_HINT={attrs_hint}");
-//         let p: HtmlP = p_with_span();
-//         eprintln!("bake capacity={}", p.bake().capacity());
-//         eprintln!("bake_block capacity={}", bake_block![p_with_span()].capacity());
-//         eprintln!("bake_inline capacity={}", bake_inline![p_with_span()].capacity());
-//         eprintln!("bake_newline capacity={}", bake_newline!(p_with_span()).capacity());
-//     }
-//
-//     #[test]
-//     fn size_hint_is_tight() {
-//         let empty: HtmlP = HtmlP::empty();
-//         let headroom = P_HINT - empty.bake().len();
-//
-//         let at_boundary: HtmlP = HtmlP::new("x".repeat(headroom));
-//         assert_eq!(at_boundary.bake().len(), P_HINT);
-//
-//         let past_boundary: HtmlP = HtmlP::new("x".repeat(headroom + 1));
-//         assert_eq!(past_boundary.bake().len(), P_HINT + 1);
-//     }
-//
-//     #[test]
-//     fn bake_capacity() {
-//         assert_eq!(img_empty().bake().capacity(), IMG_HINT);
-//         assert_eq!(p_empty().bake().capacity(), P_HINT);
-//         assert!(img_with_src().bake().capacity() <= 2 * IMG_HINT);
-//         assert!(p_with_span().bake().capacity() <= 2 * P_HINT);
-//     }
-//
-//     #[test]
-//     fn bake_block_capacity() {
-//         assert_eq!(bake_block![img_empty()].capacity(), IMG_HINT);
-//         assert_eq!(bake_block![p_empty()].capacity(), P_HINT);
-//         assert!(bake_block![img_with_src()].capacity() <= 2 * IMG_HINT);
-//         assert!(bake_block![p_with_span()].capacity() <= 2 * P_HINT);
-//     }
-//
-//     #[test]
-//     fn bake_inline_capacity() {
-//         assert_eq!(bake_inline![img_empty()].capacity(), IMG_HINT);
-//         assert_eq!(bake_inline![p_empty()].capacity(), P_HINT);
-//         assert!(bake_inline![img_with_src()].capacity() <= 2 * IMG_HINT);
-//         assert!(bake_inline![p_with_span()].capacity() <= 2 * P_HINT);
-//     }
-//
-//     #[test]
-//     fn bake_newline_capacity() {
-//         assert_eq!(bake_newline!(img_empty()).capacity(), 1 + IMG_HINT);
-//         assert_eq!(bake_newline!(p_empty()).capacity(), 1 + P_HINT);
-//         assert!(bake_newline!(img_with_src()).capacity() <= 2 * (1 + IMG_HINT));
-//         assert!(bake_newline!(p_with_span()).capacity() <= 2 * (1 + P_HINT));
-//     }
-// }
+#[cfg(test)]
+mod preallocation_tests {
+    use crate::prelude::*;
+    use askama::Template;
+
+    const IMG_HINT: usize = <HtmlImg as Template>::SIZE_HINT;
+    const P_HINT: usize = <HtmlP as Template>::SIZE_HINT;
+
+    fn img_empty() -> HtmlImg {
+        HtmlImg::empty()
+    }
+
+    fn img_with_src() -> HtmlImg {
+        HtmlImg::from_src("https://example.com/")
+    }
+
+    fn p_empty() -> HtmlP {
+        HtmlP::empty()
+    }
+
+    fn p_with_span() -> HtmlP {
+        let span: HtmlSpan = HtmlSpan::new("hello, world!");
+        HtmlP::new(span)
+    }
+
+    #[test]
+    fn size_hint_is_tight() {
+        let empty: HtmlP = HtmlP::empty();
+        let headroom = P_HINT - empty.bake().len();
+
+        let at_boundary: HtmlP = HtmlP::new("x".repeat(headroom));
+        assert_eq!(at_boundary.bake().len(), P_HINT);
+
+        let past_boundary: HtmlP = HtmlP::new("x".repeat(headroom + 1));
+        assert_eq!(past_boundary.bake().len(), P_HINT + 1);
+    }
+
+    #[test]
+    fn bake_capacity() {
+        assert_eq!(img_empty().bake().capacity(), IMG_HINT);
+        assert_eq!(p_empty().bake().capacity(), P_HINT);
+        assert!(img_with_src().bake().capacity() <= 2 * IMG_HINT);
+        assert!(p_with_span().bake().capacity() <= 2 * P_HINT);
+    }
+
+    #[test]
+    fn bake_block_capacity() {
+        assert_eq!(bake_block![img_empty()].capacity(), IMG_HINT);
+        assert_eq!(bake_block![p_empty()].capacity(), P_HINT);
+        assert!(bake_block![img_with_src()].capacity() <= 2 * IMG_HINT);
+        assert!(bake_block![p_with_span()].capacity() <= 2 * P_HINT);
+    }
+
+    #[test]
+    fn bake_inline_capacity() {
+        assert_eq!(bake_inline![img_empty()].capacity(), IMG_HINT);
+        assert_eq!(bake_inline![p_empty()].capacity(), P_HINT);
+        assert!(bake_inline![img_with_src()].capacity() <= 2 * IMG_HINT);
+        assert!(bake_inline![p_with_span()].capacity() <= 2 * P_HINT);
+    }
+
+    #[test]
+    fn bake_newline_capacity() {
+        assert_eq!(bake_newline!(img_empty()).capacity(), 1 + IMG_HINT);
+        assert_eq!(bake_newline!(p_empty()).capacity(), 1 + P_HINT);
+        assert!(bake_newline!(img_with_src()).capacity() <= 2 * (1 + IMG_HINT));
+        assert!(bake_newline!(p_with_span()).capacity() <= 2 * (1 + P_HINT));
+    }
+}

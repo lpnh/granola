@@ -1,6 +1,6 @@
 #![feature(associated_type_defaults)]
 
-pub use granola_derive::{Granola, MutAttrs, Recipe};
+pub use granola_derive::{Granola, Recipe};
 
 pub mod filters;
 pub mod html;
@@ -9,7 +9,7 @@ pub mod recipes;
 pub mod templates;
 
 pub mod prelude {
-    pub use super::{Granola, MutAttrs, Recipe, html::*};
+    pub use super::{Granola, Recipe, html::*};
     pub use crate::{bake_block, bake_inline, bake_newline, rec};
 }
 

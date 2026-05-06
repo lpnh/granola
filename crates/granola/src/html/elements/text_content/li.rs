@@ -35,13 +35,16 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <li
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</li>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LiTag, content = Cow<'static, str>, specific = LiAttrs)]
+#[recipe(name = LiTag, content = Cow<'static, str>, attrs = LiAttrs)]
 pub struct HtmlLi<M: LiTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -49,8 +52,11 @@ pub struct HtmlLi<M: LiTag = ()> {
     ///
     /// menuitem, menuitemcheckbox, menuitemradio, option, none, presentation,
     ///     radio, separator, tab, treeitem
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: LiAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<li>` element specific attributes.

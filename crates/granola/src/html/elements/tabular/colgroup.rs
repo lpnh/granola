@@ -37,18 +37,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <colgroup
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</colgroup>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ColgroupTag, content = TableColumns, specific = ColgroupAttrs)]
+#[recipe(name = ColgroupTag, content = TableColumns, attrs = ColgroupAttrs)]
 pub struct HtmlColgroup<M: ColgroupTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ColgroupAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<span>` element specific attributes.

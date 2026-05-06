@@ -31,31 +31,47 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <source
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SourceTag, specific = SourceAttrs)]
+#[recipe(name = SourceTag, attrs = SourceAttrs)]
 pub struct HtmlSource<M: SourceTag = ()> {
     _marker: PhantomData<M>,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: SourceAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: SourceTag> HtmlSource<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = SourceAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -68,24 +84,24 @@ impl<M: SourceTag> HtmlSource<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- height | bake_attr("height") -}}
-/// {{- media | bake_attr("media") -}}
-/// {{- sizes | bake_attr("sizes") -}}
 /// {{- src | bake_attr("src") -}}
 /// {{- srcset | bake_attr("srcset") -}}
-/// {{- mime_type | bake_attr("type") -}}
+/// {{- media | bake_attr("media") -}}
 /// {{- width | bake_attr("width") -}}
+/// {{- height | bake_attr("height") -}}
+/// {{- sizes | bake_attr("sizes") -}}
+/// {{- mime_type | bake_attr("type") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SourceAttrs {
-    pub height: Option<u32>,
-    pub media: Option<Cow<'static, str>>,
-    pub sizes: Option<Cow<'static, str>>,
     pub src: Option<Cow<'static, str>>,
     pub srcset: Option<Cow<'static, str>>,
-    pub mime_type: Option<Cow<'static, str>>,
+    pub media: Option<Cow<'static, str>>,
     pub width: Option<u32>,
+    pub height: Option<u32>,
+    pub sizes: Option<Cow<'static, str>>,
+    pub mime_type: Option<Cow<'static, str>>,
 }
 
 pub trait HasSourceAttrs: Sized {

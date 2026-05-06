@@ -31,21 +31,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <output
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</output>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OutputTag, content = Cow<'static, str>, specific = OutputAttrs)]
+#[recipe(name = OutputTag, content = Cow<'static, str>, attrs = OutputAttrs)]
 pub struct HtmlOutput<M: OutputTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: OutputAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<output>` element specific attributes.
@@ -55,16 +61,16 @@ pub struct HtmlOutput<M: OutputTag = ()> {
 /// # Askama template
 ///
 /// ```askama
+/// {{- name | bake_attr("name") -}}
 /// {{- for_id | bake_attr("for") -}}
 /// {{- form | bake_attr("form") -}}
-/// {{- name | bake_attr("name") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OutputAttrs {
+    pub name: Option<Cow<'static, str>>,
     pub for_id: Option<Cow<'static, str>>,
     pub form: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
 }
 
 pub trait HasOutputAttrs: Sized {

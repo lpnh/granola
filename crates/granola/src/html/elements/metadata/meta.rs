@@ -24,38 +24,54 @@ use crate::{filters, prelude::*};
 /// let meta: HtmlMeta = HtmlMeta::new("noindex, nofollow").name("robots");
 ///
 /// assert_eq!(meta.bake(),
-/// r#"<meta content="noindex, nofollow" name="robots" />"#);
+/// r#"<meta name="robots" content="noindex, nofollow" />"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
 /// <meta
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MetaTag, specific = MetaAttrs)]
+#[recipe(name = MetaTag, attrs = MetaAttrs)]
 pub struct HtmlMeta<M: MetaTag = ()> {
     _marker: PhantomData<M>,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: MetaAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: MetaTag> HtmlMeta<M> {
     pub fn new(content: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
-        M::decoration_recipe(&mut attrs);
+        let mut specific_attrs = MetaAttrs::default().content(content.into());
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        let mut specific_attrs = MetaAttrs::default().content(content);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -69,10 +85,10 @@ impl<M: MetaTag> HtmlMeta<M> {
 ///
 /// ```askama
 /// {{- charset | bake_attr("charset") -}}
-/// {{- content | bake_attr("content") -}}
-/// {{- http_equiv | bake_attr("http_equiv") -}}
-/// {{- media | bake_attr("media") -}}
 /// {{- name | bake_attr("name") -}}
+/// {{- http_equiv | bake_attr("http_equiv") -}}
+/// {{- content | bake_attr("content") -}}
+/// {{- media | bake_attr("media") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -167,7 +183,7 @@ impl<M: MetaTag> HasMetaAttrs for HtmlMeta<M> {
 /// let meta = meta!("noindex, nofollow").name("robots");
 ///
 /// assert_eq!(meta.bake(),
-/// r#"<meta content="noindex, nofollow" name="robots" />"#);
+/// r#"<meta name="robots" content="noindex, nofollow" />"#);
 /// ```
 #[macro_export]
 macro_rules! meta {

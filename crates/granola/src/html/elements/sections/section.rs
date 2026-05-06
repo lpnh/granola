@@ -38,7 +38,12 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// <section{{ attrs }}>{{ content | kirei(2) }}</section>
+/// <section
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
+/// >{{ content | kirei(2) }}</section>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -51,7 +56,10 @@ pub struct HtmlSection<M: SectionTag = ()> {
     /// alert, alertdialog, application, banner, complementary, contentinfo, dialog,
     /// document, feed, log, main, marquee, navigation, none, note, presentation,
     /// search, status, tabpanel
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// Shorthand for `HtmlSection`.

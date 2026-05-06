@@ -48,21 +48,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <canvas
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</canvas>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = CanvasTag, content = Cow<'static, str>, specific = CanvasAttrs)]
+#[recipe(name = CanvasTag, content = Cow<'static, str>, attrs = CanvasAttrs)]
 pub struct HtmlCanvas<M: CanvasTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: CanvasAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<canvas>` element specific attributes.
@@ -72,14 +78,14 @@ pub struct HtmlCanvas<M: CanvasTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- height | bake_attr("height") -}}
 /// {{- width | bake_attr("width") -}}
+/// {{- height | bake_attr("height") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CanvasAttrs {
-    pub height: Option<u32>,
     pub width: Option<u32>,
+    pub height: Option<u32>,
 }
 
 pub trait HasCanvasAttrs: Sized {

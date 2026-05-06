@@ -34,8 +34,11 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <q
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</q>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
@@ -47,8 +50,11 @@ pub struct HtmlQ<M: QTag = ()> {
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: QAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<q>` element specific attributes.

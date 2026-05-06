@@ -39,18 +39,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <meter
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</meter>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MeterTag, content = Cow<'static, str>, specific = MeterAttrs)]
+#[recipe(name = MeterTag, content = Cow<'static, str>, attrs = MeterAttrs)]
 pub struct HtmlMeter<M: MeterTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: MeterAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<meter>` element specific attributes.
@@ -60,22 +66,50 @@ pub struct HtmlMeter<M: MeterTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- high | bake_attr("high") -}}
-/// {{- low | bake_attr("low") -}}
-/// {{- max | bake_attr("max") -}}
-/// {{- min | bake_attr("min") -}}
-/// {{- optimum | bake_attr("optimum") -}}
 /// {{- value | bake_attr("value") -}}
+/// {{- min | bake_attr("min") -}}
+/// {{- max | bake_attr("max") -}}
+/// {{- low | bake_attr("low") -}}
+/// {{- high | bake_attr("high") -}}
+/// {{- optimum | bake_attr("optimum") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct MeterAttrs {
-    pub high: Option<Cow<'static, str>>,
-    pub low: Option<Cow<'static, str>>,
-    pub max: Option<Cow<'static, str>>,
-    pub min: Option<Cow<'static, str>>,
-    pub optimum: Option<Cow<'static, str>>,
     pub value: Option<Cow<'static, str>>,
+    pub min: Option<Cow<'static, str>>,
+    pub max: Option<Cow<'static, str>>,
+    pub low: Option<Cow<'static, str>>,
+    pub high: Option<Cow<'static, str>>,
+    pub optimum: Option<Cow<'static, str>>,
+}
+
+impl<M: MeterTag> HtmlMeter<M> {
+    pub fn from_value(value: f64) -> Self {
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
+
+        let mut specific_attrs = MeterAttrs::default().value(value);
+        M::specific_attrs_recipe(&mut specific_attrs);
+
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
+
+        Self {
+            global_attrs,
+            specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
+            ..Default::default()
+        }
+    }
 }
 
 pub trait HasMeterAttrs: Sized {
@@ -125,7 +159,7 @@ pub trait HasMeterAttrs: Sized {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meter#value.to_string().into())
     fn value(mut self, value: f64) -> Self {
-        self.meter_attrs_mut().optimum = Some(value.to_string().into());
+        self.meter_attrs_mut().value = Some(value.to_string().into());
         self
     }
 }

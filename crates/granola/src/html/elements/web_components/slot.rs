@@ -31,18 +31,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <slot
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</slot>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SlotTag, content = Cow<'static, str>, specific = SlotAttrs)]
+#[recipe(name = SlotTag, content = Cow<'static, str>, attrs = SlotAttrs)]
 pub struct HtmlSlot<M: SlotTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: SlotAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<slot>` element specific attributes.

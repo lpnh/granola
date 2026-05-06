@@ -42,8 +42,11 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <fieldset
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</fieldset>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
@@ -55,8 +58,11 @@ pub struct HtmlFieldset<M: FieldsetTag = ()> {
     /// # Permitted ARIA roles
     ///
     /// radiogroup, presentation, none
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: FieldsetAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<todo>` element specific attributes.

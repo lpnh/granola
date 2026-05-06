@@ -31,33 +31,49 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <option
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</option>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OptionTag, content = Cow<'static, str>, specific = OptionAttrs)]
+#[recipe(name = OptionTag, content = Cow<'static, str>, attrs = OptionAttrs)]
 pub struct HtmlOption<M: OptionTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: OptionAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: OptionTag> HtmlOption<M> {
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = OptionAttrs::default().value(value);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -70,18 +86,18 @@ impl<M: OptionTag> HtmlOption<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- disabled | bake_bool_attr("disabled") -}}
 /// {{- label | bake_attr("label") -}}
-/// {{- selected | bake_bool_attr("selected") -}}
 /// {{- value | bake_attr("value") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
+/// {{- selected | bake_bool_attr("selected") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OptionAttrs {
-    pub disabled: bool,
     pub label: Option<Cow<'static, str>>,
-    pub selected: bool,
     pub value: Option<Cow<'static, str>>,
+    pub disabled: bool,
+    pub selected: bool,
 }
 
 pub trait HasOptionAttrs: Sized {

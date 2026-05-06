@@ -26,7 +26,7 @@ use crate::{filters, prelude::*};
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13");
 ///
 /// assert_eq!(ins.bake(),
-/// r#"<ins cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13" datetime="2016-11-10">
+/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">
 ///   ?
 /// </ins>"#);
 /// ```
@@ -35,21 +35,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <ins
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</ins>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = InsTag, content = Cow<'static, str>, specific = InsAttrs)]
+#[recipe(name = InsTag, content = Cow<'static, str>, attrs = InsAttrs)]
 pub struct HtmlIns<M: InsTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: InsAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<ins>` element specific attributes.
@@ -59,14 +65,14 @@ pub struct HtmlIns<M: InsTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- cite | bake_attr("cite") -}}
 /// {{- datetime | bake_attr("datetime") -}}
+/// {{- cite | bake_attr("cite") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct InsAttrs {
-    pub cite: Option<Cow<'static, str>>,
     pub datetime: Option<Cow<'static, str>>,
+    pub cite: Option<Cow<'static, str>>,
 }
 
 pub trait HasInsAttrs: Sized {
@@ -128,7 +134,7 @@ impl<M: InsTag> HasInsAttrs for HtmlIns<M> {
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13");
 ///
 /// assert_eq!(ins.bake(),
-/// r#"<ins cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13" datetime="2016-11-10">
+/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">
 ///   ?
 /// </ins>"#);
 /// ```

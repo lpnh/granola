@@ -19,13 +19,13 @@ use crate::prelude::*;
 pub struct Submit;
 
 impl ButtonTag for Submit {
-    fn specific_recipe(button_attrs: &mut ButtonAttrs) {
+    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.button_type(ButtonType::Submit);
     }
 }
 
 impl InputTag for Submit {
-    fn specific_recipe(input_attrs: &mut InputAttrs) {
+    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.input_type(InputType::Submit);
     }
 }

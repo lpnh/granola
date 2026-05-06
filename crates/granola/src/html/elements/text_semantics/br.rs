@@ -38,7 +38,11 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// <br{{ attrs }} />
+/// <br
+///   {{- global_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -48,7 +52,16 @@ pub struct HtmlBr<M: BrTag = ()> {
     /// # Permitted ARIA roles
     ///
     /// none, presentation
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
+}
+
+impl<M: BrTag> HtmlBr<M> {
+    pub fn new() -> Self {
+        Self::from_recipe()
+    }
 }
 
 /// Shorthand for `HtmlBr`.

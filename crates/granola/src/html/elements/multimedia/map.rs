@@ -37,7 +37,7 @@ use crate::{filters, prelude::*};
 /// assert_eq!(img_map,
 /// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
 /// <map name="minas-gerais">
-///   <area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />
+///   <area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />
 /// </map>"##);
 /// ```
 ///
@@ -45,18 +45,24 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <map
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</map>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MapTag, content = Areas, specific = MapAttrs)]
+#[recipe(name = MapTag, content = Areas, attrs = MapAttrs)]
 pub struct HtmlMap<M: MapTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: MapAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<map>` element specific attributes.
@@ -136,7 +142,7 @@ impl<M: MapTag> HasMapAttrs for HtmlMap<M> {
 /// assert_eq!(img_map,
 /// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
 /// <map name="minas-gerais">
-///   <area href="https://w.wiki/LTnF" alt="Red triangle" shape="poly" coords="300,63,470,357,130,357" />
+///   <area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />
 /// </map>"##);
 /// ```
 #[macro_export]

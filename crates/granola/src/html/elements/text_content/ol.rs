@@ -41,13 +41,16 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <ol
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</ol>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OlTag, content = ListItems, specific = OlAttrs)]
+#[recipe(name = OlTag, content = ListItems, attrs = OlAttrs)]
 pub struct HtmlOl<M: OlTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -55,8 +58,11 @@ pub struct HtmlOl<M: OlTag = ()> {
     ///
     /// directory, group, listbox, menu, menubar, none, presentation,
     /// radiogroup, tablist, toolbar, tree
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: OlAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<ol>` element specific attributes.
@@ -66,16 +72,16 @@ pub struct HtmlOl<M: OlTag = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- reversed | bake_bool_attr("reversed") -}}
 /// {{- start | bake_attr("start") -}}
 /// {{- list_type | bake_attr("type") -}}
+/// {{- reversed | bake_bool_attr("reversed") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OlAttrs {
-    pub reversed: bool,
     pub start: Option<i32>,
     pub list_type: Option<Cow<'static, str>>,
+    pub reversed: bool,
 }
 
 pub trait HasOlAttrs: Sized {

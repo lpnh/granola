@@ -41,21 +41,27 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <form
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</form>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = FormTag, content = Cow<'static, str>, specific = FormAttrs)]
+#[recipe(name = FormTag, content = Cow<'static, str>, attrs = FormAttrs)]
 pub struct HtmlForm<M: FormTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
     /// # Permitted ARIA roles
     ///
     /// search, none or presentation
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: FormAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<form>` element specific attributes.
@@ -71,9 +77,9 @@ pub struct HtmlForm<M: FormTag = ()> {
 /// {{- enctype | bake_attr("enctype") -}}
 /// {{- method | bake_attr("method") -}}
 /// {{- name | bake_attr("name") -}}
-/// {{- novalidate | bake_bool_attr("novalidate") -}}
 /// {{- rel | bake_attr("rel") -}}
 /// {{- target | bake_attr("target") -}}
+/// {{- novalidate | bake_bool_attr("novalidate") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -84,9 +90,9 @@ pub struct FormAttrs {
     pub enctype: Option<Cow<'static, str>>,
     pub method: Option<Cow<'static, str>>,
     pub name: Option<Cow<'static, str>>,
-    pub novalidate: bool,
     pub rel: Option<Cow<'static, str>>,
     pub target: Option<Cow<'static, str>>,
+    pub novalidate: bool,
 }
 
 pub trait HasFormAttrs: Sized {

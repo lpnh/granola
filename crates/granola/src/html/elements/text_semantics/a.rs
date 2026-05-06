@@ -31,13 +31,16 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <a
-///   {{- attrs -}}
+///   {{- global_attrs -}}
 ///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers -}}
 /// >{{ content | kirei(2) }}</a>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ATag, content = Cow<'static, str>, specific = AAttrs)]
+#[recipe(name = ATag, content = Cow<'static, str>, attrs = AAttrs)]
 pub struct HtmlA<M: ATag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -46,8 +49,11 @@ pub struct HtmlA<M: ATag = ()> {
     /// when href attribute is present: button, checkbox, menuitem, menuitemcheckbox,
     /// menuitemradio, option, radio, switch, tab, treeitem
     /// when href attribute is not present: any
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: AAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 /// The HTML `<todo>` element specific attributes.

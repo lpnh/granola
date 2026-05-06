@@ -31,12 +31,15 @@ use crate::{filters, prelude::*};
 ///
 /// ```askama
 /// <img
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ImgTag, specific = ImgAttrs)]
+#[recipe(name = ImgTag, attrs = ImgAttrs)]
 pub struct HtmlImg<M: ImgTag = ()> {
     _marker: PhantomData<M>,
     /// # Permitted ARIA roles
@@ -46,39 +49,62 @@ pub struct HtmlImg<M: ImgTag = ()> {
     ///   progressbar, scrollbar, separator, slider, switch, tab, treeitem
     /// with empty alt attribute: none or presentation
     /// with no alt attribute: no role permitted
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: ImgAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: ImgTag> HtmlImg<M> {
     pub fn new(src: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = ImgAttrs::default().src(src).alt(alt);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
 
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = ImgAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -91,38 +117,38 @@ impl<M: ImgTag> HtmlImg<M> {
 /// # Askama template
 ///
 /// ```askama
+/// {{- src | bake_attr("src") -}}
 /// {{- alt | bake_attr("alt") -}}
-/// {{- crossorigin | bake_attr("crossorigin") -}}
+/// {{- srcset | bake_attr("srcset") -}}
+/// {{- sizes | bake_attr("sizes") -}}
+/// {{- width | bake_attr("width") -}}
+/// {{- height | bake_attr("height") -}}
+/// {{- loading | bake_attr("loading") -}}
 /// {{- decoding | bake_attr("decoding") -}}
+/// {{- crossorigin | bake_attr("crossorigin") -}}
 /// {{- elementtiming | bake_attr("elementtiming") -}}
 /// {{- fetchpriority | bake_attr("fetchpriority") -}}
-/// {{- height | bake_attr("height") -}}
-/// {{- ismap | bake_bool_attr("ismap") -}}
-/// {{- loading | bake_attr("loading") -}}
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
-/// {{- sizes | bake_attr("sizes") -}}
-/// {{- src | bake_attr("src") -}}
-/// {{- srcset | bake_attr("srcset") -}}
-/// {{- width | bake_attr("width") -}}
 /// {{- usemap | bake_attr("usemap") -}}
+/// {{- ismap | bake_bool_attr("ismap") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ImgAttrs {
+    pub src: Option<Cow<'static, str>>,
     pub alt: Option<Cow<'static, str>>,
-    pub crossorigin: Option<Cow<'static, str>>,
+    pub srcset: Option<Cow<'static, str>>,
+    pub sizes: Option<Cow<'static, str>>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
+    pub loading: Option<Cow<'static, str>>,
     pub decoding: Option<Cow<'static, str>>,
+    pub crossorigin: Option<Cow<'static, str>>,
     pub elementtiming: Option<Cow<'static, str>>,
     pub fetchpriority: Option<Cow<'static, str>>,
-    pub height: Option<u32>,
-    pub ismap: bool,
-    pub loading: Option<Cow<'static, str>>,
     pub referrerpolicy: Option<Cow<'static, str>>,
-    pub sizes: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
-    pub srcset: Option<Cow<'static, str>>,
-    pub width: Option<u32>,
     pub usemap: Option<Cow<'static, str>>,
+    pub ismap: bool,
 }
 
 pub trait HasImgAttrs: Sized {

@@ -16,7 +16,7 @@ use crate::prelude::*;
 pub struct Charset;
 
 impl MetaTag for Charset {
-    fn specific_recipe(meta_attrs: &mut MetaAttrs) {
+    fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
         meta_attrs.charset();
     }
 }
@@ -37,7 +37,7 @@ impl MetaTag for Charset {
 pub struct Viewport;
 
 impl MetaTag for Viewport {
-    fn specific_recipe(meta_attrs: &mut MetaAttrs) {
+    fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
         meta_attrs.name("viewport");
     }
 }
@@ -58,7 +58,7 @@ impl MetaTag for Viewport {
 pub struct Robots;
 
 impl MetaTag for Robots {
-    fn specific_recipe(meta_attrs: &mut MetaAttrs) {
+    fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
         meta_attrs.name("robots");
     }
 }

@@ -169,8 +169,8 @@ mod alloc_tests {
     #[test]
     fn dialog_example() {
         let (opt, naive) = super::dialog_example();
-        assert_eq!((opt.allocs, opt.bytes), (14, 1237));
-        assert_eq!((naive.allocs, naive.bytes), (17, 1406));
+        assert_eq!((opt.allocs, opt.bytes), (10, 797));
+        assert_eq!((naive.allocs, naive.bytes), (13, 966));
     }
 
     #[test]
@@ -183,15 +183,15 @@ mod alloc_tests {
     #[test]
     fn fieldset_example() {
         let (opt, naive) = super::fieldset_example();
-        assert_eq!((opt.allocs, opt.bytes), (16, 1700));
-        assert_eq!((naive.allocs, naive.bytes), (18, 1447));
+        assert_eq!((opt.allocs, opt.bytes), (12, 1260));
+        assert_eq!((naive.allocs, naive.bytes), (14, 1007));
     }
 
     #[test]
     fn form_example() {
         let (opt, naive) = super::form_example();
-        assert_eq!((opt.allocs, opt.bytes), (17, 1104));
-        assert_eq!((naive.allocs, naive.bytes), (21, 1110));
+        assert_eq!((opt.allocs, opt.bytes), (13, 664));
+        assert_eq!((naive.allocs, naive.bytes), (17, 670));
     }
 
     #[test]
@@ -204,22 +204,22 @@ mod alloc_tests {
     #[test]
     fn picture_example() {
         let (opt, naive) = super::picture_example();
-        assert_eq!((opt.allocs, opt.bytes), (11, 961));
-        assert_eq!((naive.allocs, naive.bytes), (14, 1024));
+        assert_eq!((opt.allocs, opt.bytes), (7, 521));
+        assert_eq!((naive.allocs, naive.bytes), (10, 584));
     }
 
     #[test]
     fn pre_example() {
         let (opt, naive) = super::pre_example();
-        assert_eq!((opt.allocs, opt.bytes), (14, 1674));
-        assert_eq!((naive.allocs, naive.bytes), (17, 1892));
+        assert_eq!((opt.allocs, opt.bytes), (12, 1454));
+        assert_eq!((naive.allocs, naive.bytes), (15, 1672));
     }
 
     #[test]
     fn root_example() {
         let (opt, naive) = super::root_example();
-        assert_eq!((opt.allocs, opt.bytes), (27, 2368));
-        assert_eq!((naive.allocs, naive.bytes), (30, 2419));
+        assert_eq!((opt.allocs, opt.bytes), (23, 1928));
+        assert_eq!((naive.allocs, naive.bytes), (26, 1979));
     }
 
     #[test]
@@ -256,8 +256,8 @@ mod alloc_tests_empty {
     #[test]
     fn form_empty() {
         let (opt, naive) = super::form_empty();
-        assert_eq!((opt.allocs, opt.bytes), (11, 614));
-        assert_eq!((naive.allocs, naive.bytes), (15, 666));
+        assert_eq!((opt.allocs, opt.bytes), (9, 394));
+        assert_eq!((naive.allocs, naive.bytes), (13, 446));
     }
 
     #[test]

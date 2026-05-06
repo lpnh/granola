@@ -27,41 +27,57 @@ use crate::{filters, prelude::*};
 ///     .height(420);
 ///
 /// assert_eq!(embed.bake(),
-/// r#"<embed src="flower.png" type="image/png" width="420" height="420" />"#);
+/// r#"<embed type="image/png" src="flower.png" width="420" height="420" />"#);
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
 /// <embed
-///   {{- attrs -}}
-///   {{- specific_attrs }} />
+///   {{- global_attrs -}}
+///   {{- specific_attrs -}}
+///   {{- global_aria_attrs -}}
+///   {{- custom_data_attrs -}}
+///   {{- event_handlers }} />
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = EmbedTag, specific = EmbedAttrs)]
+#[recipe(name = EmbedTag, attrs = EmbedAttrs)]
 pub struct HtmlEmbed<M: EmbedTag = ()> {
     _marker: PhantomData<M>,
     /// # Permitted ARIA roles
     ///
     /// application, document, img, none, presentation
-    pub attrs: Attrs,
+    pub global_attrs: GlobalAttrs,
     pub specific_attrs: EmbedAttrs,
+    pub global_aria_attrs: GlobalAriaAttrs,
+    pub custom_data_attrs: CustomDataAttrs,
+    pub event_handlers: EventHandlers,
 }
 
 impl<M: EmbedTag> HtmlEmbed<M> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut attrs = Attrs::default();
-
-        M::decoration_recipe(&mut attrs);
+        let mut global_attrs = GlobalAttrs::default();
+        M::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = EmbedAttrs::default().src(src);
+        M::specific_attrs_recipe(&mut specific_attrs);
 
-        M::specific_recipe(&mut specific_attrs);
+        let mut global_aria_attrs = GlobalAriaAttrs::default();
+        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+
+        let mut custom_data_attrs = CustomDataAttrs::default();
+        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+
+        let mut event_handlers = EventHandlers::default();
+        M::event_handlers_recipe(&mut event_handlers);
 
         Self {
-            attrs,
+            global_attrs,
             specific_attrs,
+            global_aria_attrs,
+            custom_data_attrs,
+            event_handlers,
             ..Default::default()
         }
     }
@@ -74,18 +90,18 @@ impl<M: EmbedTag> HtmlEmbed<M> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- height | bake_attr("height") -}}
-/// {{- src | bake_attr("src") -}}
 /// {{- mime_type | bake_attr("type") -}}
+/// {{- src | bake_attr("src") -}}
 /// {{- width | bake_attr("width") -}}
+/// {{- height | bake_attr("height") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct EmbedAttrs {
-    pub height: Option<u32>,
-    pub src: Option<Cow<'static, str>>,
     pub mime_type: Option<Cow<'static, str>>,
+    pub src: Option<Cow<'static, str>>,
     pub width: Option<u32>,
+    pub height: Option<u32>,
 }
 
 pub trait HasEmbedAttrs: Sized {
@@ -164,7 +180,7 @@ impl<M: EmbedTag> HasEmbedAttrs for HtmlEmbed<M> {
 ///     .height(420);
 ///
 /// assert_eq!(embed.bake(),
-/// r#"<embed src="flower.png" type="image/png" width="420" height="420" />"#);
+/// r#"<embed type="image/png" src="flower.png" width="420" height="420" />"#);
 /// ```
 #[macro_export]
 macro_rules! embed {

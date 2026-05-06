@@ -1,87 +1,8 @@
 use askama::Template;
-use indexmap::{IndexMap, IndexSet};
+use indexmap::IndexMap;
 use std::borrow::Cow;
 
 use crate::filters;
-
-use super::{GlobalAriaAttrs, HasGlobalAriaAttrs};
-
-/// The HTML global, event handler, and aria attributes.
-///
-/// # Askama template
-///
-/// ```askama
-/// {{- global_attrs -}}
-/// {{- custom_data_attrs -}}
-/// {{- event_handlers -}}
-/// {{- global_aria_attrs -}}
-/// ```
-#[derive(Debug, Clone, Default, Template)]
-#[template(ext = "html", in_doc = true, escape = "none")]
-pub struct Attrs {
-    pub global_attrs: GlobalAttrs,
-    pub custom_data_attrs: CustomDataAttrs,
-    pub event_handlers: EventHandlers,
-    pub global_aria_attrs: GlobalAriaAttrs,
-}
-
-impl HasGlobalAttrs for Attrs {
-    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
-        &mut self.global_attrs
-    }
-}
-
-impl HasCustomDataAttrs for Attrs {
-    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
-        &mut self.custom_data_attrs
-    }
-}
-
-impl HasEventHandlers for Attrs {
-    fn event_handlers_mut(&mut self) -> &mut EventHandlers {
-        &mut self.event_handlers
-    }
-}
-
-impl HasGlobalAriaAttrs for Attrs {
-    fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs {
-        &mut self.global_aria_attrs
-    }
-}
-
-pub trait HasAttrs: Sized {
-    fn attrs_mut(&mut self) -> &mut Attrs;
-}
-
-impl HasAttrs for &mut Attrs {
-    fn attrs_mut(&mut self) -> &mut Attrs {
-        self
-    }
-}
-
-impl<T: HasAttrs> HasGlobalAttrs for T {
-    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
-        self.attrs_mut().global_attrs_mut()
-    }
-}
-
-impl<T: HasAttrs> HasCustomDataAttrs for T {
-    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
-        self.attrs_mut().custom_data_attrs_mut()
-    }
-}
-
-impl<T: HasAttrs> HasEventHandlers for T {
-    fn event_handlers_mut(&mut self) -> &mut EventHandlers {
-        self.attrs_mut().event_handlers_mut()
-    }
-}
-
-impl<T: HasAttrs> HasGlobalAriaAttrs for T {
-    fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs {
-        self.attrs_mut().global_aria_attrs_mut()
-    }
-}
 
 /// The HTML global attributes.
 ///
@@ -103,7 +24,6 @@ impl<T: HasAttrs> HasGlobalAriaAttrs for T {
 /// ```askama
 /// {{- accesskey | bake_attr("accesskey") -}}
 /// {{- autocapitalize | bake_attr("autocapitalize") -}}
-/// {{- autofocus | bake_bool_attr("autofocus") -}}
 /// {{- class | bake_attr("class") -}}
 /// {{- contenteditable | bake_attr("contenteditable") -}}
 /// {{- dir | bake_attr("dir") -}}
@@ -112,13 +32,11 @@ impl<T: HasAttrs> HasGlobalAriaAttrs for T {
 /// {{- exportparts | bake_attr("exportparts") -}}
 /// {{- hidden | bake_attr("hidden") -}}
 /// {{- id | bake_attr("id") -}}
-/// {{- inert | bake_bool_attr("inert") -}}
 /// {{- inputmode | bake_attr("inputmode") -}}
 /// {{- is | bake_attr("is") -}}
 /// {{- itemid | bake_attr("itemid") -}}
 /// {{- itemprop | bake_attr("itemprop") -}}
 /// {{- itemref | bake_attr("itemref") -}}
-/// {{- itemscope | bake_bool_attr("itemscope") -}}
 /// {{- itemtype | bake_attr("itemtype") -}}
 /// {{- lang | bake_attr("lang") -}}
 /// {{- nonce | bake_attr("nonce") -}}
@@ -132,6 +50,9 @@ impl<T: HasAttrs> HasGlobalAriaAttrs for T {
 /// {{- title | bake_attr("title") -}}
 /// {{- translate | bake_attr("translate") -}}
 /// {{- writingsuggestions | bake_attr("writingsuggestions") -}}
+/// {{- autofocus | bake_bool_attr("autofocus") -}}
+/// {{- inert | bake_bool_attr("inert") -}}
+/// {{- itemscope | bake_bool_attr("itemscope") -}}
 /// ```
 #[derive(Debug, Clone, PartialEq, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -139,7 +60,6 @@ pub struct GlobalAttrs {
     pub accesskey: Option<Cow<'static, str>>,
     pub autocapitalize: Option<Cow<'static, str>>,
     pub autocorrect: Option<Cow<'static, str>>,
-    pub autofocus: bool,
     pub class: Option<Cow<'static, str>>,
     pub contenteditable: Option<Cow<'static, str>>,
     pub dir: Option<Cow<'static, str>>,
@@ -148,13 +68,11 @@ pub struct GlobalAttrs {
     pub exportparts: Option<Cow<'static, str>>,
     pub hidden: Option<Cow<'static, str>>,
     pub id: Option<Cow<'static, str>>,
-    pub inert: bool,
     pub inputmode: Option<Cow<'static, str>>,
     pub is: Option<Cow<'static, str>>,
     pub itemid: Option<Cow<'static, str>>,
     pub itemprop: Option<Cow<'static, str>>,
     pub itemref: Option<Cow<'static, str>>,
-    pub itemscope: bool,
     pub itemtype: Option<Cow<'static, str>>,
     pub lang: Option<Cow<'static, str>>,
     pub nonce: Option<Cow<'static, str>>,
@@ -168,6 +86,9 @@ pub struct GlobalAttrs {
     pub title: Option<Cow<'static, str>>,
     pub translate: Option<Cow<'static, str>>,
     pub writingsuggestions: Option<Cow<'static, str>>,
+    pub autofocus: bool,
+    pub inert: bool,
+    pub itemscope: bool,
 }
 
 pub trait HasGlobalAttrs: Sized {
@@ -449,44 +370,9 @@ pub trait HasGlobalAttrs: Sized {
     }
 }
 
-/// HTML specific attributes.
-///
-/// ```askama
-/// {%- for (attr, value) in attrs_map.iter() %} {{ attr }}="{{ value }}"{% endfor -%}
-/// {%- for bool_attr in bool_attrs_set.iter() %} {{ bool_attr }}{% endfor -%}
-/// ```
-#[derive(Debug, Clone, PartialEq, Default, Template)]
-#[template(ext = "html", in_doc = true, escape = "none")]
-pub struct SpecificAttrs {
-    attrs_map: IndexMap<Cow<'static, str>, Cow<'static, str>>,
-    bool_attrs_set: IndexSet<Cow<'static, str>>,
-}
-
-impl SpecificAttrs {
-    pub fn add_attr(
-        mut self,
-        key: impl Into<Cow<'static, str>>,
-        value: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.attrs_map.insert(key.into(), value.into());
+impl HasGlobalAttrs for &mut GlobalAttrs {
+    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
         self
-    }
-
-    pub fn add_bool_attr(mut self, key: impl Into<Cow<'static, str>>) -> Self {
-        self.bool_attrs_set.insert(key.into());
-        self
-    }
-
-    pub fn set_attr(
-        &mut self,
-        key: impl Into<Cow<'static, str>>,
-        value: impl Into<Cow<'static, str>>,
-    ) {
-        self.attrs_map.insert(key.into(), value.into());
-    }
-
-    pub fn set_bool_attr(&mut self, key: impl Into<Cow<'static, str>>) {
-        self.bool_attrs_set.insert(key.into());
     }
 }
 
@@ -538,6 +424,12 @@ pub trait HasCustomDataAttrs: Sized {
     ) -> Self {
         self.custom_data_attrs_mut()
             .insert(attr.into(), value.into());
+        self
+    }
+}
+
+impl HasCustomDataAttrs for &mut CustomDataAttrs {
+    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
         self
     }
 }
