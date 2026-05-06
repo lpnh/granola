@@ -91,6 +91,12 @@ pub struct GlobalAttrs {
     pub itemscope: bool,
 }
 
+impl HasGlobalAttrs for &mut GlobalAttrs {
+    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
+        self
+    }
+}
+
 pub trait HasGlobalAttrs: Sized {
     fn global_attrs_mut(&mut self) -> &mut GlobalAttrs;
 
@@ -370,12 +376,6 @@ pub trait HasGlobalAttrs: Sized {
     }
 }
 
-impl HasGlobalAttrs for &mut GlobalAttrs {
-    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
-        self
-    }
-}
-
 /// HTML Custom data (`data-*` attributes).
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/data-*)
@@ -408,9 +408,9 @@ pub struct CustomDataAttrs {
     map: IndexMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
-impl CustomDataAttrs {
-    fn insert(&mut self, attr: Cow<'static, str>, value: Cow<'static, str>) {
-        self.map.insert(attr, value);
+impl HasCustomDataAttrs for &mut CustomDataAttrs {
+    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
+        self
     }
 }
 
@@ -423,13 +423,8 @@ pub trait HasCustomDataAttrs: Sized {
         value: impl Into<Cow<'static, str>>,
     ) -> Self {
         self.custom_data_attrs_mut()
+            .map
             .insert(attr.into(), value.into());
-        self
-    }
-}
-
-impl HasCustomDataAttrs for &mut CustomDataAttrs {
-    fn custom_data_attrs_mut(&mut self) -> &mut CustomDataAttrs {
         self
     }
 }
@@ -447,9 +442,9 @@ pub struct EventHandlers {
     map: IndexMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
-impl EventHandlers {
-    fn insert(&mut self, event: Cow<'static, str>, handler: Cow<'static, str>) {
-        self.map.insert(event, handler);
+impl HasEventHandlers for &mut EventHandlers {
+    fn event_handlers_mut(&mut self) -> &mut EventHandlers {
+        self
     }
 }
 
@@ -462,6 +457,7 @@ pub trait HasEventHandlers: Sized {
         handler: impl Into<Cow<'static, str>>,
     ) -> Self {
         self.event_handlers_mut()
+            .map
             .insert(event.into(), handler.into());
         self
     }
