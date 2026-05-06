@@ -77,9 +77,9 @@ impl<M: BaseTag> HtmlBase<M> {
     }
 }
 
-/// The HTML `<todo>` element specific attributes.
+/// The HTML `<base>` element specific attributes.
 ///
-/// [MDN Documentation]()
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#attributes)
 ///
 /// # Askama template
 ///

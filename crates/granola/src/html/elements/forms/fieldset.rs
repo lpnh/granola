@@ -65,23 +65,23 @@ pub struct HtmlFieldset<M: FieldsetTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-/// The HTML `<todo>` element specific attributes.
+/// The HTML `<fieldset>` element specific attributes.
 ///
-/// [MDN Documentation]()
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/fieldset#attributes)
 ///
 /// # Askama template
 ///
 /// ```askama
-/// {{- disabled | bake_bool_attr("disabled") -}}
-/// {{- form | bake_attr("form") -}}
 /// {{- name | bake_attr("name") -}}
+/// {{- form | bake_attr("form") -}}
+/// {{- disabled | bake_bool_attr("disabled") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct FieldsetAttrs {
-    pub disabled: bool,
-    pub form: Option<Cow<'static, str>>,
     pub name: Option<Cow<'static, str>>,
+    pub form: Option<Cow<'static, str>>,
+    pub disabled: bool,
 }
 
 pub trait HasFieldsetAttrs: Sized {

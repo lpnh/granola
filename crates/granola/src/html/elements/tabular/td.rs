@@ -54,22 +54,22 @@ pub struct HtmlTd<M: TdTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-/// The HTML `<todo>` element specific attributes.
+/// The HTML `<td>` element specific attributes.
 ///
-/// [MDN Documentation]()
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/td#attributes)
 ///
 /// # Askama template
 ///
 /// ```askama
-/// {{- colspan | bake_attr("colspan") -}}
 /// {{- headers | bake_attr("headers") -}}
+/// {{- colspan | bake_attr("colspan") -}}
 /// {{- rowspan | bake_attr("rowspan") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TdAttrs {
-    pub colspan: Option<u32>,
     pub headers: Option<Cow<'static, str>>,
+    pub colspan: Option<u32>,
     pub rowspan: Option<u32>,
 }
 

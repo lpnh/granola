@@ -56,34 +56,34 @@ pub struct HtmlA<M: ATag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-/// The HTML `<todo>` element specific attributes.
+/// The HTML `<a>` element specific attributes.
 ///
-/// [MDN Documentation]()
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#attributes)
 ///
 /// # Askama template
 ///
 /// ```askama
-/// {{- download | bake_attr("download") -}}
 /// {{- href | bake_attr("href") -}}
+/// {{- target | bake_attr("target") -}}
+/// {{- download | bake_attr("download") -}}
 /// {{- hreflang | bake_attr("hreflang") -}}
 /// {{- lang | bake_attr("lang") -}}
 /// {{- ping | bake_attr("ping") -}}
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
 /// {{- rel | bake_attr("rel") -}}
-/// {{- target | bake_attr("target") -}}
 /// {{- mime_type | bake_attr("type") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AAttrs {
-    pub download: Option<Cow<'static, str>>,
     pub href: Option<Cow<'static, str>>,
+    pub target: Option<Cow<'static, str>>,
+    pub download: Option<Cow<'static, str>>,
     pub hreflang: Option<Cow<'static, str>>,
     pub lang: Option<Cow<'static, str>>,
     pub ping: Option<Cow<'static, str>>,
     pub referrerpolicy: Option<Cow<'static, str>>,
     pub rel: Option<Cow<'static, str>>,
-    pub target: Option<Cow<'static, str>>,
     pub mime_type: Option<Cow<'static, str>>,
 }
 

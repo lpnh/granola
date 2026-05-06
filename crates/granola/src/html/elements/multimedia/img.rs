@@ -110,9 +110,9 @@ impl<M: ImgTag> HtmlImg<M> {
     }
 }
 
-/// The HTML `<todo>` element specific attributes.
+/// The HTML `<img>` element specific attributes.
 ///
-/// [MDN Documentation]()
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#attributes)
 ///
 /// # Askama template
 ///
