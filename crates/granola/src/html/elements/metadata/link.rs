@@ -317,4 +317,18 @@ macro_rules! link {
     ($href: expr, $rel: expr $(,)?) => {
         $crate::html::HtmlLink::<()>::new($href, $rel)
     };
+
+    (@from_href $href: expr $(,)?) => {
+        $crate::html::HtmlLink::<()>::from_href($href)
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::html::HtmlLink::<$crate::rec!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $href: expr, $rel: expr $(,)?) => {
+        $crate::html::HtmlLink::<$crate::rec!($($r),+)>::new($href, $rel)
+    };
+    (@recipe $($r:ty),+ ; @from_href $href:expr $(,)?) => {
+        $crate::html::HtmlLink::<$crate::rec!($($r),+)>::from_href($href)
+    };
 }
