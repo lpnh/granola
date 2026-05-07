@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `type="button"` recipe
+/// The `type="button"` recipe.
 ///
 /// # Example
 ///

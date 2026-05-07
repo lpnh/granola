@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `charset="utf-8"` recipe
+/// The `charset="utf-8"` recipe.
 ///
 /// # Example
 ///
@@ -21,7 +21,7 @@ impl MetaTag for Charset {
     }
 }
 
-/// The `name="viewport"` recipe
+/// The `name="viewport"` recipe.
 ///
 /// # Example
 ///
@@ -42,7 +42,7 @@ impl MetaTag for Viewport {
     }
 }
 
-/// The `name="robots"` recipe
+/// The `name="robots"` recipe.
 ///
 /// # Example
 ///

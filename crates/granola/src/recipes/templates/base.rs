@@ -3,7 +3,7 @@ use std::borrow::Cow;
 
 use crate::{prelude::*, recipes::*, templates::*};
 
-/// The recipe for the [`TmplBase`] template.
+/// The homemade recipe for the [`TmplBase`] template.
 ///
 /// # Example
 ///
@@ -26,13 +26,18 @@ use crate::{prelude::*, recipes::*, templates::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*, templates::*};
 ///
+///
+/// let meta: HtmlMeta<Robots> = HtmlMeta::new("noindex, nofollow");
+/// let title: HtmlTitle = HtmlTitle::new("Home");
+/// let style: HtmlStyle = HtmlStyle::new("body { height: 100vh; margin: 0; }");
+///
 /// let body: HtmlBody = HtmlBody::new(bake_newline!("Hello, world!"));
 ///
 /// let tmpl: TmplBase<Homemade> = TmplBase::new(body)
 ///     .lang("en")
-///     .meta(HtmlMeta::<Robots>::new("noindex, nofollow"))
-///     .title("Home")
-///     .style(HtmlStyle::new("body { margin: 0; }"));
+///     .push_meta(meta)
+///     .push_title(title)
+///     .push_style(style);
 ///
 /// assert_eq!(tmpl.bake(),
 /// r#"<!doctype html>
@@ -42,7 +47,7 @@ use crate::{prelude::*, recipes::*, templates::*};
 ///     <meta name="viewport" content="width=device-width, initial-scale=1" />
 ///     <meta name="robots" content="noindex, nofollow" />
 ///     <title>Home</title>
-///     <style>body { margin: 0; }</style>
+///     <style>body { height: 100vh; margin: 0; }</style>
 ///   </head>
 ///   <body>
 ///     Hello, world!
@@ -83,7 +88,7 @@ impl HeadTag for Homemade {
     }
 }
 
-/// [`HtmlHead`] content for the [`Base`] recipe
+/// The [`HtmlHead`] content for the [`Homemade`] recipe.
 ///
 /// # Askama template
 ///
@@ -94,6 +99,9 @@ impl HeadTag for Homemade {
 /// {%- if let Some(t) = title %}
 /// {{ t }}
 /// {%- endif -%}
+/// {%- for l in link %}
+/// {{ l }}
+/// {%- endfor -%}
 /// {%- for s in style %}
 /// {{ s }}
 /// {%- endfor -%}
@@ -102,7 +110,8 @@ impl HeadTag for Homemade {
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct BaseHeadContent {
     pub meta: Vec<String>,
-    pub title: Option<HtmlTitle>,
+    pub title: Option<String>,
+    pub link: Vec<String>,
     pub style: Vec<String>,
 }
 
@@ -112,7 +121,7 @@ impl TmplBase<Homemade> {
         self
     }
 
-    pub fn meta<M: MetaTag>(mut self, meta: HtmlMeta<M>) -> Self {
+    pub fn push_meta<R: MetaTag>(mut self, meta: HtmlMeta<R>) -> Self {
         self.html_root
             .content
             .head
@@ -123,17 +132,28 @@ impl TmplBase<Homemade> {
         self
     }
 
-    pub fn title(mut self, title: impl Into<Cow<'static, str>>) -> Self {
+    pub fn push_title<R: TitleTag>(mut self, title: HtmlTitle<R>) -> Self {
         self.html_root
             .content
             .head
             .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
-            .title = Some(HtmlTitle::new(title));
+            .title = Some(title.bake());
         self
     }
 
-    pub fn style(mut self, style: HtmlStyle) -> Self {
+    pub fn push_link<R: LinkTag>(mut self, link: HtmlLink<R>) -> Self {
+        self.html_root
+            .content
+            .head
+            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
+            .content
+            .link
+            .push(link.bake());
+        self
+    }
+
+    pub fn push_style<R: StyleTag>(mut self, style: HtmlStyle<R>) -> Self {
         self.html_root
             .content
             .head

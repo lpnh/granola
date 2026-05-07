@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `type="reset"` recipe
+/// The `type="reset"` recipe.
 ///
 /// # Example
 ///

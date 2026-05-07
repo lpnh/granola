@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `scope="col"` recipe
+/// The `scope="col"` recipe.
 ///
 /// # Example
 ///
@@ -21,7 +21,7 @@ impl ThTag for Col {
     }
 }
 
-/// The `scope="row"` recipe
+/// The `scope="row"` recipe.
 ///
 /// # Example
 ///

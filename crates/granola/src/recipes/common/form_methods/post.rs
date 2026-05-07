@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `method="post"` and `formmethod="post"` recipe
+/// The `method="post"` and `formmethod="post"` recipe.
 ///
 /// # Example
 ///

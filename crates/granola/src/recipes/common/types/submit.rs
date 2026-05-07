@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-/// The `type="submit"` recipe
+/// The `type="submit"` recipe.
 ///
 /// # Example
 ///
