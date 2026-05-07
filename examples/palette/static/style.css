@@ -1,0 +1,17 @@
+body {
+  background-color: var(--palette-bg);
+  font-family: sans-serif;
+  transition: background-color 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.palette {
+  background: #d8d09c;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px #bdb689;
+  text-align: center;
+}
