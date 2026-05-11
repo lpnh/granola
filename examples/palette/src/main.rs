@@ -1,5 +1,7 @@
 mod handlers;
 use handlers::{home, input_handler};
+mod utils;
+use utils::Palette;
 
 use axum::{
     Router,
@@ -9,16 +11,10 @@ use std::sync::{Arc, RwLock};
 use tower::ServiceBuilder;
 use tower_http::services::ServeDir;
 
-struct Palette {
-    background: RwLock<String>,
-}
-
 #[tokio::main]
 async fn main() {
-    let palette = Palette {
-        background: RwLock::new("#f3eaaf".to_string()),
-    };
-    let shared_palette = Arc::new(palette);
+    let palette = Palette::from_hex("#f3eaaf");
+    let shared_palette = Arc::new(RwLock::new(palette));
 
     let static_service = ServiceBuilder::new().service(ServeDir::new("examples/palette/static"));
 
