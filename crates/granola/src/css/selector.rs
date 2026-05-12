@@ -38,12 +38,15 @@ pub struct CssSelector {
     pub selector: Cow<'static, str>,
 }
 
-impl<T: AsRef<str>> From<T> for CssSelector {
-    fn from(selector: T) -> Self {
-        let s = selector.as_ref().to_string();
-        Self {
-            selector: Cow::from(s),
-        }
+impl From<&'static str> for CssSelector {
+    fn from(s: &'static str) -> Self {
+        Self { selector: s.into() }
+    }
+}
+
+impl From<String> for CssSelector {
+    fn from(s: String) -> Self {
+        Self { selector: s.into() }
     }
 }
 
