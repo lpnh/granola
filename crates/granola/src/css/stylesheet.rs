@@ -1,3 +1,5 @@
+#![allow(unused_qualifications)]
+
 use askama::Template;
 
 use crate::prelude::*;
@@ -11,39 +13,38 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_stylesheet = CssStyleSheet::new()
-///     .push(CssRule::new("p", ("color", "rebeccapurple")));
+/// let at_rule = CssAtRule::new("import", r#"url("layout.css")"#);
+/// let rule = CssRule::new("p", ("color", "rebeccapurple"));
+///
+/// let css_stylesheet = CssStylesheet::new()
+///     .push(at_rule)
+///     .push(rule);
 ///
 /// assert_eq!(css_stylesheet.bake(),
-/// "p {
+/// r#"@import url("layout.css");
+///
+/// p {
 ///   color: rebeccapurple;
-/// }");
+/// }"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_stylesheet: CssStyleSheet = [
-///     CssRule::new("p", ("color", "rebeccapurple")),
-///     CssRule::new(":root", ("--base-100", "oklch(93% 0.076 100.4)")),
-/// ].into();
+/// let at_rule: CssAtRule = ("import", r#"url("layout.css")"#).into();
+///
+/// let css_stylesheet: CssStylesheet = at_rule.into();
 ///
 /// assert_eq!(css_stylesheet.bake(),
-/// "p {
-///   color: rebeccapurple;
-/// }
-///
-/// :root {
-///   --base-100: oklch(93% 0.076 100.4);
-/// }");
+/// r#"@import url("layout.css");"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_rule: CssRule = ("p", ("color", "rebeccapurple")).into();
+/// let rule: CssRule = ("p", ("color", "rebeccapurple")).into();
 ///
-/// let css_stylesheet: CssStyleSheet = css_rule.into();
+/// let css_stylesheet: CssStylesheet = rule.into();
 ///
 /// assert_eq!(css_stylesheet.bake(),
 /// "p {
@@ -63,70 +64,135 @@ use crate::prelude::*;
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssStyleSheet {
-    pub rules: Vec<CssRule>,
+pub struct CssStylesheet {
+    pub rules: Vec<CssStatement>,
 }
 
-impl CssStyleSheet {
+impl CssStylesheet {
     pub fn new() -> Self {
         Self::default()
     }
 
-    pub fn push(mut self, rule: impl Into<CssRule>) -> Self {
+    pub fn push(mut self, rule: impl Into<CssStatement>) -> Self {
         self.rules.push(rule.into());
         self
     }
 }
 
-impl<R: Into<CssRule>, const N: usize> From<[R; N]> for CssStyleSheet {
-    fn from(items: [R; N]) -> Self {
+impl<S: Into<CssStatement>, const N: usize> From<[S; N]> for CssStylesheet {
+    fn from(items: [S; N]) -> Self {
         Self {
             rules: items.into_iter().map(Into::into).collect(),
         }
     }
 }
 
-impl<R: Into<CssRule>> From<Vec<R>> for CssStyleSheet {
-    fn from(items: Vec<R>) -> Self {
+impl<S: Into<CssStatement>> From<Vec<S>> for CssStylesheet {
+    fn from(items: Vec<S>) -> Self {
         Self {
             rules: items.into_iter().map(Into::into).collect(),
         }
     }
 }
 
-impl From<CssRule> for CssStyleSheet {
+impl From<CssRule> for CssStylesheet {
     fn from(rule: CssRule) -> Self {
-        Self { rules: vec![rule] }
+        Self::new().push(rule)
     }
 }
 
-/// Shorthand for [`CssStyleSheet`].
+impl From<CssAtRule> for CssStylesheet {
+    fn from(at_rule: CssAtRule) -> Self {
+        Self::new().push(at_rule)
+    }
+}
+
+/// The [`CssRule`] and [`CssAtRule`] CSS statements.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/Introduction#css_statements)
+///
+/// # Askama template
+///
+/// ```askama
+/// {%- match self -%}
+/// {%- when Self::Rule(r) %}{{ r }}
+/// {%- when Self::AtRule(ar) %}{{ ar }}
+/// {%- endmatch -%}
+/// ```
+#[derive(Debug, Clone, Template, Granola)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub enum CssStatement {
+    Rule(CssRule),
+    AtRule(CssAtRule),
+}
+
+impl From<CssRule> for CssStatement {
+    fn from(rule: CssRule) -> Self {
+        Self::Rule(rule)
+    }
+}
+
+impl From<CssAtRule> for CssStatement {
+    fn from(at_rule: CssAtRule) -> Self {
+        Self::AtRule(at_rule)
+    }
+}
+
+/// Shorthand for `CssStylesheet`.
 ///
 /// # Example
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_stylesheet = stylesheet!(
-///     rule!("p"; ("color", "rebeccapurple")),
-///     rule!(":root"; ("--base-100", "oklch(93% 0.076 100.4)")),
-/// );
+/// let at_rule = at_rule!("import", r#"url("layout.css")"#);
+/// let rule = rule!("p"; ("color", "rebeccapurple"));
+///
+/// let css_stylesheet = stylesheet!(at_rule, rule);
+///
+/// assert_eq!(css_stylesheet.bake(),
+/// r#"@import url("layout.css");
+///
+/// p {
+///   color: rebeccapurple;
+/// }"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let at_rule = at_rule!("import", r#"url("layout.css")"#);
+///
+/// let css_stylesheet = stylesheet!(at_rule);
+///
+/// assert_eq!(css_stylesheet.bake(),
+/// r#"@import url("layout.css");"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let rule = rule!("p"; ("color", "rebeccapurple"));
+///
+/// let css_stylesheet = stylesheet!(rule);
 ///
 /// assert_eq!(css_stylesheet.bake(),
 /// "p {
 ///   color: rebeccapurple;
-/// }
-///
-/// :root {
-///   --base-100: oklch(93% 0.076 100.4);
 /// }");
 /// ```
 #[macro_export]
 macro_rules! stylesheet {
+    () => {
+        $crate::css::CssStylesheet::new()
+    };
     ($rule: expr $(,)?) => {
-        $crate::css::CssStyleSheet::new().push($rule)
+        $crate::css::CssStylesheet::from($rule)
     };
     ($first_rule: expr $(, $rest_rule: expr)+ $(,)?) => {
-        $crate::css::CssStyleSheet::from([$first_rule $(, $rest_rule)*])
+        $crate::css::CssStylesheet::from([
+            $crate::css::CssStatement::from($first_rule)
+            $(, $crate::css::CssStatement::from($rest_rule))*
+        ])
     };
 }

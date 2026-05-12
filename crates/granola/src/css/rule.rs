@@ -131,7 +131,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for Css
     }
 }
 
-/// Shorthand for [`CssRule`].
+/// Shorthand for `CssRule`.
 ///
 /// # Example
 ///

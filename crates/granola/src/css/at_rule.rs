@@ -1,0 +1,118 @@
+use askama::Template;
+use std::borrow::Cow;
+
+use crate::prelude::*;
+
+/// The CSS at-rule.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/At-rules)
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let at_rule = CssAtRule::new("import", r#"url("layout.css")"#);
+///
+/// assert_eq!(at_rule.bake(),
+/// r#"@import url("layout.css");"#);
+/// ```
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let block = bake_block![
+///   "from { transform: translateX(0%); }",
+///   "to { transform: translateX(100%); }",
+/// ];
+///
+/// let at_rule = CssAtRule::new("keyframes", "slide-in").block(block);
+///
+/// assert_eq!(at_rule.bake(),
+/// "@keyframes slide-in {
+///   from { transform: translateX(0%); }
+///   to { transform: translateX(100%); }
+/// }");
+/// ```
+///
+/// # Askama template
+///
+/// ```askama
+/// @{{ identifier }} {{ rule }}
+/// {%- if let Some(b) = block %} {
+///   {{ b | indent(2) }}
+/// }
+/// {%- else %};
+/// {%- endif %}
+/// ```
+#[derive(Debug, Clone, Default, Template, Granola)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct CssAtRule {
+    pub identifier: Cow<'static, str>,
+    pub rule: Cow<'static, str>,
+    pub block: Option<Cow<'static, str>>,
+}
+
+impl CssAtRule {
+    pub fn new(
+        identifier: impl Into<Cow<'static, str>>,
+        rule: impl Into<Cow<'static, str>>,
+    ) -> Self {
+        Self {
+            identifier: identifier.into(),
+            rule: rule.into(),
+            block: None,
+        }
+    }
+
+    pub fn block(mut self, block: impl Into<Cow<'static, str>>) -> Self {
+        self.block = Some(block.into());
+        self
+    }
+}
+
+impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for CssAtRule {
+    fn from((identifier, rule): (I, R)) -> Self {
+        Self {
+            identifier: identifier.into(),
+            rule: rule.into(),
+            block: None,
+        }
+    }
+}
+
+/// Shorthand for `CssAtRule`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let at_rule = at_rule!("import", r#"url("layout.css")"#);
+///
+/// assert_eq!(at_rule.bake(),
+/// r#"@import url("layout.css");"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let block = bake_block![
+///   "from { transform: translateX(0%); }",
+///   "to { transform: translateX(100%); }",
+/// ];
+///
+/// let at_rule = at_rule!("keyframes", "slide-in").block(block);
+///
+/// assert_eq!(at_rule.bake(),
+/// "@keyframes slide-in {
+///   from { transform: translateX(0%); }
+///   to { transform: translateX(100%); }
+/// }");
+/// ```
+#[macro_export]
+macro_rules! at_rule {
+    ($identifier: expr, $rule: expr $(,)?) => {
+        $crate::css::CssAtRule::new($identifier, $rule)
+    };
+}
