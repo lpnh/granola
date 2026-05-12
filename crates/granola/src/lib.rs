@@ -2,6 +2,7 @@
 
 pub use granola_derive::{Granola, Recipe};
 
+pub mod css;
 pub mod filters;
 pub mod html;
 pub mod oven;
@@ -9,11 +10,14 @@ pub mod recipes;
 pub mod templates;
 
 pub mod prelude {
-    pub use super::{Granola, Recipe, html::*};
+    pub use super::{Granola, Recipe, css::*, html::*};
     pub use crate::{bake_block, bake_inline, bake_newline, rec};
 }
 
 pub mod macros {
+    // css
+    pub use crate::rule;
+    // html
     pub use crate::{
         a, abbr, address, area, article, aside, audio, b, base, bdi, bdo, blockquote, body, br,
         button, canvas, caption, cite, code, col, colgroup, data, datalist, dd, del, details, dfn,
