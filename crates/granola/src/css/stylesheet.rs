@@ -55,8 +55,8 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// {%- for r in rules -%}
-/// {{- r -}}
+/// {%- for s in statements -%}
+/// {{- s -}}
 /// {%- if !loop.last %}
 ///
 /// {% endif -%}
@@ -65,7 +65,7 @@ use crate::prelude::*;
 #[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssStylesheet {
-    pub rules: Vec<CssStatement>,
+    pub statements: Vec<CssStatement>,
 }
 
 impl CssStylesheet {
@@ -74,7 +74,7 @@ impl CssStylesheet {
     }
 
     pub fn push(mut self, rule: impl Into<CssStatement>) -> Self {
-        self.rules.push(rule.into());
+        self.statements.push(rule.into());
         self
     }
 }
@@ -82,7 +82,7 @@ impl CssStylesheet {
 impl<S: Into<CssStatement>, const N: usize> From<[S; N]> for CssStylesheet {
     fn from(items: [S; N]) -> Self {
         Self {
-            rules: items.into_iter().map(Into::into).collect(),
+            statements: items.into_iter().map(Into::into).collect(),
         }
     }
 }
@@ -90,7 +90,7 @@ impl<S: Into<CssStatement>, const N: usize> From<[S; N]> for CssStylesheet {
 impl<S: Into<CssStatement>> From<Vec<S>> for CssStylesheet {
     fn from(items: Vec<S>) -> Self {
         Self {
-            rules: items.into_iter().map(Into::into).collect(),
+            statements: items.into_iter().map(Into::into).collect(),
         }
     }
 }

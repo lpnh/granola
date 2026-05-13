@@ -21,13 +21,15 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css = r#"
-/// p {
-///   color: violet;
-///   font-weight: lighter;
-/// }"#;
+/// let css_rule = CssRule::new(
+///     "p",
+///     [
+///         ("color", "violet"),
+///         ("font-weight", "lighter")
+///     ]
+/// );
 ///
-/// let style: HtmlStyle = HtmlStyle::new(css);
+/// let style: HtmlStyle = HtmlStyle::new(css_rule);
 ///
 /// assert_eq!(style.bake(),
 /// r#"<style>
@@ -51,7 +53,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = StyleTag, content = Cow<'static, str>, attrs = StyleAttrs)]
+#[recipe(name = StyleTag, content = CssStylesheet, attrs = StyleAttrs)]
 pub struct HtmlStyle<M: StyleTag = ()> {
     _marker: PhantomData<M>,
     pub content: M::Content,
@@ -133,13 +135,13 @@ impl<M: StyleTag> HasStyleAttrs for HtmlStyle<M> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css = r#"
-/// p {
-///   color: violet;
-///   font-weight: lighter;
-/// }"#;
+/// let css_rule = rule!(
+///     "p";
+///     ("color", "violet"),
+///     ("font-weight", "lighter"),
+/// );
 ///
-/// let style = style!(css);
+/// let style = style!(css_rule);
 ///
 /// assert_eq!(style.bake(),
 /// r#"<style>

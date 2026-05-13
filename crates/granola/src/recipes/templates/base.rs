@@ -29,7 +29,9 @@ use crate::{prelude::*, recipes::*, templates::*};
 ///
 /// let meta: HtmlMeta<Robots> = HtmlMeta::new("noindex, nofollow");
 /// let title: HtmlTitle = HtmlTitle::new("Home");
-/// let style: HtmlStyle = HtmlStyle::new("body { height: 100vh; margin: 0; }");
+///
+/// let css_rule = CssRule::new("body", [("height", "100vh"), ("margin", "0")]);
+/// let style: HtmlStyle = HtmlStyle::new(css_rule);
 ///
 /// let body: HtmlBody = HtmlBody::new(bake_newline!("Hello, world!"));
 ///
@@ -47,7 +49,12 @@ use crate::{prelude::*, recipes::*, templates::*};
 ///     <meta name="viewport" content="width=device-width, initial-scale=1" />
 ///     <meta name="robots" content="noindex, nofollow" />
 ///     <title>Home</title>
-///     <style>body { height: 100vh; margin: 0; }</style>
+///     <style>
+///       body {
+///         height: 100vh;
+///         margin: 0;
+///       }
+///     </style>
 ///   </head>
 ///   <body>
 ///     Hello, world!

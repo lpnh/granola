@@ -35,11 +35,17 @@ pub async fn home(State(shared_palette): State<Arc<RwLock<Palette>>>) -> Html<St
     let palette = shared_palette.read().unwrap();
 
     let title = title!("palette example");
+
     let link = link!(@recipe Stylesheet; @from_href "/static/style.css");
-    let style = style!(format!(
-        ":root {{ --base-100: {}; --base-200: {}; --base-300: {}; --base-content: {} }}",
-        palette.base_100, palette.base_200, palette.base_300, palette.base_content,
-    ));
+
+    let style_content = rule!(
+        ":root";
+        ("--base-100", palette.base_100.clone()),
+        ("--base-200", palette.base_200.clone()),
+        ("--base-300", palette.base_300.clone()),
+        ("--base-content", palette.base_content.clone()),
+    );
+    let style = style!(style_content);
 
     let body = body!(palette_div(&palette));
 
