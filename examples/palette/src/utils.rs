@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Palette {
     pub source: String,
     pub base_100: String,
@@ -19,7 +20,7 @@ impl Palette {
         let contrast_crossover = ((1.0_f64 + 0.05) * (0.0_f64 + 0.05)).sqrt() - 0.05;
         let is_dark = relative_luminance.0 <= contrast_crossover;
 
-        let step = if is_dark { 0.03_f64 } else { -0.03_f64 };
+        let step = if is_dark { 0.03 } else { -0.03 };
 
         Self {
             source: hex.to_string(),

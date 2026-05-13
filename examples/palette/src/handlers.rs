@@ -32,22 +32,20 @@ pub async fn input_handler(
 }
 
 pub async fn home(State(shared_palette): State<Arc<RwLock<Palette>>>) -> Html<String> {
-    let palette = shared_palette.read().unwrap();
-
-    let title = title!("palette example");
-
-    let link = link!(@recipe Stylesheet; @from_href "/static/style.css");
-
-    let style_content = rule!(
-        ":root";
-        ("--base-100", palette.base_100.clone()),
-        ("--base-200", palette.base_200.clone()),
-        ("--base-300", palette.base_300.clone()),
-        ("--base-content", palette.base_content.clone()),
-    );
-    let style = style!(style_content);
+    let palette = shared_palette.read().unwrap().clone();
 
     let body = body!(palette_div(&palette));
+
+    let title = title!("palette example");
+    let link = link!(@recipe Stylesheet; @from_href "/static/style.css");
+    let style_content = rule!(
+        ":root";
+        ("--base-100", palette.base_100),
+        ("--base-200", palette.base_200),
+        ("--base-300", palette.base_300),
+        ("--base-content", palette.base_content),
+    );
+    let style = style!(style_content);
 
     let tmpl: TmplBase<Homemade> = TmplBase::new(body)
         .lang("en")
@@ -58,23 +56,14 @@ pub async fn home(State(shared_palette): State<Arc<RwLock<Palette>>>) -> Html<St
     Html(tmpl.bake())
 }
 
-fn swatch(name: &str, value: &str) -> HtmlDiv {
-    let square = div!()
-        .class("square")
-        .style(format!("background: var(--{name});"));
-    let name = p!(name.to_string());
-    let val = p!(code!(value.to_string()));
-    div!(square, name, val).class("swatch")
-}
-
 fn palette_div(palette: &Palette) -> HtmlDiv {
     let h1 = h1!("Palette");
 
     let swatches = div!(
-        swatch("base-100", &palette.base_100),
-        swatch("base-200", &palette.base_200),
-        swatch("base-300", &palette.base_300),
-        swatch("base-content", &palette.base_content),
+        swatch_div("base-100", &palette.base_100),
+        swatch_div("base-200", &palette.base_200),
+        swatch_div("base-300", &palette.base_300),
+        swatch_div("base-content", &palette.base_content),
     )
     .class("swatches");
 
@@ -85,4 +74,13 @@ fn palette_div(palette: &Palette) -> HtmlDiv {
     let form = form!(@recipe Post; input, button).action("/form_endpoint");
 
     div!(h1, swatches, form).class("palette")
+}
+
+fn swatch_div(name: &str, value: &str) -> HtmlDiv {
+    let square = div!()
+        .class("square")
+        .style(format!("background: var(--{name});"));
+    let name = p!(name.to_string());
+    let val = p!(code!(value.to_string()));
+    div!(square, name, val).class("swatch")
 }
