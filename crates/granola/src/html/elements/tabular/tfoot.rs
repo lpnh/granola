@@ -47,9 +47,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = TfootTag, content = TableRows)]
-pub struct HtmlTfoot<M: TfootTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlTfoot<R: TfootTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// any

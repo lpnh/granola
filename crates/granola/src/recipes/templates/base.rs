@@ -30,7 +30,7 @@ use crate::{prelude::*, recipes::*, templates::*};
 /// let meta: HtmlMeta<Robots> = HtmlMeta::new("noindex, nofollow");
 /// let title: HtmlTitle = HtmlTitle::new("Home");
 ///
-/// let css_rule = CssRule::new("body", [("height", "100vh"), ("margin", "0")]);
+/// let css_rule: CssRule = CssRule::new("body", [("height", "100vh"), ("margin", "0")]);
 /// let style: HtmlStyle = HtmlStyle::new(css_rule);
 ///
 /// let body: HtmlBody = HtmlBody::new(bake_newline!("Hello, world!"));
@@ -65,33 +65,59 @@ use crate::{prelude::*, recipes::*, templates::*};
 pub struct Homemade;
 
 impl HtmlTag for Homemade {
-    type Content = HtmlRootContent<Homemade, ()>;
+    type Content = HomemadeRootContent;
 
     fn content_recipe(content: &mut Self::Content) {
-        content
-            .head
-            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe);
+        content.head = HtmlHead::<Homemade>::from_recipe();
         content.body.get_or_insert_with(HtmlBody::from_recipe);
     }
 }
 
-impl From<HtmlBody> for HtmlRootContent<Homemade, ()> {
+/// One [`HtmlHead<Homemade>`], followed by an optional [`HtmlBody`].
+///
+/// The content of [`HtmlRoot<Homemade>`].
+///
+/// ```askama
+/// {{ head }}
+/// {% if let Some(b) = body -%}
+/// {{ b }}
+/// {%- endif -%}
+/// ```
+#[derive(Default, Debug, Clone, Template, Granola)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct HomemadeRootContent {
+    pub head: HtmlHead<Homemade>,
+    pub body: Option<HtmlBody>,
+}
+
+impl From<HomemadeRootContent> for HtmlRootContent {
+    fn from(html_root_homemade_content: HomemadeRootContent) -> Self {
+        Self {
+            head: Some(html_root_homemade_content.head.bake_recipe()),
+            body: html_root_homemade_content.body,
+        }
+    }
+}
+
+impl From<HtmlBody> for HomemadeRootContent {
     fn from(body: HtmlBody) -> Self {
         Self {
-            head: Some(HtmlHead::<Homemade>::from_recipe()),
+            head: HtmlHead::<Homemade>::from_recipe(),
             body: Some(body),
         }
     }
 }
 
 impl HeadTag for Homemade {
-    type Content = BaseHeadContent;
+    type Content = HomemadeHeadContent;
 
     fn content_recipe(content: &mut Self::Content) {
-        content.meta.push(HtmlMeta::<Charset>::from_recipe().bake());
         content
             .meta
-            .push(HtmlMeta::<Viewport>::new("width=device-width, initial-scale=1").bake());
+            .push(HtmlMeta::<Charset>::from_recipe().bake_recipe());
+        content
+            .meta
+            .push(HtmlMeta::<Viewport>::new("width=device-width, initial-scale=1").bake_recipe());
     }
 }
 
@@ -115,11 +141,11 @@ impl HeadTag for Homemade {
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct BaseHeadContent {
-    pub meta: Vec<String>,
-    pub title: Option<String>,
-    pub link: Vec<String>,
-    pub style: Vec<String>,
+pub struct HomemadeHeadContent {
+    pub meta: Vec<HtmlMeta>,
+    pub title: Option<HtmlTitle>,
+    pub link: Vec<HtmlLink>,
+    pub style: Vec<HtmlStyle>,
 }
 
 impl TmplBase<Homemade> {
@@ -132,20 +158,14 @@ impl TmplBase<Homemade> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
             .meta
-            .push(meta.bake());
+            .push(meta.bake_recipe());
         self
     }
 
     pub fn push_title<R: TitleTag>(mut self, title: HtmlTitle<R>) -> Self {
-        self.html_root
-            .content
-            .head
-            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
-            .content
-            .title = Some(title.bake());
+        self.html_root.content.head.content.title = Some(title.bake_recipe());
         self
     }
 
@@ -153,10 +173,9 @@ impl TmplBase<Homemade> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
             .link
-            .push(link.bake());
+            .push(link.bake_recipe());
         self
     }
 
@@ -164,10 +183,9 @@ impl TmplBase<Homemade> {
         self.html_root
             .content
             .head
-            .get_or_insert_with(HtmlHead::<Homemade>::from_recipe)
             .content
             .style
-            .push(style.bake());
+            .push(style.bake_recipe());
         self
     }
 }

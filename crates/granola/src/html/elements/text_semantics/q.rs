@@ -44,9 +44,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = QTag, content = Cow<'static, str>)]
-pub struct HtmlQ<M: QTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlQ<R: QTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -96,7 +96,7 @@ impl HasQAttrs for &mut QAttrs {
     }
 }
 
-impl<M: QTag> HasQAttrs for HtmlQ<M> {
+impl<R: QTag> HasQAttrs for HtmlQ<R> {
     fn q_attrs_mut(&mut self) -> &mut QAttrs {
         &mut self.specific_attrs
     }

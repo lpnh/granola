@@ -58,9 +58,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = DlTag, content = Cow<'static, str>)]
-pub struct HtmlDl<M: DlTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlDl<R: DlTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// group, list, none, presentation

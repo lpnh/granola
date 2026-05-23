@@ -41,9 +41,9 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AreaTag, attrs = AreaAttrs)]
-pub struct HtmlArea<M: AreaTag = ()> {
-    _marker: PhantomData<M>,
+#[recipe(name = AreaTag)]
+pub struct HtmlArea<R: AreaTag = ()> {
+    _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: AreaAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -51,22 +51,22 @@ pub struct HtmlArea<M: AreaTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: AreaTag> HtmlArea<M> {
+impl<R: AreaTag> HtmlArea<R> {
     pub fn new(href: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = AreaAttrs::default().href(href).alt(alt);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -80,19 +80,19 @@ impl<M: AreaTag> HtmlArea<M> {
 
     pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = AreaAttrs::default().href(href);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -234,7 +234,7 @@ impl HasAreaAttrs for &mut AreaAttrs {
     }
 }
 
-impl<M: AreaTag> HasAreaAttrs for HtmlArea<M> {
+impl<R: AreaTag> HasAreaAttrs for HtmlArea<R> {
     fn area_attrs_mut(&mut self) -> &mut AreaAttrs {
         &mut self.specific_attrs
     }

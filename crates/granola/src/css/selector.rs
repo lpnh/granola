@@ -1,5 +1,5 @@
 use askama::Template;
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_selector = CssSelector::new("p");
+/// let css_selector: CssSelector = CssSelector::new("p");
 ///
 /// assert_eq!(css_selector.bake(),
 /// "p");
@@ -32,28 +32,46 @@ use crate::prelude::*;
 /// ```askama
 /// {{ selector }}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = SelectorTag)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssSelector {
+pub struct CssSelector<R: SelectorTag = ()> {
+    _recipe: PhantomData<R>,
     pub selector: Cow<'static, str>,
+}
+
+impl<R: SelectorTag> CssSelector<R> {
+    pub fn new(selector: impl Into<Cow<'static, str>>) -> Self {
+        Self {
+            selector: selector.into(),
+            ..Default::default()
+        }
+    }
+}
+
+impl From<Cow<'static, str>> for CssSelector {
+    fn from(s: Cow<'static, str>) -> Self {
+        Self {
+            selector: s,
+            ..Default::default()
+        }
+    }
 }
 
 impl From<&'static str> for CssSelector {
     fn from(s: &'static str) -> Self {
-        Self { selector: s.into() }
+        Self {
+            selector: s.into(),
+            ..Default::default()
+        }
     }
 }
 
 impl From<String> for CssSelector {
     fn from(s: String) -> Self {
-        Self { selector: s.into() }
-    }
-}
-
-impl CssSelector {
-    pub fn new(selector: impl Into<Cow<'static, str>>) -> Self {
         Self {
-            selector: selector.into(),
+            selector: s.into(),
+            ..Default::default()
         }
     }
 }
@@ -67,9 +85,9 @@ impl CssSelector {
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_selector = CssSelector::new("p");
+/// let css_selector: CssSelector = CssSelector::new("p");
 ///
-/// let css_selector_list = CssSelectorsList::new().push(css_selector);
+/// let css_selector_list: CssSelectorsList = CssSelectorsList::new().push(css_selector);
 ///
 /// assert_eq!(css_selector_list.bake(),
 /// "p");
@@ -132,10 +150,18 @@ impl<S: Into<CssSelector>> From<Vec<S>> for CssSelectorsList {
     }
 }
 
-impl From<CssSelector> for CssSelectorsList {
-    fn from(css_selector: CssSelector) -> Self {
+impl<R: SelectorTag> From<CssSelector<R>> for CssSelectorsList {
+    fn from(css_selector: CssSelector<R>) -> Self {
         Self {
-            selectors: vec![css_selector],
+            selectors: vec![css_selector.bake_recipe()],
+        }
+    }
+}
+
+impl From<Cow<'static, str>> for CssSelectorsList {
+    fn from(s: Cow<'static, str>) -> Self {
+        Self {
+            selectors: vec![s.into()],
         }
     }
 }

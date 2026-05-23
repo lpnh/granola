@@ -40,10 +40,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ATag, content = Cow<'static, str>, attrs = AAttrs)]
-pub struct HtmlA<M: ATag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = ATag, content = Cow<'static, str>)]
+pub struct HtmlA<R: ATag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// when href attribute is present: button, checkbox, menuitem, menuitemcheckbox,
@@ -167,7 +167,7 @@ impl HasAAttrs for &mut AAttrs {
     }
 }
 
-impl<M: ATag> HasAAttrs for HtmlA<M> {
+impl<R: ATag> HasAAttrs for HtmlA<R> {
     fn a_attrs_mut(&mut self) -> &mut AAttrs {
         &mut self.specific_attrs
     }

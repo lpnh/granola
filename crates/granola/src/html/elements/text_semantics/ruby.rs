@@ -46,9 +46,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = RubyTag, content = Cow<'static, str>)]
-pub struct HtmlRuby<M: RubyTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlRuby<R: RubyTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// any

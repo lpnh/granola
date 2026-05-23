@@ -52,9 +52,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = FieldsetTag, content = Cow<'static, str>)]
-pub struct HtmlFieldset<M: FieldsetTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlFieldset<R: FieldsetTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// radiogroup, presentation, none
@@ -124,7 +124,7 @@ impl HasFieldsetAttrs for &mut FieldsetAttrs {
     }
 }
 
-impl<M: FieldsetTag> HasFieldsetAttrs for HtmlFieldset<M> {
+impl<R: FieldsetTag> HasFieldsetAttrs for HtmlFieldset<R> {
     fn fieldset_attrs_mut(&mut self) -> &mut FieldsetAttrs {
         &mut self.specific_attrs
     }

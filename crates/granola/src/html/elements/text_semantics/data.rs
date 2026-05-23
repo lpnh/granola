@@ -40,10 +40,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DataTag, content = Cow<'static, str>, attrs = DataAttrs)]
-pub struct HtmlData<M: DataTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = DataTag, content = Cow<'static, str>)]
+pub struct HtmlData<R: DataTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -93,7 +93,7 @@ impl HasDataAttrs for &mut DataAttrs {
     }
 }
 
-impl<M: DataTag> HasDataAttrs for HtmlData<M> {
+impl<R: DataTag> HasDataAttrs for HtmlData<R> {
     fn data_attrs_mut(&mut self) -> &mut DataAttrs {
         &mut self.specific_attrs
     }

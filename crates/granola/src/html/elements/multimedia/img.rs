@@ -39,9 +39,9 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ImgTag, attrs = ImgAttrs)]
-pub struct HtmlImg<M: ImgTag = ()> {
-    _marker: PhantomData<M>,
+#[recipe(name = ImgTag)]
+pub struct HtmlImg<R: ImgTag = ()> {
+    _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
     /// with non-empty alt attribute:
@@ -56,22 +56,22 @@ pub struct HtmlImg<M: ImgTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: ImgTag> HtmlImg<M> {
+impl<R: ImgTag> HtmlImg<R> {
     pub fn new(src: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = ImgAttrs::default().src(src).alt(alt);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -85,19 +85,19 @@ impl<M: ImgTag> HtmlImg<M> {
 
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = ImgAttrs::default().src(src);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -279,7 +279,7 @@ impl HasImgAttrs for &mut ImgAttrs {
     }
 }
 
-impl<M: ImgTag> HasImgAttrs for HtmlImg<M> {
+impl<R: ImgTag> HasImgAttrs for HtmlImg<R> {
     fn img_attrs_mut(&mut self) -> &mut ImgAttrs {
         &mut self.specific_attrs
     }

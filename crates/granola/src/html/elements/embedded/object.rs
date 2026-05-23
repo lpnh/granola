@@ -44,10 +44,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ObjectTag, content = Cow<'static, str>, attrs = ObjectAttrs)]
-pub struct HtmlObject<M: ObjectTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = ObjectTag, content = Cow<'static, str>)]
+pub struct HtmlObject<R: ObjectTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// application, document, img
@@ -147,7 +147,7 @@ impl HasObjectAttrs for &mut ObjectAttrs {
     }
 }
 
-impl<M: ObjectTag> HasObjectAttrs for HtmlObject<M> {
+impl<R: ObjectTag> HasObjectAttrs for HtmlObject<R> {
     fn object_attrs_mut(&mut self) -> &mut ObjectAttrs {
         &mut self.specific_attrs
     }

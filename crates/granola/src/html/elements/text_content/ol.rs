@@ -50,10 +50,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OlTag, content = ListItems, attrs = OlAttrs)]
-pub struct HtmlOl<M: OlTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = OlTag, content = ListItems)]
+pub struct HtmlOl<R: OlTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// directory, group, listbox, menu, menubar, none, presentation,
@@ -124,7 +124,7 @@ impl HasOlAttrs for &mut OlAttrs {
     }
 }
 
-impl<M: OlTag> HasOlAttrs for HtmlOl<M> {
+impl<R: OlTag> HasOlAttrs for HtmlOl<R> {
     fn ol_attrs_mut(&mut self) -> &mut OlAttrs {
         &mut self.specific_attrs
     }

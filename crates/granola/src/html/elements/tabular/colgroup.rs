@@ -46,10 +46,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ColgroupTag, content = TableColumns, attrs = ColgroupAttrs)]
-pub struct HtmlColgroup<M: ColgroupTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = ColgroupTag, content = TableColumns)]
+pub struct HtmlColgroup<R: ColgroupTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ColgroupAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -96,7 +96,7 @@ impl HasColgroupAttrs for &mut ColgroupAttrs {
     }
 }
 
-impl<M: ColgroupTag> HasColgroupAttrs for HtmlColgroup<M> {
+impl<R: ColgroupTag> HasColgroupAttrs for HtmlColgroup<R> {
     fn colgroup_attrs_mut(&mut self) -> &mut ColgroupAttrs {
         &mut self.specific_attrs
     }

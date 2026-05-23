@@ -1,6 +1,7 @@
 #![allow(unused_qualifications)]
 
 use askama::Template;
+use std::marker::PhantomData;
 
 use crate::prelude::*;
 
@@ -13,10 +14,10 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let at_rule = CssAtRule::new("import", r#"url("layout.css")"#);
-/// let rule = CssRule::new("p", ("color", "rebeccapurple"));
+/// let at_rule: CssAtRule = CssAtRule::new("import", r#"url("layout.css")"#);
+/// let rule: CssRule = CssRule::new("p", ("color", "rebeccapurple"));
 ///
-/// let css_stylesheet = CssStylesheet::new()
+/// let css_stylesheet: CssStylesheet = CssStylesheet::new()
 ///     .push(at_rule)
 ///     .push(rule);
 ///
@@ -62,13 +63,15 @@ use crate::prelude::*;
 /// {% endif -%}
 /// {%- endfor -%}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = StylesheetTag)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssStylesheet {
+pub struct CssStylesheet<R: StylesheetTag = ()> {
+    _recipe: PhantomData<R>,
     pub statements: Vec<CssStatement>,
 }
 
-impl CssStylesheet {
+impl<R: StylesheetTag> CssStylesheet<R> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -83,6 +86,7 @@ impl<S: Into<CssStatement>, const N: usize> From<[S; N]> for CssStylesheet {
     fn from(items: [S; N]) -> Self {
         Self {
             statements: items.into_iter().map(Into::into).collect(),
+            ..Default::default()
         }
     }
 }
@@ -91,18 +95,19 @@ impl<S: Into<CssStatement>> From<Vec<S>> for CssStylesheet {
     fn from(items: Vec<S>) -> Self {
         Self {
             statements: items.into_iter().map(Into::into).collect(),
+            ..Default::default()
         }
     }
 }
 
-impl From<CssRule> for CssStylesheet {
-    fn from(rule: CssRule) -> Self {
+impl<R: RuleTag> From<CssRule<R>> for CssStylesheet {
+    fn from(rule: CssRule<R>) -> Self {
         Self::new().push(rule)
     }
 }
 
-impl From<CssAtRule> for CssStylesheet {
-    fn from(at_rule: CssAtRule) -> Self {
+impl<R: AtRuleTag> From<CssAtRule<R>> for CssStylesheet {
+    fn from(at_rule: CssAtRule<R>) -> Self {
         Self::new().push(at_rule)
     }
 }
@@ -126,15 +131,15 @@ pub enum CssStatement {
     AtRule(CssAtRule),
 }
 
-impl From<CssRule> for CssStatement {
-    fn from(rule: CssRule) -> Self {
-        Self::Rule(rule)
+impl<R: RuleTag> From<CssRule<R>> for CssStatement {
+    fn from(rule: CssRule<R>) -> Self {
+        Self::Rule(rule.bake_recipe())
     }
 }
 
-impl From<CssAtRule> for CssStatement {
-    fn from(at_rule: CssAtRule) -> Self {
-        Self::AtRule(at_rule)
+impl<R: AtRuleTag> From<CssAtRule<R>> for CssStatement {
+    fn from(at_rule: CssAtRule<R>) -> Self {
+        Self::AtRule(at_rule.bake_recipe())
     }
 }
 
@@ -184,7 +189,7 @@ impl From<CssAtRule> for CssStatement {
 #[macro_export]
 macro_rules! stylesheet {
     () => {
-        $crate::css::CssStylesheet::new()
+        $crate::css::CssStylesheet::<()>::new()
     };
     ($rule: expr $(,)?) => {
         $crate::css::CssStylesheet::from($rule)

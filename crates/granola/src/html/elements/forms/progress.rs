@@ -43,10 +43,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ProgressTag, content = Cow<'static, str>, attrs = ProgressAttrs)]
-pub struct HtmlProgress<M: ProgressTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = ProgressTag, content = Cow<'static, str>)]
+pub struct HtmlProgress<R: ProgressTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ProgressAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -54,7 +54,7 @@ pub struct HtmlProgress<M: ProgressTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: ProgressTag> HtmlProgress<M> {
+impl<R: ProgressTag> HtmlProgress<R> {
     /// If there is no value attribute, the progress bar is indeterminate; this indicates that an
     /// activity is ongoing with no indication of how long it is expected to take.
     pub fn indeterminate() -> Self {
@@ -111,7 +111,7 @@ impl HasProgressAttrs for &mut ProgressAttrs {
     }
 }
 
-impl<M: ProgressTag> HasProgressAttrs for HtmlProgress<M> {
+impl<R: ProgressTag> HasProgressAttrs for HtmlProgress<R> {
     fn progress_attrs_mut(&mut self) -> &mut ProgressAttrs {
         &mut self.specific_attrs
     }

@@ -44,9 +44,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = DdTag, content = Cow<'static, str>)]
-pub struct HtmlDd<M: DdTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlDd<R: DdTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,

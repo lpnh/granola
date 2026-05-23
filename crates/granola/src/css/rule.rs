@@ -1,4 +1,5 @@
 use askama::Template;
+use std::marker::PhantomData;
 
 use crate::prelude::*;
 
@@ -11,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_rule = CssRule::new("p", ("color", "rebeccapurple"));
+/// let css_rule: CssRule = CssRule::new("p", ("color", "rebeccapurple"));
 ///
 /// assert_eq!(css_rule.bake(),
 /// "p {
@@ -22,13 +23,13 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_properties_list = CssPropertiesList::new().push(css_declaration);
+/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
 ///
-/// let css_selector = CssSelector::new("p");
-/// let css_selector_list = CssSelectorsList::new().push(css_selector);
+/// let css_selector: CssSelector = CssSelector::new("p");
+/// let css_selector_list: CssSelectorsList = CssSelectorsList::new().push(css_selector);
 ///
-/// let css_rule = CssRule::new(css_selector_list, css_properties_list);
+/// let css_rule: CssRule = CssRule::new(css_selector_list, css_properties_list);
 ///
 /// assert_eq!(css_rule.bake(),
 /// "p {
@@ -53,7 +54,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_rule = CssRule::new(
+/// let css_rule: CssRule = CssRule::new(
 ///     ":root",
 ///     [
 ///         ("--base-100", "oklch(93% 0.076 100.4)"),
@@ -93,14 +94,16 @@ use crate::prelude::*;
 ///   {{ properties_list | indent(2) }}
 /// }
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = RuleTag)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssRule {
+pub struct CssRule<R: RuleTag = ()> {
+    _recipe: PhantomData<R>,
     pub selectors_list: CssSelectorsList,
     pub properties_list: CssPropertiesList,
 }
 
-impl CssRule {
+impl<R: RuleTag> CssRule<R> {
     pub fn new(
         selectors_list: impl Into<CssSelectorsList>,
         properties_list: impl Into<CssPropertiesList>,
@@ -108,6 +111,7 @@ impl CssRule {
         Self {
             selectors_list: selectors_list.into(),
             properties_list: properties_list.into(),
+            ..Default::default()
         }
     }
 
@@ -127,6 +131,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for Css
         Self {
             selectors_list: css_selectors_list.into(),
             properties_list: css_properties_list.into(),
+            ..Default::default()
         }
     }
 }
@@ -149,11 +154,11 @@ impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for Css
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_properties_list = CssPropertiesList::new().push(css_declaration);
+/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
 ///
-/// let css_selector = CssSelector::new("p");
-/// let css_selector_list = CssSelectorsList::new().push(css_selector);
+/// let css_selector: CssSelector = CssSelector::new("p");
+/// let css_selector_list: CssSelectorsList = CssSelectorsList::new().push(css_selector);
 ///
 /// let css_rule = rule!(css_selector_list; css_properties_list);
 ///
@@ -180,7 +185,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for Css
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_rule = rule!(
+/// let css_rule: CssRule = rule!(
 ///     ":root";
 ///     ("--base-100", "oklch(93% 0.076 100.4)"),
 ///     ("--base-200", "oklch(90% 0.086 100.4)"),
@@ -213,15 +218,15 @@ impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for Css
 #[macro_export]
 macro_rules! rule {
     ($sel: expr ; $decl: expr $(,)?) => {
-        $crate::css::CssRule::new($sel, $decl)
+        $crate::css::CssRule::<()>::new($sel, $decl)
     };
     ($sel: expr ; $first_decl: expr $(, $rest_decl: expr)+ $(,)?) => {
-        $crate::css::CssRule::new($sel, [$first_decl $(, $rest_decl)*])
+        $crate::css::CssRule::<()>::new($sel, [$first_decl $(, $rest_decl)*])
     };
     ($first_sel: expr $(, $rest_sel: expr)+ ; $decl: expr $(,)?) => {
-        $crate::css::CssRule::new([$first_sel $(, $rest_sel)*], $decl)
+        $crate::css::CssRule::<()>::new([$first_sel $(, $rest_sel)*], $decl)
     };
     ($first_sel: expr $(, $rest_sel: expr)+ ; $first_decl: expr $(, $rest_decl: expr)+ $(,)?) => {
-        $crate::css::CssRule::new([$first_sel $(, $rest_sel)*], [$first_decl $(, $rest_decl)*])
+        $crate::css::CssRule::<()>::new([$first_sel $(, $rest_sel)*], [$first_decl $(, $rest_decl)*])
     };
 }

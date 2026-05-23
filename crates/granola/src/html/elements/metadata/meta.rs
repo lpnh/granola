@@ -39,9 +39,9 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MetaTag, attrs = MetaAttrs)]
-pub struct HtmlMeta<M: MetaTag = ()> {
-    _marker: PhantomData<M>,
+#[recipe(name = MetaTag)]
+pub struct HtmlMeta<R: MetaTag = ()> {
+    _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: MetaAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -49,22 +49,22 @@ pub struct HtmlMeta<M: MetaTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: MetaTag> HtmlMeta<M> {
+impl<R: MetaTag> HtmlMeta<R> {
     pub fn new(content: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = MetaAttrs::default().content(content.into());
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -158,7 +158,7 @@ impl HasMetaAttrs for &mut MetaAttrs {
     }
 }
 
-impl<M: MetaTag> HasMetaAttrs for HtmlMeta<M> {
+impl<R: MetaTag> HasMetaAttrs for HtmlMeta<R> {
     fn media_attrs_mut(&mut self) -> &mut MetaAttrs {
         &mut self.specific_attrs
     }

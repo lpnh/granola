@@ -48,10 +48,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MeterTag, content = Cow<'static, str>, attrs = MeterAttrs)]
-pub struct HtmlMeter<M: MeterTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = MeterTag, content = Cow<'static, str>)]
+pub struct HtmlMeter<R: MeterTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: MeterAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -84,22 +84,22 @@ pub struct MeterAttrs {
     pub optimum: Option<Cow<'static, str>>,
 }
 
-impl<M: MeterTag> HtmlMeter<M> {
+impl<R: MeterTag> HtmlMeter<R> {
     pub fn from_value(value: f64) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = MeterAttrs::default().value(value);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -176,7 +176,7 @@ impl HasMeterAttrs for &mut MeterAttrs {
     }
 }
 
-impl<M: MeterTag> HasMeterAttrs for HtmlMeter<M> {
+impl<R: MeterTag> HasMeterAttrs for HtmlMeter<R> {
     fn meter_attrs_mut(&mut self) -> &mut MeterAttrs {
         &mut self.specific_attrs
     }

@@ -41,9 +41,9 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TrackTag, attrs = TrackAttrs)]
-pub struct HtmlTrack<M: TrackTag = ()> {
-    _marker: PhantomData<M>,
+#[recipe(name = TrackTag)]
+pub struct HtmlTrack<R: TrackTag = ()> {
+    _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: TrackAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -51,22 +51,22 @@ pub struct HtmlTrack<M: TrackTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: TrackTag> HtmlTrack<M> {
+impl<R: TrackTag> HtmlTrack<R> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = TrackAttrs::default().src(src);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -158,7 +158,7 @@ impl HasTrackAttrs for &mut TrackAttrs {
     }
 }
 
-impl<M: TrackTag> HasTrackAttrs for HtmlTrack<M> {
+impl<R: TrackTag> HasTrackAttrs for HtmlTrack<R> {
     fn track_attrs_mut(&mut self) -> &mut TrackAttrs {
         &mut self.specific_attrs
     }

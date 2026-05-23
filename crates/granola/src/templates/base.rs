@@ -40,26 +40,26 @@ use crate::prelude::*;
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct TmplBase<M: HtmlTag = ()> {
-    pub html_root: HtmlRoot<M>,
+pub struct TmplBase<R: HtmlTag = ()> {
+    pub html_root: HtmlRoot<R>,
 }
 
-impl<M: HtmlTag> TmplBase<M> {
-    pub fn new(content: impl Into<M::Content>) -> Self {
+impl<R: HtmlTag> TmplBase<R> {
+    pub fn new(content: impl Into<R::Content>) -> Self {
         Self {
-            html_root: HtmlRoot::<M>::new(content),
+            html_root: HtmlRoot::<R>::new(content),
         }
     }
 
     pub fn empty() -> Self {
         Self {
-            html_root: HtmlRoot::<M>::empty(),
+            html_root: HtmlRoot::<R>::empty(),
         }
     }
 
     pub fn from_recipe() -> Self {
         Self {
-            html_root: HtmlRoot::<M>::from_recipe(),
+            html_root: HtmlRoot::<R>::from_recipe(),
         }
     }
 }

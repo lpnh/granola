@@ -249,6 +249,18 @@ pub trait HasGlobalAriaAttrs: Sized {
     }
 }
 
+impl HasGlobalAriaAttrs for GlobalAriaAttrs {
+    fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs {
+        self
+    }
+}
+
+impl HasGlobalAriaAttrs for &mut GlobalAriaAttrs {
+    fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs {
+        self
+    }
+}
+
 /// HTML specific aria attributes
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes#aria_attribute_types)

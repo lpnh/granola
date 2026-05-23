@@ -21,7 +21,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_rule = CssRule::new(
+/// let css_rule: CssRule = CssRule::new(
 ///     "p",
 ///     [
 ///         ("color", "violet"),
@@ -53,10 +53,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = StyleTag, content = CssStylesheet, attrs = StyleAttrs)]
-pub struct HtmlStyle<M: StyleTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = StyleTag, content = CssStylesheet)]
+pub struct HtmlStyle<R: StyleTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: StyleAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -113,7 +113,7 @@ impl HasStyleAttrs for &mut StyleAttrs {
     }
 }
 
-impl<M: StyleTag> HasStyleAttrs for HtmlStyle<M> {
+impl<R: StyleTag> HasStyleAttrs for HtmlStyle<R> {
     fn style_attrs_mut(&mut self) -> &mut StyleAttrs {
         &mut self.specific_attrs
     }

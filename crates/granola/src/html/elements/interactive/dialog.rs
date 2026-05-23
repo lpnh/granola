@@ -53,10 +53,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DialogTag, content = Cow<'static, str>, attrs = DialogAttrs)]
-pub struct HtmlDialog<M: DialogTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = DialogTag, content = Cow<'static, str>)]
+pub struct HtmlDialog<R: DialogTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// alertdialog
@@ -116,7 +116,7 @@ impl HasDialogAttrs for &mut DialogAttrs {
     }
 }
 
-impl<M: DialogTag> HasDialogAttrs for HtmlDialog<M> {
+impl<R: DialogTag> HasDialogAttrs for HtmlDialog<R> {
     fn dialog_attrs_mut(&mut self) -> &mut DialogAttrs {
         &mut self.specific_attrs
     }

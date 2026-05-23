@@ -57,10 +57,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = BlockquoteTag, content = Cow<'static, str>, attrs = BlockquoteAttrs)]
-pub struct HtmlBlockquote<M: BlockquoteTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = BlockquoteTag, content = Cow<'static, str>)]
+pub struct HtmlBlockquote<R: BlockquoteTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -110,7 +110,7 @@ impl HasBlockquoteAttrs for &mut BlockquoteAttrs {
     }
 }
 
-impl<M: BlockquoteTag> HasBlockquoteAttrs for HtmlBlockquote<M> {
+impl<R: BlockquoteTag> HasBlockquoteAttrs for HtmlBlockquote<R> {
     fn blockquote_attrs_mut(&mut self) -> &mut BlockquoteAttrs {
         &mut self.specific_attrs
     }

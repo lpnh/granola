@@ -58,10 +58,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TemplateTag, content = Cow<'static, str>, attrs = TemplateAttrs)]
-pub struct HtmlTemplate<M: TemplateTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = TemplateTag, content = Cow<'static, str>)]
+pub struct HtmlTemplate<R: TemplateTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: TemplateAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -153,7 +153,7 @@ impl HasTemplateAttrs for &mut TemplateAttrs {
     }
 }
 
-impl<M: TemplateTag> HasTemplateAttrs for HtmlTemplate<M> {
+impl<R: TemplateTag> HasTemplateAttrs for HtmlTemplate<R> {
     fn template_attrs_mut(&mut self) -> &mut TemplateAttrs {
         &mut self.specific_attrs
     }

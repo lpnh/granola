@@ -50,9 +50,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = DatalistTag, content = Options)]
-pub struct HtmlDatalist<M: DatalistTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlDatalist<R: DatalistTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,

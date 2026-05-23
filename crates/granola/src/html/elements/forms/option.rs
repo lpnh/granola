@@ -40,10 +40,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OptionTag, content = Cow<'static, str>, attrs = OptionAttrs)]
-pub struct HtmlOption<M: OptionTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = OptionTag, content = Cow<'static, str>)]
+pub struct HtmlOption<R: OptionTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: OptionAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -51,22 +51,22 @@ pub struct HtmlOption<M: OptionTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: OptionTag> HtmlOption<M> {
+impl<R: OptionTag> HtmlOption<R> {
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = OptionAttrs::default().value(value);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -148,7 +148,7 @@ impl HasOptionAttrs for &mut OptionAttrs {
     }
 }
 
-impl<M: OptionTag> HasOptionAttrs for HtmlOption<M> {
+impl<R: OptionTag> HasOptionAttrs for HtmlOption<R> {
     fn option_attrs_mut(&mut self) -> &mut OptionAttrs {
         &mut self.specific_attrs
     }

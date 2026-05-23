@@ -48,9 +48,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = SectionTag, content = Cow<'static, str>)]
-pub struct HtmlSection<M: SectionTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlSection<R: SectionTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// alert, alertdialog, application, banner, complementary, contentinfo, dialog,

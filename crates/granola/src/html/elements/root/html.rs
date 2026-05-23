@@ -68,9 +68,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = HtmlTag, content = HtmlRootContent)]
-pub struct HtmlRoot<M: HtmlTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlRoot<R: HtmlTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,
@@ -91,34 +91,34 @@ pub struct HtmlRoot<M: HtmlTag = ()> {
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct HtmlRootContent<H: HeadTag = (), B: BodyTag = ()> {
-    pub head: Option<HtmlHead<H>>,
-    pub body: Option<HtmlBody<B>>,
+pub struct HtmlRootContent {
+    pub head: Option<HtmlHead>,
+    pub body: Option<HtmlBody>,
 }
 
-impl<H: HeadTag, B: BodyTag> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootContent<H, B> {
+impl<H: HeadTag, B: BodyTag> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootContent {
     fn from((head, body): (HtmlHead<H>, HtmlBody<B>)) -> Self {
         Self {
-            head: Some(head),
-            body: Some(body),
+            head: Some(head.bake_recipe()),
+            body: Some(body.bake_recipe()),
         }
     }
 }
 
-impl<H: HeadTag> From<HtmlHead<H>> for HtmlRootContent<H> {
+impl<H: HeadTag> From<HtmlHead<H>> for HtmlRootContent {
     fn from(head: HtmlHead<H>) -> Self {
         Self {
-            head: Some(head),
+            head: Some(head.bake_recipe()),
             body: None,
         }
     }
 }
 
-impl<B: BodyTag> From<HtmlBody<B>> for HtmlRootContent<(), B> {
+impl<B: BodyTag> From<HtmlBody<B>> for HtmlRootContent {
     fn from(body: HtmlBody<B>) -> Self {
         Self {
             head: None,
-            body: Some(body),
+            body: Some(body.bake_recipe()),
         }
     }
 }

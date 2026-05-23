@@ -1,0 +1,14 @@
+error[E0277]: recipe content `u32` can't be baked back into the default content `Cow<'static, str>`
+  --> tests/ui/missing_from.rs:12:20
+   |
+12 |     type Content = u32;
+   |                    ^^^ add `impl From<u32> for Cow<'static, str>`
+   |
+   = help: the trait `BakeInto<Cow<'static, str>>` is not implemented for `u32`
+   = note: a recipe that overrides `type Content` must convert back into the default content type: `bake_recipe()` collapses `Foo<R>` into `Foo<()>`, whose content is always the default
+note: required by a bound in `granola::html::PTag::Content`
+  --> $WORKSPACE/crates/granola/src/html/elements/text_content/p.rs
+   |
+   | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+   |                                                    ^^^^^^ required by this bound in `PTag::Content`
+   = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)

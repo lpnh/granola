@@ -44,10 +44,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ButtonTag, content = Cow<'static, str>, attrs = ButtonAttrs)]
-pub struct HtmlButton<M: ButtonTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = ButtonTag, content = Cow<'static, str>)]
+pub struct HtmlButton<R: ButtonTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio, option,
@@ -231,7 +231,7 @@ impl HasButtonAttrs for &mut ButtonAttrs {
     }
 }
 
-impl<M: ButtonTag> HasButtonAttrs for HtmlButton<M> {
+impl<R: ButtonTag> HasButtonAttrs for HtmlButton<R> {
     fn button_attrs_mut(&mut self) -> &mut ButtonAttrs {
         &mut self.specific_attrs
     }

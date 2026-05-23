@@ -4,7 +4,7 @@ use granola::{prelude::*, recipes::*, templates::*};
 struct FooRecipe;
 
 impl HtmlTag for FooRecipe {
-    type Content = HtmlRootContent<Homemade, ()>;
+    type Content = HomemadeRootContent;
 
     fn content_recipe(content: &mut Self::Content) {
         let paragraph: HtmlP = HtmlP::new("Hello, world!");
@@ -50,7 +50,7 @@ impl ButtonTag for FooRecipe {
 struct BarRecipe;
 
 impl HtmlTag for BarRecipe {
-    type Content = HtmlRootContent<Homemade, ()>;
+    type Content = HomemadeRootContent;
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.id("bar-html");
@@ -87,7 +87,7 @@ impl ButtonTag for BarRecipe {
 struct OneLastRecipe;
 
 impl HtmlTag for OneLastRecipe {
-    type Content = HtmlRootContent<Homemade, ()>;
+    type Content = HomemadeRootContent;
 
     fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
         custom_data_attrs.custom_data("recipe", "last");
@@ -113,7 +113,7 @@ impl ButtonTag for OneLastRecipe {
 }
 
 fn main() {
-    type TmplRecipe = rec!(Homemade, FooRecipe, BarRecipe, OneLastRecipe);
+    type TmplRecipe = rec![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
 
     let tmpl: TmplBase<TmplRecipe> = TmplBase::from_recipe();
 
@@ -155,7 +155,12 @@ mod recipe_tests {
 
         assert_eq!(button.bake(), "<button></button>");
         assert_eq!(p.bake(), "<p></p>");
-        assert_eq!(html_root.bake(), "<html></html>");
+        assert_eq!(
+            html_root.bake(),
+            r#"<html>
+  <head></head>
+</html>"#
+        );
     }
 
     #[test]
@@ -251,7 +256,7 @@ mod recipe_tests {
 
     #[test]
     fn composition_from_recipe_multiple() {
-        type LastFooBarRecipe = rec!(FooRecipe, BarRecipe, OneLastRecipe);
+        type LastFooBarRecipe = rec![FooRecipe, BarRecipe, OneLastRecipe];
 
         let button: HtmlButton<(Reset, LastFooBarRecipe)> = HtmlButton::from_recipe();
 
@@ -316,7 +321,7 @@ mod recipe_tests {
 
     #[test]
     fn composition_new_multiple() {
-        type LastFooBarRecipe = rec!(FooRecipe, BarRecipe, OneLastRecipe);
+        type LastFooBarRecipe = rec![FooRecipe, BarRecipe, OneLastRecipe];
 
         let button: HtmlButton<(Reset, LastFooBarRecipe)> = HtmlButton::new("Dismiss");
 
@@ -349,7 +354,7 @@ mod recipe_tests {
 
     #[test]
     fn template() {
-        type TmplRecipe = rec!(Homemade, FooRecipe, BarRecipe, OneLastRecipe);
+        type TmplRecipe = rec![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
         let tmpl: TmplBase<TmplRecipe> = TmplBase::from_recipe();
 
         assert_eq!(

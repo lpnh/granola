@@ -39,9 +39,9 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = BaseTag, attrs = BaseAttrs)]
-pub struct HtmlBase<M: BaseTag = ()> {
-    _marker: PhantomData<M>,
+#[recipe(name = BaseTag)]
+pub struct HtmlBase<R: BaseTag = ()> {
+    _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: BaseAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -49,22 +49,22 @@ pub struct HtmlBase<M: BaseTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: BaseTag> HtmlBase<M> {
+impl<R: BaseTag> HtmlBase<R> {
     pub fn new(href: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = BaseAttrs::default().href(href);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -126,7 +126,7 @@ impl HasBaseAttrs for &mut BaseAttrs {
     }
 }
 
-impl<M: BaseTag> HasBaseAttrs for HtmlBase<M> {
+impl<R: BaseTag> HasBaseAttrs for HtmlBase<R> {
     fn base_attrs_mut(&mut self) -> &mut BaseAttrs {
         &mut self.specific_attrs
     }

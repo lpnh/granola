@@ -40,10 +40,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AudioTag, content = Cow<'static, str>, attrs = AudioAttrs)]
-pub struct HtmlAudio<M: AudioTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = AudioTag, content = Cow<'static, str>)]
+pub struct HtmlAudio<R: AudioTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// application
@@ -54,22 +54,22 @@ pub struct HtmlAudio<M: AudioTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: AudioTag> HtmlAudio<M> {
+impl<R: AudioTag> HtmlAudio<R> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = AudioAttrs::default().src(src);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -193,7 +193,7 @@ impl HasAudioAttrs for &mut AudioAttrs {
     }
 }
 
-impl<M: AudioTag> HasAudioAttrs for HtmlAudio<M> {
+impl<R: AudioTag> HasAudioAttrs for HtmlAudio<R> {
     fn audio_attrs_mut(&mut self) -> &mut AudioAttrs {
         &mut self.specific_attrs
     }

@@ -44,9 +44,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = H3Tag, content = Cow<'static, str>)]
-pub struct HtmlH3<M: H3Tag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlH3<R: H3Tag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// tab, presentation or none

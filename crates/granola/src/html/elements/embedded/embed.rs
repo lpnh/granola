@@ -42,9 +42,9 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = EmbedTag, attrs = EmbedAttrs)]
-pub struct HtmlEmbed<M: EmbedTag = ()> {
-    _marker: PhantomData<M>,
+#[recipe(name = EmbedTag)]
+pub struct HtmlEmbed<R: EmbedTag = ()> {
+    _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
     /// application, document, img, none, presentation
@@ -55,22 +55,22 @@ pub struct HtmlEmbed<M: EmbedTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: EmbedTag> HtmlEmbed<M> {
+impl<R: EmbedTag> HtmlEmbed<R> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = EmbedAttrs::default().src(src);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -152,7 +152,7 @@ impl HasEmbedAttrs for &mut EmbedAttrs {
     }
 }
 
-impl<M: EmbedTag> HasEmbedAttrs for HtmlEmbed<M> {
+impl<R: EmbedTag> HasEmbedAttrs for HtmlEmbed<R> {
     fn embed_attrs_mut(&mut self) -> &mut EmbedAttrs {
         &mut self.specific_attrs
     }

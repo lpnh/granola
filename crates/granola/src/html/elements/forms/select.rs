@@ -46,10 +46,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SelectTag, content = Cow<'static, str>, attrs = SelectAttrs)]
-pub struct HtmlSelect<M: SelectTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = SelectTag, content = Cow<'static, str>)]
+pub struct HtmlSelect<R: SelectTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// menu (with no multiple attribute and no size attribute greater than 1)
@@ -159,7 +159,7 @@ impl HasSelectAttrs for &mut SelectAttrs {
     }
 }
 
-impl<M: SelectTag> HasSelectAttrs for HtmlSelect<M> {
+impl<R: SelectTag> HasSelectAttrs for HtmlSelect<R> {
     fn select_attrs_mut(&mut self) -> &mut SelectAttrs {
         &mut self.specific_attrs
     }

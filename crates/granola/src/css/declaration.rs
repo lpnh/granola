@@ -1,5 +1,5 @@
 use askama::Template;
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
 ///
 /// assert_eq!(css_declaration.bake(),
 /// "color: rgb(102, 51, 153);");
@@ -32,23 +32,16 @@ use crate::prelude::*;
 /// ```askama
 /// {{ property }}: {{ value }};
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = DeclarationTag)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDeclaration {
+pub struct CssDeclaration<R: DeclarationTag = ()> {
+    _recipe: PhantomData<R>,
     pub property: Cow<'static, str>,
     pub value: Cow<'static, str>,
 }
 
-impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssDeclaration {
-    fn from((property, value): (P, V)) -> Self {
-        Self {
-            property: property.into(),
-            value: value.into(),
-        }
-    }
-}
-
-impl CssDeclaration {
+impl<R: DeclarationTag> CssDeclaration<R> {
     pub fn new(
         property: impl Into<Cow<'static, str>>,
         value: impl Into<Cow<'static, str>>,
@@ -56,6 +49,17 @@ impl CssDeclaration {
         Self {
             property: property.into(),
             value: value.into(),
+            ..Default::default()
+        }
+    }
+}
+
+impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssDeclaration {
+    fn from((property, value): (P, V)) -> Self {
+        Self {
+            property: property.into(),
+            value: value.into(),
+            ..Default::default()
         }
     }
 }
@@ -69,9 +73,9 @@ impl CssDeclaration {
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
 ///
-/// let css_properties_list = CssPropertiesList::new().push(css_declaration);
+/// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
 ///
 /// assert_eq!(css_properties_list.bake(),
 /// "color: rgb(102, 51, 153);");

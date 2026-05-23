@@ -40,10 +40,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SlotTag, content = Cow<'static, str>, attrs = SlotAttrs)]
-pub struct HtmlSlot<M: SlotTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = SlotTag, content = Cow<'static, str>)]
+pub struct HtmlSlot<R: SlotTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: SlotAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -90,7 +90,7 @@ impl HasSlotAttrs for &mut SlotAttrs {
     }
 }
 
-impl<M: SlotTag> HasSlotAttrs for HtmlSlot<M> {
+impl<R: SlotTag> HasSlotAttrs for HtmlSlot<R> {
     fn slot_attrs_mut(&mut self) -> &mut SlotAttrs {
         &mut self.specific_attrs
     }

@@ -50,10 +50,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = FormTag, content = Cow<'static, str>, attrs = FormAttrs)]
-pub struct HtmlForm<M: FormTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = FormTag, content = Cow<'static, str>)]
+pub struct HtmlForm<R: FormTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// search, none or presentation
@@ -183,7 +183,7 @@ impl HasFormAttrs for &mut FormAttrs {
     }
 }
 
-impl<M: FormTag> HasFormAttrs for HtmlForm<M> {
+impl<R: FormTag> HasFormAttrs for HtmlForm<R> {
     fn form_attrs_mut(&mut self) -> &mut FormAttrs {
         &mut self.specific_attrs
     }

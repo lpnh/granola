@@ -50,10 +50,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OptgroupTag, content = Options, attrs = OptgroupAttrs)]
-pub struct HtmlOptgroup<M: OptgroupTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = OptgroupTag, content = Options)]
+pub struct HtmlOptgroup<R: OptgroupTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: OptgroupAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -110,7 +110,7 @@ impl HasOptgroupAttrs for &mut OptgroupAttrs {
     }
 }
 
-impl<M: OptgroupTag> HasOptgroupAttrs for HtmlOptgroup<M> {
+impl<R: OptgroupTag> HasOptgroupAttrs for HtmlOptgroup<R> {
     fn optgroup_attrs_mut(&mut self) -> &mut OptgroupAttrs {
         &mut self.specific_attrs
     }

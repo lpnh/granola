@@ -40,9 +40,9 @@ use crate::{filters, prelude::*};
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = H2Tag, content = Cow<'static, str>)]
-pub struct HtmlH2<M: H2Tag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+pub struct HtmlH2<R: H2Tag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     /// # Permitted ARIA roles
     ///
     /// tab, presentation or none

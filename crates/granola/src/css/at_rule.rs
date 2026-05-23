@@ -1,18 +1,18 @@
 use askama::Template;
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
 /// The CSS at-rule.
 ///
-/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/At-rules)
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/At-rules)
 ///
 /// # Example
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let at_rule = CssAtRule::new("import", r#"url("layout.css")"#);
+/// let at_rule: CssAtRule = CssAtRule::new("import", r#"url("layout.css")"#);
 ///
 /// assert_eq!(at_rule.bake(),
 /// r#"@import url("layout.css");"#);
@@ -26,7 +26,7 @@ use crate::prelude::*;
 ///   "to { transform: translateX(100%); }",
 /// ];
 ///
-/// let at_rule = CssAtRule::new("keyframes", "slide-in").block(block);
+/// let at_rule: CssAtRule = CssAtRule::new("keyframes", "slide-in").block(block);
 ///
 /// assert_eq!(at_rule.bake(),
 /// "@keyframes slide-in {
@@ -45,15 +45,17 @@ use crate::prelude::*;
 /// {%- else %};
 /// {%- endif %}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = AtRuleTag)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssAtRule {
+pub struct CssAtRule<R: AtRuleTag = ()> {
+    _recipe: PhantomData<R>,
     pub identifier: Cow<'static, str>,
     pub rule: Cow<'static, str>,
     pub block: Option<Cow<'static, str>>,
 }
 
-impl CssAtRule {
+impl<R: AtRuleTag> CssAtRule<R> {
     pub fn new(
         identifier: impl Into<Cow<'static, str>>,
         rule: impl Into<Cow<'static, str>>,
@@ -61,7 +63,7 @@ impl CssAtRule {
         Self {
             identifier: identifier.into(),
             rule: rule.into(),
-            block: None,
+            ..Default::default()
         }
     }
 
@@ -76,7 +78,7 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
         Self {
             identifier: identifier.into(),
             rule: rule.into(),
-            block: None,
+            ..Default::default()
         }
     }
 }
@@ -113,6 +115,6 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
 #[macro_export]
 macro_rules! at_rule {
     ($identifier: expr, $rule: expr $(,)?) => {
-        $crate::css::CssAtRule::new($identifier, $rule)
+        $crate::css::CssAtRule::<()>::new($identifier, $rule)
     };
 }

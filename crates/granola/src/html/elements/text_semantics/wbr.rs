@@ -30,8 +30,8 @@ use crate::prelude::*;
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = WbrTag)]
-pub struct HtmlWbr<M: WbrTag = ()> {
-    _marker: PhantomData<M>,
+pub struct HtmlWbr<R: WbrTag = ()> {
+    _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -41,7 +41,7 @@ pub struct HtmlWbr<M: WbrTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: WbrTag> HtmlWbr<M> {
+impl<R: WbrTag> HtmlWbr<R> {
     pub fn new() -> Self {
         Self::from_recipe()
     }

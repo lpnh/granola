@@ -42,10 +42,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ScriptTag, content = Cow<'static, str>, attrs = ScriptAttrs)]
-pub struct HtmlScript<M: ScriptTag = ()> {
-    _marker: PhantomData<M>,
-    pub content: M::Content,
+#[recipe(name = ScriptTag, content = Cow<'static, str>)]
+pub struct HtmlScript<R: ScriptTag = ()> {
+    _recipe: PhantomData<R>,
+    pub content: R::Content,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ScriptAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -53,22 +53,22 @@ pub struct HtmlScript<M: ScriptTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: ScriptTag> HtmlScript<M> {
+impl<R: ScriptTag> HtmlScript<R> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
-        M::global_attrs_recipe(&mut global_attrs);
+        R::global_attrs_recipe(&mut global_attrs);
 
         let mut specific_attrs = ScriptAttrs::default().src(src);
-        M::specific_attrs_recipe(&mut specific_attrs);
+        R::specific_attrs_recipe(&mut specific_attrs);
 
         let mut global_aria_attrs = GlobalAriaAttrs::default();
-        M::global_aria_attrs_recipe(&mut global_aria_attrs);
+        R::global_aria_attrs_recipe(&mut global_aria_attrs);
 
         let mut custom_data_attrs = CustomDataAttrs::default();
-        M::custom_data_attrs_recipe(&mut custom_data_attrs);
+        R::custom_data_attrs_recipe(&mut custom_data_attrs);
 
         let mut event_handlers = EventHandlers::default();
-        M::event_handlers_recipe(&mut event_handlers);
+        R::event_handlers_recipe(&mut event_handlers);
 
         Self {
             global_attrs,
@@ -210,7 +210,7 @@ impl HasScriptAttrs for &mut ScriptAttrs {
     }
 }
 
-impl<M: ScriptTag> HasScriptAttrs for HtmlScript<M> {
+impl<R: ScriptTag> HasScriptAttrs for HtmlScript<R> {
     fn script_attrs_mut(&mut self) -> &mut ScriptAttrs {
         &mut self.specific_attrs
     }

@@ -48,8 +48,8 @@ use crate::prelude::*;
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = HrTag)]
-pub struct HtmlHr<M: HrTag = ()> {
-    _marker: PhantomData<M>,
+pub struct HtmlHr<R: HrTag = ()> {
+    _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
     /// presentation or none
@@ -59,7 +59,7 @@ pub struct HtmlHr<M: HrTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<M: HrTag> HtmlHr<M> {
+impl<R: HrTag> HtmlHr<R> {
     pub fn new() -> Self {
         Self::from_recipe()
     }

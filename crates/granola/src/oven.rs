@@ -1,16 +1,15 @@
-//! Macros and primitives for building strings.
+//! String-building primitives and recipe machinery.
 //!
-//! With [`bake_block`], [`bake_inline`], and [`bake_newline`], [`Template`] types and
-//! [`AsRef<str>`] values can be freely mixed and rendered into a single [`String`].
+//! [`bake_block!`](crate::bake_block), [`bake_inline!`](crate::bake_inline), and
+//! [`bake_newline!`](crate::bake_newline) render [`Template`] types and
+//! [`AsRef<str>`] values freely mixed into a single [`String`]. The dispatch is resolved
+//! at compile time: [`Template`] items go through [`Template::render_into`]; string values
+//! fall back to [`String::push_str`]. This is inspired by [`askama::FastWritable`] and
+//! relies on [autoref-based specialization].
 //!
-//! The dispatch between the two is resolved at compile time. [`Template`] items render via
-//! [`Template::render_into`] while string values fall back to [`String::push_str`].
+//! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed collections.
+//! [`rec!`](crate::rec) the shorthand for `(A, (B, C))` when composing multiple recipes.
 //!
-//! This is inspired by [`askama::FastWritable`] and relies on [autoref-based specialization].
-//!
-//! [`bake_block`]: crate::bake_block
-//! [`bake_inline`]: crate::bake_inline
-//! [`bake_newline`]: crate::bake_newline
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
 
@@ -51,6 +50,50 @@ impl<T: AsRef<str>> Roast for Bake<&T> {
 
     fn size_hint(&self) -> usize {
         self.0.as_ref().len()
+    }
+}
+
+/// Converts `Foo<R>` into `Foo<()>`, substituting `()` for the recipe type parameter.
+///
+/// `PhantomData<R>` selects which recipe runs during construction. `bake_recipe` moves
+/// all fields into `Foo<()>`, applying [`BakeInto`] for any content field.
+///
+/// This is the canonical way to land a `Foo<R>` into a collection that stores `Foo<()>`.
+/// It exists as its own trait because `From<Foo<R>> for Foo<()>` cannot be written:
+/// at `R = ()` it overlaps the std reflexive `impl<T> From<T> for T`.
+pub trait BakeRecipe {
+    type Baked;
+
+    fn bake_recipe(self) -> Self::Baked;
+}
+
+/// Marks that a recipe's custom content type can be baked back into the element's
+/// default content type.
+///
+/// You never implement this directly: it has a blanket impl for every `T: Into<D>`.
+/// Its only job is to give a guided compiler error when a recipe overrides
+/// `type Content` but is missing the matching `From` impl.
+#[diagnostic::on_unimplemented(
+    message = "recipe content `{Self}` can't be baked back into the default content `{D}`",
+    label = "add `impl From<{Self}> for {D}`",
+    note = "a recipe that overrides `type Content` must convert back into the default content \
+            type: `bake_recipe()` collapses `Foo<R>` into `Foo<()>`, whose content is always \
+            the default"
+)]
+pub trait BakeInto<D> {
+    fn bake_into(self) -> D;
+}
+
+// `do_not_recommend` stops rustc from drilling into the `T: Into<D>` clause (and the
+// underlying `From`) when the bound fails, so the `on_unimplemented` message above is
+// what the user sees, instead of a raw `Cow: From<CustomContent>` error.
+#[diagnostic::do_not_recommend]
+impl<T, D> BakeInto<D> for T
+where
+    T: Into<D>,
+{
+    fn bake_into(self) -> D {
+        self.into()
     }
 }
 
