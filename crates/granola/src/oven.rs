@@ -1,49 +1,131 @@
 //! String-building primitives and recipe machinery.
 //!
 //! [`bake_block!`](crate::bake_block), [`bake_inline!`](crate::bake_inline), and
-//! [`bake_newline!`](crate::bake_newline) render [`Template`] types and
-//! [`AsRef<str>`] values freely mixed into a single [`String`]. The dispatch is resolved
-//! at compile time: [`Template`] items go through [`Template::render_into`]; string values
-//! fall back to [`String::push_str`]. This is inspired by [`askama::FastWritable`] and
-//! relies on [autoref-based specialization].
+//! [`bake_newline!`](crate::bake_newline) render [`Template`] types, [`AsRef<str>`] values,
+//! and any other [`FastWritable`] type (e.g. primitives) freely mixed into a single
+//! [`String`]. The dispatch is resolved at compile time via [autoref-based specialization];
+//! see [`Roast`] for the priority order.
 //!
 //! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed collections.
-//! [`rec!`](crate::rec) the shorthand for `(A, (B, C))` when composing multiple recipes.
+//! [`cookbook!`](crate::cookbook) is the shorthand for `(A, (B, C))` when composing multiple recipes.
 //!
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
 
-use askama::Template;
+use std::{borrow::Cow, fmt};
 
-/// Wrapper type for the inherent `bake_content` impl that handles [`Template`] values.
-pub struct Bake<T>(pub T);
+use askama::{FastWritable, NO_VALUES, Template, Values};
 
-impl<T: Template> Bake<&T> {
-    /// Renders the template into a [`String`].
-    ///
-    /// # Panics
-    ///
-    /// Panics if [`Template::render_into`] returns an error.
-    /// Writing into a [`String`] via [`core::fmt::Write`] is infallible,
-    /// so the only way this fails is if the template itself errors.
-    /// See [`askama::Error`].
-    pub fn bake_content(&self, buf: &mut String) {
-        self.0.render_into(buf).unwrap();
-    }
+/// Wraps a [`FastWritable`] value so it can be used as a recipe's `type Content`.
+///
+/// An element's default content type is [`Cow<'static, str>`], and overriding `type Content`
+/// requires the override to bake back into it. A foreign type like `u32` can't satisfy that
+/// directly, but `BakeFrom` can.
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// #[derive(Default, Debug, Clone)]
+/// struct Answer;
+///
+/// impl OutputTag for Answer {
+///     type Content = BakeFrom<u32>;
+/// }
+///
+/// let output: HtmlOutput<Answer> = HtmlOutput::new(42);
+///
+/// assert_eq!(output.bake(),
+/// "<output>42</output>");
+/// ```
+pub struct BakeFrom<T>(pub T);
 
-    pub fn size_hint(&self) -> usize {
-        T::SIZE_HINT
+impl<T: FastWritable> FastWritable for BakeFrom<T> {
+    fn write_into(&self, dest: &mut dyn fmt::Write, values: &dyn Values) -> askama::Result<()> {
+        self.0.write_into(dest, values)
     }
 }
 
-/// Fallback trait for the `bake_content` impl that handles [`AsRef<str>`] values.
+impl<T: Default> Default for BakeFrom<T> {
+    fn default() -> Self {
+        BakeFrom(T::default())
+    }
+}
+
+impl<T: Clone> Clone for BakeFrom<T> {
+    fn clone(&self) -> Self {
+        BakeFrom(self.0.clone())
+    }
+}
+
+impl<T: fmt::Debug> fmt::Debug for BakeFrom<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("BakeFrom").field(&self.0).finish()
+    }
+}
+
+/// Lets the element's `new(value)` build a `BakeFrom<T>` content directly, without
+/// the caller writing `BakeFrom(value)`.
+impl<T: FastWritable> From<T> for BakeFrom<T> {
+    fn from(value: T) -> Self {
+        BakeFrom(value)
+    }
+}
+
+/// Bakes any [`FastWritable`] content back into the default [`Cow<'static, str>`] content type.
+///
+/// # Panics
+///
+/// Panics if [`FastWritable::write_into`] returns an error. See [`askama::Error`].
+impl<T: FastWritable> From<BakeFrom<T>> for Cow<'static, str> {
+    fn from(wrapped: BakeFrom<T>) -> Self {
+        let mut buf = String::new();
+        wrapped.0.write_into(&mut buf, NO_VALUES).unwrap();
+        Cow::Owned(buf)
+    }
+}
+
+/// Wrapper type carrying the autoref-based content dispatch for the `bake_*!` macros.
+///
+/// See [`Roast`] for the tiered dispatch it drives.
+pub struct Bake<T>(pub T);
+
+/// Tiered content dispatch for the `bake_*!` macros, resolved at compile time by
+/// [autoref-based specialization], in priority order:
+///
+/// 1. `T: Template` — rendered via [`Template::render_into`] with an exact
+///    [`Template::SIZE_HINT`].
+/// 2. `T: AsRef<str>` — appended via [`String::push_str`] with an exact `len` size hint.
+/// 3. any other `T: FastWritable` (e.g. primitives) — written via
+///    [`FastWritable::write_into`]; no size hint is available, so it reports `0`.
+///
+/// A type matching several bounds (e.g. `String`, which is both `AsRef<str>` and
+/// `FastWritable`) resolves to the highest applicable tier, so strings keep their exact
+/// size hint.
+///
+/// # Panics
+///
+/// Panics if [`Template::render_into`] or [`FastWritable::write_into`] returns an error.
+/// See [`askama::Error`].
+///
+/// [autoref-based specialization]:
+/// https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
 pub trait Roast {
     fn bake_content(&self, buf: &mut String);
 
     fn size_hint(&self) -> usize;
 }
 
-impl<T: AsRef<str>> Roast for Bake<&T> {
+impl<T: Template> Roast for &&Bake<&T> {
+    fn bake_content(&self, buf: &mut String) {
+        self.0.render_into(buf).unwrap();
+    }
+
+    fn size_hint(&self) -> usize {
+        T::SIZE_HINT
+    }
+}
+
+impl<T: AsRef<str>> Roast for &Bake<&T> {
     fn bake_content(&self, buf: &mut String) {
         buf.push_str(self.0.as_ref());
     }
@@ -53,7 +135,17 @@ impl<T: AsRef<str>> Roast for Bake<&T> {
     }
 }
 
-/// Converts `Foo<R>` into `Foo<()>`, substituting `()` for the recipe type parameter.
+impl<T: FastWritable> Roast for Bake<&T> {
+    fn bake_content(&self, buf: &mut String) {
+        self.0.write_into(buf, NO_VALUES).unwrap();
+    }
+
+    fn size_hint(&self) -> usize {
+        0
+    }
+}
+
+/// Converts `Foo<R>` into `Foo`.
 ///
 /// `PhantomData<R>` selects which recipe runs during construction. `bake_recipe` moves
 /// all fields into `Foo<()>`, applying [`BakeInto`] for any content field.
@@ -74,19 +166,14 @@ pub trait BakeRecipe {
 /// Its only job is to give a guided compiler error when a recipe overrides
 /// `type Content` but is missing the matching `From` impl.
 #[diagnostic::on_unimplemented(
-    message = "recipe content `{Self}` can't be baked back into the default content `{D}`",
-    label = "add `impl From<{Self}> for {D}`",
-    note = "a recipe that overrides `type Content` must convert back into the default content \
-            type: `bake_recipe()` collapses `Foo<R>` into `Foo<()>`, whose content is always \
-            the default"
+    message = "recipe content `{Self}` can't bake back into `{D}`",
+    label = "try using `BakeFrom<{Self}>`",
+    note = "for non-foreign types, consider providing a conversion by implementing `From<{Self}>` for `{D}`"
 )]
 pub trait BakeInto<D> {
     fn bake_into(self) -> D;
 }
 
-// `do_not_recommend` stops rustc from drilling into the `T: Into<D>` clause (and the
-// underlying `From`) when the bound fails, so the `on_unimplemented` message above is
-// what the user sees, instead of a raw `Cow: From<CustomContent>` error.
 #[diagnostic::do_not_recommend]
 impl<T, D> BakeInto<D> for T
 where
@@ -128,15 +215,15 @@ macro_rules! bake_block {
 
         {
             let content = $crate::oven::Bake(&$first);
-            buf.reserve(content.size_hint());
-            content.bake_content(&mut buf);
+            buf.reserve((&&&content).size_hint());
+            (&&&content).bake_content(&mut buf);
         }
 
         $({
             let content = $crate::oven::Bake(&$rest);
-            buf.reserve(1 + content.size_hint());
+            buf.reserve(1 + (&&&content).size_hint());
             buf.push('\n');
-            content.bake_content(&mut buf);
+            (&&&content).bake_content(&mut buf);
         })*
 
         buf
@@ -171,8 +258,8 @@ macro_rules! bake_inline {
 
         $({
             let content = $crate::oven::Bake(&$item);
-            buf.reserve(content.size_hint());
-            content.bake_content(&mut buf);
+            buf.reserve((&&&content).size_hint());
+            (&&&content).bake_content(&mut buf);
         })*
 
         buf
@@ -204,9 +291,9 @@ macro_rules! bake_newline {
         use $crate::oven::Roast as _;
 
         let content = $crate::oven::Bake(&$item);
-        let mut buf = String::with_capacity(1 + content.size_hint());
+        let mut buf = String::with_capacity(1 + (&&&content).size_hint());
         buf.push('\n');
-        content.bake_content(&mut buf);
+        (&&&content).bake_content(&mut buf);
 
         buf
     }};
@@ -232,9 +319,77 @@ macro_rules! bake_newline {
 /// r#"<input type="submit" value="Send" formmethod="post" />"#);
 /// ```
 #[macro_export]
-macro_rules! rec {
+macro_rules! cookbook {
     ($a:ty) => { $a };
-    ($a:ty, $($rest:ty),+) => { ($a, $crate::rec!($($rest),+)) };
+    ($a:ty, $($rest:ty),+) => { ($a, $crate::cookbook!($($rest),+)) };
+}
+
+#[cfg(test)]
+mod from_content_type_tests {
+    use askama::{FastWritable, Values};
+    use std::fmt;
+
+    use crate::prelude::*;
+
+    #[derive(Default, Debug, Clone)]
+    struct Number;
+
+    impl PTag for Number {
+        type Content = BakeFrom<u32>;
+    }
+
+    #[derive(Default, Debug, Clone)]
+    struct Celsius(i32);
+
+    impl FastWritable for Celsius {
+        fn write_into(&self, dest: &mut dyn fmt::Write, _: &dyn Values) -> askama::Result<()> {
+            write!(dest, "{}°C", self.0)?;
+            Ok(())
+        }
+    }
+
+    #[derive(Default, Debug, Clone)]
+    struct Temperature;
+
+    impl PTag for Temperature {
+        type Content = BakeFrom<Celsius>;
+    }
+
+    #[test]
+    fn new_accepts_primitive_directly() {
+        let p: HtmlP<Number> = HtmlP::new(42);
+        assert_eq!(p.bake(), "<p>42</p>");
+    }
+
+    #[test]
+    fn new_accepts_explicit_wrapper() {
+        let p: HtmlP<Number> = HtmlP::new(BakeFrom(42u32));
+        assert_eq!(p.bake(), "<p>42</p>");
+    }
+
+    #[test]
+    fn bakes_back_into_default_content() {
+        let baked: HtmlP = HtmlP::<Number>::new(42).bake_recipe();
+        assert_eq!(baked.bake(), "<p>42</p>");
+    }
+
+    #[test]
+    fn new_accepts_custom_directly() {
+        let p: HtmlP<Temperature> = HtmlP::new(Celsius(26));
+        assert_eq!(p.bake(), "<p>26°C</p>");
+    }
+
+    #[test]
+    fn new_accepts_custom_explicit_wrapper() {
+        let p: HtmlP<Temperature> = HtmlP::new(BakeFrom(Celsius(26)));
+        assert_eq!(p.bake(), "<p>26°C</p>");
+    }
+
+    #[test]
+    fn bakes_back_custom_into_default_content() {
+        let baked: HtmlP = HtmlP::<Temperature>::new(Celsius(26)).bake_recipe();
+        assert_eq!(baked.bake(), "<p>26°C</p>");
+    }
 }
 
 #[cfg(test)]
@@ -263,6 +418,15 @@ mod oven_tests {
     }
 
     #[test]
+    fn bake_block_5() {
+        use crate::prelude::HtmlSpan;
+
+        let span: HtmlSpan = HtmlSpan::new("bar");
+
+        assert_eq!(bake_block!["foo", span, 42], "foo\n<span>bar</span>\n42");
+    }
+
+    #[test]
     fn bake_inline_1() {
         assert_eq!(bake_inline![""], "");
     }
@@ -286,6 +450,11 @@ mod oven_tests {
     }
 
     #[test]
+    fn bake_inline_5() {
+        assert_eq!(bake_inline![1, 2, 3], "123");
+    }
+
+    #[test]
     fn bake_newline_1() {
         assert_eq!(bake_newline!(""), "\n");
     }
@@ -298,6 +467,11 @@ mod oven_tests {
     #[test]
     fn bake_newline_3() {
         assert_eq!(bake_newline!("hello\nworld"), "\nhello\nworld");
+    }
+
+    #[test]
+    fn bake_newline_4() {
+        assert_eq!(bake_newline!(42), "\n42");
     }
 }
 
@@ -314,8 +488,9 @@ mod oven_tests {
 // - larger fixture (exceeds HINT): String capacity <= 2 * HINT
 #[cfg(test)]
 mod preallocation_tests {
-    use crate::prelude::*;
     use askama::Template;
+
+    use crate::prelude::*;
 
     const IMG_HINT: usize = <HtmlImg as Template>::SIZE_HINT;
     const P_HINT: usize = <HtmlP as Template>::SIZE_HINT;

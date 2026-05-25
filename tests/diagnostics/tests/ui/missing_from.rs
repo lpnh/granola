@@ -1,7 +1,5 @@
 // A recipe that overrides `type Content` but does not provide a `From` impl to
-// convert that content back into the element's default content type.
-//
-// Expected: the `BakeInto` diagnostic points here and asks for the `From` impl.
+// convert that content back into the default content type.
 
 use granola::prelude::*;
 

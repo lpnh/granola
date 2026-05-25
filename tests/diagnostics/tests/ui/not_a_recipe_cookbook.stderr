@@ -1,0 +1,81 @@
+error[E0277]: `NotARecipe` is not a recipe of `ButtonTag`
+  --> tests/ui/not_a_recipe_cookbook.rs:18:19
+   |
+18 |     let _button = HtmlButton::<Cookbook>::from_recipe();
+   |                   ^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonTag`
+   |
+help: the trait `granola::html::ButtonTag` is not implemented for `NotARecipe`
+  --> tests/ui/not_a_recipe_cookbook.rs:13:1
+   |
+13 | struct NotARecipe;
+   | ^^^^^^^^^^^^^^^^^
+   = help: the following other types implement trait `granola::html::ButtonTag`:
+             ()
+             (A, B)
+             SomeRecipe
+             granola::recipes::Button
+             granola::recipes::Dialog
+             granola::recipes::Get
+             granola::recipes::Post
+             granola::recipes::Reset
+             granola::recipes::Submit
+   = note: required for `(NotARecipe, granola::recipes::Center)` to implement `granola::html::ButtonTag`
+   = note: 2 redundant requirements hidden
+   = note: required for `(granola::recipes::Get, (SomeRecipe, (NotARecipe, granola::recipes::Center)))` to implement `granola::html::ButtonTag`
+note: required by a bound in `granola::html::HtmlButton`
+  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
+   |
+   | pub struct HtmlButton<R: ButtonTag = ()> {
+   |                          ^^^^^^^^^ required by this bound in `HtmlButton`
+
+error[E0277]: `granola::recipes::Center` is not a recipe of `ButtonTag`
+  --> tests/ui/not_a_recipe_cookbook.rs:18:19
+   |
+18 |     let _button = HtmlButton::<Cookbook>::from_recipe();
+   |                   ^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonTag`
+   |
+   = help: the trait `granola::html::ButtonTag` is not implemented for `granola::recipes::Center`
+   = help: the following other types implement trait `granola::html::ButtonTag`:
+             ()
+             (A, B)
+             SomeRecipe
+             granola::recipes::Button
+             granola::recipes::Dialog
+             granola::recipes::Get
+             granola::recipes::Post
+             granola::recipes::Reset
+             granola::recipes::Submit
+   = note: required for `(NotARecipe, granola::recipes::Center)` to implement `granola::html::ButtonTag`
+   = note: 2 redundant requirements hidden
+   = note: required for `(granola::recipes::Get, (SomeRecipe, (NotARecipe, granola::recipes::Center)))` to implement `granola::html::ButtonTag`
+note: required by a bound in `granola::html::HtmlButton`
+  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
+   |
+   | pub struct HtmlButton<R: ButtonTag = ()> {
+   |                          ^^^^^^^^^ required by this bound in `HtmlButton`
+
+error[E0599]: the associated function or constant `from_recipe` exists for struct `granola::html::HtmlButton<(granola::recipes::Get, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>`, but its trait bounds were not satisfied
+  --> tests/ui/not_a_recipe_cookbook.rs:18:43
+   |
+13 | struct NotARecipe;
+   | ----------------- doesn't satisfy `NotARecipe: granola::html::ButtonTag`
+...
+18 |     let _button = HtmlButton::<Cookbook>::from_recipe();
+   |                                           ^^^^^^^^^^^ associated function or constant cannot be called due to unsatisfied trait bounds
+   |
+  ::: $WORKSPACE/crates/granola/src/recipes/styles/properties/center.rs
+   |
+   | pub struct Center;
+   | ----------------- doesn't satisfy `granola::recipes::Center: granola::html::ButtonTag`
+   |
+   = note: the following trait bounds were not satisfied:
+           `NotARecipe: granola::html::ButtonTag`
+           which is required by `(granola::recipes::Get, (SomeRecipe, (NotARecipe, granola::recipes::Center))): granola::html::ButtonTag`
+           `granola::recipes::Center: granola::html::ButtonTag`
+           which is required by `(granola::recipes::Get, (SomeRecipe, (NotARecipe, granola::recipes::Center))): granola::html::ButtonTag`
+note: the trait `granola::html::ButtonTag` must be implemented
+  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
+   |
+   | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+   |                                                    ^^^^^^
+   = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)

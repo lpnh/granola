@@ -192,9 +192,9 @@ macro_rules! embed {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlDel::<$crate::rec!($($r),+)>::from_recipe()
+        $crate::html::HtmlDel::<$crate::cookbook!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $src:expr $(,)?) => {
-        $crate::html::HtmlDel::<$crate::rec!($($r),+)>::new($src)
+        $crate::html::HtmlDel::<$crate::cookbook!($($r),+)>::new($src)
     };
 }

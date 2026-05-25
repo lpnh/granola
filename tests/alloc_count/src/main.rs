@@ -4,10 +4,11 @@
 mod snippets;
 use snippets::*;
 
-use std::alloc::{GlobalAlloc, Layout, System};
-use std::cell::Cell;
-
 use askama::Template;
+use std::{
+    alloc::{GlobalAlloc, Layout, System},
+    cell::Cell,
+};
 
 use granola::prelude::*;
 

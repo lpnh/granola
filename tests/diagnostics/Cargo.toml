@@ -10,6 +10,7 @@ publish = false
 granola = { path = "../../crates/granola" }
 
 [dev-dependencies]
+askama = { workspace = true }
 trybuild = "1.0"
 
 [lints]

@@ -66,6 +66,6 @@ macro_rules! wbr {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlAbbr::<$crate::rec!($($r),+)>::from_recipe()
+        $crate::html::HtmlAbbr::<$crate::cookbook!($($r),+)>::from_recipe()
     };
 }

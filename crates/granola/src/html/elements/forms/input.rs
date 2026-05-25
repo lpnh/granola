@@ -651,15 +651,15 @@ macro_rules! input {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::from_recipe()
+        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $name:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::new($name)
+        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::new($name)
     };
     (@recipe $($r:ty),+ ; @from_value $value:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::from_value($value)
+        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::from_value($value)
     };
     (@recipe $($r:ty),+ ; @from_type $type:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::rec!($($r),+)>::from_type($type)
+        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::from_type($type)
     };
 }

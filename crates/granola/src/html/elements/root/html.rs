@@ -185,12 +185,12 @@ macro_rules! root {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlRoot::<$crate::rec!($($r),+)>::from_recipe()
+        $crate::html::HtmlRoot::<$crate::cookbook!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlRoot::<$crate::rec!($($r),+)>::new($content)
+        $crate::html::HtmlRoot::<$crate::cookbook!($($r),+)>::new($content)
     };
     (@recipe $($r:ty),+ ; $head:expr, $body:expr $(,)?) => {
-        $crate::html::HtmlRoot::<$crate::rec!($($r),+)>::new(($head, $body))
+        $crate::html::HtmlRoot::<$crate::cookbook!($($r),+)>::new(($head, $body))
     };
 }

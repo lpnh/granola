@@ -113,7 +113,7 @@ impl ButtonTag for OneLastRecipe {
 }
 
 fn main() {
-    type TmplRecipe = rec![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
+    type TmplRecipe = cookbook![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
 
     let tmpl: TmplBase<TmplRecipe> = TmplBase::from_recipe();
 
@@ -256,7 +256,7 @@ mod recipe_tests {
 
     #[test]
     fn composition_from_recipe_multiple() {
-        type LastFooBarRecipe = rec![FooRecipe, BarRecipe, OneLastRecipe];
+        type LastFooBarRecipe = cookbook![FooRecipe, BarRecipe, OneLastRecipe];
 
         let button: HtmlButton<(Reset, LastFooBarRecipe)> = HtmlButton::from_recipe();
 
@@ -321,7 +321,7 @@ mod recipe_tests {
 
     #[test]
     fn composition_new_multiple() {
-        type LastFooBarRecipe = rec![FooRecipe, BarRecipe, OneLastRecipe];
+        type LastFooBarRecipe = cookbook![FooRecipe, BarRecipe, OneLastRecipe];
 
         let button: HtmlButton<(Reset, LastFooBarRecipe)> = HtmlButton::new("Dismiss");
 
@@ -354,7 +354,7 @@ mod recipe_tests {
 
     #[test]
     fn template() {
-        type TmplRecipe = rec![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
+        type TmplRecipe = cookbook![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
         let tmpl: TmplBase<TmplRecipe> = TmplBase::from_recipe();
 
         assert_eq!(

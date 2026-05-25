@@ -107,18 +107,18 @@ macro_rules! head {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlHead::<$crate::rec!($($r),+)>::from_recipe()
+        $crate::html::HtmlHead::<$crate::cookbook!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlHead::<$crate::rec!($($r),+)>::new($content)
+        $crate::html::HtmlHead::<$crate::cookbook!($($r),+)>::new($content)
     };
     (@recipe $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::rec!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlHead::<$crate::cookbook!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
     };
     (@recipe $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlHead::<$crate::rec!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlHead::<$crate::cookbook!($($r),+)>::new($crate::bake_newline!($content))
     };
     (@recipe $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::rec!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHead::<$crate::cookbook!($($r),+)>::new($crate::bake_inline![$($content),+])
     };
 }

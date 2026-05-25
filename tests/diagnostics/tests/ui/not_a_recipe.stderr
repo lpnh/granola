@@ -1,15 +1,14 @@
-error[E0277]: `NotARecipe` is not a valid step in a `ButtonTag` recipe chain
+error[E0277]: `NotARecipe` is not a recipe of `ButtonTag`
   --> tests/ui/not_a_recipe.rs:16:18
    |
 16 |     let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_recipe();
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `NotARecipe` must implement `ButtonTag`
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonTag`
    |
 help: the trait `granola::html::ButtonTag` is not implemented for `NotARecipe`
   --> tests/ui/not_a_recipe.rs:13:1
    |
 13 | struct NotARecipe;
    | ^^^^^^^^^^^^^^^^^
-   = note: recipe steps compose via `rec![A, B, ...]` (nested tuples); each step and the `()` base must implement this trait
    = help: the following other types implement trait `granola::html::ButtonTag`:
              ()
              (A, B)
@@ -27,18 +26,17 @@ note: required by a bound in `granola::html::HtmlButton`
    | pub struct HtmlButton<R: ButtonTag = ()> {
    |                          ^^^^^^^^^ required by this bound in `HtmlButton`
 
-error[E0277]: `NotARecipe` is not a valid step in a `ButtonTag` recipe chain
+error[E0277]: `NotARecipe` is not a recipe of `ButtonTag`
   --> tests/ui/not_a_recipe.rs:16:57
    |
 16 |     let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_recipe();
-   |                                                         ^^^^^^^^^^ `NotARecipe` must implement `ButtonTag`
+   |                                                         ^^^^^^^^^^ all recipes must implement `ButtonTag`
    |
 help: the trait `granola::html::ButtonTag` is not implemented for `NotARecipe`
   --> tests/ui/not_a_recipe.rs:13:1
    |
 13 | struct NotARecipe;
    | ^^^^^^^^^^^^^^^^^
-   = note: recipe steps compose via `rec![A, B, ...]` (nested tuples); each step and the `()` base must implement this trait
    = help: the following other types implement trait `granola::html::ButtonTag`:
              ()
              (A, B)

@@ -213,9 +213,9 @@ macro_rules! source {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::html::HtmlObject::<$crate::rec!($($r),+)>::from_recipe()
+        $crate::html::HtmlObject::<$crate::cookbook!($($r),+)>::from_recipe()
     };
     (@recipe $($r:ty),+ ; $src:expr $(,)?) => {
-        $crate::html::HtmlObject::<$crate::rec!($($r),+)>::new($src)
+        $crate::html::HtmlObject::<$crate::cookbook!($($r),+)>::new($src)
     };
 }
