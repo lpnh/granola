@@ -7,10 +7,11 @@ use serde::Deserialize;
 use std::sync::{Arc, RwLock};
 
 use granola::{
+    cookbook::{MethodPost, RelStylesheet},
+    homemade::Homemade,
     macros::*,
     prelude::*,
-    recipes::{Homemade, Post, Stylesheet},
-    templates::TmplBase,
+    template::TmplBase,
 };
 
 use crate::utils::{Palette, is_valid_hex};
@@ -37,7 +38,7 @@ pub async fn home(State(shared_palette): State<Arc<RwLock<Palette>>>) -> Html<St
     let body = body!(palette_div(&palette));
 
     let title = title!("palette example");
-    let link = link!(@recipe Stylesheet; @from_href "/static/style.css");
+    let link = link!(@recipe RelStylesheet; @from_href "/static/style.css");
     let style_content = rule!(
         ":root";
         ("--base-100", palette.base_100),
@@ -71,7 +72,7 @@ fn palette_div(palette: &Palette) -> HtmlDiv {
         .name("bg_color")
         .value(palette.source.clone());
     let button = button!("Update");
-    let form = form!(@recipe Post; input, button).action("/form_endpoint");
+    let form = form!(@recipe MethodPost; input, button).action("/form_endpoint");
 
     div!(h1, swatches, form).class("palette")
 }

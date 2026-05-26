@@ -12,13 +12,13 @@ help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe
    = help: the following other types implement trait `granola::html::ButtonRecipe`:
              ()
              (A, B)
+             FormmethodDialog
+             FormmethodGet
+             FormmethodPost
              SomeRecipe
-             granola::recipes::Button
-             granola::recipes::Dialog
-             granola::recipes::Get
-             granola::recipes::Post
-             granola::recipes::Reset
-             granola::recipes::Submit
+             TypeButton
+             TypeReset
+             TypeSubmit
    = note: required for `(SomeRecipe, NotARecipe)` to implement `granola::html::ButtonRecipe`
 note: required by a bound in `granola::html::HtmlButton`
   --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
@@ -40,13 +40,13 @@ help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe
    = help: the following other types implement trait `granola::html::ButtonRecipe`:
              ()
              (A, B)
+             FormmethodDialog
+             FormmethodGet
+             FormmethodPost
              SomeRecipe
-             granola::recipes::Button
-             granola::recipes::Dialog
-             granola::recipes::Get
-             granola::recipes::Post
-             granola::recipes::Reset
-             granola::recipes::Submit
+             TypeButton
+             TypeReset
+             TypeSubmit
    = note: required for `(SomeRecipe, NotARecipe)` to implement `granola::html::ButtonRecipe`
 note: required by a bound in `granola::html::HtmlButton`
   --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs

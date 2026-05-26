@@ -328,9 +328,9 @@ macro_rules! bake_newline {
 /// # Example
 ///
 /// ```rust
-/// use granola::{prelude::*, recipes::*};
+/// use granola::{cookbook::*, prelude::*};
 ///
-/// type SubmitPost = (Submit, Post);
+/// type SubmitPost = (TypeSubmit, FormmethodPost);
 ///
 /// let input: HtmlInput<SubmitPost> = HtmlInput::from_value("Send");
 ///

@@ -1,4 +1,4 @@
-use granola::{prelude::*, recipes::*, templates::*};
+use granola::{homemade::*, prelude::*, template::*};
 
 #[derive(Default, Debug, Clone)]
 struct FooRecipe;
@@ -122,6 +122,8 @@ fn main() {
 
 #[cfg(test)]
 mod recipe_tests {
+    use granola::cookbook::TypeReset;
+
     use super::*;
 
     #[test]
@@ -258,7 +260,7 @@ mod recipe_tests {
     fn composition_from_recipe_multiple() {
         type LastFooBarRecipe = cookbook![FooRecipe, BarRecipe, OneLastRecipe];
 
-        let button: HtmlButton<(Reset, LastFooBarRecipe)> = HtmlButton::from_recipe();
+        let button: HtmlButton<(TypeReset, LastFooBarRecipe)> = HtmlButton::from_recipe();
 
         let p: HtmlP<LastFooBarRecipe> = HtmlP::from_recipe();
 
@@ -323,7 +325,7 @@ mod recipe_tests {
     fn composition_new_multiple() {
         type LastFooBarRecipe = cookbook![FooRecipe, BarRecipe, OneLastRecipe];
 
-        let button: HtmlButton<(Reset, LastFooBarRecipe)> = HtmlButton::new("Dismiss");
+        let button: HtmlButton<(TypeReset, LastFooBarRecipe)> = HtmlButton::new("Dismiss");
 
         let p: HtmlP<LastFooBarRecipe> = HtmlP::new("Oh, hi!");
 

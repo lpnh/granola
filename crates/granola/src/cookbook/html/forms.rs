@@ -1,0 +1,18 @@
+mod formmethod_dialog;
+pub use formmethod_dialog::*;
+mod formmethod_get;
+pub use formmethod_get::*;
+mod formmethod_post;
+pub use formmethod_post::*;
+mod method_dialog;
+pub use method_dialog::*;
+mod method_get;
+pub use method_get::*;
+mod method_post;
+pub use method_post::*;
+mod type_button;
+pub use type_button::*;
+mod type_reset;
+pub use type_reset::*;
+mod type_submit;
+pub use type_submit::*;

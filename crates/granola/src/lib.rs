@@ -2,12 +2,13 @@
 
 pub use granola_derive::{Granola, Recipe};
 
+pub mod cookbook;
 pub mod css;
 pub mod filters;
+pub mod homemade;
 pub mod html;
 pub mod oven;
-pub mod recipes;
-pub mod templates;
+pub mod template;
 
 pub mod prelude {
     pub use super::{
