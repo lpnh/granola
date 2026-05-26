@@ -18,8 +18,7 @@ use crate::prelude::*;
 ///
 /// let css_transform: CssTransform = CssTransform::new("scale(0.97)");
 ///
-/// assert_eq!(css_transform.bake(),
-/// "transform: scale(0.97);");
+/// assert_eq!(css_transform.bake(), "transform: scale(0.97);");
 /// ```
 ///
 /// # Askama template

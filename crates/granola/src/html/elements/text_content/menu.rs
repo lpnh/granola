@@ -14,29 +14,30 @@ use crate::{filters, prelude::*};
 ///
 /// let menu: HtmlMenu = HtmlMenu::empty().id("menu");
 ///
-/// assert_eq!(menu.bake(),
-/// r#"<menu id="menu"></menu>"#);
+/// assert_eq!(menu.bake(), r#"<menu id="menu"></menu>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let items = [
-///   HtmlLi::new("Buy"),
-///   HtmlLi::new("Use"),
-///   HtmlLi::new("Break"),
-///   HtmlLi::new("Fix"),
+///     HtmlLi::new("Buy"),
+///     HtmlLi::new("Use"),
+///     HtmlLi::new("Break"),
+///     HtmlLi::new("Fix"),
 /// ];
 ///
 /// let technologic: HtmlMenu = HtmlMenu::new(items);
 ///
-/// assert_eq!(technologic.bake(),
-/// r#"<menu>
+/// assert_eq!(
+///     technologic.bake(),
+///     r#"<menu>
 ///   <li>Buy</li>
 ///   <li>Use</li>
 ///   <li>Break</li>
 ///   <li>Fix</li>
-/// </menu>"#);
+/// </menu>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -74,48 +75,41 @@ pub struct HtmlMenu<R: MenuTag = ()> {
 ///
 /// let menu = menu!().id("menu");
 ///
-/// assert_eq!(menu.bake(),
-/// r#"<menu id="menu"></menu>"#);
+/// assert_eq!(menu.bake(), r#"<menu id="menu"></menu>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let items = [
-///   li!("Buy"),
-///   li!("Use"),
-///   li!("Break"),
-///   li!("Fix"),
-/// ];
+/// let items = [li!("Buy"), li!("Use"), li!("Break"), li!("Fix")];
 ///
 /// let technologic = menu!(items);
 ///
-/// assert_eq!(technologic.bake(),
-/// r#"<menu>
+/// assert_eq!(
+///     technologic.bake(),
+///     r#"<menu>
 ///   <li>Buy</li>
 ///   <li>Use</li>
 ///   <li>Break</li>
 ///   <li>Fix</li>
-/// </menu>"#);
+/// </menu>"#
+/// );
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let technologic = menu![
-///   li!("Write"),
-///   li!("Cut"),
-///   li!("Paste"),
-///   li!("Save"),
-/// ];
+/// let technologic = menu![li!("Write"), li!("Cut"), li!("Paste"), li!("Save"),];
 ///
-/// assert_eq!(technologic.bake(),
-/// r#"<menu>
+/// assert_eq!(
+///     technologic.bake(),
+///     r#"<menu>
 ///   <li>Write</li>
 ///   <li>Cut</li>
 ///   <li>Paste</li>
 ///   <li>Save</li>
-/// </menu>"#);
+/// </menu>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! menu {

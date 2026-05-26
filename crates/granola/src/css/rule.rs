@@ -14,10 +14,12 @@ use crate::prelude::*;
 ///
 /// let css_rule: CssRule = CssRule::new("p", ("color", "rebeccapurple"));
 ///
-/// assert_eq!(css_rule.bake(),
-/// "p {
+/// assert_eq!(
+///     css_rule.bake(),
+///     "p {
 ///   color: rebeccapurple;
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// ```rust
@@ -31,10 +33,12 @@ use crate::prelude::*;
 ///
 /// let css_rule: CssRule = CssRule::new(css_selector_list, css_properties_list);
 ///
-/// assert_eq!(css_rule.bake(),
-/// "p {
+/// assert_eq!(
+///     css_rule.bake(),
+///     "p {
 ///   color: rgb(102, 51, 153);
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// ```rust
@@ -45,10 +49,12 @@ use crate::prelude::*;
 ///
 /// let css_rule: CssRule = (css_selector, css_declaration).into();
 ///
-/// assert_eq!(css_rule.bake(),
-/// "p {
+/// assert_eq!(
+///     css_rule.bake(),
+///     "p {
 ///   color: rebeccapurple;
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// ```rust
@@ -62,11 +68,13 @@ use crate::prelude::*;
 ///     ],
 /// );
 ///
-/// assert_eq!(css_rule.bake(),
-/// ":root {
+/// assert_eq!(
+///     css_rule.bake(),
+///     ":root {
 ///   --base-100: oklch(93% 0.076 100.4);
 ///   --base-200: oklch(90% 0.086 100.4);
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// ```rust
@@ -74,17 +82,19 @@ use crate::prelude::*;
 ///
 /// let css_selector = ":root";
 /// let css_properties_list = [
-///    ("--base-100", "oklch(93% 0.076 100.4)"),
-///    ("--base-200", "oklch(90% 0.086 100.4)"),
+///     ("--base-100", "oklch(93% 0.076 100.4)"),
+///     ("--base-200", "oklch(90% 0.086 100.4)"),
 /// ];
 ///
 /// let css_rule: CssRule = (css_selector, css_properties_list).into();
 ///
-/// assert_eq!(css_rule.bake(),
-/// ":root {
+/// assert_eq!(
+///     css_rule.bake(),
+///     ":root {
 ///   --base-100: oklch(93% 0.076 100.4);
 ///   --base-200: oklch(90% 0.086 100.4);
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// # Askama template

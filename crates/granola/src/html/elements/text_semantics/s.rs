@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let s: HtmlS = HtmlS::empty().id("strikethrough");
 ///
-/// assert_eq!(s.bake(),
-/// r#"<s id="strikethrough"></s>"#);
+/// assert_eq!(s.bake(), r#"<s id="strikethrough"></s>"#);
 /// ```
 ///
 /// ```rust
@@ -23,10 +22,12 @@ use crate::{filters, prelude::*};
 ///
 /// let nine: HtmlS = HtmlS::new("nine");
 ///
-/// let solar_system = bake_inline!["Our solar system has ", nine ," eight planets"];
+/// let solar_system = bake_inline!["Our solar system has ", nine, " eight planets"];
 ///
-/// assert_eq!(solar_system,
-/// r#"Our solar system has <s>nine</s> eight planets"#);
+/// assert_eq!(
+///     solar_system,
+///     r#"Our solar system has <s>nine</s> eight planets"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -63,8 +64,7 @@ pub struct HtmlS<R: STag = ()> {
 ///
 /// let s = s!().id("strikethrough");
 ///
-/// assert_eq!(s.bake(),
-/// r#"<s id="strikethrough"></s>"#);
+/// assert_eq!(s.bake(), r#"<s id="strikethrough"></s>"#);
 /// ```
 ///
 /// ```rust
@@ -72,10 +72,12 @@ pub struct HtmlS<R: STag = ()> {
 ///
 /// let nine = s!("nine");
 ///
-/// let solar_system = bake_inline!["Our solar system has ", nine ," eight planets"];
+/// let solar_system = bake_inline!["Our solar system has ", nine, " eight planets"];
 ///
-/// assert_eq!(solar_system,
-/// r#"Our solar system has <s>nine</s> eight planets"#);
+/// assert_eq!(
+///     solar_system,
+///     r#"Our solar system has <s>nine</s> eight planets"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! s {

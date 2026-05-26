@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_text_decoration: CssTextDecoration = CssTextDecoration::new("none");
 ///
-/// assert_eq!(css_text_decoration.bake(),
-/// "text-decoration: none;");
+/// assert_eq!(css_text_decoration.bake(), "text-decoration: none;");
 /// ```
 ///
 /// # Askama template

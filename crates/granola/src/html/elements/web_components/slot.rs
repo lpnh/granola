@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let slot: HtmlSlot = HtmlSlot::empty().id("web_component_slot");
 ///
-/// assert_eq!(slot.bake(),
-/// r#"<slot id="web_component_slot"></slot>"#);
+/// assert_eq!(slot.bake(), r#"<slot id="web_component_slot"></slot>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let slot: HtmlSlot = HtmlSlot::empty().name("who");
 ///
-/// assert_eq!(slot.bake(),
-/// r#"<slot name="who"></slot>"#);
+/// assert_eq!(slot.bake(), r#"<slot name="who"></slot>"#);
 /// ```
 ///
 /// # Askama template
@@ -105,8 +103,7 @@ impl<R: SlotTag> HasSlotAttrs for HtmlSlot<R> {
 ///
 /// let slot = slot!().id("web_component_slot");
 ///
-/// assert_eq!(slot.bake(),
-/// r#"<slot id="web_component_slot"></slot>"#);
+/// assert_eq!(slot.bake(), r#"<slot id="web_component_slot"></slot>"#);
 /// ```
 ///
 /// ```rust
@@ -114,8 +111,7 @@ impl<R: SlotTag> HasSlotAttrs for HtmlSlot<R> {
 ///
 /// let slot = slot!().name("who");
 ///
-/// assert_eq!(slot.bake(),
-/// r#"<slot name="who"></slot>"#);
+/// assert_eq!(slot.bake(), r#"<slot name="who"></slot>"#);
 /// ```
 #[macro_export]
 macro_rules! slot {

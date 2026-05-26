@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let hgroup: HtmlHgroup = HtmlHgroup::empty().id("heading_group");
 ///
-/// assert_eq!(hgroup.bake(),
-/// r#"<hgroup id="heading_group"></hgroup>"#);
+/// assert_eq!(hgroup.bake(), r#"<hgroup id="heading_group"></hgroup>"#);
 /// ```
 ///
 /// ```rust
@@ -31,15 +30,17 @@ use crate::{filters, prelude::*};
 ///
 /// let hgroup: HtmlHgroup = HtmlHgroup::new(bake_block![heading, paragraph]);
 ///
-/// assert_eq!(hgroup.bake(),
-/// r#"<hgroup>
+/// assert_eq!(
+///     hgroup.bake(),
+///     r#"<hgroup>
 ///   <h2>Capítulo VIII.</h2>
 ///   <p>
 ///     Del buen suceso que el valeroso don Quijote tuvo en la espantable y
 ///     jamás imaginada aventura de los molinos de viento, con otros sucesos
 ///     dignos de felice recordación
 ///   </p>
-/// </hgroup>"#);
+/// </hgroup>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -76,8 +77,7 @@ pub struct HtmlHgroup<R: HgroupTag = ()> {
 ///
 /// let hgroup = hgroup!().id("heading_group");
 ///
-/// assert_eq!(hgroup.bake(),
-/// r#"<hgroup id="heading_group"></hgroup>"#);
+/// assert_eq!(hgroup.bake(), r#"<hgroup id="heading_group"></hgroup>"#);
 /// ```
 ///
 /// ```rust
@@ -93,15 +93,17 @@ pub struct HtmlHgroup<R: HgroupTag = ()> {
 ///
 /// let hgroup = hgroup!(heading, paragraph);
 ///
-/// assert_eq!(hgroup.bake(),
-/// r#"<hgroup>
+/// assert_eq!(
+///     hgroup.bake(),
+///     r#"<hgroup>
 ///   <h2>Capítulo VIII.</h2>
 ///   <p>
 ///     Del buen suceso que el valeroso don Quijote tuvo en la espantable y
 ///     jamás imaginada aventura de los molinos de viento, con otros sucesos
 ///     dignos de felice recordación
 ///   </p>
-/// </hgroup>"#);
+/// </hgroup>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! hgroup {

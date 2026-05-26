@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let tfoot: HtmlTfoot = HtmlTfoot::empty().id("table_foot");
 ///
-/// assert_eq!(tfoot.bake(),
-/// r#"<tfoot id="table_foot"></tfoot>"#);
+/// assert_eq!(tfoot.bake(), r#"<tfoot id="table_foot"></tfoot>"#);
 /// ```
 ///
 /// ```rust
@@ -26,12 +25,14 @@ use crate::{filters, prelude::*};
 ///
 /// let tfoot: HtmlTfoot = HtmlTfoot::new(tr);
 ///
-/// assert_eq!(tfoot.bake(),
-/// r#"<tfoot>
+/// assert_eq!(
+///     tfoot.bake(),
+///     r#"<tfoot>
 ///   <tr>
 ///     <td colspan="2">Don't see what you're after? We'll do our best.</td>
 ///   </tr>
-/// </tfoot>"#);
+/// </tfoot>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -68,8 +69,7 @@ pub struct HtmlTfoot<R: TfootTag = ()> {
 ///
 /// let tfoot = tfoot!().id("table_foot");
 ///
-/// assert_eq!(tfoot.bake(),
-/// r#"<tfoot id="table_foot"></tfoot>"#);
+/// assert_eq!(tfoot.bake(), r#"<tfoot id="table_foot"></tfoot>"#);
 /// ```
 ///
 /// ```rust

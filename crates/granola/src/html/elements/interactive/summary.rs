@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let summary: HtmlSummary = HtmlSummary::empty().id("disclosure_summary");
 ///
-/// assert_eq!(summary.bake(),
-/// r#"<summary id="disclosure_summary"></summary>"#);
+/// assert_eq!(
+///     summary.bake(),
+///     r#"<summary id="disclosure_summary"></summary>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -23,8 +25,7 @@ use crate::{filters, prelude::*};
 ///
 /// let summary: HtmlSummary = HtmlSummary::new("Don't forget");
 ///
-/// assert_eq!(summary.bake(),
-/// r#"<summary>Don't forget</summary>"#);
+/// assert_eq!(summary.bake(), r#"<summary>Don't forget</summary>"#);
 /// ```
 ///
 /// # Askama template
@@ -58,8 +59,10 @@ pub struct HtmlSummary<R: SummaryTag = ()> {
 ///
 /// let summary = summary!().id("disclosure_summary");
 ///
-/// assert_eq!(summary.bake(),
-/// r#"<summary id="disclosure_summary"></summary>"#);
+/// assert_eq!(
+///     summary.bake(),
+///     r#"<summary id="disclosure_summary"></summary>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -67,8 +70,7 @@ pub struct HtmlSummary<R: SummaryTag = ()> {
 ///
 /// let summary = summary!("Don't forget");
 ///
-/// assert_eq!(summary.bake(),
-/// r#"<summary>Don't forget</summary>"#);
+/// assert_eq!(summary.bake(), r#"<summary>Don't forget</summary>"#);
 /// ```
 #[macro_export]
 macro_rules! summary {

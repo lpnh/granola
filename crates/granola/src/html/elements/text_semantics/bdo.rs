@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let bdo: HtmlBdo = HtmlBdo::empty().id("bidirectional_text_override");
 ///
-/// assert_eq!(bdo.bake(),
-/// r#"<bdo id="bidirectional_text_override"></bdo>"#);
+/// assert_eq!(
+///     bdo.bake(),
+///     r#"<bdo id="bidirectional_text_override"></bdo>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -23,8 +25,7 @@ use crate::{filters, prelude::*};
 ///
 /// let bdo: HtmlBdo = HtmlBdo::new("looking-glass").dir("rtl");
 ///
-/// assert_eq!(bdo.bake(),
-/// r#"<bdo dir="rtl">looking-glass</bdo>"#);
+/// assert_eq!(bdo.bake(), r#"<bdo dir="rtl">looking-glass</bdo>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +62,10 @@ pub struct HtmlBdo<R: BdoTag = ()> {
 ///
 /// let bdo = bdo!().id("bidirectional_text_override");
 ///
-/// assert_eq!(bdo.bake(),
-/// r#"<bdo id="bidirectional_text_override"></bdo>"#);
+/// assert_eq!(
+///     bdo.bake(),
+///     r#"<bdo id="bidirectional_text_override"></bdo>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -70,8 +73,7 @@ pub struct HtmlBdo<R: BdoTag = ()> {
 ///
 /// let bdo = bdo!("looking-glass").dir("rtl");
 ///
-/// assert_eq!(bdo.bake(),
-/// r#"<bdo dir="rtl">looking-glass</bdo>"#);
+/// assert_eq!(bdo.bake(), r#"<bdo dir="rtl">looking-glass</bdo>"#);
 /// ```
 #[macro_export]
 macro_rules! bdo {

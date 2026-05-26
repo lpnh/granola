@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let dfn: HtmlDfn = HtmlDfn::empty().id("definition");
 ///
-/// assert_eq!(dfn.bake(),
-/// r#"<dfn id="definition"></dfn>"#);
+/// assert_eq!(dfn.bake(), r#"<dfn id="definition"></dfn>"#);
 /// ```
 ///
 /// ```rust
@@ -26,8 +25,10 @@ use crate::{filters, prelude::*};
 /// let about = bake_inline![corro, " the Unsafe Rusturchin"];
 /// let paragraph: HtmlP = HtmlP::new(about);
 ///
-/// assert_eq!(paragraph.bake(),
-/// r#"<p><dfn>Corro</dfn> the Unsafe Rusturchin</p>"#);
+/// assert_eq!(
+///     paragraph.bake(),
+///     r#"<p><dfn>Corro</dfn> the Unsafe Rusturchin</p>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -64,8 +65,7 @@ pub struct HtmlDfn<R: DfnTag = ()> {
 ///
 /// let dfn = dfn!().id("definition");
 ///
-/// assert_eq!(dfn.bake(),
-/// r#"<dfn id="definition"></dfn>"#);
+/// assert_eq!(dfn.bake(), r#"<dfn id="definition"></dfn>"#);
 /// ```
 ///
 /// ```rust

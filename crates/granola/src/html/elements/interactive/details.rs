@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let details: HtmlDetails = HtmlDetails::empty().id("details_disclosure");
 ///
-/// assert_eq!(details.bake(),
-/// r#"<details id="details_disclosure"></details>"#);
+/// assert_eq!(
+///     details.bake(),
+///     r#"<details id="details_disclosure"></details>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -25,11 +27,13 @@ use crate::{filters, prelude::*};
 ///
 /// let details: HtmlDetails = HtmlDetails::new(bake_block![summary, "Hope"]);
 ///
-/// assert_eq!(details.bake(),
-/// r#"<details>
+/// assert_eq!(
+///     details.bake(),
+///     r#"<details>
 ///   <summary>Pandora's box</summary>
 ///   Hope
-/// </details>"#);
+/// </details>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -120,8 +124,10 @@ impl<R: DetailsTag> HasDetailsAttrs for HtmlDetails<R> {
 ///
 /// let details = details!().id("details_disclosure");
 ///
-/// assert_eq!(details.bake(),
-/// r#"<details id="details_disclosure"></details>"#);
+/// assert_eq!(
+///     details.bake(),
+///     r#"<details id="details_disclosure"></details>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -131,11 +137,13 @@ impl<R: DetailsTag> HasDetailsAttrs for HtmlDetails<R> {
 ///
 /// let details = details![summary, "Hope"];
 ///
-/// assert_eq!(details.bake(),
-/// r#"<details>
+/// assert_eq!(
+///     details.bake(),
+///     r#"<details>
 ///   <summary>Pandora's box</summary>
 ///   Hope
-/// </details>"#);
+/// </details>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! details {

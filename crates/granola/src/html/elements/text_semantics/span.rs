@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let span: HtmlSpan = HtmlSpan::empty().id("content_span");
 ///
-/// assert_eq!(span.bake(),
-/// r#"<span id="content_span"></span>"#);
+/// assert_eq!(span.bake(), r#"<span id="content_span"></span>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let span: HtmlSpan = HtmlSpan::new("aesthetic").class("tracking-widest");
 ///
-/// assert_eq!(span.bake(),
-/// r#"<span class="tracking-widest">aesthetic</span>"#);
+/// assert_eq!(
+///     span.bake(),
+///     r#"<span class="tracking-widest">aesthetic</span>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -61,8 +62,7 @@ pub struct HtmlSpan<R: SpanTag = ()> {
 ///
 /// let span = span!().id("content_span");
 ///
-/// assert_eq!(span.bake(),
-/// r#"<span id="content_span"></span>"#);
+/// assert_eq!(span.bake(), r#"<span id="content_span"></span>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +70,10 @@ pub struct HtmlSpan<R: SpanTag = ()> {
 ///
 /// let span = span!("aesthetic").class("tracking-widest");
 ///
-/// assert_eq!(span.bake(),
-/// r#"<span class="tracking-widest">aesthetic</span>"#);
+/// assert_eq!(
+///     span.bake(),
+///     r#"<span class="tracking-widest">aesthetic</span>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! span {

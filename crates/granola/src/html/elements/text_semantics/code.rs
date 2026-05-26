@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let code: HtmlCode = HtmlCode::empty().id("inline_code");
 ///
-/// assert_eq!(code.bake(),
-/// r#"<code id="inline_code"></code>"#);
+/// assert_eq!(code.bake(), r#"<code id="inline_code"></code>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let code: HtmlCode = HtmlCode::new("todo!()");
 ///
-/// assert_eq!(code.bake(),
-/// r#"<code>todo!()</code>"#);
+/// assert_eq!(code.bake(), r#"<code>todo!()</code>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlCode<R: CodeTag = ()> {
 ///
 /// let code = code!().id("inline_code");
 ///
-/// assert_eq!(code.bake(),
-/// r#"<code id="inline_code"></code>"#);
+/// assert_eq!(code.bake(), r#"<code id="inline_code"></code>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlCode<R: CodeTag = ()> {
 ///
 /// let code = code!("todo!()");
 ///
-/// assert_eq!(code.bake(),
-/// r#"<code>todo!()</code>"#);
+/// assert_eq!(code.bake(), r#"<code>todo!()</code>"#);
 /// ```
 #[macro_export]
 macro_rules! code {

@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_outline_color: CssOutlineColor = CssOutlineColor::new("inherit");
 ///
-/// assert_eq!(css_outline_color.bake(),
-/// "outline-color: inherit;");
+/// assert_eq!(css_outline_color.bake(), "outline-color: inherit;");
 /// ```
 ///
 /// # Askama template

@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_line_height: CssLineHeight = CssLineHeight::new("1.25rem");
 ///
-/// assert_eq!(css_line_height.bake(),
-/// "line-height: 1.25rem;");
+/// assert_eq!(css_line_height.bake(), "line-height: 1.25rem;");
 /// ```
 ///
 /// # Askama template

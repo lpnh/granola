@@ -11,9 +11,11 @@ use crate::prelude::*;
 ///
 /// let tmpl: TmplBase = TmplBase::empty();
 ///
-/// assert_eq!(tmpl.bake(),
-/// r#"<!doctype html>
-/// <html></html>"#);
+/// assert_eq!(
+///     tmpl.bake(),
+///     r#"<!doctype html>
+/// <html></html>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -23,13 +25,15 @@ use crate::prelude::*;
 ///
 /// let tmpl: TmplBase = TmplBase::new(body);
 ///
-/// assert_eq!(tmpl.bake(),
-/// r#"<!doctype html>
+/// assert_eq!(
+///     tmpl.bake(),
+///     r#"<!doctype html>
 /// <html>
 ///   <body>
 ///     Hello, world!
 ///   </body>
-/// </html>"#);
+/// </html>"#
+/// );
 /// ```
 ///
 /// # Askama template

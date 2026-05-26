@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let blockquote: HtmlBlockquote = HtmlBlockquote::empty().id("block_quotation");
 ///
-/// assert_eq!(blockquote.bake(),
-/// r#"<blockquote id="block_quotation"></blockquote>"#);
+/// assert_eq!(
+///     blockquote.bake(),
+///     r#"<blockquote id="block_quotation"></blockquote>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -125,8 +127,10 @@ impl<R: BlockquoteTag> HasBlockquoteAttrs for HtmlBlockquote<R> {
 ///
 /// let blockquote = blockquote!().id("block_quotation");
 ///
-/// assert_eq!(blockquote.bake(),
-/// r#"<blockquote id="block_quotation"></blockquote>"#);
+/// assert_eq!(
+///     blockquote.bake(),
+///     r#"<blockquote id="block_quotation"></blockquote>"#
+/// );
 /// ```
 ///
 /// ```rust

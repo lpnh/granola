@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let b: HtmlB = HtmlB::empty().id("bring_attention_to");
 ///
-/// assert_eq!(b.bake(),
-/// r#"<b id="bring_attention_to"></b>"#);
+/// assert_eq!(b.bake(), r#"<b id="bring_attention_to"></b>"#);
 /// ```
 ///
 /// ```rust
@@ -27,8 +26,10 @@ use crate::{filters, prelude::*};
 ///
 /// let recipe = bake_inline!["Mix ", flour, ", ", water, ", and ", salt, "."];
 ///
-/// assert_eq!(recipe,
-/// r#"Mix <b>flour</b>, <b>water</b>, and <b>salt</b>."#);
+/// assert_eq!(
+///     recipe,
+///     r#"Mix <b>flour</b>, <b>water</b>, and <b>salt</b>."#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -65,8 +66,7 @@ pub struct HtmlB<R: BTag = ()> {
 ///
 /// let b = b!().id("bring_attention_to");
 ///
-/// assert_eq!(b.bake(),
-/// r#"<b id="bring_attention_to"></b>"#);
+/// assert_eq!(b.bake(), r#"<b id="bring_attention_to"></b>"#);
 /// ```
 ///
 /// ```rust
@@ -78,8 +78,10 @@ pub struct HtmlB<R: BTag = ()> {
 ///
 /// let recipe = bake_inline!["Mix ", flour, ", ", water, ", and ", salt, "."];
 ///
-/// assert_eq!(recipe,
-/// r#"Mix <b>flour</b>, <b>water</b>, and <b>salt</b>."#);
+/// assert_eq!(
+///     recipe,
+///     r#"Mix <b>flour</b>, <b>water</b>, and <b>salt</b>."#
+/// );
 /// ```
 #[macro_export]
 macro_rules! b {

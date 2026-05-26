@@ -11,8 +11,7 @@ use crate::prelude::*;
 ///
 /// let css_font_family: CssFontFamily<Inherit> = CssFontFamily::from_recipe();
 ///
-/// assert_eq!(css_font_family.bake(),
-/// "font-family: inherit;");
+/// assert_eq!(css_font_family.bake(), "font-family: inherit;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Inherit;

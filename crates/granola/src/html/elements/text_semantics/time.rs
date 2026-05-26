@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let time: HtmlTime = HtmlTime::empty().id("time_date");
 ///
-/// assert_eq!(time.bake(),
-/// r#"<time id="time_date"></time>"#);
+/// assert_eq!(time.bake(), r#"<time id="time_date"></time>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let time: HtmlTime = HtmlTime::new("Unix epoch").datetime("1970-01-01T00:00:00Z");
 ///
-/// assert_eq!(time.bake(),
-/// r#"<time datetime="1970-01-01T00:00:00Z">Unix epoch</time>"#);
+/// assert_eq!(
+///     time.bake(),
+///     r#"<time datetime="1970-01-01T00:00:00Z">Unix epoch</time>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -108,8 +109,7 @@ impl<R: TimeTag> HasTimeAttrs for HtmlTime<R> {
 ///
 /// let time = time!().id("time_date");
 ///
-/// assert_eq!(time.bake(),
-/// r#"<time id="time_date"></time>"#);
+/// assert_eq!(time.bake(), r#"<time id="time_date"></time>"#);
 /// ```
 ///
 /// ```rust
@@ -117,8 +117,10 @@ impl<R: TimeTag> HasTimeAttrs for HtmlTime<R> {
 ///
 /// let time = time!("Unix epoch").datetime("1970-01-01T00:00:00Z");
 ///
-/// assert_eq!(time.bake(),
-/// r#"<time datetime="1970-01-01T00:00:00Z">Unix epoch</time>"#);
+/// assert_eq!(
+///     time.bake(),
+///     r#"<time datetime="1970-01-01T00:00:00Z">Unix epoch</time>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! time {

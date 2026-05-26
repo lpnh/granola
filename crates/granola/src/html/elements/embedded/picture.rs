@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let picture: HtmlPicture = HtmlPicture::empty().id("picture");
 ///
-/// assert_eq!(picture.bake(),
-/// r#"<picture id="picture"></picture>"#);
+/// assert_eq!(picture.bake(), r#"<picture id="picture"></picture>"#);
 /// ```
 ///
 /// ```rust
@@ -28,11 +27,13 @@ use crate::{filters, prelude::*};
 ///
 /// let picture: HtmlPicture = HtmlPicture::new(bake_block![source, img]);
 ///
-/// assert_eq!(picture.bake(),
-/// r#"<picture>
+/// assert_eq!(
+///     picture.bake(),
+///     r#"<picture>
 ///   <source srcset="logo-wide.png" media="(width >= 600px)" />
 ///   <img src="logo-narrow.png" alt="logo" />
-/// </picture>"#);
+/// </picture>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -66,25 +67,24 @@ pub struct HtmlPicture<R: PictureTag = ()> {
 ///
 /// let picture = picture!().id("picture");
 ///
-/// assert_eq!(picture.bake(),
-/// r#"<picture id="picture"></picture>"#);
+/// assert_eq!(picture.bake(), r#"<picture id="picture"></picture>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let source = source!()
-///     .srcset("logo-wide.png")
-///     .media("(width >= 600px)");
+/// let source = source!().srcset("logo-wide.png").media("(width >= 600px)");
 /// let img: HtmlImg = HtmlImg::new("logo-narrow.png", "logo");
 ///
 /// let picture = picture!(source, img);
 ///
-/// assert_eq!(picture.bake(),
-/// r#"<picture>
+/// assert_eq!(
+///     picture.bake(),
+///     r#"<picture>
 ///   <source srcset="logo-wide.png" media="(width >= 600px)" />
 ///   <img src="logo-narrow.png" alt="logo" />
-/// </picture>"#);
+/// </picture>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! picture {

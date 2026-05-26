@@ -5,12 +5,11 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let charset: HtmlMeta<Charset> = HtmlMeta::from_recipe();
 ///
-/// assert_eq!(charset.bake(),
-/// r#"<meta charset="utf-8" />"#);
+/// assert_eq!(charset.bake(), r#"<meta charset="utf-8" />"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Charset;
@@ -26,12 +25,14 @@ impl MetaTag for Charset {
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let viewport: HtmlMeta<Viewport> = HtmlMeta::new("width=device-width, initial-scale=1");
 ///
-/// assert_eq!(viewport.bake(),
-/// r#"<meta name="viewport" content="width=device-width, initial-scale=1" />"#);
+/// assert_eq!(
+///     viewport.bake(),
+///     r#"<meta name="viewport" content="width=device-width, initial-scale=1" />"#
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Viewport;
@@ -47,12 +48,14 @@ impl MetaTag for Viewport {
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let robots: HtmlMeta<Robots> = HtmlMeta::new("noindex, nofollow");
 ///
-/// assert_eq!(robots.bake(),
-/// r#"<meta name="robots" content="noindex, nofollow" />"#);
+/// assert_eq!(
+///     robots.bake(),
+///     r#"<meta name="robots" content="noindex, nofollow" />"#
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Robots;

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let option: HtmlOption = HtmlOption::empty().id("html_option");
 ///
-/// assert_eq!(option.bake(),
-/// r#"<option id="html_option"></option>"#);
+/// assert_eq!(option.bake(), r#"<option id="html_option"></option>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let option: HtmlOption = HtmlOption::new("Chocolate").value("chocolate");
 ///
-/// assert_eq!(option.bake(),
-/// r#"<option value="chocolate">Chocolate</option>"#);
+/// assert_eq!(
+///     option.bake(),
+///     r#"<option value="chocolate">Chocolate</option>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -188,8 +189,7 @@ impl<I: IntoIterator<Item = HtmlOption>> From<I> for Options {
 ///
 /// let option = option!().id("html_option");
 ///
-/// assert_eq!(option.bake(),
-/// r#"<option id="html_option"></option>"#);
+/// assert_eq!(option.bake(), r#"<option id="html_option"></option>"#);
 /// ```
 ///
 /// ```rust
@@ -197,8 +197,10 @@ impl<I: IntoIterator<Item = HtmlOption>> From<I> for Options {
 ///
 /// let option = option!("Chocolate").value("chocolate");
 ///
-/// assert_eq!(option.bake(),
-/// r#"<option value="chocolate">Chocolate</option>"#);
+/// assert_eq!(
+///     option.bake(),
+///     r#"<option value="chocolate">Chocolate</option>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! option {

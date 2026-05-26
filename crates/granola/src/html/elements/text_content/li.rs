@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let li: HtmlLi = HtmlLi::empty().id("list_item");
 ///
-/// assert_eq!(li.bake(),
-/// r#"<li id="list_item"></li>"#);
+/// assert_eq!(li.bake(), r#"<li id="list_item"></li>"#);
 /// ```
 ///
 /// ```rust
@@ -26,9 +25,11 @@ use crate::{filters, prelude::*};
 ///
 /// let items = bake_block![sugar, spice];
 ///
-/// assert_eq!(items,
-/// r#"<li>sugar</li>
-/// <li>spice</li>"#);
+/// assert_eq!(
+///     items,
+///     r#"<li>sugar</li>
+/// <li>spice</li>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -142,8 +143,7 @@ impl From<HtmlLi> for ListItems {
 ///
 /// let li = li!().id("list_item");
 ///
-/// assert_eq!(li.bake(),
-/// r#"<li id="list_item"></li>"#);
+/// assert_eq!(li.bake(), r#"<li id="list_item"></li>"#);
 /// ```
 ///
 /// ```rust
@@ -154,9 +154,11 @@ impl From<HtmlLi> for ListItems {
 ///
 /// let items = bake_block![sugar, spice];
 ///
-/// assert_eq!(items,
-/// r#"<li>sugar</li>
-/// <li>spice</li>"#);
+/// assert_eq!(
+///     items,
+///     r#"<li>sugar</li>
+/// <li>spice</li>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! li {

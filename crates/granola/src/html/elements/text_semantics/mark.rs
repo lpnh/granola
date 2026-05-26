@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let mark: HtmlMark = HtmlMark::empty().id("mark_text");
 ///
-/// assert_eq!(mark.bake(),
-/// r#"<mark id="mark_text"></mark>"#);
+/// assert_eq!(mark.bake(), r#"<mark id="mark_text"></mark>"#);
 /// ```
 ///
 /// ```rust
@@ -35,14 +34,16 @@ use crate::{filters, prelude::*};
 ///     "Among the deepening shades."
 /// ];
 ///
-/// assert_eq!(the_tower,
-/// r#"Seem <mark>but the clouds</mark> of the sky
+/// assert_eq!(
+///     the_tower,
+///     r#"Seem <mark>but the clouds</mark> of the sky
 /// <br />
 /// When the horizon fades;
 /// <br />
 /// Or a bird's sleepy cry
 /// <br />
-/// Among the deepening shades."#);
+/// Among the deepening shades."#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -79,8 +80,7 @@ pub struct HtmlMark<R: MarkTag = ()> {
 ///
 /// let mark = mark!().id("mark_text");
 ///
-/// assert_eq!(mark.bake(),
-/// r#"<mark id="mark_text"></mark>"#);
+/// assert_eq!(mark.bake(), r#"<mark id="mark_text"></mark>"#);
 /// ```
 ///
 /// ```rust
@@ -100,14 +100,16 @@ pub struct HtmlMark<R: MarkTag = ()> {
 ///     "Among the deepening shades."
 /// ];
 ///
-/// assert_eq!(the_tower,
-/// r#"Seem <mark>but the clouds</mark> of the sky
+/// assert_eq!(
+///     the_tower,
+///     r#"Seem <mark>but the clouds</mark> of the sky
 /// <br />
 /// When the horizon fades;
 /// <br />
 /// Or a bird's sleepy cry
 /// <br />
-/// Among the deepening shades."#);
+/// Among the deepening shades."#
+/// );
 /// ```
 #[macro_export]
 macro_rules! mark {

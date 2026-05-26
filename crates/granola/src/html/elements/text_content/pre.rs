@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let pre: HtmlPre = HtmlPre::empty().id("preformatted_text");
 ///
-/// assert_eq!(pre.bake(),
-/// r#"<pre id="preformatted_text"></pre>"#);
+/// assert_eq!(pre.bake(), r#"<pre id="preformatted_text"></pre>"#);
 /// ```
 ///
 /// ```rust
@@ -32,15 +31,18 @@ use crate::{filters, prelude::*};
 ///           '_   -   _'
 ///           / '-----' \"#;
 ///
-/// let pre: HtmlPre = HtmlPre::new(ferris_ascii).role("img").aria_label("ASCII ferris");
+/// let pre: HtmlPre = HtmlPre::new(ferris_ascii)
+///     .role("img")
+///     .aria_label("ASCII ferris");
 ///
 /// let url: HtmlA = HtmlA::new("ferris-says").href(r#"https://crates.io/crates/ferris-says"#);
 /// let cite: HtmlCite = HtmlCite::new(url);
 ///
 /// let ferris_says = bake_block![pre, cite];
 ///
-/// assert_eq!(ferris_says,
-/// r#"<pre role="img" aria-label="ASCII ferris">
+/// assert_eq!(
+///     ferris_says,
+///     r#"<pre role="img" aria-label="ASCII ferris">
 ///  __________________________
 /// &lt; Hello fellow Rustaceans! &gt;
 ///  --------------------------
@@ -51,7 +53,8 @@ use crate::{filters, prelude::*};
 ///           '_   -   _'
 ///           / '-----' \
 /// </pre>
-/// <cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#);
+/// <cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -88,8 +91,7 @@ pub struct HtmlPre<R: PreTag = ()> {
 ///
 /// let pre = pre!().id("preformatted_text");
 ///
-/// assert_eq!(pre.bake(),
-/// r#"<pre id="preformatted_text"></pre>"#);
+/// assert_eq!(pre.bake(), r#"<pre id="preformatted_text"></pre>"#);
 /// ```
 ///
 /// ```rust
@@ -113,8 +115,9 @@ pub struct HtmlPre<R: PreTag = ()> {
 ///
 /// let ferris_says = bake_block![pre, cite];
 ///
-/// assert_eq!(ferris_says,
-/// r#"<pre role="img" aria-label="ASCII ferris">
+/// assert_eq!(
+///     ferris_says,
+///     r#"<pre role="img" aria-label="ASCII ferris">
 ///  __________________________
 /// &lt; Hello fellow Rustaceans! &gt;
 ///  --------------------------
@@ -125,7 +128,8 @@ pub struct HtmlPre<R: PreTag = ()> {
 ///           '_   -   _'
 ///           / '-----' \
 /// </pre>
-/// <cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#);
+/// <cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! pre {

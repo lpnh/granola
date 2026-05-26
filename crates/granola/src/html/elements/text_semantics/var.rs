@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let var: HtmlVar = HtmlVar::empty().id("variable");
 ///
-/// assert_eq!(var.bake(),
-/// r#"<var id="variable"></var>"#);
+/// assert_eq!(var.bake(), r#"<var id="variable"></var>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,10 @@ use crate::{filters, prelude::*};
 ///
 /// let triangle = bake_inline!["An equilateral triangle with side ", var];
 ///
-/// assert_eq!(triangle,
-/// r#"An equilateral triangle with side <var>a</var>"#);
+/// assert_eq!(
+///     triangle,
+///     r#"An equilateral triangle with side <var>a</var>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -63,8 +64,7 @@ pub struct HtmlVar<R: VarTag = ()> {
 ///
 /// let var = var!().id("variable");
 ///
-/// assert_eq!(var.bake(),
-/// r#"<var id="variable"></var>"#);
+/// assert_eq!(var.bake(), r#"<var id="variable"></var>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +74,10 @@ pub struct HtmlVar<R: VarTag = ()> {
 ///
 /// let triangle = bake_inline!["An equilateral triangle with side ", var];
 ///
-/// assert_eq!(triangle,
-/// r#"An equilateral triangle with side <var>a</var>"#);
+/// assert_eq!(
+///     triangle,
+///     r#"An equilateral triangle with side <var>a</var>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! var {

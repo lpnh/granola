@@ -14,20 +14,23 @@ use crate::{filters, prelude::*};
 ///
 /// let q: HtmlQ = HtmlQ::empty().id("inline_quotation");
 ///
-/// assert_eq!(q.bake(),
-/// r#"<q id="inline_quotation"></q>"#);
+/// assert_eq!(q.bake(), r#"<q id="inline_quotation"></q>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let q: HtmlQ = HtmlQ::new(bake_newline!("This element is intended for short quotations"))
-///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
+/// let q: HtmlQ = HtmlQ::new(bake_newline!(
+///     "This element is intended for short quotations"
+/// ))
+/// .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
 ///
-/// assert_eq!(q.bake(),
-/// r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q">
+/// assert_eq!(
+///     q.bake(),
+///     r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q">
 ///   This element is intended for short quotations
-/// </q>"#);
+/// </q>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -111,8 +114,7 @@ impl<R: QTag> HasQAttrs for HtmlQ<R> {
 ///
 /// let q = q!().id("inline_quotation");
 ///
-/// assert_eq!(q.bake(),
-/// r#"<q id="inline_quotation"></q>"#);
+/// assert_eq!(q.bake(), r#"<q id="inline_quotation"></q>"#);
 /// ```
 ///
 /// ```rust

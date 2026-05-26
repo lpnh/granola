@@ -5,12 +5,11 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let link: HtmlLink<Stylesheet> = HtmlLink::from_href("main.css");
 ///
-/// assert_eq!(link.bake(),
-/// r#"<link href="main.css" rel="stylesheet" />"#);
+/// assert_eq!(link.bake(), r#"<link href="main.css" rel="stylesheet" />"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Stylesheet;

@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let template: HtmlTemplate = HtmlTemplate::empty().id("content_template");
 ///
-/// assert_eq!(template.bake(),
-/// r#"<template id="content_template"></template>"#);
+/// assert_eq!(
+///     template.bake(),
+///     r#"<template id="content_template"></template>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -35,14 +37,16 @@ use crate::{filters, prelude::*};
 ///
 /// let template: HtmlTemplate = HtmlTemplate::new(content).id("tmpl");
 ///
-/// assert_eq!(template.bake(),
-/// r#"<template id="tmpl">
+/// assert_eq!(
+///     template.bake(),
+///     r#"<template id="tmpl">
 ///   <p>Knock knock.</p>
 ///   <p>Who's there?</p>
 ///   <p><slot name="setup"></slot>.</p>
 ///   <p><slot name="setup"></slot> who?</p>
 ///   <p><slot name="punchline"></slot></p>
-/// </template>"#);
+/// </template>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -104,7 +108,8 @@ pub trait HasTemplateAttrs: Sized {
         self
     }
 
-    /// Enables declarative shadow roots to indicate they will use a custom element registry.
+    /// Enables declarative shadow roots to indicate they will use a custom
+    /// element registry.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootcustomelementregistry)
     fn shadowrootcustomelementregistry(mut self, value: bool) -> Self {
@@ -168,8 +173,10 @@ impl<R: TemplateTag> HasTemplateAttrs for HtmlTemplate<R> {
 ///
 /// let template = template!().id("content_template");
 ///
-/// assert_eq!(template.bake(),
-/// r#"<template id="content_template"></template>"#);
+/// assert_eq!(
+///     template.bake(),
+///     r#"<template id="content_template"></template>"#
+/// );
 /// ```
 ///
 /// ```rust

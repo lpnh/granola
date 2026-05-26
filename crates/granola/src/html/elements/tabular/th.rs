@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let th: HtmlTh = HtmlTh::empty().id("table_header");
 ///
-/// assert_eq!(th.bake(),
-/// r#"<th id="table_header"></th>"#);
+/// assert_eq!(th.bake(), r#"<th id="table_header"></th>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let th: HtmlTh = HtmlTh::new("Hot chocolate").scope("row");
 ///
-/// assert_eq!(th.bake(),
-/// r#"<th scope="row">Hot chocolate</th>"#);
+/// assert_eq!(th.bake(), r#"<th scope="row">Hot chocolate</th>"#);
 /// ```
 ///
 /// # Askama template
@@ -80,7 +78,8 @@ pub struct ThAttrs {
 pub trait HasThAttrs: Sized {
     fn th_attrs_mut(&mut self) -> &mut ThAttrs;
 
-    /// Alternative label to use for the header cell when referencing the cell in other contexts.
+    /// Alternative label to use for the header cell when referencing the cell
+    /// in other contexts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#abbr)
     fn abbr(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -148,8 +147,7 @@ impl<R: ThTag> HasThAttrs for HtmlTh<R> {
 ///
 /// let th = th!().id("table_header");
 ///
-/// assert_eq!(th.bake(),
-/// r#"<th id="table_header"></th>"#);
+/// assert_eq!(th.bake(), r#"<th id="table_header"></th>"#);
 /// ```
 ///
 /// ```rust
@@ -157,8 +155,7 @@ impl<R: ThTag> HasThAttrs for HtmlTh<R> {
 ///
 /// let th = th!("Hot chocolate").scope("row");
 ///
-/// assert_eq!(th.bake(),
-/// r#"<th scope="row">Hot chocolate</th>"#);
+/// assert_eq!(th.bake(), r#"<th scope="row">Hot chocolate</th>"#);
 /// ```
 #[macro_export]
 macro_rules! th {

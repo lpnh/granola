@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let td: HtmlTd = HtmlTd::empty().id("table_data_cell");
 ///
-/// assert_eq!(td.bake(),
-/// r#"<td id="table_data_cell"></td>"#);
+/// assert_eq!(td.bake(), r#"<td id="table_data_cell"></td>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let td: HtmlTd = HtmlTd::new("Melted dark chocolate with milk");
 ///
-/// assert_eq!(td.bake(),
-/// r#"<td>Melted dark chocolate with milk</td>"#);
+/// assert_eq!(td.bake(), r#"<td>Melted dark chocolate with milk</td>"#);
 /// ```
 ///
 /// # Askama template
@@ -128,8 +126,7 @@ impl<R: TdTag> HasTdAttrs for HtmlTd<R> {
 ///
 /// let td = td!().id("table_data_cell");
 ///
-/// assert_eq!(td.bake(),
-/// r#"<td id="table_data_cell"></td>"#);
+/// assert_eq!(td.bake(), r#"<td id="table_data_cell"></td>"#);
 /// ```
 ///
 /// ```rust
@@ -137,8 +134,7 @@ impl<R: TdTag> HasTdAttrs for HtmlTd<R> {
 ///
 /// let td = td!("Melted dark chocolate with milk");
 ///
-/// assert_eq!(td.bake(),
-/// r#"<td>Melted dark chocolate with milk</td>"#);
+/// assert_eq!(td.bake(), r#"<td>Melted dark chocolate with milk</td>"#);
 /// ```
 #[macro_export]
 macro_rules! td {

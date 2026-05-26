@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let aside: HtmlAside = HtmlAside::empty().id("aside");
 ///
-/// assert_eq!(aside.bake(),
-/// r#"<aside id="aside"></aside>"#);
+/// assert_eq!(aside.bake(), r#"<aside id="aside"></aside>"#);
 /// ```
 ///
 /// ```rust
@@ -26,10 +25,12 @@ use crate::{filters, prelude::*};
 ///
 /// let aside: HtmlAside = HtmlAside::new(bake_newline!(content)).role("note");
 ///
-/// assert_eq!(aside.bake(),
-/// r#"<aside role="note">
+/// assert_eq!(
+///     aside.bake(),
+///     r#"<aside role="note">
 ///   <p><strong>Tip:</strong> trust your senses more than the timer.</p>
-/// </aside>"#);
+/// </aside>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -66,8 +67,7 @@ pub struct HtmlAside<R: AsideTag = ()> {
 ///
 /// let aside = aside!().id("aside");
 ///
-/// assert_eq!(aside.bake(),
-/// r#"<aside id="aside"></aside>"#);
+/// assert_eq!(aside.bake(), r#"<aside id="aside"></aside>"#);
 /// ```
 ///
 /// ```rust

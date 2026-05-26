@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let u: HtmlU = HtmlU::empty().id("unarticulated_annotation");
 ///
-/// assert_eq!(u.bake(),
-/// r#"<u id="unarticulated_annotation"></u>"#);
+/// assert_eq!(u.bake(), r#"<u id="unarticulated_annotation"></u>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,7 @@ use crate::{filters, prelude::*};
 ///
 /// let hewwo_wowwd = bake_inline!["hewwo, ", wowwd, "!"];
 ///
-/// assert_eq!(hewwo_wowwd,
-/// r#"hewwo, <u>world</u>!"#);
+/// assert_eq!(hewwo_wowwd, r#"hewwo, <u>world</u>!"#);
 /// ```
 ///
 /// # Askama template
@@ -63,8 +61,7 @@ pub struct HtmlU<R: UTag = ()> {
 ///
 /// let u = u!().id("unarticulated_annotation");
 ///
-/// assert_eq!(u.bake(),
-/// r#"<u id="unarticulated_annotation"></u>"#);
+/// assert_eq!(u.bake(), r#"<u id="unarticulated_annotation"></u>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +71,7 @@ pub struct HtmlU<R: UTag = ()> {
 ///
 /// let hewwo_wowwd = bake_inline!["hewwo, ", wowwd, "!"];
 ///
-/// assert_eq!(hewwo_wowwd,
-/// r#"hewwo, <u>world</u>!"#);
+/// assert_eq!(hewwo_wowwd, r#"hewwo, <u>world</u>!"#);
 /// ```
 #[macro_export]
 macro_rules! u {

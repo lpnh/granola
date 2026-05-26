@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let sub: HtmlSub = HtmlSub::empty().id("subscript");
 ///
-/// assert_eq!(sub.bake(),
-/// r#"<sub id="subscript"></sub>"#);
+/// assert_eq!(sub.bake(), r#"<sub id="subscript"></sub>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,7 @@ use crate::{filters, prelude::*};
 ///
 /// let water = bake_inline!["H", sub, "O"];
 ///
-/// assert_eq!(water,
-/// r#"H<sub>2</sub>O"#);
+/// assert_eq!(water, r#"H<sub>2</sub>O"#);
 /// ```
 ///
 /// # Askama template
@@ -63,8 +61,7 @@ pub struct HtmlSub<R: SubTag = ()> {
 ///
 /// let sub = sub!().id("subscript");
 ///
-/// assert_eq!(sub.bake(),
-/// r#"<sub id="subscript"></sub>"#);
+/// assert_eq!(sub.bake(), r#"<sub id="subscript"></sub>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +71,7 @@ pub struct HtmlSub<R: SubTag = ()> {
 ///
 /// let water = bake_inline!["H", sub, "O"];
 ///
-/// assert_eq!(water,
-/// r#"H<sub>2</sub>O"#);
+/// assert_eq!(water, r#"H<sub>2</sub>O"#);
 /// ```
 #[macro_export]
 macro_rules! sub {

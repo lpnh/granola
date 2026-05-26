@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let dt: HtmlDt = HtmlDt::empty().id("description_term");
 ///
-/// assert_eq!(dt.bake(),
-/// r#"<dt id="description_term"></dt>"#);
+/// assert_eq!(dt.bake(), r#"<dt id="description_term"></dt>"#);
 /// ```
 ///
 /// ```rust
@@ -26,9 +25,11 @@ use crate::{filters, prelude::*};
 ///
 /// let term = bake_block![dt, dd];
 ///
-/// assert_eq!(term,
-/// r#"<dt>Pålegg</dt>
-/// <dd>Anything and everything you might put on a slice of bread.</dd>"#);
+/// assert_eq!(
+///     term,
+///     r#"<dt>Pålegg</dt>
+/// <dd>Anything and everything you might put on a slice of bread.</dd>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -65,8 +66,7 @@ pub struct HtmlDt<R: DtTag = ()> {
 ///
 /// let dt = dt!().id("description_term");
 ///
-/// assert_eq!(dt.bake(),
-/// r#"<dt id="description_term"></dt>"#);
+/// assert_eq!(dt.bake(), r#"<dt id="description_term"></dt>"#);
 /// ```
 ///
 /// ```rust
@@ -77,9 +77,11 @@ pub struct HtmlDt<R: DtTag = ()> {
 ///
 /// let term = bake_block![dt, dd];
 ///
-/// assert_eq!(term,
-/// r#"<dt>Pålegg</dt>
-/// <dd>Anything and everything you might put on a slice of bread.</dd>"#);
+/// assert_eq!(
+///     term,
+///     r#"<dt>Pålegg</dt>
+/// <dd>Anything and everything you might put on a slice of bread.</dd>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! dt {

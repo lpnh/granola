@@ -18,8 +18,7 @@ use crate::prelude::*;
 ///
 /// let css_color: CssColor = CssColor::new("rebeccapurple");
 ///
-/// assert_eq!(css_color.bake(),
-/// "color: rebeccapurple;");
+/// assert_eq!(css_color.bake(), "color: rebeccapurple;");
 /// ```
 ///
 /// # Askama template

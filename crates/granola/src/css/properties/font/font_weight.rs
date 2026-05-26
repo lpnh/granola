@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_font_weight: CssFontWeight = CssFontWeight::new("500");
 ///
-/// assert_eq!(css_font_weight.bake(),
-/// "font-weight: 500;");
+/// assert_eq!(css_font_weight.bake(), "font-weight: 500;");
 /// ```
 ///
 /// # Askama template

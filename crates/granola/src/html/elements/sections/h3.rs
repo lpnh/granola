@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h3: HtmlH3 = HtmlH3::empty().id("html_section_heading");
 ///
-/// assert_eq!(h3.bake(),
-/// r#"<h3 id="html_section_heading"></h3>"#);
+/// assert_eq!(h3.bake(), r#"<h3 id="html_section_heading"></h3>"#);
 /// ```
 ///
 /// ```rust
@@ -27,8 +26,10 @@ use crate::{filters, prelude::*};
 ///
 /// let h3: HtmlH3 = HtmlH3::new(content);
 ///
-/// assert_eq!(h3.bake(),
-/// r#"<h3>Unrecoverable Errors with <code>panic!</code></h3>"#);
+/// assert_eq!(
+///     h3.bake(),
+///     r#"<h3>Unrecoverable Errors with <code>panic!</code></h3>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -65,8 +66,7 @@ pub struct HtmlH3<R: H3Tag = ()> {
 ///
 /// let h3 = h3!().id("html_section_heading");
 ///
-/// assert_eq!(h3.bake(),
-/// r#"<h3 id="html_section_heading"></h3>"#);
+/// assert_eq!(h3.bake(), r#"<h3 id="html_section_heading"></h3>"#);
 /// ```
 ///
 /// ```rust

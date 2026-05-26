@@ -14,25 +14,26 @@ use crate::prelude::*;
 ///
 /// let at_rule: CssAtRule = CssAtRule::new("import", r#"url("layout.css")"#);
 ///
-/// assert_eq!(at_rule.bake(),
-/// r#"@import url("layout.css");"#);
+/// assert_eq!(at_rule.bake(), r#"@import url("layout.css");"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let block = bake_block![
-///   "from { transform: translateX(0%); }",
-///   "to { transform: translateX(100%); }",
+///     "from { transform: translateX(0%); }",
+///     "to { transform: translateX(100%); }",
 /// ];
 ///
 /// let at_rule: CssAtRule = CssAtRule::new("keyframes", "slide-in").block(block);
 ///
-/// assert_eq!(at_rule.bake(),
-/// "@keyframes slide-in {
+/// assert_eq!(
+///     at_rule.bake(),
+///     "@keyframes slide-in {
 ///   from { transform: translateX(0%); }
 ///   to { transform: translateX(100%); }
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// # Askama template
@@ -92,25 +93,26 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
 ///
 /// let at_rule = at_rule!("import", r#"url("layout.css")"#);
 ///
-/// assert_eq!(at_rule.bake(),
-/// r#"@import url("layout.css");"#);
+/// assert_eq!(at_rule.bake(), r#"@import url("layout.css");"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
 /// let block = bake_block![
-///   "from { transform: translateX(0%); }",
-///   "to { transform: translateX(100%); }",
+///     "from { transform: translateX(0%); }",
+///     "to { transform: translateX(100%); }",
 /// ];
 ///
 /// let at_rule = at_rule!("keyframes", "slide-in").block(block);
 ///
-/// assert_eq!(at_rule.bake(),
-/// "@keyframes slide-in {
+/// assert_eq!(
+///     at_rule.bake(),
+///     "@keyframes slide-in {
 ///   from { transform: translateX(0%); }
 ///   to { transform: translateX(100%); }
-/// }");
+/// }"
+/// );
 /// ```
 #[macro_export]
 macro_rules! at_rule {

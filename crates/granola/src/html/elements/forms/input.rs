@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let input: HtmlInput = HtmlInput::empty().id("html_input");
 ///
-/// assert_eq!(input.bake(),
-/// r#"<input id="html_input" />"#);
+/// assert_eq!(input.bake(), r#"<input id="html_input" />"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let input: HtmlInput = HtmlInput::new("nickname").minlength(4).required(true);
 ///
-/// assert_eq!(input.bake(),
-/// r#"<input name="nickname" minlength="4" required />"#);
+/// assert_eq!(
+///     input.bake(),
+///     r#"<input name="nickname" minlength="4" required />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -199,15 +200,20 @@ pub struct InputAttrs {
     pub value: Option<Cow<'static, str>>,
     /// Available for all input types except checkbox, radio, and button.
     pub autocomplete: Option<Cow<'static, str>>,
-    /// Available for all input types except hidden, password, checkbox, radio, and button.
+    /// Available for all input types except hidden, password, checkbox, radio,
+    /// and button.
     pub list: Option<Cow<'static, str>>,
-    /// Available for text, search, url, tel, email, password, and number input types.
+    /// Available for text, search, url, tel, email, password, and number input
+    /// types.
     pub placeholder: Option<Cow<'static, str>>,
-    /// Available for date, month, week, time, datetime-local, number, and range input types.
+    /// Available for date, month, week, time, datetime-local, number, and range
+    /// input types.
     pub min: Option<Cow<'static, str>>,
-    /// Available for date, month, week, time, datetime-local, number, and range input types.
+    /// Available for date, month, week, time, datetime-local, number, and range
+    /// input types.
     pub max: Option<Cow<'static, str>>,
-    /// Available for date, month, week, time, datetime-local, number, and range input types.
+    /// Available for date, month, week, time, datetime-local, number, and range
+    /// input types.
     pub step: Option<Cow<'static, str>>,
     /// Available for text, search, url, tel, email, and password input types.
     pub minlength: Option<u32>,
@@ -249,7 +255,8 @@ pub struct InputAttrs {
     pub formnovalidate: bool,
     /// Available for the checkbox and radio input types.
     pub checked: bool,
-    /// Available for all input types except hidden, range, color, checkbox, radio, and button.
+    /// Available for all input types except hidden, range, color, checkbox,
+    /// radio, and button.
     pub readonly: bool,
     /// Available for all input types except hidden, range, color, and button.
     pub required: bool,
@@ -304,8 +311,8 @@ pub trait HasInputAttrs: Sized {
     //
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#colorspace)
 
-    /// Name of form control to use for sending the element's directionality in form
-    /// submission.
+    /// Name of form control to use for sending the element's directionality in
+    /// form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/dirname)
     fn dirname(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -425,7 +432,8 @@ pub trait HasInputAttrs: Sized {
         self
     }
 
-    /// Name of the element to use for form submission and in the form.elements API.
+    /// Name of the element to use for form submission and in the form.elements
+    /// API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#name)
     fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -457,7 +465,8 @@ pub trait HasInputAttrs: Sized {
         self
     }
 
-    /// Indicates whether a targeted popover element is to be toggled, shown, or hidden.
+    /// Indicates whether a targeted popover element is to be toggled, shown, or
+    /// hidden.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#popovertargetaction)
     fn popovertargetaction(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -622,8 +631,7 @@ impl From<InputType> for Cow<'static, str> {
 ///
 /// let input = input!().id("html_input");
 ///
-/// assert_eq!(input.bake(),
-/// r#"<input id="html_input" />"#);
+/// assert_eq!(input.bake(), r#"<input id="html_input" />"#);
 /// ```
 ///
 /// ```rust
@@ -631,8 +639,10 @@ impl From<InputType> for Cow<'static, str> {
 ///
 /// let input = input!("nickname").minlength(4).required(true);
 ///
-/// assert_eq!(input.bake(),
-/// r#"<input name="nickname" minlength="4" required />"#);
+/// assert_eq!(
+///     input.bake(),
+///     r#"<input name="nickname" minlength="4" required />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! input {

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let noscript: HtmlNoscript = HtmlNoscript::empty().id("noscript");
 ///
-/// assert_eq!(noscript.bake(),
-/// r#"<noscript id="noscript"></noscript>"#);
+/// assert_eq!(noscript.bake(), r#"<noscript id="noscript"></noscript>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let noscript: HtmlNoscript = HtmlNoscript::new("It's javascript all the way down");
 ///
-/// assert_eq!(noscript.bake(),
-/// r#"<noscript>It's javascript all the way down</noscript>"#);
+/// assert_eq!(
+///     noscript.bake(),
+///     r#"<noscript>It's javascript all the way down</noscript>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -58,8 +59,7 @@ pub struct HtmlNoscript<R: NoscriptTag = ()> {
 ///
 /// let noscript = noscript!().id("noscript");
 ///
-/// assert_eq!(noscript.bake(),
-/// r#"<noscript id="noscript"></noscript>"#);
+/// assert_eq!(noscript.bake(), r#"<noscript id="noscript"></noscript>"#);
 /// ```
 ///
 /// ```rust
@@ -67,8 +67,10 @@ pub struct HtmlNoscript<R: NoscriptTag = ()> {
 ///
 /// let noscript = noscript!("It's javascript all the way down");
 ///
-/// assert_eq!(noscript.bake(),
-/// r#"<noscript>It's javascript all the way down</noscript>"#);
+/// assert_eq!(
+///     noscript.bake(),
+///     r#"<noscript>It's javascript all the way down</noscript>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! noscript {

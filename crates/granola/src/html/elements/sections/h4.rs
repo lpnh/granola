@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h4: HtmlH4 = HtmlH4::empty().id("html_section_heading");
 ///
-/// assert_eq!(h4.bake(),
-/// r#"<h4 id="html_section_heading"></h4>"#);
+/// assert_eq!(h4.bake(), r#"<h4 id="html_section_heading"></h4>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h4: HtmlH4 = HtmlH4::new("In fable and literature");
 ///
-/// assert_eq!(h4.bake(),
-/// r#"<h4>In fable and literature</h4>"#);
+/// assert_eq!(h4.bake(), r#"<h4>In fable and literature</h4>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlH4<R: H4Tag = ()> {
 ///
 /// let h4 = h4!().id("html_section_heading");
 ///
-/// assert_eq!(h4.bake(),
-/// r#"<h4 id="html_section_heading"></h4>"#);
+/// assert_eq!(h4.bake(), r#"<h4 id="html_section_heading"></h4>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlH4<R: H4Tag = ()> {
 ///
 /// let h4 = h4!("In fable and literature");
 ///
-/// assert_eq!(h4.bake(),
-/// r#"<h4>In fable and literature</h4>"#);
+/// assert_eq!(h4.bake(), r#"<h4>In fable and literature</h4>"#);
 /// ```
 #[macro_export]
 macro_rules! h4 {

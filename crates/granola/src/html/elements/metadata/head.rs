@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let head: HtmlHead = HtmlHead::from_recipe().id("document_metadata");
 ///
-/// assert_eq!(head.bake(),
-/// r#"<head id="document_metadata"></head>"#);
+/// assert_eq!(head.bake(), r#"<head id="document_metadata"></head>"#);
 /// ```
 ///
 /// ```rust
@@ -29,12 +28,14 @@ use crate::{filters, prelude::*};
 ///
 /// let head: HtmlHead = HtmlHead::new(bake_block![charset, viewport, title]);
 ///
-/// assert_eq!(head.bake(),
-/// r#"<head>
+/// assert_eq!(
+///     head.bake(),
+///     r#"<head>
 ///   <meta charset="utf-8" />
 ///   <meta name="viewport" content="width=device-width" />
 ///   <title>Document title</title>
-/// </head>"#);
+/// </head>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -68,8 +69,7 @@ pub struct HtmlHead<R: HeadTag = ()> {
 ///
 /// let head = head!().id("document_metadata");
 ///
-/// assert_eq!(head.bake(),
-/// r#"<head id="document_metadata"></head>"#);
+/// assert_eq!(head.bake(), r#"<head id="document_metadata"></head>"#);
 /// ```
 ///
 /// ```rust
@@ -81,12 +81,14 @@ pub struct HtmlHead<R: HeadTag = ()> {
 ///
 /// let head = head![charset, viewport, title];
 ///
-/// assert_eq!(head.bake(),
-/// r#"<head>
+/// assert_eq!(
+///     head.bake(),
+///     r#"<head>
 ///   <meta charset="utf-8" />
 ///   <meta name="viewport" content="width=device-width" />
 ///   <title>Document title</title>
-/// </head>"#);
+/// </head>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! head {

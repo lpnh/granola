@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h1: HtmlH1 = HtmlH1::empty().id("html_section_heading");
 ///
-/// assert_eq!(h1.bake(),
-/// r#"<h1 id="html_section_heading"></h1>"#);
+/// assert_eq!(h1.bake(), r#"<h1 id="html_section_heading"></h1>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h1: HtmlH1 = HtmlH1::new("The Rust Programming Language");
 ///
-/// assert_eq!(h1.bake(),
-/// r#"<h1>The Rust Programming Language</h1>"#);
+/// assert_eq!(h1.bake(), r#"<h1>The Rust Programming Language</h1>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlH1<R: H1Tag = ()> {
 ///
 /// let h1 = h1!().id("html_section_heading");
 ///
-/// assert_eq!(h1.bake(),
-/// r#"<h1 id="html_section_heading"></h1>"#);
+/// assert_eq!(h1.bake(), r#"<h1 id="html_section_heading"></h1>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlH1<R: H1Tag = ()> {
 ///
 /// let h1 = h1!("The Rust Programming Language");
 ///
-/// assert_eq!(h1.bake(),
-/// r#"<h1>The Rust Programming Language</h1>"#);
+/// assert_eq!(h1.bake(), r#"<h1>The Rust Programming Language</h1>"#);
 /// ```
 #[macro_export]
 macro_rules! h1 {

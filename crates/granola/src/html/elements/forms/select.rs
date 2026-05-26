@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let select: HtmlSelect = HtmlSelect::empty().id("html_select");
 ///
-/// assert_eq!(select.bake(),
-/// r#"<select id="html_select"></select>"#);
+/// assert_eq!(select.bake(), r#"<select id="html_select"></select>"#);
 /// ```
 ///
 /// ```rust
@@ -26,11 +25,13 @@ use crate::{filters, prelude::*};
 ///
 /// let select: HtmlSelect = HtmlSelect::new(bake_block![opt_1, opt_2]).name("fishes");
 ///
-/// assert_eq!(select.bake(),
-/// r#"<select name="fishes">
+/// assert_eq!(
+///     select.bake(),
+///     r#"<select name="fishes">
 ///   <option value="salmon">Salmon</option>
 ///   <option value="turbot">Turbot</option>
-/// </select>"#);
+/// </select>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -122,7 +123,8 @@ pub trait HasSelectAttrs: Sized {
         self
     }
 
-    /// Name of the element to use for form submission and in the `form.elements` API.
+    /// Name of the element to use for form submission and in the
+    /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select#name)
     fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -174,8 +176,7 @@ impl<R: SelectTag> HasSelectAttrs for HtmlSelect<R> {
 ///
 /// let select = select!().id("html_select");
 ///
-/// assert_eq!(select.bake(),
-/// r#"<select id="html_select"></select>"#);
+/// assert_eq!(select.bake(), r#"<select id="html_select"></select>"#);
 /// ```
 ///
 /// ```rust
@@ -186,11 +187,13 @@ impl<R: SelectTag> HasSelectAttrs for HtmlSelect<R> {
 ///
 /// let select: HtmlSelect = select![opt_1, opt_2].name("fishes");
 ///
-/// assert_eq!(select.bake(),
-/// r#"<select name="fishes">
+/// assert_eq!(
+///     select.bake(),
+///     r#"<select name="fishes">
 ///   <option value="salmon">Salmon</option>
 ///   <option value="turbot">Turbot</option>
-/// </select>"#);
+/// </select>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! select {

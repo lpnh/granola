@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let iframe: HtmlIframe = HtmlIframe::empty().id("inline_frame");
 ///
-/// assert_eq!(iframe.bake(),
-/// r#"<iframe id="inline_frame"></iframe>"#);
+/// assert_eq!(iframe.bake(), r#"<iframe id="inline_frame"></iframe>"#);
 /// ```
 ///
 /// ```rust
@@ -239,8 +238,7 @@ impl<R: IframeTag> HasIframeAttrs for HtmlIframe<R> {
 ///
 /// let iframe = iframe!().id("inline_frame");
 ///
-/// assert_eq!(iframe.bake(),
-/// r#"<iframe id="inline_frame"></iframe>"#);
+/// assert_eq!(iframe.bake(), r#"<iframe id="inline_frame"></iframe>"#);
 /// ```
 ///
 /// ```rust

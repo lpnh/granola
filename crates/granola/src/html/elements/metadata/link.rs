@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let link: HtmlLink = HtmlLink::empty().id("external_resource_link");
 ///
-/// assert_eq!(link.bake(),
-/// r#"<link id="external_resource_link" />"#);
+/// assert_eq!(link.bake(), r#"<link id="external_resource_link" />"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let link: HtmlLink = HtmlLink::new("fancy.css", "stylesheet");
 ///
-/// assert_eq!(link.bake(),
-/// r#"<link href="fancy.css" rel="stylesheet" />"#);
+/// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
 ///
 /// # Askama template
@@ -149,7 +147,8 @@ impl<R: LinkTag> HtmlLink<R> {
 pub trait HasLinkAttrs: Sized {
     fn link_attrs_mut(&mut self) -> &mut LinkAttrs;
 
-    /// Destination for a preload request (for `rel="preload"` and `rel="modulepreload"`).
+    /// Destination for a preload request (for `rel="preload"` and
+    /// `rel="modulepreload"`).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#as)
     fn preload_as(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -213,7 +212,8 @@ pub trait HasLinkAttrs: Sized {
         self
     }
 
-    /// Images to use in different situations, e.g., high-resolution displays, small monitors, etc. (for `rel="preload"`).
+    /// Images to use in different situations, e.g., high-resolution displays,
+    /// small monitors, etc. (for `rel="preload"`).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#imagesrcset)
     fn imagesrcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -245,7 +245,8 @@ pub trait HasLinkAttrs: Sized {
         self
     }
 
-    /// Relationship between the location in the document containing the hyperlink and the destination resource.
+    /// Relationship between the location in the document containing the
+    /// hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -297,8 +298,7 @@ impl<R: LinkTag> HasLinkAttrs for HtmlLink<R> {
 ///
 /// let link = link!().id("external_resource_link");
 ///
-/// assert_eq!(link.bake(),
-/// r#"<link id="external_resource_link" />"#);
+/// assert_eq!(link.bake(), r#"<link id="external_resource_link" />"#);
 /// ```
 ///
 /// ```rust
@@ -306,8 +306,7 @@ impl<R: LinkTag> HasLinkAttrs for HtmlLink<R> {
 ///
 /// let link = link!("fancy.css", "stylesheet");
 ///
-/// assert_eq!(link.bake(),
-/// r#"<link href="fancy.css" rel="stylesheet" />"#);
+/// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
 #[macro_export]
 macro_rules! link {

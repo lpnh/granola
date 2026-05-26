@@ -14,17 +14,21 @@ use crate::{filters, prelude::*};
 ///
 /// let img: HtmlImg = HtmlImg::empty().id("image_embed");
 ///
-/// assert_eq!(img.bake(),
-/// r#"<img id="image_embed" />"#);
+/// assert_eq!(img.bake(), r#"<img id="image_embed" />"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::new("profile.png", "A mustachioed in a red cap and blue overalls");
+/// let img: HtmlImg = HtmlImg::new(
+///     "profile.png",
+///     "A mustachioed in a red cap and blue overalls",
+/// );
 ///
-/// assert_eq!(img.bake(),
-/// r#"<img src="profile.png" alt="A mustachioed in a red cap and blue overalls" />"#);
+/// assert_eq!(
+///     img.bake(),
+///     r#"<img src="profile.png" alt="A mustachioed in a red cap and blue overalls" />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -45,9 +49,9 @@ pub struct HtmlImg<R: ImgTag = ()> {
     /// # Permitted ARIA roles
     ///
     /// with non-empty alt attribute:
-    ///   button, checkbox, link, menuitem, menuitemcheckbox, menuitemradio, option,
-    ///   progressbar, scrollbar, separator, slider, switch, tab, treeitem
-    /// with empty alt attribute: none or presentation
+    ///   button, checkbox, link, menuitem, menuitemcheckbox, menuitemradio,
+    /// option,   progressbar, scrollbar, separator, slider, switch, tab,
+    /// treeitem with empty alt attribute: none or presentation
     /// with no alt attribute: no role permitted
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ImgAttrs,
@@ -242,7 +246,8 @@ pub trait HasImgAttrs: Sized {
         self
     }
 
-    /// Images to use in different situations, e.g., high-resolution displays, small monitors, etc.
+    /// Images to use in different situations, e.g., high-resolution displays,
+    /// small monitors, etc.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#srcset)
     fn srcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -294,17 +299,21 @@ impl<R: ImgTag> HasImgAttrs for HtmlImg<R> {
 ///
 /// let img = img!().id("image_embed");
 ///
-/// assert_eq!(img.bake(),
-/// r#"<img id="image_embed" />"#);
+/// assert_eq!(img.bake(), r#"<img id="image_embed" />"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let img = img!("profile.png", "A mustachioed in a red cap and blue overalls");
+/// let img = img!(
+///     "profile.png",
+///     "A mustachioed in a red cap and blue overalls"
+/// );
 ///
-/// assert_eq!(img.bake(),
-/// r#"<img src="profile.png" alt="A mustachioed in a red cap and blue overalls" />"#);
+/// assert_eq!(
+///     img.bake(),
+///     r#"<img src="profile.png" alt="A mustachioed in a red cap and blue overalls" />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! img {

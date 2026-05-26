@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_align_items: CssAlignItems = CssAlignItems::new("center");
 ///
-/// assert_eq!(css_align_items.bake(),
-/// "align-items: center;");
+/// assert_eq!(css_align_items.bake(), "align-items: center;");
 /// ```
 ///
 /// # Askama template

@@ -14,17 +14,20 @@ use crate::{filters, prelude::*};
 ///
 /// let output: HtmlOutput = HtmlOutput::empty().id("output");
 ///
-/// assert_eq!(output.bake(),
-/// r#"<output id="output"></output>"#);
+/// assert_eq!(output.bake(), r#"<output id="output"></output>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let output: HtmlOutput = HtmlOutput::new("42").name("answer").for_id("ultimate-question");
+/// let output: HtmlOutput = HtmlOutput::new("42")
+///     .name("answer")
+///     .for_id("ultimate-question");
 ///
-/// assert_eq!(output.bake(),
-/// r#"<output name="answer" for="ultimate-question">42</output>"#);
+/// assert_eq!(
+///     output.bake(),
+///     r#"<output name="answer" for="ultimate-question">42</output>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -92,7 +95,8 @@ pub trait HasOutputAttrs: Sized {
         self
     }
 
-    /// Name of the element to use for form submission and in the `form.elements` API.
+    /// Name of the element to use for form submission and in the
+    /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/output#name)
     fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -128,8 +132,7 @@ impl<R: OutputTag> HasOutputAttrs for HtmlOutput<R> {
 ///
 /// let output = output!().id("output");
 ///
-/// assert_eq!(output.bake(),
-/// r#"<output id="output"></output>"#);
+/// assert_eq!(output.bake(), r#"<output id="output"></output>"#);
 /// ```
 ///
 /// ```rust
@@ -137,8 +140,10 @@ impl<R: OutputTag> HasOutputAttrs for HtmlOutput<R> {
 ///
 /// let output = output!("42").name("answer").for_id("ultimate-question");
 ///
-/// assert_eq!(output.bake(),
-/// r#"<output name="answer" for="ultimate-question">42</output>"#);
+/// assert_eq!(
+///     output.bake(),
+///     r#"<output name="answer" for="ultimate-question">42</output>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! output {

@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_font_family: CssFontFamily = CssFontFamily::new("inherit");
 ///
-/// assert_eq!(css_font_family.bake(),
-/// "font-family: inherit;");
+/// assert_eq!(css_font_family.bake(), "font-family: inherit;");
 /// ```
 ///
 /// # Askama template

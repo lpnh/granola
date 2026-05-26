@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let script: HtmlScript = HtmlScript::empty().id("script");
 ///
-/// assert_eq!(script.bake(),
-/// r#"<script id="script"></script>"#);
+/// assert_eq!(script.bake(), r#"<script id="script"></script>"#);
 /// ```
 ///
 /// ```rust
@@ -23,10 +22,12 @@ use crate::{filters, prelude::*};
 ///
 /// let script: HtmlScript = HtmlScript::new(bake_newline!(r#"alert("Hello, world!");"#));
 ///
-/// assert_eq!(script.bake(),
-/// r#"<script>
+/// assert_eq!(
+///     script.bake(),
+///     r#"<script>
 ///   alert("Hello, world!");
-/// </script>"#);
+/// </script>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -219,22 +220,25 @@ impl<R: ScriptTag> HasScriptAttrs for HtmlScript<R> {
 #[derive(strum::Display, strum::IntoStaticStr, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[strum(serialize_all = "lowercase")]
 pub enum ScriptType {
-    /// Indicates that the script is a "classic script", containing JavaScript code. Authors are
-    /// encouraged to omit the attribute if the script refers to JavaScript code rather than specify
-    /// a MIME type.
+    /// Indicates that the script is a "classic script", containing JavaScript
+    /// code. Authors are encouraged to omit the attribute if the script
+    /// refers to JavaScript code rather than specify a MIME type.
     #[strum(serialize = "text/javascript")]
     JavaScriptMimeType,
-    /// This value indicates that the body of the element contains an import map. The import map is
-    /// a JSON object that developers can use to control how the browser resolves module specifiers
-    /// when importing JavaScript modules.
+    /// This value indicates that the body of the element contains an import
+    /// map. The import map is a JSON object that developers can use to
+    /// control how the browser resolves module specifiers when importing
+    /// JavaScript modules.
     Importmap,
-    /// This value causes the code to be treated as a JavaScript module. The processing of the
-    /// script contents is deferred. The charset and defer attributes have no effect. Unlike classic
-    /// scripts, module scripts require the use of the CORS protocol for cross-origin fetching.
+    /// This value causes the code to be treated as a JavaScript module. The
+    /// processing of the script contents is deferred. The charset and defer
+    /// attributes have no effect. Unlike classic scripts, module scripts
+    /// require the use of the CORS protocol for cross-origin fetching.
     Module,
-    /// This value indicates that the body of the element contains speculation rules. Speculation
-    /// rules take the form of a JSON object that determine what resources should be prefetched or
-    /// prerendered by the browser.
+    /// This value indicates that the body of the element contains speculation
+    /// rules. Speculation rules take the form of a JSON object that
+    /// determine what resources should be prefetched or prerendered by the
+    /// browser.
     Speculationrules,
 }
 
@@ -266,8 +270,7 @@ impl From<ScriptType> for Cow<'static, str> {
 ///
 /// let script = script!().id("script");
 ///
-/// assert_eq!(script.bake(),
-/// r#"<script id="script"></script>"#);
+/// assert_eq!(script.bake(), r#"<script id="script"></script>"#);
 /// ```
 ///
 /// ```rust

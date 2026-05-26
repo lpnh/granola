@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_white_space: CssWhiteSpace = CssWhiteSpace::new("nowrap");
 ///
-/// assert_eq!(css_white_space.bake(),
-/// "white-space: nowrap;");
+/// assert_eq!(css_white_space.bake(), "white-space: nowrap;");
 /// ```
 ///
 /// # Askama template

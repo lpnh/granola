@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let div: HtmlDiv = HtmlDiv::empty().id("content_division");
 ///
-/// assert_eq!(div.bake(),
-/// r#"<div id="content_division"></div>"#);
+/// assert_eq!(div.bake(), r#"<div id="content_division"></div>"#);
 /// ```
 ///
 /// ```rust
@@ -28,11 +27,13 @@ use crate::{filters, prelude::*};
 ///
 /// let div: HtmlDiv = HtmlDiv::new(content).class("flex justify-end gap-2");
 ///
-/// assert_eq!(div.bake(),
-/// r#"<div class="flex justify-end gap-2">
+/// assert_eq!(
+///     div.bake(),
+///     r#"<div class="flex justify-end gap-2">
 ///   <button>Save</button>
 ///   <button type="button">Cancel</button>
-/// </div>"#);
+/// </div>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -69,8 +70,7 @@ pub struct HtmlDiv<R: DivTag = ()> {
 ///
 /// let div = div!().id("content_division");
 ///
-/// assert_eq!(div.bake(),
-/// r#"<div id="content_division"></div>"#);
+/// assert_eq!(div.bake(), r#"<div id="content_division"></div>"#);
 /// ```
 ///
 /// ```rust
@@ -81,11 +81,13 @@ pub struct HtmlDiv<R: DivTag = ()> {
 ///
 /// let div = div!(save, cancel).class("flex justify-end gap-2");
 ///
-/// assert_eq!(div.bake(),
-/// r#"<div class="flex justify-end gap-2">
+/// assert_eq!(
+///     div.bake(),
+///     r#"<div class="flex justify-end gap-2">
 ///   <button>Save</button>
 ///   <button type="button">Cancel</button>
-/// </div>"#);
+/// </div>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! div {

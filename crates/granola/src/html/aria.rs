@@ -70,9 +70,9 @@ pub struct GlobalAriaAttrs {
 pub trait HasGlobalAriaAttrs: Sized {
     fn global_aria_attrs_mut(&mut self) -> &mut GlobalAriaAttrs;
 
-    /// Indicates whether assistive technologies such as a screen reader will present all, or only
-    /// parts of, the changed region based on the change notifications defined by the aria-relevant
-    /// attribute.
+    /// Indicates whether assistive technologies such as a screen reader will
+    /// present all, or only parts of, the changed region based on the
+    /// change notifications defined by the aria-relevant attribute.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-atomic)
     fn aria_atomic(mut self, value: bool) -> Self {
@@ -80,9 +80,10 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates whether an element is currently being modified. It helps assistive technologies
-    /// understand that changes to the content are not yet complete, and that they may want to wait
-    /// before informing users of the update.
+    /// Indicates whether an element is currently being modified. It helps
+    /// assistive technologies understand that changes to the content are
+    /// not yet complete, and that they may want to wait before informing
+    /// users of the update.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-busy)
     fn aria_busy(mut self, value: bool) -> Self {
@@ -90,8 +91,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies the element (or elements) whose contents or presence are controlled by the
-    /// element on which this attribute is set.
+    /// Identifies the element (or elements) whose contents or presence are
+    /// controlled by the element on which this attribute is set.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-controls)
     fn aria_controls(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -99,8 +100,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates that this element represents the current item within a container or set of related
-    /// elements.
+    /// Indicates that this element represents the current item within a
+    /// container or set of related elements.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current)
     fn aria_current(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -108,8 +109,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies the element (or elements) that describes the element on which the attribute is
-    /// set.
+    /// Identifies the element (or elements) that describes the element on which
+    /// the attribute is set.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby)
     fn aria_describedby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -125,8 +126,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies the element (or elements) that provide additional information related to the
-    /// object.
+    /// Identifies the element (or elements) that provide additional information
+    /// related to the object.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-details)
     fn aria_details(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -134,8 +135,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates that the element is perceivable but disabled, so it is not editable or otherwise
-    /// operable.
+    /// Indicates that the element is perceivable but disabled, so it is not
+    /// editable or otherwise operable.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-disabled)
     fn aria_disabled(mut self, value: bool) -> Self {
@@ -143,7 +144,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies the element (or elements) that provide an error message for the object.
+    /// Identifies the element (or elements) that provide an error message for
+    /// the object.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-errormessage)
     fn aria_errormessage(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -151,9 +153,10 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies the next element (or elements) in an alternate reading order of content. This
-    /// allows assistive technology to override the general default of reading in document source
-    /// order at the user's discretion.
+    /// Identifies the next element (or elements) in an alternate reading order
+    /// of content. This allows assistive technology to override the general
+    /// default of reading in document source order at the user's
+    /// discretion.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-flowto)
     fn aria_flowto(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -161,8 +164,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates the availability and type of interactive popup element that can be triggered by
-    /// the element on which the attribute is set.
+    /// Indicates the availability and type of interactive popup element that
+    /// can be triggered by the element on which the attribute is set.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-haspopup)
     fn aria_haspopup(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -178,7 +181,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates the entered value does not conform to the format expected by the application.
+    /// Indicates the entered value does not conform to the format expected by
+    /// the application.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)
     fn aria_invalid(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -186,8 +190,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates keyboard shortcuts that an author has implemented to activate or give focus to an
-    /// element.
+    /// Indicates keyboard shortcuts that an author has implemented to activate
+    /// or give focus to an element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-keyshortcuts)
     fn aria_keyshortcuts(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -195,8 +199,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Defines a string value that can be used to name an element, as long as the element's role
-    /// does not prohibit naming.
+    /// Defines a string value that can be used to name an element, as long as
+    /// the element's role does not prohibit naming.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label)
     fn aria_label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -204,7 +208,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies the element (or elements) that labels the element it is applied to.
+    /// Identifies the element (or elements) that labels the element it is
+    /// applied to.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby)
     fn aria_labelledby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -212,8 +217,9 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates that an element will be updated, and describes the types of updates the user
-    /// agents, assistive technologies, and user can expect from the live region.
+    /// Indicates that an element will be updated, and describes the types of
+    /// updates the user agents, assistive technologies, and user can expect
+    /// from the live region.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-live)
     fn aria_live(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -221,9 +227,10 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Identifies an element (or elements) in order to define a visual, functional, or contextual
-    /// relationship between a parent and its child elements when the DOM hierarchy cannot be used
-    /// to represent the relationship.
+    /// Identifies an element (or elements) in order to define a visual,
+    /// functional, or contextual relationship between a parent and its
+    /// child elements when the DOM hierarchy cannot be used to represent
+    /// the relationship.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-owns)
     fn aria_owns(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -231,8 +238,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Indicates what notifications the user agent will trigger when the accessibility tree within
-    /// a live region is modified.
+    /// Indicates what notifications the user agent will trigger when the
+    /// accessibility tree within a live region is modified.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-relevant)
     fn aria_relevant(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -240,7 +247,8 @@ pub trait HasGlobalAriaAttrs: Sized {
         self
     }
 
-    /// Defines a human-readable, author-localized description for the role of an element.
+    /// Defines a human-readable, author-localized description for the role of
+    /// an element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-roledescription)
     fn aria_roledescription(mut self, value: impl Into<Cow<'static, str>>) -> Self {

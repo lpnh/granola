@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let article: HtmlArticle = HtmlArticle::empty().id("article_contents");
 ///
-/// assert_eq!(article.bake(),
-/// r#"<article id="article_contents"></article>"#);
+/// assert_eq!(
+///     article.bake(),
+///     r#"<article id="article_contents"></article>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -24,9 +26,9 @@ use crate::{filters, prelude::*};
 /// let h2: HtmlH2 = HtmlH2::new("New Café");
 ///
 /// let content = bake_block![
-/// "Oats &amp; Ends opened last week on Oak Street,
+///     "Oats &amp; Ends opened last week on Oak Street,
 /// at the corner of Elm Avenue, bringing new aromas to the block.",
-/// "Its cozy atmosphere draws in passersby looking to treat themselves to
+///     "Its cozy atmosphere draws in passersby looking to treat themselves to
 /// a cup or two of good, hot black coffee."
 /// ];
 ///
@@ -34,8 +36,9 @@ use crate::{filters, prelude::*};
 ///
 /// let article: HtmlArticle = HtmlArticle::new(bake_block![h2, p]);
 ///
-/// assert_eq!(article.bake(),
-/// r#"<article>
+/// assert_eq!(
+///     article.bake(),
+///     r#"<article>
 ///   <h2>New Café</h2>
 ///   <p>
 ///     Oats &amp; Ends opened last week on Oak Street,
@@ -43,7 +46,8 @@ use crate::{filters, prelude::*};
 ///     Its cozy atmosphere draws in passersby looking to treat themselves to
 ///     a cup or two of good, hot black coffee.
 ///   </p>
-/// </article>"#);
+/// </article>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -80,8 +84,10 @@ pub struct HtmlArticle<R: ArticleTag = ()> {
 ///
 /// let article = article!().id("article_contents");
 ///
-/// assert_eq!(article.bake(),
-/// r#"<article id="article_contents"></article>"#);
+/// assert_eq!(
+///     article.bake(),
+///     r#"<article id="article_contents"></article>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -90,16 +96,17 @@ pub struct HtmlArticle<R: ArticleTag = ()> {
 /// let heading = h2!("New Café");
 ///
 /// let paragraph = p![
-/// "Oats &amp; Ends opened last week on Oak Street,
+///     "Oats &amp; Ends opened last week on Oak Street,
 /// at the corner of Elm Avenue, bringing new aromas to the block.",
-/// "Its cozy atmosphere draws in passersby looking to treat themselves to
+///     "Its cozy atmosphere draws in passersby looking to treat themselves to
 /// a cup or two of good, hot black coffee."
 /// ];
 ///
 /// let article = article!(heading, paragraph);
 ///
-/// assert_eq!(article.bake(),
-/// r#"<article>
+/// assert_eq!(
+///     article.bake(),
+///     r#"<article>
 ///   <h2>New Café</h2>
 ///   <p>
 ///     Oats &amp; Ends opened last week on Oak Street,
@@ -107,7 +114,8 @@ pub struct HtmlArticle<R: ArticleTag = ()> {
 ///     Its cozy atmosphere draws in passersby looking to treat themselves to
 ///     a cup or two of good, hot black coffee.
 ///   </p>
-/// </article>"#);
+/// </article>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! article {

@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_outline_offset: CssOutlineOffset = CssOutlineOffset::new("2px");
 ///
-/// assert_eq!(css_outline_offset.bake(),
-/// "outline-offset: 2px;");
+/// assert_eq!(css_outline_offset.bake(), "outline-offset: 2px;");
 /// ```
 ///
 /// # Askama template

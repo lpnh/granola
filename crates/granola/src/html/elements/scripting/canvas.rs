@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let canvas: HtmlCanvas = HtmlCanvas::empty().id("graphics_canvas");
 ///
-/// assert_eq!(canvas.bake(),
-/// r#"<canvas id="graphics_canvas"></canvas>"#);
+/// assert_eq!(canvas.bake(), r#"<canvas id="graphics_canvas"></canvas>"#);
 /// ```
 ///
 /// ```rust
@@ -35,13 +34,15 @@ use crate::{filters, prelude::*};
 ///
 /// let smiley = bake_block![script, canvas];
 ///
-/// assert_eq!(smiley,
-/// r#"<script>
+/// assert_eq!(
+///     smiley,
+///     r#"<script>
 ///   const ctx = document.getElementById("canvas").getContext("2d");
 ///   ctx.font = "64px sans";
 ///   ctx.fillText(":-)", 10, 62);
 /// </script>
-/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#);
+/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -135,8 +136,7 @@ impl<R: CanvasTag> HasCanvasAttrs for HtmlCanvas<R> {
 ///
 /// let canvas = canvas!().id("graphics_canvas");
 ///
-/// assert_eq!(canvas.bake(),
-/// r#"<canvas id="graphics_canvas"></canvas>"#);
+/// assert_eq!(canvas.bake(), r#"<canvas id="graphics_canvas"></canvas>"#);
 /// ```
 ///
 /// ```rust
@@ -153,13 +153,15 @@ impl<R: CanvasTag> HasCanvasAttrs for HtmlCanvas<R> {
 ///
 /// let smiley = bake_block![script, canvas];
 ///
-/// assert_eq!(smiley,
-/// r#"<script>
+/// assert_eq!(
+///     smiley,
+///     r#"<script>
 ///   const ctx = document.getElementById("canvas").getContext("2d");
 ///   ctx.font = "64px sans";
 ///   ctx.fillText(":-)", 10, 62);
 /// </script>
-/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#);
+/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! canvas {

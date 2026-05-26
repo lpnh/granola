@@ -5,25 +5,25 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let form: HtmlForm<Dialog> = HtmlForm::from_recipe();
 ///
-/// assert_eq!(form.bake(),
-/// r#"<form method="dialog"></form>"#);
+/// assert_eq!(form.bake(), r#"<form method="dialog"></form>"#);
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let button: HtmlButton<Dialog> = HtmlButton::new("Ok");
 ///
 /// let input: HtmlInput<Dialog> = HtmlInput::from_type("submit").value("Ok");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button formmethod="dialog">Ok</button>"#);
-/// assert_eq!(input.bake(),
-/// r#"<input type="submit" value="Ok" formmethod="dialog" />"#);
+/// assert_eq!(button.bake(), r#"<button formmethod="dialog">Ok</button>"#);
+/// assert_eq!(
+///     input.bake(),
+///     r#"<input type="submit" value="Ok" formmethod="dialog" />"#
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Dialog;

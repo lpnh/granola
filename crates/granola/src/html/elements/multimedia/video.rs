@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let video: HtmlVideo = HtmlVideo::empty().id("video_embed");
 ///
-/// assert_eq!(video.bake(),
-/// r#"<video id="video_embed"></video>"#);
+/// assert_eq!(video.bake(), r#"<video id="video_embed"></video>"#);
 /// ```
 /// ```rust
 /// use granola::prelude::*;
@@ -25,8 +24,10 @@ use crate::{filters, prelude::*};
 ///     .height(600)
 ///     .autoplay(true);
 ///
-/// assert_eq!(video.bake(),
-/// r#"<video src="Never_Gonna_Give_You_Up.mp4" width="800" height="600" autoplay></video>"#);
+/// assert_eq!(
+///     video.bake(),
+///     r#"<video src="Never_Gonna_Give_You_Up.mp4" width="800" height="600" autoplay></video>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -122,7 +123,8 @@ pub struct VideoAttrs {
 pub trait HasVideoAttrs: Sized {
     fn video_attrs_mut(&mut self) -> &mut VideoAttrs;
 
-    /// Hint that the media resource can be started automatically when the page is loaded.
+    /// Hint that the media resource can be started automatically when the page
+    /// is loaded.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#autoplay)
     fn autoplay(mut self, value: bool) -> Self {
@@ -178,7 +180,8 @@ pub trait HasVideoAttrs: Sized {
         self
     }
 
-    /// Encourage the user agent to display video content within the element's playback area.
+    /// Encourage the user agent to display video content within the element's
+    /// playback area.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#playsinline)
     fn playsinline(mut self, value: bool) -> Self {
@@ -246,8 +249,7 @@ impl<R: VideoTag> HasVideoAttrs for HtmlVideo<R> {
 ///
 /// let video = video!().id("video_embed");
 ///
-/// assert_eq!(video.bake(),
-/// r#"<video id="video_embed"></video>"#);
+/// assert_eq!(video.bake(), r#"<video id="video_embed"></video>"#);
 /// ```
 /// ```rust
 /// use granola::{macros::*, prelude::*};

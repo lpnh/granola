@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let form: HtmlForm = HtmlForm::empty().id("form");
 ///
-/// assert_eq!(form.bake(),
-/// r#"<form id="form"></form>"#);
+/// assert_eq!(form.bake(), r#"<form id="form"></form>"#);
 /// ```
 ///
 /// ```rust
@@ -27,14 +26,16 @@ use crate::{filters, prelude::*};
 ///
 /// let form: HtmlForm = HtmlForm::new(bake_block![label, button]).method("get");
 ///
-/// assert_eq!(form.bake(),
-/// r#"<form method="get">
+/// assert_eq!(
+///     form.bake(),
+///     r#"<form method="get">
 ///   <label>
 ///     Wish:
 ///     <input name="cast-wish" />
 ///   </label>
 ///   <button>Cast</button>
-/// </form>"#);
+/// </form>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -224,8 +225,7 @@ impl From<FormMethod> for Cow<'static, str> {
 ///
 /// let form = form!().id("form");
 ///
-/// assert_eq!(form.bake(),
-/// r#"<form id="form"></form>"#);
+/// assert_eq!(form.bake(), r#"<form id="form"></form>"#);
 /// ```
 ///
 /// ```rust
@@ -237,14 +237,16 @@ impl From<FormMethod> for Cow<'static, str> {
 ///
 /// let form = form![label, button].method("get");
 ///
-/// assert_eq!(form.bake(),
-/// r#"<form method="get">
+/// assert_eq!(
+///     form.bake(),
+///     r#"<form method="get">
 ///   <label>
 ///     Wish:
 ///     <input name="cast-wish" />
 ///   </label>
 ///   <button>Cast</button>
-/// </form>"#);
+/// </form>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! form {

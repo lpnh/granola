@@ -13,8 +13,7 @@ use crate::prelude::*;
 ///
 /// let doctype: HtmlDoctype = HtmlDoctype::new();
 ///
-/// assert_eq!(doctype.bake(),
-/// r#"<!doctype html>"#);
+/// assert_eq!(doctype.bake(), r#"<!doctype html>"#);
 /// ```
 ///
 /// # Askama template
@@ -41,8 +40,7 @@ impl HtmlDoctype {
 ///
 /// let doctype = doctype!();
 ///
-/// assert_eq!(doctype.bake(),
-/// r#"<!doctype html>"#);
+/// assert_eq!(doctype.bake(), r#"<!doctype html>"#);
 /// ```
 #[macro_export]
 macro_rules! doctype {

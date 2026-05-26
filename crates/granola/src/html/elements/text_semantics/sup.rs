@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let sup: HtmlSup = HtmlSup::empty().id("superscript");
 ///
-/// assert_eq!(sup.bake(),
-/// r#"<sup id="superscript"></sup>"#);
+/// assert_eq!(sup.bake(), r#"<sup id="superscript"></sup>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,7 @@ use crate::{filters, prelude::*};
 ///
 /// let anniv = bake_inline!["100", sup, " anniversaire"];
 ///
-/// assert_eq!(anniv,
-/// r#"100<sup>e</sup> anniversaire"#);
+/// assert_eq!(anniv, r#"100<sup>e</sup> anniversaire"#);
 /// ```
 ///
 /// # Askama template
@@ -63,8 +61,7 @@ pub struct HtmlSup<R: SupTag = ()> {
 ///
 /// let sup = sup!().id("superscript");
 ///
-/// assert_eq!(sup.bake(),
-/// r#"<sup id="superscript"></sup>"#);
+/// assert_eq!(sup.bake(), r#"<sup id="superscript"></sup>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +71,7 @@ pub struct HtmlSup<R: SupTag = ()> {
 ///
 /// let anniv = bake_inline!["100", sup, " anniversaire"];
 ///
-/// assert_eq!(anniv,
-/// r#"100<sup>e</sup> anniversaire"#);
+/// assert_eq!(anniv, r#"100<sup>e</sup> anniversaire"#);
 /// ```
 #[macro_export]
 macro_rules! sup {

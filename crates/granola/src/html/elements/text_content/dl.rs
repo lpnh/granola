@@ -14,15 +14,15 @@ use crate::{filters, prelude::*};
 ///
 /// let dl: HtmlDl = HtmlDl::empty().id("description_list");
 ///
-/// assert_eq!(dl.bake(),
-/// r#"<dl id="description_list"></dl>"#);
+/// assert_eq!(dl.bake(), r#"<dl id="description_list"></dl>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let dt_1: HtmlDt = HtmlDt::new("Hiraeth");
-/// let dd_1: HtmlDd = HtmlDd::new("A longing for a home that no longer exists, or perhaps never did.");
+/// let dd_1: HtmlDd =
+///     HtmlDd::new("A longing for a home that no longer exists, or perhaps never did.");
 ///
 /// let group_1 = bake_block![dt_1, dd_1];
 ///
@@ -35,14 +35,16 @@ use crate::{filters, prelude::*};
 ///
 /// let dl: HtmlDl = HtmlDl::new(list);
 ///
-/// assert_eq!(dl.bake(),
-/// r#"<dl>
+/// assert_eq!(
+///     dl.bake(),
+///     r#"<dl>
 ///   <dt>Hiraeth</dt>
 ///   <dd>A longing for a home that no longer exists, or perhaps never did.</dd>
 ///
 ///   <dt>Pålegg</dt>
 ///   <dd>Anything and everything you might put on a slice of bread.</dd>
-/// </dl>"#);
+/// </dl>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -79,8 +81,7 @@ pub struct HtmlDl<R: DlTag = ()> {
 ///
 /// let dl = dl!().id("description_list");
 ///
-/// assert_eq!(dl.bake(),
-/// r#"<dl id="description_list"></dl>"#);
+/// assert_eq!(dl.bake(), r#"<dl id="description_list"></dl>"#);
 /// ```
 ///
 /// ```rust
@@ -98,14 +99,16 @@ pub struct HtmlDl<R: DlTag = ()> {
 ///
 /// let dl = dl!(group_1, "", group_2);
 ///
-/// assert_eq!(dl.bake(),
-/// r#"<dl>
+/// assert_eq!(
+///     dl.bake(),
+///     r#"<dl>
 ///   <dt>Hiraeth</dt>
 ///   <dd>A longing for a home that no longer exists, or perhaps never did.</dd>
 ///
 ///   <dt>Pålegg</dt>
 ///   <dd>Anything and everything you might put on a slice of bread.</dd>
-/// </dl>"#);
+/// </dl>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! dl {

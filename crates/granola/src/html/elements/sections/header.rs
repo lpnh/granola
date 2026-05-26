@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let header: HtmlHeader = HtmlHeader::empty().id("header");
 ///
-/// assert_eq!(header.bake(),
-/// r#"<header id="header"></header>"#);
+/// assert_eq!(header.bake(), r#"<header id="header"></header>"#);
 /// ```
 ///
 /// ```rust
@@ -25,10 +24,12 @@ use crate::{filters, prelude::*};
 ///
 /// let header: HtmlHeader = HtmlHeader::new(bake_newline!(logo));
 ///
-/// assert_eq!(header.bake(),
-/// r#"<header>
+/// assert_eq!(
+///     header.bake(),
+///     r#"<header>
 ///   <a href="/">Oats &amp; Ends</a>
-/// </header>"#);
+/// </header>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -65,8 +66,7 @@ pub struct HtmlHeader<R: HeaderTag = ()> {
 ///
 /// let header = header!().id("header");
 ///
-/// assert_eq!(header.bake(),
-/// r#"<header id="header"></header>"#);
+/// assert_eq!(header.bake(), r#"<header id="header"></header>"#);
 /// ```
 ///
 /// ```rust

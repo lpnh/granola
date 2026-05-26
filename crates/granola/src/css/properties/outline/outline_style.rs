@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_outline_style: CssOutlineStyle = CssOutlineStyle::new("0.6em 1.2em");
 ///
-/// assert_eq!(css_outline_style.bake(),
-/// "outline-style: 0.6em 1.2em;");
+/// assert_eq!(css_outline_style.bake(), "outline-style: 0.6em 1.2em;");
 /// ```
 ///
 /// # Askama template

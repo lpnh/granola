@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let footer: HtmlFooter = HtmlFooter::empty().id("footer");
 ///
-/// assert_eq!(footer.bake(),
-/// r#"<footer id="footer"></footer>"#);
+/// assert_eq!(footer.bake(), r#"<footer id="footer"></footer>"#);
 /// ```
 ///
 /// ```rust
@@ -26,10 +25,12 @@ use crate::{filters, prelude::*};
 ///
 /// let footer: HtmlFooter = HtmlFooter::new(bake_newline!(paragraph));
 ///
-/// assert_eq!(footer.bake(),
-/// r#"<footer>
+/// assert_eq!(
+///     footer.bake(),
+///     r#"<footer>
 ///   <p><small>&copy; 2026 Oats &amp; Ends Café</small></p>
-/// </footer>"#);
+/// </footer>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -66,8 +67,7 @@ pub struct HtmlFooter<R: FooterTag = ()> {
 ///
 /// let footer = footer!().id("footer");
 ///
-/// assert_eq!(footer.bake(),
-/// r#"<footer id="footer"></footer>"#);
+/// assert_eq!(footer.bake(), r#"<footer id="footer"></footer>"#);
 /// ```
 ///
 /// ```rust

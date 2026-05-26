@@ -14,30 +14,25 @@ use crate::{filters, prelude::*};
 ///
 /// let style: HtmlStyle = HtmlStyle::empty().id("style_information");
 ///
-/// assert_eq!(style.bake(),
-/// r#"<style id="style_information"></style>"#);
+/// assert_eq!(style.bake(), r#"<style id="style_information"></style>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_rule: CssRule = CssRule::new(
-///     "p",
-///     [
-///         ("color", "violet"),
-///         ("font-weight", "lighter")
-///     ]
-/// );
+/// let css_rule: CssRule = CssRule::new("p", [("color", "violet"), ("font-weight", "lighter")]);
 ///
 /// let style: HtmlStyle = HtmlStyle::new(css_rule);
 ///
-/// assert_eq!(style.bake(),
-/// r#"<style>
+/// assert_eq!(
+///     style.bake(),
+///     r#"<style>
 ///   p {
 ///     color: violet;
 ///     font-weight: lighter;
 ///   }
-/// </style>"#);
+/// </style>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -128,8 +123,7 @@ impl<R: StyleTag> HasStyleAttrs for HtmlStyle<R> {
 ///
 /// let style = style!().id("style_information");
 ///
-/// assert_eq!(style.bake(),
-/// r#"<style id="style_information"></style>"#);
+/// assert_eq!(style.bake(), r#"<style id="style_information"></style>"#);
 /// ```
 ///
 /// ```rust

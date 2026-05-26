@@ -14,8 +14,10 @@ use crate::prelude::*;
 ///
 /// let css_background_color: CssBackgroundColor = CssBackgroundColor::new("transparent");
 ///
-/// assert_eq!(css_background_color.bake(),
-/// "background-color: transparent;");
+/// assert_eq!(
+///     css_background_color.bake(),
+///     "background-color: transparent;"
+/// );
 /// ```
 ///
 /// # Askama template

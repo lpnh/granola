@@ -20,8 +20,10 @@ use crate::prelude::*;
 ///
 /// let css_transition: CssTransition = CssTransition::new("background-color 150ms ease");
 ///
-/// assert_eq!(css_transition.bake(),
-/// "transition: background-color 150ms ease;");
+/// assert_eq!(
+///     css_transition.bake(),
+///     "transition: background-color 150ms ease;"
+/// );
 /// ```
 ///
 /// # Askama template

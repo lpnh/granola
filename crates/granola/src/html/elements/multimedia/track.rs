@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let track: HtmlTrack = HtmlTrack::empty().id("embed_text_track");
 ///
-/// assert_eq!(track.bake(),
-/// r#"<track id="embed_text_track" />"#);
+/// assert_eq!(track.bake(), r#"<track id="embed_text_track" />"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,10 @@ use crate::{filters, prelude::*};
 ///     .kind("captions")
 ///     .enabled(true);
 ///
-/// assert_eq!(track.bake(),
-/// r#"<track kind="captions" src="der_himmel_uber_berlin.vtt" default />"#);
+/// assert_eq!(
+///     track.bake(),
+///     r#"<track kind="captions" src="der_himmel_uber_berlin.vtt" default />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -173,17 +174,20 @@ impl<R: TrackTag> HasTrackAttrs for HtmlTrack<R> {
 ///
 /// let track = track!().id("embed_text_track");
 ///
-/// assert_eq!(track.bake(),
-/// r#"<track id="embed_text_track" />"#);
+/// assert_eq!(track.bake(), r#"<track id="embed_text_track" />"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let track = track!("der_himmel_uber_berlin.vtt").kind("captions").enabled(true);
+/// let track = track!("der_himmel_uber_berlin.vtt")
+///     .kind("captions")
+///     .enabled(true);
 ///
-/// assert_eq!(track.bake(),
-/// r#"<track kind="captions" src="der_himmel_uber_berlin.vtt" default />"#);
+/// assert_eq!(
+///     track.bake(),
+///     r#"<track kind="captions" src="der_himmel_uber_berlin.vtt" default />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! track {

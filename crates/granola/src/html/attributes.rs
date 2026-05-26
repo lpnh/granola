@@ -13,10 +13,14 @@ use crate::filters;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::from_src("ship.png").id("cruiser").class("spaceship");
+/// let img: HtmlImg = HtmlImg::from_src("ship.png")
+///     .id("cruiser")
+///     .class("spaceship");
 ///
-/// assert_eq!(img.bake(),
-/// r#"<img class="spaceship" id="cruiser" src="ship.png" />"#);
+/// assert_eq!(
+///     img.bake(),
+///     r#"<img class="spaceship" id="cruiser" src="ship.png" />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -181,7 +185,8 @@ pub trait HasGlobalAttrs: Sized {
         self
     }
 
-    /// Selects and styles elements in nested shadow trees by exporting their part names.
+    /// Selects and styles elements in nested shadow trees by exporting their
+    /// part names.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/exportparts)
     fn exportparts(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -338,8 +343,9 @@ pub trait HasGlobalAttrs: Sized {
         self
     }
 
-    /// Whether the element is focusable and sequentially focusable, and the relative order of the
-    /// element for the purposes of sequential focus navigation.
+    /// Whether the element is focusable and sequentially focusable, and the
+    /// relative order of the element for the purposes of sequential focus
+    /// navigation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex)
     fn tabindex(mut self, value: i64) -> Self {

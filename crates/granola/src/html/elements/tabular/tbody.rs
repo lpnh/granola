@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let tbody: HtmlTbody = HtmlTbody::empty().id("table_body");
 ///
-/// assert_eq!(tbody.bake(),
-/// r#"<tbody id="table_body"></tbody>"#);
+/// assert_eq!(tbody.bake(), r#"<tbody id="table_body"></tbody>"#);
 /// ```
 ///
 /// ```rust
@@ -33,8 +32,9 @@ use crate::{filters, prelude::*};
 ///
 /// let tbody: HtmlTbody = HtmlTbody::new([black_coffee, hot_chocolate]);
 ///
-/// assert_eq!(tbody.bake(),
-/// r#"<tbody>
+/// assert_eq!(
+///     tbody.bake(),
+///     r#"<tbody>
 ///   <tr>
 ///     <th scope="row">Black coffee</th>
 ///     <td>A good, hot, black coffee</td>
@@ -43,7 +43,8 @@ use crate::{filters, prelude::*};
 ///     <th scope="row">Hot chocolate</th>
 ///     <td>Melted dark chocolate with milk</td>
 ///   </tr>
-/// </tbody>"#);
+/// </tbody>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -80,8 +81,7 @@ pub struct HtmlTbody<R: TbodyTag = ()> {
 ///
 /// let tbody = tbody!().id("table_body");
 ///
-/// assert_eq!(tbody.bake(),
-/// r#"<tbody id="table_body"></tbody>"#);
+/// assert_eq!(tbody.bake(), r#"<tbody id="table_body"></tbody>"#);
 /// ```
 ///
 /// ```rust
@@ -99,8 +99,9 @@ pub struct HtmlTbody<R: TbodyTag = ()> {
 ///
 /// let tbody = tbody!(black_coffee, hot_chocolate);
 ///
-/// assert_eq!(tbody.bake(),
-/// r#"<tbody>
+/// assert_eq!(
+///     tbody.bake(),
+///     r#"<tbody>
 ///   <tr>
 ///     <th scope="row">Black coffee</th>
 ///     <td>A good, hot, black coffee</td>
@@ -109,7 +110,8 @@ pub struct HtmlTbody<R: TbodyTag = ()> {
 ///     <th scope="row">Hot chocolate</th>
 ///     <td>Melted dark chocolate with milk</td>
 ///   </tr>
-/// </tbody>"#);
+/// </tbody>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! tbody {

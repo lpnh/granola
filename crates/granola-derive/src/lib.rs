@@ -81,12 +81,12 @@ impl Parse for RecipeArgs {
 
 /// Derive macro for element recipes.
 ///
-/// Field-driven: generates one recipe hook per struct field (excluding `_recipe`).
-/// Special fields:
-/// - `content`: when `#[recipe(content = DefaultType)]` is set, uses an associated type
-///   with `Into<DefaultType>` bound; also generates `new()`.
-/// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`, `event_handlers`:
-///   generate `Has*` impls and `empty()`.
+/// Field-driven: generates one recipe hook per struct field (excluding
+/// `_recipe`). Special fields:
+/// - `content`: when `#[recipe(content = DefaultType)]` is set, uses an
+///   associated type with `Into<DefaultType>` bound; also generates `new()`.
+/// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
+///   `event_handlers`: generate `Has*` impls and `empty()`.
 #[proc_macro_derive(Recipe, attributes(recipe))]
 pub fn recipe_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -129,7 +129,8 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         panic!("first field must be `_recipe: PhantomData<...>`");
     }
 
-    // All fields except _recipe, and except `content` when it uses an associated type
+    // All fields except _recipe, and except `content` when it uses an associated
+    // type
     let other_fields: Vec<_> = named_fields
         .iter()
         .skip(1)
@@ -292,8 +293,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // on_unimplemented messages for the recipe trait (the `{Self}` braces are doubled
-    // so they pass through `format!` and reach the diagnostic as literal placeholders).
+    // on_unimplemented messages for the recipe trait (the `{Self}` braces are
+    // doubled so they pass through `format!` and reach the diagnostic as
+    // literal placeholders).
     let trait_str = trait_name.to_string();
     let chain_msg = format!("`{{Self}}` is not a recipe of `{trait_str}`");
     let chain_label = format!("all recipes must implement `{trait_str}`");

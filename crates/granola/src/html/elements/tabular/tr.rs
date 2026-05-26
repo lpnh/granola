@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let tr: HtmlTr = HtmlTr::empty().id("table_row");
 ///
-/// assert_eq!(tr.bake(),
-/// r#"<tr id="table_row"></tr>"#);
+/// assert_eq!(tr.bake(), r#"<tr id="table_row"></tr>"#);
 /// ```
 ///
 /// ```rust
@@ -26,11 +25,13 @@ use crate::{filters, prelude::*};
 ///
 /// let tr: HtmlTr = HtmlTr::new(bake_block![th, td]);
 ///
-/// assert_eq!(tr.bake(),
-/// r#"<tr>
+/// assert_eq!(
+///     tr.bake(),
+///     r#"<tr>
 ///   <th scope="row">Hot chocolate</th>
 ///   <td>Melted dark chocolate with milk</td>
-/// </tr>"#);
+/// </tr>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -96,8 +97,7 @@ impl From<HtmlTr> for TableRows {
 ///
 /// let tr = tr!().id("table_row");
 ///
-/// assert_eq!(tr.bake(),
-/// r#"<tr id="table_row"></tr>"#);
+/// assert_eq!(tr.bake(), r#"<tr id="table_row"></tr>"#);
 /// ```
 ///
 /// ```rust
@@ -108,11 +108,13 @@ impl From<HtmlTr> for TableRows {
 ///
 /// let tr = tr!(th, td);
 ///
-/// assert_eq!(tr.bake(),
-/// r#"<tr>
+/// assert_eq!(
+///     tr.bake(),
+///     r#"<tr>
 ///   <th scope="row">Hot chocolate</th>
 ///   <td>Melted dark chocolate with milk</td>
-/// </tr>"#);
+/// </tr>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! tr {

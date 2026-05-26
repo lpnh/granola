@@ -11,8 +11,7 @@ use crate::prelude::*;
 ///
 /// let css_display: CssDisplay<Inline> = CssDisplay::from_recipe();
 ///
-/// assert_eq!(css_display.bake(),
-/// "display: inline;");
+/// assert_eq!(css_display.bake(), "display: inline;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Inline;

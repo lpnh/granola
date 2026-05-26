@@ -11,8 +11,7 @@ use crate::prelude::*;
 ///
 /// let css_cursor: CssCursor<Pointer> = CssCursor::from_recipe();
 ///
-/// assert_eq!(css_cursor.bake(),
-/// "cursor: pointer;");
+/// assert_eq!(css_cursor.bake(), "cursor: pointer;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Pointer;

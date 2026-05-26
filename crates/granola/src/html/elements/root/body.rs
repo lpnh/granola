@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let body: HtmlBody = HtmlBody::from_recipe().id("document_body");
 ///
-/// assert_eq!(body.bake(),
-/// r#"<body id="document_body"></body>"#);
+/// assert_eq!(body.bake(), r#"<body id="document_body"></body>"#);
 /// ```
 ///
 /// ```rust
@@ -23,10 +22,12 @@ use crate::{filters, prelude::*};
 ///
 /// let body: HtmlBody = HtmlBody::new(bake_newline!("flow content"));
 ///
-/// assert_eq!(body.bake(),
-/// r#"<body>
+/// assert_eq!(
+///     body.bake(),
+///     r#"<body>
 ///   flow content
-/// </body>"#);
+/// </body>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -60,8 +61,7 @@ pub struct HtmlBody<R: BodyTag = ()> {
 ///
 /// let body = body!().id("document_body");
 ///
-/// assert_eq!(body.bake(),
-/// r#"<body id="document_body"></body>"#);
+/// assert_eq!(body.bake(), r#"<body id="document_body"></body>"#);
 /// ```
 ///
 /// ```rust

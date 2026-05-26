@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let button: HtmlButton = HtmlButton::empty().id("button");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button id="button"></button>"#);
+/// assert_eq!(button.bake(), r#"<button id="button"></button>"#);
 /// ```
 ///
 /// ```rust
@@ -25,10 +24,12 @@ use crate::{filters, prelude::*};
 ///     .button_type("button")
 ///     .name("favorite");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button type="button" name="favorite">
+/// assert_eq!(
+///     button.bake(),
+///     r#"<button type="button" name="favorite">
 ///   Add to favorites
-/// </button>"#);
+/// </button>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -50,8 +51,8 @@ pub struct HtmlButton<R: ButtonTag = ()> {
     pub content: R::Content,
     /// # Permitted ARIA roles
     ///
-    /// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio, option,
-    /// radio, switch, tab
+    /// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio,
+    /// option, radio, switch, tab
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ButtonAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -178,7 +179,8 @@ pub trait HasButtonAttrs: Sized {
     // NOTE: Include `interestfor` in the future.
     // [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#interestfor)
 
-    /// Name of the element to use for form submission and in the `form.elements` API.
+    /// Name of the element to use for form submission and in the
+    /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#name)
     fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -194,7 +196,8 @@ pub trait HasButtonAttrs: Sized {
         self
     }
 
-    /// Indicates whether a targeted popover element is to be toggled, shown, or hidden.
+    /// Indicates whether a targeted popover element is to be toggled, shown, or
+    /// hidden.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#popovertargetaction)
     fn popovertargetaction(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -272,8 +275,7 @@ impl From<ButtonType> for Cow<'static, str> {
 ///
 /// let button = button!().id("button");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button id="button"></button>"#);
+/// assert_eq!(button.bake(), r#"<button id="button"></button>"#);
 /// ```
 ///
 /// ```rust

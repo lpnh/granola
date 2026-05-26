@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let figure: HtmlFigure = HtmlFigure::empty().id("figure_with_optional_caption");
 ///
-/// assert_eq!(figure.bake(),
-/// r#"<figure id="figure_with_optional_caption"></figure>"#);
+/// assert_eq!(
+///     figure.bake(),
+///     r#"<figure id="figure_with_optional_caption"></figure>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -29,11 +31,13 @@ use crate::{filters, prelude::*};
 ///
 /// let figure: HtmlFigure = HtmlFigure::new(content);
 ///
-/// assert_eq!(figure.bake(),
-/// r#"<figure>
+/// assert_eq!(
+///     figure.bake(),
+///     r#"<figure>
 ///   <code>function greet() print("hi!") end</code>
 ///   <figcaption>Defining a function in Lua</figcaption>
-/// </figure>"#);
+/// </figure>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -71,8 +75,10 @@ pub struct HtmlFigure<R: FigureTag = ()> {
 ///
 /// let figure = figure!().id("figure_with_optional_caption");
 ///
-/// assert_eq!(figure.bake(),
-/// r#"<figure id="figure_with_optional_caption"></figure>"#);
+/// assert_eq!(
+///     figure.bake(),
+///     r#"<figure id="figure_with_optional_caption"></figure>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -84,11 +90,13 @@ pub struct HtmlFigure<R: FigureTag = ()> {
 ///
 /// let figure = figure!(code, figcaption);
 ///
-/// assert_eq!(figure.bake(),
-/// r#"<figure>
+/// assert_eq!(
+///     figure.bake(),
+///     r#"<figure>
 ///   <code>function greet() print("hi!") end</code>
 ///   <figcaption>Defining a function in Lua</figcaption>
-/// </figure>"#);
+/// </figure>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! figure {

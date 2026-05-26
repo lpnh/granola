@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let a: HtmlA = HtmlA::empty().id("anchor");
 ///
-/// assert_eq!(a.bake(),
-/// r#"<a id="anchor"></a>"#);
+/// assert_eq!(a.bake(), r#"<a id="anchor"></a>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let a: HtmlA = HtmlA::new("docs").href("https://askama.rs");
 ///
-/// assert_eq!(a.bake(),
-/// r#"<a href="https://askama.rs">docs</a>"#);
+/// assert_eq!(a.bake(), r#"<a href="https://askama.rs">docs</a>"#);
 /// ```
 ///
 /// # Askama template
@@ -46,9 +44,9 @@ pub struct HtmlA<R: ATag = ()> {
     pub content: R::Content,
     /// # Permitted ARIA roles
     ///
-    /// when href attribute is present: button, checkbox, menuitem, menuitemcheckbox,
-    /// menuitemradio, option, radio, switch, tab, treeitem
-    /// when href attribute is not present: any
+    /// when href attribute is present: button, checkbox, menuitem,
+    /// menuitemcheckbox, menuitemradio, option, radio, switch, tab,
+    /// treeitem when href attribute is not present: any
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: AAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -90,7 +88,8 @@ pub struct AAttrs {
 pub trait HasAAttrs: Sized {
     fn a_attrs_mut(&mut self) -> &mut AAttrs;
 
-    /// Whether to download the resource instead of navigating to it, and its filename if so.
+    /// Whether to download the resource instead of navigating to it, and its
+    /// filename if so.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#download)
     fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -130,7 +129,8 @@ pub trait HasAAttrs: Sized {
         self
     }
 
-    /// Relationship between the location in the document containing the hyperlink and the destination resource.
+    /// Relationship between the location in the document containing the
+    /// hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -182,8 +182,7 @@ impl<R: ATag> HasAAttrs for HtmlA<R> {
 ///
 /// let a = a!().id("anchor");
 ///
-/// assert_eq!(a.bake(),
-/// r#"<a id="anchor"></a>"#);
+/// assert_eq!(a.bake(), r#"<a id="anchor"></a>"#);
 /// ```
 ///
 /// ```rust
@@ -191,8 +190,7 @@ impl<R: ATag> HasAAttrs for HtmlA<R> {
 ///
 /// let a = a!("docs").href("https://askama.rs");
 ///
-/// assert_eq!(a.bake(),
-/// r#"<a href="https://askama.rs">docs</a>"#);
+/// assert_eq!(a.bake(), r#"<a href="https://askama.rs">docs</a>"#);
 /// ```
 #[macro_export]
 macro_rules! a {

@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_selector: CssSelector = CssSelector::new("p");
 ///
-/// assert_eq!(css_selector.bake(),
-/// "p");
+/// assert_eq!(css_selector.bake(), "p");
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::prelude::*;
 ///
 /// let css_selector: CssSelector = "p".into();
 ///
-/// assert_eq!(css_selector.bake(),
-/// "p");
+/// assert_eq!(css_selector.bake(), "p");
 /// ```
 ///
 /// # Askama template
@@ -89,8 +87,7 @@ impl From<String> for CssSelector {
 ///
 /// let css_selector_list: CssSelectorsList = CssSelectorsList::new().push(css_selector);
 ///
-/// assert_eq!(css_selector_list.bake(),
-/// "p");
+/// assert_eq!(css_selector_list.bake(), "p");
 /// ```
 ///
 /// ```rust
@@ -100,8 +97,7 @@ impl From<String> for CssSelector {
 ///
 /// let css_selector_list: CssSelectorsList = css_selector.into();
 ///
-/// assert_eq!(css_selector_list.bake(),
-/// "p");
+/// assert_eq!(css_selector_list.bake(), "p");
 /// ```
 ///
 /// # Askama template

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let meter: HtmlMeter = HtmlMeter::empty().id("html_meter");
 ///
-/// assert_eq!(meter.bake(),
-/// r#"<meter id="html_meter"></meter>"#);
+/// assert_eq!(meter.bake(), r#"<meter id="html_meter"></meter>"#);
 /// ```
 ///
 /// ```rust
@@ -29,10 +28,12 @@ use crate::{filters, prelude::*};
 ///     .high(60.)
 ///     .optimum(80.);
 ///
-/// assert_eq!(meter.bake(),
-/// r#"<meter value="12" min="0" max="100" low="20" high="60" optimum="80">
+/// assert_eq!(
+///     meter.bake(),
+///     r#"<meter value="12" min="0" max="100" low="20" high="60" optimum="80">
 ///   12%
-/// </meter>"#);
+/// </meter>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -191,8 +192,7 @@ impl<R: MeterTag> HasMeterAttrs for HtmlMeter<R> {
 ///
 /// let meter = meter!().id("html_meter");
 ///
-/// assert_eq!(meter.bake(),
-/// r#"<meter id="html_meter"></meter>"#);
+/// assert_eq!(meter.bake(), r#"<meter id="html_meter"></meter>"#);
 /// ```
 ///
 /// ```rust

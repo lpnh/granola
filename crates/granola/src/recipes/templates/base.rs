@@ -8,24 +8,25 @@ use crate::{prelude::*, recipes::*, templates::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*, templates::*};
+/// use granola::{prelude::*, recipes::*, templates::*};
 ///
 /// let tmpl: TmplBase<Homemade> = TmplBase::from_recipe();
 ///
-/// assert_eq!(tmpl.bake(),
-/// r#"<!doctype html>
+/// assert_eq!(
+///     tmpl.bake(),
+///     r#"<!doctype html>
 /// <html>
 ///   <head>
 ///     <meta charset="utf-8" />
 ///     <meta name="viewport" content="width=device-width, initial-scale=1" />
 ///   </head>
 ///   <body></body>
-/// </html>"#);
+/// </html>"#
+/// );
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*, templates::*};
-///
+/// use granola::{prelude::*, recipes::*, templates::*};
 ///
 /// let meta: HtmlMeta<Robots> = HtmlMeta::new("noindex, nofollow");
 /// let title: HtmlTitle = HtmlTitle::new("Home");
@@ -41,8 +42,9 @@ use crate::{prelude::*, recipes::*, templates::*};
 ///     .push_title(title)
 ///     .push_style(style);
 ///
-/// assert_eq!(tmpl.bake(),
-/// r#"<!doctype html>
+/// assert_eq!(
+///     tmpl.bake(),
+///     r#"<!doctype html>
 /// <html lang="en">
 ///   <head>
 ///     <meta charset="utf-8" />
@@ -59,7 +61,8 @@ use crate::{prelude::*, recipes::*, templates::*};
 ///   <body>
 ///     Hello, world!
 ///   </body>
-/// </html>"#);
+/// </html>"#
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Homemade;

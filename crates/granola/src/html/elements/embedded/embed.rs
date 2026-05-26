@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let embed: HtmlEmbed = HtmlEmbed::empty().id("embed_external_content");
 ///
-/// assert_eq!(embed.bake(),
-/// r#"<embed id="embed_external_content" />"#);
+/// assert_eq!(embed.bake(), r#"<embed id="embed_external_content" />"#);
 /// ```
 ///
 /// ```rust
@@ -26,8 +25,10 @@ use crate::{filters, prelude::*};
 ///     .width(420)
 ///     .height(420);
 ///
-/// assert_eq!(embed.bake(),
-/// r#"<embed type="image/png" src="flower.png" width="420" height="420" />"#);
+/// assert_eq!(
+///     embed.bake(),
+///     r#"<embed type="image/png" src="flower.png" width="420" height="420" />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -167,8 +168,7 @@ impl<R: EmbedTag> HasEmbedAttrs for HtmlEmbed<R> {
 ///
 /// let embed = embed!().id("embed_external_content");
 ///
-/// assert_eq!(embed.bake(),
-/// r#"<embed id="embed_external_content" />"#);
+/// assert_eq!(embed.bake(), r#"<embed id="embed_external_content" />"#);
 /// ```
 ///
 /// ```rust
@@ -179,8 +179,10 @@ impl<R: EmbedTag> HasEmbedAttrs for HtmlEmbed<R> {
 ///     .width(420)
 ///     .height(420);
 ///
-/// assert_eq!(embed.bake(),
-/// r#"<embed type="image/png" src="flower.png" width="420" height="420" />"#);
+/// assert_eq!(
+///     embed.bake(),
+///     r#"<embed type="image/png" src="flower.png" width="420" height="420" />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! embed {

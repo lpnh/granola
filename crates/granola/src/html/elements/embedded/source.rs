@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let source: HtmlSource = HtmlSource::empty().id("media_or_image_source");
 ///
-/// assert_eq!(source.bake(),
-/// r#"<source id="media_or_image_source" />"#);
+/// assert_eq!(source.bake(), r#"<source id="media_or_image_source" />"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let source: HtmlSource = HtmlSource::new("/videos/flower.mp4").mime_type("video/mp4");
 ///
-/// assert_eq!(source.bake(),
-/// r#"<source src="/videos/flower.mp4" type="video/mp4" />"#);
+/// assert_eq!(
+///     source.bake(),
+///     r#"<source src="/videos/flower.mp4" type="video/mp4" />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -139,7 +140,8 @@ pub trait HasSourceAttrs: Sized {
         self
     }
 
-    /// Images to use in different situations, e.g., high-resolution displays, small monitors, etc.
+    /// Images to use in different situations, e.g., high-resolution displays,
+    /// small monitors, etc.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#srcset)
     fn srcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -191,8 +193,7 @@ impl<R: SourceTag> HasSourceAttrs for HtmlSource<R> {
 ///
 /// let source = source!().id("media_or_image_source");
 ///
-/// assert_eq!(source.bake(),
-/// r#"<source id="media_or_image_source" />"#);
+/// assert_eq!(source.bake(), r#"<source id="media_or_image_source" />"#);
 /// ```
 ///
 /// ```rust
@@ -200,8 +201,10 @@ impl<R: SourceTag> HasSourceAttrs for HtmlSource<R> {
 ///
 /// let source = source!("/videos/flower.mp4").mime_type("video/mp4");
 ///
-/// assert_eq!(source.bake(),
-/// r#"<source src="/videos/flower.mp4" type="video/mp4" />"#);
+/// assert_eq!(
+///     source.bake(),
+///     r#"<source src="/videos/flower.mp4" type="video/mp4" />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! source {

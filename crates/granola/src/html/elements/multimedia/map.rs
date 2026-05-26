@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let map: HtmlMap = HtmlMap::empty().id("image_map");
 ///
-/// assert_eq!(map.bake(),
-/// r#"<map id="image_map"></map>"#);
+/// assert_eq!(map.bake(), r#"<map id="image_map"></map>"#);
 /// ```
 ///
 /// ```rust
@@ -34,11 +33,13 @@ use crate::{filters, prelude::*};
 ///
 /// let img_map = bake_block![img, map];
 ///
-/// assert_eq!(img_map,
-/// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
+/// assert_eq!(
+///     img_map,
+///     r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
 /// <map name="minas-gerais">
 ///   <area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />
-/// </map>"##);
+/// </map>"##
+/// );
 /// ```
 ///
 /// # Askama template
@@ -119,8 +120,7 @@ impl<R: MapTag> HasMapAttrs for HtmlMap<R> {
 ///
 /// let map = map!().id("image_map");
 ///
-/// assert_eq!(map.bake(),
-/// r#"<map id="image_map"></map>"#);
+/// assert_eq!(map.bake(), r#"<map id="image_map"></map>"#);
 /// ```
 ///
 /// ```rust
@@ -139,11 +139,13 @@ impl<R: MapTag> HasMapAttrs for HtmlMap<R> {
 ///
 /// let img_map = bake_block![img, map];
 ///
-/// assert_eq!(img_map,
-/// r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
+/// assert_eq!(
+///     img_map,
+///     r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
 /// <map name="minas-gerais">
 ///   <area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />
-/// </map>"##);
+/// </map>"##
+/// );
 /// ```
 #[macro_export]
 macro_rules! map {

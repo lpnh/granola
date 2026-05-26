@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_justify_content: CssJustifyContent = CssJustifyContent::new("center");
 ///
-/// assert_eq!(css_justify_content.bake(),
-/// "justify-content: center;");
+/// assert_eq!(css_justify_content.bake(), "justify-content: center;");
 /// ```
 ///
 /// # Askama template

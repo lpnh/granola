@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let small: HtmlSmall = HtmlSmall::empty().id("side_comment");
 ///
-/// assert_eq!(small.bake(),
-/// r#"<small id="side_comment"></small>"#);
+/// assert_eq!(small.bake(), r#"<small id="side_comment"></small>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,10 @@ use crate::{filters, prelude::*};
 ///
 /// let small: HtmlSmall = HtmlSmall::new(unlicense);
 ///
-/// assert_eq!(small.bake(),
-/// r#"<small>This is free and unencumbered software released into the public domain.</small>"#);
+/// assert_eq!(
+///     small.bake(),
+///     r#"<small>This is free and unencumbered software released into the public domain.</small>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -63,8 +64,7 @@ pub struct HtmlSmall<R: SmallTag = ()> {
 ///
 /// let small = small!().id("side_comment");
 ///
-/// assert_eq!(small.bake(),
-/// r#"<small id="side_comment"></small>"#);
+/// assert_eq!(small.bake(), r#"<small id="side_comment"></small>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +74,10 @@ pub struct HtmlSmall<R: SmallTag = ()> {
 ///
 /// let small = small!(unlicense);
 ///
-/// assert_eq!(small.bake(),
-/// r#"<small>This is free and unencumbered software released into the public domain.</small>"#);
+/// assert_eq!(
+///     small.bake(),
+///     r#"<small>This is free and unencumbered software released into the public domain.</small>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! small {

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let samp: HtmlSamp = HtmlSamp::empty().id("sample_output");
 ///
-/// assert_eq!(samp.bake(),
-/// r#"<samp id="sample_output"></samp>"#);
+/// assert_eq!(samp.bake(), r#"<samp id="sample_output"></samp>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let error: HtmlSamp = HtmlSamp::new("No such file or directory");
 ///
-/// assert_eq!(error.bake(),
-/// r#"<samp>No such file or directory</samp>"#);
+/// assert_eq!(error.bake(), r#"<samp>No such file or directory</samp>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlSamp<R: SampTag = ()> {
 ///
 /// let samp = samp!().id("sample_output");
 ///
-/// assert_eq!(samp.bake(),
-/// r#"<samp id="sample_output"></samp>"#);
+/// assert_eq!(samp.bake(), r#"<samp id="sample_output"></samp>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlSamp<R: SampTag = ()> {
 ///
 /// let error = samp!("No such file or directory");
 ///
-/// assert_eq!(error.bake(),
-/// r#"<samp>No such file or directory</samp>"#);
+/// assert_eq!(error.bake(), r#"<samp>No such file or directory</samp>"#);
 /// ```
 #[macro_export]
 macro_rules! samp {

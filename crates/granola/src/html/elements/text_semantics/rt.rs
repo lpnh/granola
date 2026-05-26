@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let rt: HtmlRt = HtmlRt::empty().id("ruby_text");
 ///
-/// assert_eq!(rt.bake(),
-/// r#"<rt id="ruby_text"></rt>"#);
+/// assert_eq!(rt.bake(), r#"<rt id="ruby_text"></rt>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let tori: HtmlRt = HtmlRt::new("tori");
 ///
-/// assert_eq!(tori.bake(),
-/// r#"<rt>tori</rt>"#);
+/// assert_eq!(tori.bake(), r#"<rt>tori</rt>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlRt<R: RtTag = ()> {
 ///
 /// let rt = rt!().id("ruby_text");
 ///
-/// assert_eq!(rt.bake(),
-/// r#"<rt id="ruby_text"></rt>"#);
+/// assert_eq!(rt.bake(), r#"<rt id="ruby_text"></rt>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlRt<R: RtTag = ()> {
 ///
 /// let tori = rt!("tori");
 ///
-/// assert_eq!(tori.bake(),
-/// r#"<rt>tori</rt>"#);
+/// assert_eq!(tori.bake(), r#"<rt>tori</rt>"#);
 /// ```
 #[macro_export]
 macro_rules! rt {

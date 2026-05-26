@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let base: HtmlBase = HtmlBase::empty().id("document_base_url");
 ///
-/// assert_eq!(base.bake(),
-/// r#"<base id="document_base_url" />"#);
+/// assert_eq!(base.bake(), r#"<base id="document_base_url" />"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let base: HtmlBase = HtmlBase::new("https://www.example.com");
 ///
-/// assert_eq!(base.bake(),
-/// r#"<base href="https://www.example.com" />"#);
+/// assert_eq!(base.bake(), r#"<base href="https://www.example.com" />"#);
 /// ```
 ///
 /// # Askama template
@@ -141,8 +139,7 @@ impl<R: BaseTag> HasBaseAttrs for HtmlBase<R> {
 ///
 /// let base = base!().id("document_base_url");
 ///
-/// assert_eq!(base.bake(),
-/// r#"<base id="document_base_url" />"#);
+/// assert_eq!(base.bake(), r#"<base id="document_base_url" />"#);
 /// ```
 ///
 /// ```rust
@@ -150,8 +147,7 @@ impl<R: BaseTag> HasBaseAttrs for HtmlBase<R> {
 ///
 /// let base = base!("https://www.example.com");
 ///
-/// assert_eq!(base.bake(),
-/// r#"<base href="https://www.example.com" />"#);
+/// assert_eq!(base.bake(), r#"<base href="https://www.example.com" />"#);
 /// ```
 #[macro_export]
 macro_rules! base {

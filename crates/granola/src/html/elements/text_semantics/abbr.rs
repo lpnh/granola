@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let abbr: HtmlAbbr = HtmlAbbr::empty().id("abbreviation");
 ///
-/// assert_eq!(abbr.bake(),
-/// r#"<abbr id="abbreviation"></abbr>"#);
+/// assert_eq!(abbr.bake(), r#"<abbr id="abbreviation"></abbr>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let abbr: HtmlAbbr = HtmlAbbr::new("TMNT").title("Teenage Mutant Ninja Turtles");
 ///
-/// assert_eq!(abbr.bake(),
-/// r#"<abbr title="Teenage Mutant Ninja Turtles">TMNT</abbr>"#);
+/// assert_eq!(
+///     abbr.bake(),
+///     r#"<abbr title="Teenage Mutant Ninja Turtles">TMNT</abbr>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -61,8 +62,7 @@ pub struct HtmlAbbr<R: AbbrTag = ()> {
 ///
 /// let abbr = abbr!().id("abbreviation");
 ///
-/// assert_eq!(abbr.bake(),
-/// r#"<abbr id="abbreviation"></abbr>"#);
+/// assert_eq!(abbr.bake(), r#"<abbr id="abbreviation"></abbr>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +70,10 @@ pub struct HtmlAbbr<R: AbbrTag = ()> {
 ///
 /// let abbr = abbr!("TMNT").title("Teenage Mutant Ninja Turtles");
 ///
-/// assert_eq!(abbr.bake(),
-/// r#"<abbr title="Teenage Mutant Ninja Turtles">TMNT</abbr>"#);
+/// assert_eq!(
+///     abbr.bake(),
+///     r#"<abbr title="Teenage Mutant Ninja Turtles">TMNT</abbr>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! abbr {

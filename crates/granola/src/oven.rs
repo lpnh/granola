@@ -1,13 +1,15 @@
 //! String-building primitives and recipe machinery.
 //!
-//! [`bake_block!`](crate::bake_block), [`bake_inline!`](crate::bake_inline), and
-//! [`bake_newline!`](crate::bake_newline) render [`Template`] types, [`AsRef<str>`] values,
-//! and any other [`FastWritable`] type (e.g. primitives) freely mixed into a single
-//! [`String`]. The dispatch is resolved at compile time via [autoref-based specialization];
-//! see [`Roast`] for the priority order.
+//! [`bake_block!`](crate::bake_block), [`bake_inline!`](crate::bake_inline),
+//! and [`bake_newline!`](crate::bake_newline) render [`Template`] types,
+//! [`AsRef<str>`] values, and any other [`FastWritable`] type (e.g. primitives)
+//! freely mixed into a single [`String`]. The dispatch is resolved at compile
+//! time via [autoref-based specialization]; see [`Roast`] for the priority
+//! order.
 //!
-//! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed collections.
-//! [`cookbook!`](crate::cookbook) is the shorthand for `(A, (B, C))` when composing multiple recipes.
+//! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed
+//! collections. [`cookbook!`](crate::cookbook) is the shorthand for `(A, (B,
+//! C))` when composing multiple recipes.
 //!
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
@@ -16,11 +18,12 @@ use std::{borrow::Cow, fmt};
 
 use askama::{FastWritable, NO_VALUES, Template, Values};
 
-/// Wraps a [`FastWritable`] value so it can be used as a recipe's `type Content`.
+/// Wraps a [`FastWritable`] value so it can be used as a recipe's `type
+/// Content`.
 ///
-/// An element's default content type is [`Cow<'static, str>`], and overriding `type Content`
-/// requires the override to bake back into it. A foreign type like `u32` can't satisfy that
-/// directly, but `BakeFrom` can.
+/// An element's default content type is [`Cow<'static, str>`], and overriding
+/// `type Content` requires the override to bake back into it. A foreign type
+/// like `u32` can't satisfy that directly, but `BakeFrom` can.
 ///
 /// ```rust
 /// use granola::prelude::*;
@@ -34,8 +37,7 @@ use askama::{FastWritable, NO_VALUES, Template, Values};
 ///
 /// let output: HtmlOutput<Answer> = HtmlOutput::new(42);
 ///
-/// assert_eq!(output.bake(),
-/// "<output>42</output>");
+/// assert_eq!(output.bake(), "<output>42</output>");
 /// ```
 pub struct BakeFrom<T>(pub T);
 
@@ -63,19 +65,21 @@ impl<T: fmt::Debug> fmt::Debug for BakeFrom<T> {
     }
 }
 
-/// Lets the element's `new(value)` build a `BakeFrom<T>` content directly, without
-/// the caller writing `BakeFrom(value)`.
+/// Lets the element's `new(value)` build a `BakeFrom<T>` content directly,
+/// without the caller writing `BakeFrom(value)`.
 impl<T: FastWritable> From<T> for BakeFrom<T> {
     fn from(value: T) -> Self {
         BakeFrom(value)
     }
 }
 
-/// Bakes any [`FastWritable`] content back into the default [`Cow<'static, str>`] content type.
+/// Bakes any [`FastWritable`] content back into the default [`Cow<'static,
+/// str>`] content type.
 ///
 /// # Panics
 ///
-/// Panics if [`FastWritable::write_into`] returns an error. See [`askama::Error`].
+/// Panics if [`FastWritable::write_into`] returns an error. See
+/// [`askama::Error`].
 impl<T: FastWritable> From<BakeFrom<T>> for Cow<'static, str> {
     fn from(wrapped: BakeFrom<T>) -> Self {
         let mut buf = String::new();
@@ -84,28 +88,31 @@ impl<T: FastWritable> From<BakeFrom<T>> for Cow<'static, str> {
     }
 }
 
-/// Wrapper type carrying the autoref-based content dispatch for the `bake_*!` macros.
+/// Wrapper type carrying the autoref-based content dispatch for the `bake_*!`
+/// macros.
 ///
 /// See [`Roast`] for the tiered dispatch it drives.
 pub struct Bake<T>(pub T);
 
-/// Tiered content dispatch for the `bake_*!` macros, resolved at compile time by
-/// [autoref-based specialization], in priority order:
+/// Tiered content dispatch for the `bake_*!` macros, resolved at compile time
+/// by [autoref-based specialization], in priority order:
 ///
 /// 1. `T: Template` — rendered via [`Template::render_into`] with an exact
 ///    [`Template::SIZE_HINT`].
-/// 2. `T: AsRef<str>` — appended via [`String::push_str`] with an exact `len` size hint.
+/// 2. `T: AsRef<str>` — appended via [`String::push_str`] with an exact `len`
+///    size hint.
 /// 3. any other `T: FastWritable` (e.g. primitives) — written via
-///    [`FastWritable::write_into`]; no size hint is available, so it reports `0`.
+///    [`FastWritable::write_into`]; no size hint is available, so it reports
+///    `0`.
 ///
-/// A type matching several bounds (e.g. `String`, which is both `AsRef<str>` and
-/// `FastWritable`) resolves to the highest applicable tier, so strings keep their exact
-/// size hint.
+/// A type matching several bounds (e.g. `String`, which is both `AsRef<str>`
+/// and `FastWritable`) resolves to the highest applicable tier, so strings keep
+/// their exact size hint.
 ///
 /// # Panics
 ///
-/// Panics if [`Template::render_into`] or [`FastWritable::write_into`] returns an error.
-/// See [`askama::Error`].
+/// Panics if [`Template::render_into`] or [`FastWritable::write_into`] returns
+/// an error. See [`askama::Error`].
 ///
 /// [autoref-based specialization]:
 /// https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
@@ -147,24 +154,26 @@ impl<T: FastWritable> Roast for Bake<&T> {
 
 /// Converts `Foo<R>` into `Foo`.
 ///
-/// `PhantomData<R>` selects which recipe runs during construction. `bake_recipe` moves
-/// all fields into `Foo<()>`, applying [`BakeInto`] for any content field.
+/// `PhantomData<R>` selects which recipe runs during construction.
+/// `bake_recipe` moves all fields into `Foo<()>`, applying [`BakeInto`] for any
+/// content field.
 ///
-/// This is the canonical way to land a `Foo<R>` into a collection that stores `Foo<()>`.
-/// It exists as its own trait because `From<Foo<R>> for Foo<()>` cannot be written:
-/// at `R = ()` it overlaps the std reflexive `impl<T> From<T> for T`.
+/// This is the canonical way to land a `Foo<R>` into a collection that stores
+/// `Foo<()>`. It exists as its own trait because `From<Foo<R>> for Foo<()>`
+/// cannot be written: at `R = ()` it overlaps the std reflexive `impl<T>
+/// From<T> for T`.
 pub trait BakeRecipe {
     type Baked;
 
     fn bake_recipe(self) -> Self::Baked;
 }
 
-/// Marks that a recipe's custom content type can be baked back into the element's
-/// default content type.
+/// Marks that a recipe's custom content type can be baked back into the
+/// element's default content type.
 ///
-/// You never implement this directly: it has a blanket impl for every `T: Into<D>`.
-/// Its only job is to give a guided compiler error when a recipe overrides
-/// `type Content` but is missing the matching `From` impl.
+/// You never implement this directly: it has a blanket impl for every `T:
+/// Into<D>`. Its only job is to give a guided compiler error when a recipe
+/// overrides `type Content` but is missing the matching `From` impl.
 #[diagnostic::on_unimplemented(
     message = "recipe content `{Self}` can't bake back into `{D}`",
     label = "try using `BakeFrom<{Self}>`",
@@ -184,9 +193,11 @@ where
     }
 }
 
-/// Renders any number of items into a single [`String`], placing each on a new line.
+/// Renders any number of items into a single [`String`], placing each on a new
+/// line.
 ///
-/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`) freely mixed.
+/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`)
+/// freely mixed.
 ///
 /// # Example
 ///
@@ -199,11 +210,13 @@ where
 ///
 /// let label: HtmlLabel = HtmlLabel::new(content).for_id("ode");
 ///
-/// assert_eq!(label.bake(),
-/// r#"<label for="ode">
+/// assert_eq!(
+///     label.bake(),
+///     r#"<label for="ode">
 ///   Notes
 ///   <textarea id="ode">Exegi monumentum aere perennius</textarea>
-/// </label>"#);
+/// </label>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! bake_block {
@@ -230,9 +243,11 @@ macro_rules! bake_block {
     }};
 }
 
-/// Renders any number of items into a single [`String`], concatenated without any separator.
+/// Renders any number of items into a single [`String`], concatenated without
+/// any separator.
 ///
-/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`) freely mixed.
+/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`)
+/// freely mixed.
 ///
 /// # Example
 ///
@@ -245,8 +260,10 @@ macro_rules! bake_block {
 ///
 /// let span: HtmlSpan = HtmlSpan::new(content);
 ///
-/// assert_eq!(span.bake(),
-/// r#"<span>Read the <a href="https://askama.rs">docs</a>.</span>"#);
+/// assert_eq!(
+///     span.bake(),
+///     r#"<span>Read the <a href="https://askama.rs">docs</a>.</span>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! bake_inline {
@@ -279,10 +296,12 @@ macro_rules! bake_inline {
 ///
 /// let paragraph: HtmlP = HtmlP::new(content);
 ///
-/// assert_eq!(paragraph.bake(),
-/// r#"<p>
+/// assert_eq!(
+///     paragraph.bake(),
+///     r#"<p>
 ///   content
-/// </p>"#);
+/// </p>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! bake_newline {
@@ -315,8 +334,10 @@ macro_rules! bake_newline {
 ///
 /// let input: HtmlInput<SubmitPost> = HtmlInput::from_value("Send");
 ///
-/// assert_eq!(input.bake(),
-/// r#"<input type="submit" value="Send" formmethod="post" />"#);
+/// assert_eq!(
+///     input.bake(),
+///     r#"<input type="submit" value="Send" formmethod="post" />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! cookbook {
@@ -477,11 +498,11 @@ mod oven_tests {
 
 // The SIZE_HINT-based preallocation depends on two things:
 //
-// 1. Askama's `Template::SIZE_HINT` is a tight estimate
-//     (scaffold plus a small per-expression headroom).
+// 1. Askama's `Template::SIZE_HINT` is a tight estimate (scaffold plus a small
+//    per-expression headroom).
 //
-// 2. `bake()`, `bake_block!`, `bake_inline!`, and `bake_newline!`
-//     reserve capacity up-front: HINT bytes, or 1 + HINT.
+// 2. `bake()`, `bake_block!`, `bake_inline!`, and `bake_newline!` reserve
+//    capacity up-front: HINT bytes, or 1 + HINT.
 //
 // Two fixtures per element:
 // - small fixture (fits in HINT): String capacity == HINT

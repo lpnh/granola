@@ -25,8 +25,7 @@ use crate::prelude::*;
 ///
 /// let css_padding: CssPadding = CssPadding::new("0.6em 1.2em");
 ///
-/// assert_eq!(css_padding.bake(),
-/// "padding: 0.6em 1.2em;");
+/// assert_eq!(css_padding.bake(), "padding: 0.6em 1.2em;");
 /// ```
 ///
 /// # Askama template

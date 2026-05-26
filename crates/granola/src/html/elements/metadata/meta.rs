@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let meta: HtmlMeta = HtmlMeta::empty().id("metadata");
 ///
-/// assert_eq!(meta.bake(),
-/// r#"<meta id="metadata" />"#);
+/// assert_eq!(meta.bake(), r#"<meta id="metadata" />"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let meta: HtmlMeta = HtmlMeta::new("noindex, nofollow").name("robots");
 ///
-/// assert_eq!(meta.bake(),
-/// r#"<meta name="robots" content="noindex, nofollow" />"#);
+/// assert_eq!(
+///     meta.bake(),
+///     r#"<meta name="robots" content="noindex, nofollow" />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -105,7 +106,8 @@ pub trait HasMetaAttrs: Sized {
 
     /// Character encoding declaration.
     ///
-    /// Set the `charset` attribute to `utf-8`, the only valid encoding for HTML5 documents.
+    /// Set the `charset` attribute to `utf-8`, the only valid encoding for
+    /// HTML5 documents.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta#charset)
     fn charset(mut self) -> Self {
@@ -173,8 +175,7 @@ impl<R: MetaTag> HasMetaAttrs for HtmlMeta<R> {
 ///
 /// let meta = meta!().id("metadata");
 ///
-/// assert_eq!(meta.bake(),
-/// r#"<meta id="metadata" />"#);
+/// assert_eq!(meta.bake(), r#"<meta id="metadata" />"#);
 /// ```
 ///
 /// ```rust
@@ -182,8 +183,10 @@ impl<R: MetaTag> HasMetaAttrs for HtmlMeta<R> {
 ///
 /// let meta = meta!("noindex, nofollow").name("robots");
 ///
-/// assert_eq!(meta.bake(),
-/// r#"<meta name="robots" content="noindex, nofollow" />"#);
+/// assert_eq!(
+///     meta.bake(),
+///     r#"<meta name="robots" content="noindex, nofollow" />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! meta {

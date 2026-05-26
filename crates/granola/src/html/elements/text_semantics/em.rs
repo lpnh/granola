@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let em: HtmlEm = HtmlEm::empty().id("emphasis");
 ///
-/// assert_eq!(em.bake(),
-/// r#"<em id="emphasis"></em>"#);
+/// assert_eq!(em.bake(), r#"<em id="emphasis"></em>"#);
 /// ```
 ///
 /// ```rust
@@ -24,8 +23,7 @@ use crate::{filters, prelude::*};
 /// let owned: HtmlEm = HtmlEm::new("owned");
 /// let borrow_checker = bake_inline!("I never said he ", owned, " it.");
 ///
-/// assert_eq!(borrow_checker,
-/// r#"I never said he <em>owned</em> it."#);
+/// assert_eq!(borrow_checker, r#"I never said he <em>owned</em> it."#);
 /// ```
 ///
 /// # Askama template
@@ -62,8 +60,7 @@ pub struct HtmlEm<R: EmTag = ()> {
 ///
 /// let em = em!().id("emphasis");
 ///
-/// assert_eq!(em.bake(),
-/// r#"<em id="emphasis"></em>"#);
+/// assert_eq!(em.bake(), r#"<em id="emphasis"></em>"#);
 /// ```
 ///
 /// ```rust
@@ -72,8 +69,7 @@ pub struct HtmlEm<R: EmTag = ()> {
 /// let owned = em!("owned");
 /// let borrow_checker = bake_inline!("I never said he ", owned, " it.");
 ///
-/// assert_eq!(borrow_checker,
-/// r#"I never said he <em>owned</em> it."#);
+/// assert_eq!(borrow_checker, r#"I never said he <em>owned</em> it."#);
 /// ```
 #[macro_export]
 macro_rules! em {

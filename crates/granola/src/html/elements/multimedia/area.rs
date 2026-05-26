@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let area: HtmlArea = HtmlArea::empty().id("image_map_area");
 ///
-/// assert_eq!(area.bake(),
-/// r#"<area id="image_map_area" />"#);
+/// assert_eq!(area.bake(), r#"<area id="image_map_area" />"#);
 /// ```
 ///
 /// ```rust
@@ -161,7 +160,8 @@ pub trait HasAreaAttrs: Sized {
         self
     }
 
-    /// Whether to download the resource instead of navigating to it, and its filename if so.
+    /// Whether to download the resource instead of navigating to it, and its
+    /// filename if so.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#download)
     fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -197,7 +197,8 @@ pub trait HasAreaAttrs: Sized {
         self
     }
 
-    /// Relationship between the location in the document containing the hyperlink and the destination resource.
+    /// Relationship between the location in the document containing the
+    /// hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
     fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -274,8 +275,7 @@ impl From<HtmlArea> for Areas {
 ///
 /// let area = area!().id("image_map_area");
 ///
-/// assert_eq!(area.bake(),
-/// r#"<area id="image_map_area" />"#);
+/// assert_eq!(area.bake(), r#"<area id="image_map_area" />"#);
 /// ```
 ///
 /// ```rust

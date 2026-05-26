@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let br: HtmlBr = HtmlBr::new().id("line_break");
 ///
-/// assert_eq!(br.bake(),
-/// r#"<br id="line_break" />"#);
+/// assert_eq!(br.bake(), r#"<br id="line_break" />"#);
 /// ```
 ///
 /// ```rust
@@ -28,11 +27,13 @@ use crate::prelude::*;
 ///
 /// let poem: HtmlP = HtmlP::new(bake_block![roses, violets]);
 ///
-/// assert_eq!(poem.bake(),
-/// r#"<p>
+/// assert_eq!(
+///     poem.bake(),
+///     r#"<p>
 ///   Roses are red,<br />
 ///   Violets are blue.
-/// </p>"#);
+/// </p>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -73,23 +74,21 @@ impl<R: BrTag> HtmlBr<R> {
 ///
 /// let br = br!().id("line_break");
 ///
-/// assert_eq!(br.bake(),
-/// r#"<br id="line_break" />"#);
+/// assert_eq!(br.bake(), r#"<br id="line_break" />"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let poem = p![
-///     bake_inline!["Roses are red,", br!()],
-///     "Violets are blue.",
-/// ];
+/// let poem = p![bake_inline!["Roses are red,", br!()], "Violets are blue.",];
 ///
-/// assert_eq!(poem.bake(),
-/// r#"<p>
+/// assert_eq!(
+///     poem.bake(),
+///     r#"<p>
 ///   Roses are red,<br />
 ///   Violets are blue.
-/// </p>"#);
+/// </p>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! br {

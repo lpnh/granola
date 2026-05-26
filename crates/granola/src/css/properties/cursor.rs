@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_cursor: CssCursor = CssCursor::new("pointer");
 ///
-/// assert_eq!(css_cursor.bake(),
-/// "cursor: pointer;");
+/// assert_eq!(css_cursor.bake(), "cursor: pointer;");
 /// ```
 ///
 /// # Askama template

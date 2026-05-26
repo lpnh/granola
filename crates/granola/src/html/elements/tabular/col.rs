@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let col: HtmlCol = HtmlCol::new().id("table_column");
 ///
-/// assert_eq!(col.bake(),
-/// r#"<col id="table_column" />"#);
+/// assert_eq!(col.bake(), r#"<col id="table_column" />"#);
 /// ```
 ///
 /// ```rust
@@ -26,9 +25,11 @@ use crate::{filters, prelude::*};
 ///
 /// let cols = bake_block![item, description];
 ///
-/// assert_eq!(cols,
-/// r#"<col class="item" />
-/// <col class="description" />"#);
+/// assert_eq!(
+///     cols,
+///     r#"<col class="item" />
+/// <col class="description" />"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -142,8 +143,7 @@ impl From<HtmlCol> for TableColumns {
 ///
 /// let col = col!().id("table_column");
 ///
-/// assert_eq!(col.bake(),
-/// r#"<col id="table_column" />"#);
+/// assert_eq!(col.bake(), r#"<col id="table_column" />"#);
 /// ```
 ///
 /// ```rust
@@ -154,9 +154,11 @@ impl From<HtmlCol> for TableColumns {
 ///
 /// let cols = bake_block![item, description];
 ///
-/// assert_eq!(cols,
-/// r#"<col class="item" />
-/// <col class="description" />"#);
+/// assert_eq!(
+///     cols,
+///     r#"<col class="item" />
+/// <col class="description" />"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! col {

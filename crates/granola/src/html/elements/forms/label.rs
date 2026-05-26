@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let label: HtmlLabel = HtmlLabel::empty().id("label");
 ///
-/// assert_eq!(label.bake(),
-/// r#"<label id="label"></label>"#);
+/// assert_eq!(label.bake(), r#"<label id="label"></label>"#);
 /// ```
 ///
 /// ```rust
@@ -27,11 +26,13 @@ use crate::{filters, prelude::*};
 ///
 /// let label: HtmlLabel = HtmlLabel::new(bake_block!["We're so back", input]);
 ///
-/// assert_eq!(label.bake(),
-/// r#"<label>
+/// assert_eq!(
+///     label.bake(),
+///     r#"<label>
 ///   We're so back
 ///   <input type="checkbox" name="reality-check" disabled />
-/// </label>"#);
+/// </label>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -112,8 +113,7 @@ pub trait HasLabelAttrs: Sized {
 ///
 /// let label = label!().id("label");
 ///
-/// assert_eq!(label.bake(),
-/// r#"<label id="label"></label>"#);
+/// assert_eq!(label.bake(), r#"<label id="label"></label>"#);
 /// ```
 ///
 /// ```rust

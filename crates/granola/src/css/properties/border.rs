@@ -77,8 +77,7 @@ use crate::prelude::*;
 ///
 /// let css_border: CssBorder = CssBorder::new("none");
 ///
-/// assert_eq!(css_border.bake(),
-/// "border: none;");
+/// assert_eq!(css_border.bake(), "border: none;");
 /// ```
 ///
 /// # Askama template

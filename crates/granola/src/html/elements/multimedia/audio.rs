@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let audio: HtmlAudio = HtmlAudio::empty().id("embed_audio");
 ///
-/// assert_eq!(audio.bake(),
-/// r#"<audio id="embed_audio"></audio>"#);
+/// assert_eq!(audio.bake(), r#"<audio id="embed_audio"></audio>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let audio: HtmlAudio = HtmlAudio::from_src("toms-dinner.mp3").autoplay(true);
 ///
-/// assert_eq!(audio.bake(),
-/// r#"<audio src="toms-dinner.mp3" autoplay></audio>"#);
+/// assert_eq!(
+///     audio.bake(),
+///     r#"<audio src="toms-dinner.mp3" autoplay></audio>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -112,7 +113,8 @@ pub struct AudioAttrs {
 pub trait HasAudioAttrs: Sized {
     fn audio_attrs_mut(&mut self) -> &mut AudioAttrs;
 
-    /// Hint that the media resource can be started automatically when the page is loaded.
+    /// Hint that the media resource can be started automatically when the page
+    /// is loaded.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#autoplay)
     fn autoplay(mut self, value: bool) -> Self {
@@ -208,8 +210,7 @@ impl<R: AudioTag> HasAudioAttrs for HtmlAudio<R> {
 ///
 /// let audio = audio!().id("embed_audio");
 ///
-/// assert_eq!(audio.bake(),
-/// r#"<audio id="embed_audio"></audio>"#);
+/// assert_eq!(audio.bake(), r#"<audio id="embed_audio"></audio>"#);
 /// ```
 ///
 /// ```rust

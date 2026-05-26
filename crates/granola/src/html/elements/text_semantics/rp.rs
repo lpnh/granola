@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let rp: HtmlRp = HtmlRp::empty().id("ruby_fallback_parenthesis");
 ///
-/// assert_eq!(rp.bake(),
-/// r#"<rp id="ruby_fallback_parenthesis"></rp>"#);
+/// assert_eq!(rp.bake(), r#"<rp id="ruby_fallback_parenthesis"></rp>"#);
 /// ```
 ///
 /// ```rust
@@ -27,8 +26,7 @@ use crate::{filters, prelude::*};
 ///
 /// let tori = bake_inline![opening_rp, rt, closing_rp];
 ///
-/// assert_eq!(tori,
-/// r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
+/// assert_eq!(tori, r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
 /// ```
 ///
 /// # Askama template
@@ -65,8 +63,7 @@ pub struct HtmlRp<R: RpTag = ()> {
 ///
 /// let rp = rp!().id("ruby_fallback_parenthesis");
 ///
-/// assert_eq!(rp.bake(),
-/// r#"<rp id="ruby_fallback_parenthesis"></rp>"#);
+/// assert_eq!(rp.bake(), r#"<rp id="ruby_fallback_parenthesis"></rp>"#);
 /// ```
 ///
 /// ```rust
@@ -78,8 +75,7 @@ pub struct HtmlRp<R: RpTag = ()> {
 ///
 /// let tori = bake_inline![opening_rp, rt, closing_rp];
 ///
-/// assert_eq!(tori,
-/// r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
+/// assert_eq!(tori, r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
 /// ```
 #[macro_export]
 macro_rules! rp {

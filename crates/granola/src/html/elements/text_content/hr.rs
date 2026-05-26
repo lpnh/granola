@@ -14,26 +14,28 @@ use crate::prelude::*;
 ///
 /// let hr: HtmlHr = HtmlHr::new().id("thematic_break");
 ///
-/// assert_eq!(hr.bake(),
-/// r#"<hr id="thematic_break" />"#);
+/// assert_eq!(hr.bake(), r#"<hr id="thematic_break" />"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let p1: HtmlP = HtmlP::new("She blew out the candle. The room went dark.");
-/// let p2: HtmlP = HtmlP::new("Morning came with birds and the smell of bread from somewhere below.");
+/// let p2: HtmlP =
+///     HtmlP::new("Morning came with birds and the smell of bread from somewhere below.");
 ///
 /// let hr: HtmlHr = HtmlHr::new();
 ///
 /// let story = bake_block![p1, "", hr, "", p2];
 ///
-/// assert_eq!(story,
-/// r#"<p>She blew out the candle. The room went dark.</p>
+/// assert_eq!(
+///     story,
+///     r#"<p>She blew out the candle. The room went dark.</p>
 ///
 /// <hr />
 ///
-/// <p>Morning came with birds and the smell of bread from somewhere below.</p>"#);
+/// <p>Morning came with birds and the smell of bread from somewhere below.</p>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -74,8 +76,7 @@ impl<R: HrTag> HtmlHr<R> {
 ///
 /// let hr = hr!().id("thematic_break");
 ///
-/// assert_eq!(hr.bake(),
-/// r#"<hr id="thematic_break" />"#);
+/// assert_eq!(hr.bake(), r#"<hr id="thematic_break" />"#);
 /// ```
 ///
 /// ```rust
@@ -86,12 +87,14 @@ impl<R: HrTag> HtmlHr<R> {
 ///
 /// let story = bake_block![p1, "", hr!(), "", p2];
 ///
-/// assert_eq!(story,
-/// r#"<p>She blew out the candle. The room went dark.</p>
+/// assert_eq!(
+///     story,
+///     r#"<p>She blew out the candle. The room went dark.</p>
 ///
 /// <hr />
 ///
-/// <p>Morning came with birds and the smell of bread from somewhere below.</p>"#);
+/// <p>Morning came with birds and the smell of bread from somewhere below.</p>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! hr {

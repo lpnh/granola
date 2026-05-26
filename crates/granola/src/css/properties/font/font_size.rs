@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_font_size: CssFontSize = CssFontSize::new("0.875rem");
 ///
-/// assert_eq!(css_font_size.bake(),
-/// "font-size: 0.875rem;");
+/// assert_eq!(css_font_size.bake(), "font-size: 0.875rem;");
 /// ```
 ///
 /// # Askama template

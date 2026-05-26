@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_display: CssDisplay = CssDisplay::new("inline flex");
 ///
-/// assert_eq!(css_display.bake(),
-/// "display: inline flex;");
+/// assert_eq!(css_display.bake(), "display: inline flex;");
 /// ```
 ///
 /// # Askama template

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let table: HtmlTable = HtmlTable::empty().id("table");
 ///
-/// assert_eq!(table.bake(),
-/// r#"<table id="table"></table>"#);
+/// assert_eq!(table.bake(), r#"<table id="table"></table>"#);
 /// ```
 ///
 /// ```rust
@@ -52,18 +51,13 @@ use crate::{filters, prelude::*};
 ///
 /// let tfoot: HtmlTfoot = HtmlTfoot::new(tr_foot);
 ///
-/// let content = bake_block![
-///     caption,
-///     colgroup,
-///     thead,
-///     tbody,
-///     tfoot,
-/// ];
+/// let content = bake_block![caption, colgroup, thead, tbody, tfoot,];
 ///
 /// let table: HtmlTable = HtmlTable::new(content);
 ///
-/// assert_eq!(table.bake(),
-/// r#"<table>
+/// assert_eq!(
+///     table.bake(),
+///     r#"<table>
 ///   <caption>Our favorites, yours to try.</caption>
 ///   <colgroup>
 ///     <col class="item" />
@@ -90,7 +84,8 @@ use crate::{filters, prelude::*};
 ///       <td colspan="2">Don't see what you're after? We'll do our best.</td>
 ///     </tr>
 ///   </tfoot>
-/// </table>"#);
+/// </table>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -127,8 +122,7 @@ pub struct HtmlTable<R: TableTag = ()> {
 ///
 /// let table = table!().id("table");
 ///
-/// assert_eq!(table.bake(),
-/// r#"<table id="table"></table>"#);
+/// assert_eq!(table.bake(), r#"<table id="table"></table>"#);
 /// ```
 ///
 /// ```rust

@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let optgroup: HtmlOptgroup = HtmlOptgroup::empty().id("option_group");
 ///
-/// assert_eq!(optgroup.bake(),
-/// r#"<optgroup id="option_group"></optgroup>"#);
+/// assert_eq!(
+///     optgroup.bake(),
+///     r#"<optgroup id="option_group"></optgroup>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -29,12 +31,14 @@ use crate::{filters, prelude::*};
 ///
 /// let optgroup: HtmlOptgroup = HtmlOptgroup::new(options).label("Fruits");
 ///
-/// assert_eq!(optgroup.bake(),
-/// r#"<optgroup label="Fruits">
+/// assert_eq!(
+///     optgroup.bake(),
+///     r#"<optgroup label="Fruits">
 ///   <option>Grape</option>
 ///   <option>Mango</option>
 ///   <option>Strawberry</option>
-/// </optgroup>"#);
+/// </optgroup>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -125,8 +129,10 @@ impl<R: OptgroupTag> HasOptgroupAttrs for HtmlOptgroup<R> {
 ///
 /// let optgroup = optgroup!().id("option_group");
 ///
-/// assert_eq!(optgroup.bake(),
-/// r#"<optgroup id="option_group"></optgroup>"#);
+/// assert_eq!(
+///     optgroup.bake(),
+///     r#"<optgroup id="option_group"></optgroup>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -137,30 +143,30 @@ impl<R: OptgroupTag> HasOptgroupAttrs for HtmlOptgroup<R> {
 ///
 /// let optgroup = optgroup![yes, no].label("Binary");
 ///
-/// assert_eq!(optgroup.bake(),
-/// r#"<optgroup label="Binary">
+/// assert_eq!(
+///     optgroup.bake(),
+///     r#"<optgroup label="Binary">
 ///   <option>Yes</option>
 ///   <option>No</option>
-/// </optgroup>"#);
+/// </optgroup>"#
+/// );
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let options = [
-///     option!("Grape"),
-///     option!("Mango"),
-///     option!("Strawberry"),
-/// ];
+/// let options = [option!("Grape"), option!("Mango"), option!("Strawberry")];
 ///
 /// let optgroup = optgroup!(options).label("Fruits");
 ///
-/// assert_eq!(optgroup.bake(),
-/// r#"<optgroup label="Fruits">
+/// assert_eq!(
+///     optgroup.bake(),
+///     r#"<optgroup label="Fruits">
 ///   <option>Grape</option>
 ///   <option>Mango</option>
 ///   <option>Strawberry</option>
-/// </optgroup>"#);
+/// </optgroup>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! optgroup {

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let ruby: HtmlRuby = HtmlRuby::empty().id("ruby_annotation");
 ///
-/// assert_eq!(ruby.bake(),
-/// r#"<ruby id="ruby_annotation"></ruby>"#);
+/// assert_eq!(ruby.bake(), r#"<ruby id="ruby_annotation"></ruby>"#);
 /// ```
 ///
 /// ```rust
@@ -29,8 +28,10 @@ use crate::{filters, prelude::*};
 ///
 /// let ruby: HtmlRuby = HtmlRuby::new(tori);
 ///
-/// assert_eq!(ruby.bake(),
-/// r#"<ruby>鳥<rp>(</rp><rt>とり</rt><rp>)</rp></ruby>"#);
+/// assert_eq!(
+///     ruby.bake(),
+///     r#"<ruby>鳥<rp>(</rp><rt>とり</rt><rp>)</rp></ruby>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -67,8 +68,7 @@ pub struct HtmlRuby<R: RubyTag = ()> {
 ///
 /// let ruby = ruby!().id("ruby_annotation");
 ///
-/// assert_eq!(ruby.bake(),
-/// r#"<ruby id="ruby_annotation"></ruby>"#);
+/// assert_eq!(ruby.bake(), r#"<ruby id="ruby_annotation"></ruby>"#);
 /// ```
 ///
 /// ```rust

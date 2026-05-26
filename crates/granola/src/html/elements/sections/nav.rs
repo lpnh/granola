@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let nav: HtmlNav = HtmlNav::empty().id("navigation_section");
 ///
-/// assert_eq!(nav.bake(),
-/// r#"<nav id="navigation_section"></nav>"#);
+/// assert_eq!(nav.bake(), r#"<nav id="navigation_section"></nav>"#);
 /// ```
 ///
 /// ```rust
@@ -34,14 +33,16 @@ use crate::{filters, prelude::*};
 /// let p: HtmlP = HtmlP::new(content);
 /// let nav: HtmlNav = HtmlNav::new(p).aria_label("Site navigation");
 ///
-/// assert_eq!(nav.bake(),
-/// r#"<nav aria-label="Site navigation">
+/// assert_eq!(
+///     nav.bake(),
+///     r#"<nav aria-label="Site navigation">
 ///   <p>
 ///     You can find us at <a href="/location">Oak Street, corner of Elm Avenue</a>.
 ///     Everything we make and love is on <a href="/menu">the menu</a>.
 ///     Have a thought? Send us a <a href="/contact">note</a>.
 ///   </p>
-/// </nav>"#);
+/// </nav>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -78,8 +79,7 @@ pub struct HtmlNav<R: NavTag = ()> {
 ///
 /// let nav = nav!().id("navigation_section");
 ///
-/// assert_eq!(nav.bake(),
-/// r#"<nav id="navigation_section"></nav>"#);
+/// assert_eq!(nav.bake(), r#"<nav id="navigation_section"></nav>"#);
 /// ```
 ///
 /// ```rust
@@ -97,14 +97,16 @@ pub struct HtmlNav<R: NavTag = ()> {
 ///
 /// let nav = nav!(paragraph).aria_label("Site navigation");
 ///
-/// assert_eq!(nav.bake(),
-/// r#"<nav aria-label="Site navigation">
+/// assert_eq!(
+///     nav.bake(),
+///     r#"<nav aria-label="Site navigation">
 ///   <p>
 ///     You can find us at <a href="/location">Oak Street, corner of Elm Avenue</a>.
 ///     Everything we make and love is on <a href="/menu">the menu</a>.
 ///     Have a thought? Send us a <a href="/contact">note</a>.
 ///   </p>
-/// </nav>"#);
+/// </nav>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! nav {

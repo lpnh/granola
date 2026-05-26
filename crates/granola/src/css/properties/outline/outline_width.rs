@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_outline_width: CssOutlineWidth = CssOutlineWidth::new("2px");
 ///
-/// assert_eq!(css_outline_width.bake(),
-/// "outline-width: 2px;");
+/// assert_eq!(css_outline_width.bake(), "outline-width: 2px;");
 /// ```
 ///
 /// # Askama template

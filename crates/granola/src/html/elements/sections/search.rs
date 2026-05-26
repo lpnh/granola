@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let search: HtmlSearch = HtmlSearch::empty().id("generic_search");
 ///
-/// assert_eq!(search.bake(),
-/// r#"<search id="generic_search"></search>"#);
+/// assert_eq!(search.bake(), r#"<search id="generic_search"></search>"#);
 /// ```
 ///
 /// ```rust
@@ -33,14 +32,16 @@ use crate::{filters, prelude::*};
 ///
 /// let search: HtmlSearch = HtmlSearch::new(form);
 ///
-/// assert_eq!(search.bake(),
-/// r#"<search>
+/// assert_eq!(
+///     search.bake(),
+///     r#"<search>
 ///   <form action="/search">
 ///     <label for="query">Search the haystack</label>
 ///     <input id="query" type="search" name="q" placeholder="needle" />
 ///     <button>Search</button>
 ///   </form>
-/// </search>"#);
+/// </search>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -77,8 +78,7 @@ pub struct HtmlSearch<R: SearchTag = ()> {
 ///
 /// let search = search!().id("generic_search");
 ///
-/// assert_eq!(search.bake(),
-/// r#"<search id="generic_search"></search>"#);
+/// assert_eq!(search.bake(), r#"<search id="generic_search"></search>"#);
 /// ```
 ///
 /// ```rust
@@ -96,14 +96,16 @@ pub struct HtmlSearch<R: SearchTag = ()> {
 ///
 /// let search = search!(form);
 ///
-/// assert_eq!(search.bake(),
-/// r#"<search>
+/// assert_eq!(
+///     search.bake(),
+///     r#"<search>
 ///   <form action="/search">
 ///     <label for="query">Search the haystack</label>
 ///     <input id="query" type="search" name="q" placeholder="needle" />
 ///     <button>Search</button>
 ///   </form>
-/// </search>"#);
+/// </search>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! search {

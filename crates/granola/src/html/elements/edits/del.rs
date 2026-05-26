@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let del: HtmlDel = HtmlDel::empty().id("deleted_text");
 ///
-/// assert_eq!(del.bake(),
-/// r#"<del id="deleted_text"></del>"#);
+/// assert_eq!(del.bake(), r#"<del id="deleted_text"></del>"#);
 /// ```
 ///
 /// ```rust
@@ -25,10 +24,12 @@ use crate::{filters, prelude::*};
 ///     .datetime("2019-11-07")
 ///     .cite("https://github.com/rust-lang/rust/pull/62672");
 ///
-/// assert_eq!(del.bake(),
-/// r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">
+/// assert_eq!(
+///     del.bake(),
+///     r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">
 ///   try!
-/// </del>"#);
+/// </del>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -122,8 +123,7 @@ impl<R: DelTag> HasDelAttrs for HtmlDel<R> {
 ///
 /// let del = del!().id("deleted_text");
 ///
-/// assert_eq!(del.bake(),
-/// r#"<del id="deleted_text"></del>"#);
+/// assert_eq!(del.bake(), r#"<del id="deleted_text"></del>"#);
 /// ```
 ///
 /// ```rust

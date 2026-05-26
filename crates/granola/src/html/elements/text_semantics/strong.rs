@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let strong: HtmlStrong = HtmlStrong::empty().id("strong_importance");
 ///
-/// assert_eq!(strong.bake(),
-/// r#"<strong id="strong_importance"></strong>"#);
+/// assert_eq!(strong.bake(), r#"<strong id="strong_importance"></strong>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let strong: HtmlStrong = HtmlStrong::new("Do not feed the trolls.");
 ///
-/// assert_eq!(strong.bake(),
-/// r#"<strong>Do not feed the trolls.</strong>"#);
+/// assert_eq!(strong.bake(), r#"<strong>Do not feed the trolls.</strong>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlStrong<R: StrongTag = ()> {
 ///
 /// let strong = strong!().id("strong_importance");
 ///
-/// assert_eq!(strong.bake(),
-/// r#"<strong id="strong_importance"></strong>"#);
+/// assert_eq!(strong.bake(), r#"<strong id="strong_importance"></strong>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlStrong<R: StrongTag = ()> {
 ///
 /// let strong = strong!("Do not feed the trolls.");
 ///
-/// assert_eq!(strong.bake(),
-/// r#"<strong>Do not feed the trolls.</strong>"#);
+/// assert_eq!(strong.bake(), r#"<strong>Do not feed the trolls.</strong>"#);
 /// ```
 #[macro_export]
 macro_rules! strong {

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let thead: HtmlThead = HtmlThead::empty().id("table_head");
 ///
-/// assert_eq!(thead.bake(),
-/// r#"<thead id="table_head"></thead>"#);
+/// assert_eq!(thead.bake(), r#"<thead id="table_head"></thead>"#);
 /// ```
 ///
 /// ```rust
@@ -28,13 +27,15 @@ use crate::{filters, prelude::*};
 ///
 /// let thead: HtmlThead = HtmlThead::new(tr);
 ///
-/// assert_eq!(thead.bake(),
-/// r#"<thead>
+/// assert_eq!(
+///     thead.bake(),
+///     r#"<thead>
 ///   <tr>
 ///     <th scope="col">Item</th>
 ///     <th scope="col">Description</th>
 ///   </tr>
-/// </thead>"#);
+/// </thead>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -71,8 +72,7 @@ pub struct HtmlThead<R: TheadTag = ()> {
 ///
 /// let thead = thead!().id("table_head");
 ///
-/// assert_eq!(thead.bake(),
-/// r#"<thead id="table_head"></thead>"#);
+/// assert_eq!(thead.bake(), r#"<thead id="table_head"></thead>"#);
 /// ```
 ///
 /// ```rust
@@ -85,13 +85,15 @@ pub struct HtmlThead<R: TheadTag = ()> {
 ///
 /// let thead = thead!(tr);
 ///
-/// assert_eq!(thead.bake(),
-/// r#"<thead>
+/// assert_eq!(
+///     thead.bake(),
+///     r#"<thead>
 ///   <tr>
 ///     <th scope="col">Item</th>
 ///     <th scope="col">Description</th>
 ///   </tr>
-/// </thead>"#);
+/// </thead>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! thead {

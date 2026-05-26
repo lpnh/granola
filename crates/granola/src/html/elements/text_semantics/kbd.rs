@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let kbd: HtmlKbd = HtmlKbd::empty().id("keyboard_input");
 ///
-/// assert_eq!(kbd.bake(),
-/// r#"<kbd id="keyboard_input"></kbd>"#);
+/// assert_eq!(kbd.bake(), r#"<kbd id="keyboard_input"></kbd>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let kbd: HtmlKbd = HtmlKbd::new("Enter");
 ///
-/// assert_eq!(kbd.bake(),
-/// r#"<kbd>Enter</kbd>"#);
+/// assert_eq!(kbd.bake(), r#"<kbd>Enter</kbd>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlKbd<R: KbdTag = ()> {
 ///
 /// let kbd = kbd!().id("keyboard_input");
 ///
-/// assert_eq!(kbd.bake(),
-/// r#"<kbd id="keyboard_input"></kbd>"#);
+/// assert_eq!(kbd.bake(), r#"<kbd id="keyboard_input"></kbd>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlKbd<R: KbdTag = ()> {
 ///
 /// let kbd = kbd!("Enter");
 ///
-/// assert_eq!(kbd.bake(),
-/// r#"<kbd>Enter</kbd>"#);
+/// assert_eq!(kbd.bake(), r#"<kbd>Enter</kbd>"#);
 /// ```
 #[macro_export]
 macro_rules! kbd {

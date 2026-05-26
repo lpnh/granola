@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let cite: HtmlCite = HtmlCite::empty().id("citation");
 ///
-/// assert_eq!(cite.bake(),
-/// r#"<cite id="citation"></cite>"#);
+/// assert_eq!(cite.bake(), r#"<cite id="citation"></cite>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let cite: HtmlCite = HtmlCite::new("Act Without Words I");
 ///
-/// assert_eq!(cite.bake(),
-/// r#"<cite>Act Without Words I</cite>"#);
+/// assert_eq!(cite.bake(), r#"<cite>Act Without Words I</cite>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlCite<R: CiteTag = ()> {
 ///
 /// let cite = cite!().id("citation");
 ///
-/// assert_eq!(cite.bake(),
-/// r#"<cite id="citation"></cite>"#);
+/// assert_eq!(cite.bake(), r#"<cite id="citation"></cite>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlCite<R: CiteTag = ()> {
 ///
 /// let cite = cite!("Act Without Words I");
 ///
-/// assert_eq!(cite.bake(),
-/// r#"<cite>Act Without Words I</cite>"#);
+/// assert_eq!(cite.bake(), r#"<cite>Act Without Words I</cite>"#);
 /// ```
 #[macro_export]
 macro_rules! cite {

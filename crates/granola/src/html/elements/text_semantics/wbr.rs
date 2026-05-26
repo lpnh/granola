@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let wbr: HtmlWbr = HtmlWbr::new().id("line_break_opportunity");
 ///
-/// assert_eq!(wbr.bake(),
-/// r#"<wbr id="line_break_opportunity" />"#);
+/// assert_eq!(wbr.bake(), r#"<wbr id="line_break_opportunity" />"#);
 /// ```
 ///
 /// # Askama template
@@ -56,8 +55,7 @@ impl<R: WbrTag> HtmlWbr<R> {
 ///
 /// let wbr = wbr!().id("line_break_opportunity");
 ///
-/// assert_eq!(wbr.bake(),
-/// r#"<wbr id="line_break_opportunity" />"#);
+/// assert_eq!(wbr.bake(), r#"<wbr id="line_break_opportunity" />"#);
 /// ```
 #[macro_export]
 macro_rules! wbr {

@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let i: HtmlI = HtmlI::empty().id("idiomatic_text");
 ///
-/// assert_eq!(i.bake(),
-/// r#"<i id="idiomatic_text"></i>"#);
+/// assert_eq!(i.bake(), r#"<i id="idiomatic_text"></i>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,7 @@ use crate::{filters, prelude::*};
 ///
 /// let quote = bake_inline!["and ", voila, "!"];
 ///
-/// assert_eq!(quote,
-/// r#"and <i>voilà</i>!"#);
+/// assert_eq!(quote, r#"and <i>voilà</i>!"#);
 /// ```
 ///
 /// # Askama template
@@ -63,8 +61,7 @@ pub struct HtmlI<R: ITag = ()> {
 ///
 /// let i = i!().id("idiomatic_text");
 ///
-/// assert_eq!(i.bake(),
-/// r#"<i id="idiomatic_text"></i>"#);
+/// assert_eq!(i.bake(), r#"<i id="idiomatic_text"></i>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +71,7 @@ pub struct HtmlI<R: ITag = ()> {
 ///
 /// let quote = bake_inline!["and ", voila, "!"];
 ///
-/// assert_eq!(quote,
-/// r#"and <i>voilà</i>!"#);
+/// assert_eq!(quote, r#"and <i>voilà</i>!"#);
 /// ```
 #[macro_export]
 macro_rules! i {

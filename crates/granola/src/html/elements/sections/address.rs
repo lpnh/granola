@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let address: HtmlAddress = HtmlAddress::empty().id("contact_address");
 ///
-/// assert_eq!(address.bake(),
-/// r#"<address id="contact_address"></address>"#);
+/// assert_eq!(
+///     address.bake(),
+///     r#"<address id="contact_address"></address>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -27,11 +29,13 @@ use crate::{filters, prelude::*};
 ///
 /// let address: HtmlAddress = HtmlAddress::new(content);
 ///
-/// assert_eq!(address.bake(),
-/// r#"<address>
+/// assert_eq!(
+///     address.bake(),
+///     r#"<address>
 ///   221B Baker St, London NW1 6XE ·
 ///   <a href="mailto:contact@holmes.co.uk">contact@holmes.co.uk</a>
-/// </address>"#);
+/// </address>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -68,8 +72,10 @@ pub struct HtmlAddress<R: AddressTag = ()> {
 ///
 /// let address = address!().id("contact_address");
 ///
-/// assert_eq!(address.bake(),
-/// r#"<address id="contact_address"></address>"#);
+/// assert_eq!(
+///     address.bake(),
+///     r#"<address id="contact_address"></address>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -79,11 +85,13 @@ pub struct HtmlAddress<R: AddressTag = ()> {
 ///
 /// let address = address!("221B Baker St, London NW1 6XE ·", mail);
 ///
-/// assert_eq!(address.bake(),
-/// r#"<address>
+/// assert_eq!(
+///     address.bake(),
+///     r#"<address>
 ///   221B Baker St, London NW1 6XE ·
 ///   <a href="mailto:contact@holmes.co.uk">contact@holmes.co.uk</a>
-/// </address>"#);
+/// </address>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! address {

@@ -14,21 +14,23 @@ use crate::{filters, prelude::*};
 ///
 /// let dd: HtmlDd = HtmlDd::empty().id("description_details");
 ///
-/// assert_eq!(dd.bake(),
-/// r#"<dd id="description_details"></dd>"#);
+/// assert_eq!(dd.bake(), r#"<dd id="description_details"></dd>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let dt: HtmlDt = HtmlDt::new("Hiraeth");
-/// let dd: HtmlDd = HtmlDd::new("A longing for a home that no longer exists, or perhaps never did.");
+/// let dd: HtmlDd =
+///     HtmlDd::new("A longing for a home that no longer exists, or perhaps never did.");
 ///
 /// let term = bake_block![dt, dd];
 ///
-/// assert_eq!(term,
-/// r#"<dt>Hiraeth</dt>
-/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#);
+/// assert_eq!(
+///     term,
+///     r#"<dt>Hiraeth</dt>
+/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -62,8 +64,7 @@ pub struct HtmlDd<R: DdTag = ()> {
 ///
 /// let dd = dd!().id("description_details");
 ///
-/// assert_eq!(dd.bake(),
-/// r#"<dd id="description_details"></dd>"#);
+/// assert_eq!(dd.bake(), r#"<dd id="description_details"></dd>"#);
 /// ```
 ///
 /// ```rust
@@ -74,9 +75,11 @@ pub struct HtmlDd<R: DdTag = ()> {
 ///
 /// let term = bake_block![dt, dd];
 ///
-/// assert_eq!(term,
-/// r#"<dt>Hiraeth</dt>
-/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#);
+/// assert_eq!(
+///     term,
+///     r#"<dt>Hiraeth</dt>
+/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! dd {

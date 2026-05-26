@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let main: HtmlMain = HtmlMain::empty().id("main");
 ///
-/// assert_eq!(main.bake(),
-/// r#"<main id="main"></main>"#);
+/// assert_eq!(main.bake(), r#"<main id="main"></main>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let main: HtmlMain = HtmlMain::new("hello, world!");
 ///
-/// assert_eq!(main.bake(),
-/// r#"<main>hello, world!</main>"#);
+/// assert_eq!(main.bake(), r#"<main>hello, world!</main>"#);
 /// ```
 ///
 /// # Askama template
@@ -58,8 +56,7 @@ pub struct HtmlMain<R: MainTag = ()> {
 ///
 /// let main = main!().id("main");
 ///
-/// assert_eq!(main.bake(),
-/// r#"<main id="main"></main>"#);
+/// assert_eq!(main.bake(), r#"<main id="main"></main>"#);
 /// ```
 ///
 /// ```rust
@@ -67,8 +64,7 @@ pub struct HtmlMain<R: MainTag = ()> {
 ///
 /// let main = main!("hello, world!");
 ///
-/// assert_eq!(main.bake(),
-/// r#"<main>hello, world!</main>"#);
+/// assert_eq!(main.bake(), r#"<main>hello, world!</main>"#);
 /// ```
 #[macro_export]
 macro_rules! main {

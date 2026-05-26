@@ -11,8 +11,7 @@ use crate::prelude::*;
 ///
 /// let css_outline_style: CssOutlineStyle<Solid> = CssOutlineStyle::from_recipe();
 ///
-/// assert_eq!(css_outline_style.bake(),
-/// "outline-style: solid;");
+/// assert_eq!(css_outline_style.bake(), "outline-style: solid;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Solid;

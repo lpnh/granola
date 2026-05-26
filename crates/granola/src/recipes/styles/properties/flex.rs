@@ -11,8 +11,7 @@ use crate::prelude::*;
 ///
 /// let css_display: CssDisplay<Flex> = CssDisplay::from_recipe();
 ///
-/// assert_eq!(css_display.bake(),
-/// "display: flex;");
+/// assert_eq!(css_display.bake(), "display: flex;");
 /// ```
 ///
 /// ```rust
@@ -20,8 +19,7 @@ use crate::prelude::*;
 ///
 /// let css_display: CssDisplay<(Inline, Flex)> = CssDisplay::from_recipe();
 ///
-/// assert_eq!(css_display.bake(),
-/// "display: inline flex;");
+/// assert_eq!(css_display.bake(), "display: inline flex;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Flex;

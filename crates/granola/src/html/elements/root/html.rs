@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let html: HtmlRoot = HtmlRoot::from_recipe().id("html_document");
 ///
-/// assert_eq!(html.bake(),
-/// r#"<html id="html_document"></html>"#);
+/// assert_eq!(html.bake(), r#"<html id="html_document"></html>"#);
 /// ```
 ///
 /// ```rust
@@ -25,12 +24,14 @@ use crate::{filters, prelude::*};
 ///
 /// let html: HtmlRoot = HtmlRoot::new(body).lang("en");
 ///
-/// assert_eq!(html.bake(),
-/// r#"<html lang="en">
+/// assert_eq!(
+///     html.bake(),
+///     r#"<html lang="en">
 ///   <body>
 ///     flow content
 ///   </body>
-/// </html>"#);
+/// </html>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -44,15 +45,17 @@ use crate::{filters, prelude::*};
 ///
 /// let html: HtmlRoot = HtmlRoot::new((head, body));
 ///
-/// assert_eq!(html.bake(),
-/// r#"<html>
+/// assert_eq!(
+///     html.bake(),
+///     r#"<html>
 ///   <head>
 ///     <meta charset="utf-8" />
 ///   </head>
 ///   <body>
 ///     <p>Hello, world!</p>
 ///   </body>
-/// </html>"#);
+/// </html>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -132,8 +135,7 @@ impl<B: BodyTag> From<HtmlBody<B>> for HtmlRootContent {
 ///
 /// let html = root!().id("html_document");
 ///
-/// assert_eq!(html.bake(),
-/// r#"<html id="html_document"></html>"#);
+/// assert_eq!(html.bake(), r#"<html id="html_document"></html>"#);
 /// ```
 ///
 /// ```rust

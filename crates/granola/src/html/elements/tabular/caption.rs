@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let caption: HtmlCaption = HtmlCaption::empty().id("table_caption");
 ///
-/// assert_eq!(caption.bake(),
-/// r#"<caption id="table_caption"></caption>"#);
+/// assert_eq!(caption.bake(), r#"<caption id="table_caption"></caption>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let caption: HtmlCaption = HtmlCaption::new("Our favorites, yours to try.");
 ///
-/// assert_eq!(caption.bake(),
-/// r#"<caption>Our favorites, yours to try.</caption>"#);
+/// assert_eq!(
+///     caption.bake(),
+///     r#"<caption>Our favorites, yours to try.</caption>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -58,8 +59,7 @@ pub struct HtmlCaption<R: CaptionTag = ()> {
 ///
 /// let caption = caption!().id("table_caption");
 ///
-/// assert_eq!(caption.bake(),
-/// r#"<caption id="table_caption"></caption>"#);
+/// assert_eq!(caption.bake(), r#"<caption id="table_caption"></caption>"#);
 /// ```
 ///
 /// ```rust
@@ -67,8 +67,10 @@ pub struct HtmlCaption<R: CaptionTag = ()> {
 ///
 /// let caption = caption!("Our favorites, yours to try.");
 ///
-/// assert_eq!(caption.bake(),
-/// r#"<caption>Our favorites, yours to try.</caption>"#);
+/// assert_eq!(
+///     caption.bake(),
+///     r#"<caption>Our favorites, yours to try.</caption>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! caption {

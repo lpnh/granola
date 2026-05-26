@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let legend: HtmlLegend = HtmlLegend::empty().id("field_set_legend");
 ///
-/// assert_eq!(legend.bake(),
-/// r#"<legend id="field_set_legend"></legend>"#);
+/// assert_eq!(legend.bake(), r#"<legend id="field_set_legend"></legend>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let legend: HtmlLegend = HtmlLegend::new("Choose your favorite spoon");
 ///
-/// assert_eq!(legend.bake(),
-/// r#"<legend>Choose your favorite spoon</legend>"#);
+/// assert_eq!(
+///     legend.bake(),
+///     r#"<legend>Choose your favorite spoon</legend>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -58,8 +59,7 @@ pub struct HtmlLegend<R: LegendTag = ()> {
 ///
 /// let legend = legend!().id("field_set_legend");
 ///
-/// assert_eq!(legend.bake(),
-/// r#"<legend id="field_set_legend"></legend>"#);
+/// assert_eq!(legend.bake(), r#"<legend id="field_set_legend"></legend>"#);
 /// ```
 ///
 /// ```rust
@@ -67,8 +67,10 @@ pub struct HtmlLegend<R: LegendTag = ()> {
 ///
 /// let legend = legend!("Choose your favorite spoon");
 ///
-/// assert_eq!(legend.bake(),
-/// r#"<legend>Choose your favorite spoon</legend>"#);
+/// assert_eq!(
+///     legend.bake(),
+///     r#"<legend>Choose your favorite spoon</legend>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! legend {

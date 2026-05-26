@@ -5,15 +5,13 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let button: HtmlButton<Reset> = HtmlButton::new("Clear");
 /// let input: HtmlInput<Reset> = HtmlInput::from_value("Clear");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button type="reset">Clear</button>"#);
-/// assert_eq!(input.bake(),
-/// r#"<input type="reset" value="Clear" />"#);
+/// assert_eq!(button.bake(), r#"<button type="reset">Clear</button>"#);
+/// assert_eq!(input.bake(), r#"<input type="reset" value="Clear" />"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Reset;

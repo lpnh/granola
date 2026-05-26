@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h2: HtmlH2 = HtmlH2::empty().id("html_section_heading");
 ///
-/// assert_eq!(h2.bake(),
-/// r#"<h2 id="html_section_heading"></h2>"#);
+/// assert_eq!(h2.bake(), r#"<h2 id="html_section_heading"></h2>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let h2: HtmlH2 = HtmlH2::new("Error Handling");
 ///
-/// assert_eq!(h2.bake(),
-/// r#"<h2>Error Handling</h2>"#);
+/// assert_eq!(h2.bake(), r#"<h2>Error Handling</h2>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlH2<R: H2Tag = ()> {
 ///
 /// let h2 = h2!().id("html_section_heading");
 ///
-/// assert_eq!(h2.bake(),
-/// r#"<h2 id="html_section_heading"></h2>"#);
+/// assert_eq!(h2.bake(), r#"<h2 id="html_section_heading"></h2>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlH2<R: H2Tag = ()> {
 ///
 /// let h2 = h2!("Error Handling");
 ///
-/// assert_eq!(h2.bake(),
-/// r#"<h2>Error Handling</h2>"#);
+/// assert_eq!(h2.bake(), r#"<h2>Error Handling</h2>"#);
 /// ```
 #[macro_export]
 macro_rules! h2 {

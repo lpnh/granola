@@ -14,27 +14,28 @@ use crate::{filters, prelude::*};
 ///
 /// let ol: HtmlOl = HtmlOl::empty().id("ordered_list");
 ///
-/// assert_eq!(ol.bake(),
-/// r#"<ol id="ordered_list"></ol>"#);
+/// assert_eq!(ol.bake(), r#"<ol id="ordered_list"></ol>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let items = [
-///   HtmlLi::new("Add the sugar"),
-///   HtmlLi::new("Coat with spice"),
-///   HtmlLi::new("Fold in everything nice"),
+///     HtmlLi::new("Add the sugar"),
+///     HtmlLi::new("Coat with spice"),
+///     HtmlLi::new("Fold in everything nice"),
 /// ];
 ///
 /// let instructions: HtmlOl = HtmlOl::new(items);
 ///
-/// assert_eq!(instructions.bake(),
-/// r#"<ol>
+/// assert_eq!(
+///     instructions.bake(),
+///     r#"<ol>
 ///   <li>Add the sugar</li>
 ///   <li>Coat with spice</li>
 ///   <li>Fold in everything nice</li>
-/// </ol>"#);
+/// </ol>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -139,27 +140,28 @@ impl<R: OlTag> HasOlAttrs for HtmlOl<R> {
 ///
 /// let ol = ol!().id("ordered_list");
 ///
-/// assert_eq!(ol.bake(),
-/// r#"<ol id="ordered_list"></ol>"#);
+/// assert_eq!(ol.bake(), r#"<ol id="ordered_list"></ol>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
 /// let items = [
-///   li!("Add the sugar"),
-///   li!("Coat with spice"),
-///   li!("Fold in everything nice"),
+///     li!("Add the sugar"),
+///     li!("Coat with spice"),
+///     li!("Fold in everything nice"),
 /// ];
 ///
 /// let instructions = ol!(items);
 ///
-/// assert_eq!(instructions.bake(),
-/// r#"<ol>
+/// assert_eq!(
+///     instructions.bake(),
+///     r#"<ol>
 ///   <li>Add the sugar</li>
 ///   <li>Coat with spice</li>
 ///   <li>Fold in everything nice</li>
-/// </ol>"#);
+/// </ol>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -170,11 +172,13 @@ impl<R: OlTag> HasOlAttrs for HtmlOl<R> {
 ///
 /// let instructions = ol!(sugar, spice);
 ///
-/// assert_eq!(instructions.bake(),
-/// r#"<ol>
+/// assert_eq!(
+///     instructions.bake(),
+///     r#"<ol>
 ///   <li>Add the sugar</li>
 ///   <li>Coat with spice</li>
-/// </ol>"#);
+/// </ol>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! ol {

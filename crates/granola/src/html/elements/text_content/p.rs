@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let p: HtmlP = HtmlP::empty().id("paragraph");
 ///
-/// assert_eq!(p.bake(),
-/// r#"<p id="paragraph"></p>"#);
+/// assert_eq!(p.bake(), r#"<p id="paragraph"></p>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let p: HtmlP = HtmlP::new("Lorem ipsum dolor sit amet...🙄");
 ///
-/// assert_eq!(p.bake(),
-/// r#"<p>Lorem ipsum dolor sit amet...🙄</p>"#);
+/// assert_eq!(p.bake(), r#"<p>Lorem ipsum dolor sit amet...🙄</p>"#);
 /// ```
 ///
 /// # Askama template
@@ -61,8 +59,7 @@ pub struct HtmlP<R: PTag = ()> {
 ///
 /// let p = p!().id("paragraph");
 ///
-/// assert_eq!(p.bake(),
-/// r#"<p id="paragraph"></p>"#);
+/// assert_eq!(p.bake(), r#"<p id="paragraph"></p>"#);
 /// ```
 ///
 /// ```rust
@@ -70,8 +67,7 @@ pub struct HtmlP<R: PTag = ()> {
 ///
 /// let p = p!("Lorem ipsum dolor sit amet...🙄");
 ///
-/// assert_eq!(p.bake(),
-/// r#"<p>Lorem ipsum dolor sit amet...🙄</p>"#);
+/// assert_eq!(p.bake(), r#"<p>Lorem ipsum dolor sit amet...🙄</p>"#);
 /// ```
 #[macro_export]
 macro_rules! p {

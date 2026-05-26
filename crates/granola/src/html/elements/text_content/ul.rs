@@ -14,27 +14,28 @@ use crate::{filters, prelude::*};
 ///
 /// let ul: HtmlUl = HtmlUl::empty().id("unordered_list");
 ///
-/// assert_eq!(ul.bake(),
-/// r#"<ul id="unordered_list"></ul>"#);
+/// assert_eq!(ul.bake(), r#"<ul id="unordered_list"></ul>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// let items = [
-///   HtmlLi::new("sugar"),
-///   HtmlLi::new("spice"),
-///   HtmlLi::new("everything nice"),
+///     HtmlLi::new("sugar"),
+///     HtmlLi::new("spice"),
+///     HtmlLi::new("everything nice"),
 /// ];
 ///
 /// let ingredients: HtmlUl = HtmlUl::new(items);
 ///
-/// assert_eq!(ingredients.bake(),
-/// r#"<ul>
+/// assert_eq!(
+///     ingredients.bake(),
+///     r#"<ul>
 ///   <li>sugar</li>
 ///   <li>spice</li>
 ///   <li>everything nice</li>
-/// </ul>"#);
+/// </ul>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -72,27 +73,24 @@ pub struct HtmlUl<R: UlTag = ()> {
 ///
 /// let ul = ul!().id("unordered_list");
 ///
-/// assert_eq!(ul.bake(),
-/// r#"<ul id="unordered_list"></ul>"#);
+/// assert_eq!(ul.bake(), r#"<ul id="unordered_list"></ul>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let items = [
-///   li!("sugar"),
-///   li!("spice"),
-///   li!("everything nice"),
-/// ];
+/// let items = [li!("sugar"), li!("spice"), li!("everything nice")];
 ///
 /// let ingredients = ul!(items);
 ///
-/// assert_eq!(ingredients.bake(),
-/// r#"<ul>
+/// assert_eq!(
+///     ingredients.bake(),
+///     r#"<ul>
 ///   <li>sugar</li>
 ///   <li>spice</li>
 ///   <li>everything nice</li>
-/// </ul>"#);
+/// </ul>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -103,11 +101,13 @@ pub struct HtmlUl<R: UlTag = ()> {
 ///
 /// let ingredients = ul!(sugar, spice);
 ///
-/// assert_eq!(ingredients.bake(),
-/// r#"<ul>
+/// assert_eq!(
+///     ingredients.bake(),
+///     r#"<ul>
 ///   <li>sugar</li>
 ///   <li>spice</li>
-/// </ul>"#);
+/// </ul>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! ul {

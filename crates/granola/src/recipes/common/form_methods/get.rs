@@ -5,25 +5,25 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let form: HtmlForm<Get> = HtmlForm::from_recipe();
 ///
-/// assert_eq!(form.bake(),
-/// r#"<form method="get"></form>"#);
+/// assert_eq!(form.bake(), r#"<form method="get"></form>"#);
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let button: HtmlButton<Get> = HtmlButton::new("Search");
 ///
 /// let input: HtmlInput<Get> = HtmlInput::from_type("submit").value("Search");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button formmethod="get">Search</button>"#);
-/// assert_eq!(input.bake(),
-/// r#"<input type="submit" value="Search" formmethod="get" />"#);
+/// assert_eq!(button.bake(), r#"<button formmethod="get">Search</button>"#);
+/// assert_eq!(
+///     input.bake(),
+///     r#"<input type="submit" value="Search" formmethod="get" />"#
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Get;

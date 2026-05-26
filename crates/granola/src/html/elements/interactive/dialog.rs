@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let dialog: HtmlDialog = HtmlDialog::empty().id("dialog");
 ///
-/// assert_eq!(dialog.bake(),
-/// r#"<dialog id="dialog"></dialog>"#);
+/// assert_eq!(dialog.bake(), r#"<dialog id="dialog"></dialog>"#);
 /// ```
 ///
 /// ```rust
@@ -32,12 +31,14 @@ use crate::{filters, prelude::*};
 ///
 /// let modal = bake_block![open_button, dialog];
 ///
-/// assert_eq!(modal,
-/// r#"<button popovertarget="modal_popover">open dialog</button>
+/// assert_eq!(
+///     modal,
+///     r#"<button popovertarget="modal_popover">open dialog</button>
 /// <dialog id="modal_popover" popover="auto">
 ///   Hello, there!
 ///   <button popovertarget="modal_popover" popovertargetaction="hide">Close</button>
-/// </dialog>"#);
+/// </dialog>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -131,26 +132,31 @@ impl<R: DialogTag> HasDialogAttrs for HtmlDialog<R> {
 ///
 /// let dialog = dialog!().id("dialog");
 ///
-/// assert_eq!(dialog.bake(),
-/// r#"<dialog id="dialog"></dialog>"#);
+/// assert_eq!(dialog.bake(), r#"<dialog id="dialog"></dialog>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
 /// let open_button = button!("open dialog").popovertarget("modal_popover");
-/// let close_button = button!("Close").popovertarget("modal_popover").popovertargetaction("hide");
+/// let close_button = button!("Close")
+///     .popovertarget("modal_popover")
+///     .popovertargetaction("hide");
 ///
-/// let dialog = dialog!["Hello, there!", close_button].id("modal_popover").popover("auto");
+/// let dialog = dialog!["Hello, there!", close_button]
+///     .id("modal_popover")
+///     .popover("auto");
 ///
 /// let modal = bake_block![open_button, dialog];
 ///
-/// assert_eq!(modal,
-/// r#"<button popovertarget="modal_popover">open dialog</button>
+/// assert_eq!(
+///     modal,
+///     r#"<button popovertarget="modal_popover">open dialog</button>
 /// <dialog id="modal_popover" popover="auto">
 ///   Hello, there!
 ///   <button popovertarget="modal_popover" popovertargetaction="hide">Close</button>
-/// </dialog>"#);
+/// </dialog>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! dialog {

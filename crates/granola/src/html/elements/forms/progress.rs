@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let progress: HtmlProgress = HtmlProgress::empty().id("progress_indicator");
 ///
-/// assert_eq!(progress.bake(),
-/// r#"<progress id="progress_indicator"></progress>"#);
+/// assert_eq!(
+///     progress.bake(),
+///     r#"<progress id="progress_indicator"></progress>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -26,8 +28,10 @@ use crate::{filters, prelude::*};
 ///     .max(300.)
 ///     .value(10.);
 ///
-/// assert_eq!(progress.bake(),
-/// r#"<progress id="experience" max="300" value="10">10/300</progress>"#);
+/// assert_eq!(
+///     progress.bake(),
+///     r#"<progress id="experience" max="300" value="10">10/300</progress>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -55,8 +59,9 @@ pub struct HtmlProgress<R: ProgressTag = ()> {
 }
 
 impl<R: ProgressTag> HtmlProgress<R> {
-    /// If there is no value attribute, the progress bar is indeterminate; this indicates that an
-    /// activity is ongoing with no indication of how long it is expected to take.
+    /// If there is no value attribute, the progress bar is indeterminate; this
+    /// indicates that an activity is ongoing with no indication of how long
+    /// it is expected to take.
     pub fn indeterminate() -> Self {
         Self::empty()
     }
@@ -126,8 +131,10 @@ impl<R: ProgressTag> HasProgressAttrs for HtmlProgress<R> {
 ///
 /// let progress = progress!().id("progress_indicator");
 ///
-/// assert_eq!(progress.bake(),
-/// r#"<progress id="progress_indicator"></progress>"#);
+/// assert_eq!(
+///     progress.bake(),
+///     r#"<progress id="progress_indicator"></progress>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -135,8 +142,10 @@ impl<R: ProgressTag> HasProgressAttrs for HtmlProgress<R> {
 ///
 /// let progress = progress!("10/300").id("experience").max(300.).value(10.);
 ///
-/// assert_eq!(progress.bake(),
-/// r#"<progress id="experience" max="300" value="10">10/300</progress>"#);
+/// assert_eq!(
+///     progress.bake(),
+///     r#"<progress id="experience" max="300" value="10">10/300</progress>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! progress {

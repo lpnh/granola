@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let data: HtmlData = HtmlData::empty().id("data");
 ///
-/// assert_eq!(data.bake(),
-/// r#"<data id="data"></data>"#);
+/// assert_eq!(data.bake(), r#"<data id="data"></data>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let data: HtmlData = HtmlData::new("$13.37").value("1337");
 ///
-/// assert_eq!(data.bake(),
-/// r#"<data value="1337">$13.37</data>"#);
+/// assert_eq!(data.bake(), r#"<data value="1337">$13.37</data>"#);
 /// ```
 ///
 /// # Askama template
@@ -108,8 +106,7 @@ impl<R: DataTag> HasDataAttrs for HtmlData<R> {
 ///
 /// let data = data!().id("data");
 ///
-/// assert_eq!(data.bake(),
-/// r#"<data id="data"></data>"#);
+/// assert_eq!(data.bake(), r#"<data id="data"></data>"#);
 /// ```
 ///
 /// ```rust
@@ -117,8 +114,7 @@ impl<R: DataTag> HasDataAttrs for HtmlData<R> {
 ///
 /// let data = data!("$13.37").value("1337");
 ///
-/// assert_eq!(data.bake(),
-/// r#"<data value="1337">$13.37</data>"#);
+/// assert_eq!(data.bake(), r#"<data value="1337">$13.37</data>"#);
 /// ```
 #[macro_export]
 macro_rules! data {

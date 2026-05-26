@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let section: HtmlSection = HtmlSection::empty().id("generic_section");
 ///
-/// assert_eq!(section.bake(),
-/// r#"<section id="generic_section"></section>"#);
+/// assert_eq!(
+///     section.bake(),
+///     r#"<section id="generic_section"></section>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -26,13 +28,15 @@ use crate::{filters, prelude::*};
 ///
 /// let section: HtmlSection = HtmlSection::new(bake_block![h2, ul]);
 ///
-/// assert_eq!(section.bake(),
-/// r#"<section>
+/// assert_eq!(
+///     section.bake(),
+///     r#"<section>
 ///   <h2>Latest news</h2>
 ///   <ul>
 ///     <li>New café on Oak Street</li>
 ///   </ul>
-/// </section>"#);
+/// </section>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -53,9 +57,9 @@ pub struct HtmlSection<R: SectionTag = ()> {
     pub content: R::Content,
     /// # Permitted ARIA roles
     ///
-    /// alert, alertdialog, application, banner, complementary, contentinfo, dialog,
-    /// document, feed, log, main, marquee, navigation, none, note, presentation,
-    /// search, status, tabpanel
+    /// alert, alertdialog, application, banner, complementary, contentinfo,
+    /// dialog, document, feed, log, main, marquee, navigation, none, note,
+    /// presentation, search, status, tabpanel
     pub global_attrs: GlobalAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,
@@ -71,8 +75,10 @@ pub struct HtmlSection<R: SectionTag = ()> {
 ///
 /// let section = section!().id("generic_section");
 ///
-/// assert_eq!(section.bake(),
-/// r#"<section id="generic_section"></section>"#);
+/// assert_eq!(
+///     section.bake(),
+///     r#"<section id="generic_section"></section>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -83,13 +89,15 @@ pub struct HtmlSection<R: SectionTag = ()> {
 ///
 /// let section = section!(h2, ul);
 ///
-/// assert_eq!(section.bake(),
-/// r#"<section>
+/// assert_eq!(
+///     section.bake(),
+///     r#"<section>
 ///   <h2>Latest news</h2>
 ///   <ul>
 ///     <li>New café on Oak Street</li>
 ///   </ul>
-/// </section>"#);
+/// </section>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! section {

@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
 ///
-/// assert_eq!(css_declaration.bake(),
-/// "color: rgb(102, 51, 153);");
+/// assert_eq!(css_declaration.bake(), "color: rgb(102, 51, 153);");
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,7 @@ use crate::prelude::*;
 ///
 /// let css_declaration: CssDeclaration = ("color", "rebeccapurple").into();
 ///
-/// assert_eq!(css_declaration.bake(),
-/// "color: rebeccapurple;");
+/// assert_eq!(css_declaration.bake(), "color: rebeccapurple;");
 /// ```
 ///
 /// # Askama template
@@ -77,8 +75,7 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 ///
 /// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
 ///
-/// assert_eq!(css_properties_list.bake(),
-/// "color: rgb(102, 51, 153);");
+/// assert_eq!(css_properties_list.bake(), "color: rgb(102, 51, 153);");
 /// ```
 ///
 /// ```rust
@@ -88,21 +85,20 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 ///
 /// let css_properties_list: CssPropertiesList = css_declaration.into();
 ///
-/// assert_eq!(css_properties_list.bake(),
-/// "color: rebeccapurple;");
+/// assert_eq!(css_properties_list.bake(), "color: rebeccapurple;");
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_properties_list: CssPropertiesList = [
-///     ("color", "violet"),
-///     ("font-weight", "lighter"),
-/// ].into();
+/// let css_properties_list: CssPropertiesList =
+///     [("color", "violet"), ("font-weight", "lighter")].into();
 ///
-/// assert_eq!(css_properties_list.bake(),
-/// "color: violet;
-/// font-weight: lighter;");
+/// assert_eq!(
+///     css_properties_list.bake(),
+///     "color: violet;
+/// font-weight: lighter;"
+/// );
 /// ```
 ///
 /// # Askama template

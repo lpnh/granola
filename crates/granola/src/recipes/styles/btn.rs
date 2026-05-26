@@ -16,8 +16,9 @@ const BTN_BG_DARKENED: &str =
 ///
 /// let rule: CssRule<Btn> = CssRule::from_recipe();
 ///
-/// assert_eq!(rule.bake(),
-/// ".btn {
+/// assert_eq!(
+///     rule.bake(),
+///     ".btn {
 ///   display: inline flex;
 ///   align-items: center;
 ///   justify-content: center;
@@ -36,7 +37,8 @@ const BTN_BG_DARKENED: &str =
 ///   transition: background-color 150ms ease;
 ///   --btn-bg: var(--btn-color, var(--color-base-200));
 ///   --btn-fg: var(--color-base-content);
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// ```rust
@@ -44,8 +46,9 @@ const BTN_BG_DARKENED: &str =
 ///
 /// let stylesheet: CssStylesheet<Btn> = CssStylesheet::from_recipe();
 ///
-/// assert_eq!(stylesheet.bake(),
-/// ".btn {
+/// assert_eq!(
+///     stylesheet.bake(),
+///     ".btn {
 ///   display: inline flex;
 ///   align-items: center;
 ///   justify-content: center;
@@ -85,7 +88,8 @@ const BTN_BG_DARKENED: &str =
 /// .btn-primary {
 ///   --btn-color: var(--color-primary);
 ///   --btn-fg: var(--color-primary-content);
-/// }");
+/// }"
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Btn;
@@ -212,11 +216,13 @@ impl RuleTag for BtnFocusVisible {
 ///
 /// let rule: CssRule<BtnPrimary> = CssRule::from_recipe();
 ///
-/// assert_eq!(rule.bake(),
-/// ".btn-primary {
+/// assert_eq!(
+///     rule.bake(),
+///     ".btn-primary {
 ///   --btn-color: var(--color-primary);
 ///   --btn-fg: var(--color-primary-content);
-/// }");
+/// }"
+/// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnPrimary;

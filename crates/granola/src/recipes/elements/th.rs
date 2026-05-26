@@ -5,12 +5,11 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let th: HtmlTh<Col> = HtmlTh::new("Item");
 ///
-/// assert_eq!(th.bake(),
-/// r#"<th scope="col">Item</th>"#);
+/// assert_eq!(th.bake(), r#"<th scope="col">Item</th>"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Col;
@@ -26,12 +25,11 @@ impl ThTag for Col {
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let th: HtmlTh<Row> = HtmlTh::new("Hot chocolate");
 ///
-/// assert_eq!(th.bake(),
-/// r#"<th scope="row">Hot chocolate</th>"#);
+/// assert_eq!(th.bake(), r#"<th scope="row">Hot chocolate</th>"#);
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Row;

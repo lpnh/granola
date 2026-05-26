@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let ins: HtmlIns = HtmlIns::empty().id("inserted_text");
 ///
-/// assert_eq!(ins.bake(),
-/// r#"<ins id="inserted_text"></ins>"#);
+/// assert_eq!(ins.bake(), r#"<ins id="inserted_text"></ins>"#);
 /// ```
 ///
 /// ```rust
@@ -25,10 +24,12 @@ use crate::{filters, prelude::*};
 ///     .datetime("2016-11-10")
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13");
 ///
-/// assert_eq!(ins.bake(),
-/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">
+/// assert_eq!(
+///     ins.bake(),
+///     r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">
 ///   ?
-/// </ins>"#);
+/// </ins>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -122,8 +123,7 @@ impl<R: InsTag> HasInsAttrs for HtmlIns<R> {
 ///
 /// let ins = ins!().id("inserted_text");
 ///
-/// assert_eq!(ins.bake(),
-/// r#"<ins id="inserted_text"></ins>"#);
+/// assert_eq!(ins.bake(), r#"<ins id="inserted_text"></ins>"#);
 /// ```
 ///
 /// ```rust

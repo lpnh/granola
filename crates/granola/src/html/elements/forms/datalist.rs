@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let datalist: HtmlDatalist = HtmlDatalist::empty().id("html_data_list");
 ///
-/// assert_eq!(datalist.bake(),
-/// r#"<datalist id="html_data_list"></datalist>"#);
+/// assert_eq!(
+///     datalist.bake(),
+///     r#"<datalist id="html_data_list"></datalist>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -29,12 +31,14 @@ use crate::{filters, prelude::*};
 ///
 /// let datalist: HtmlDatalist = HtmlDatalist::new(options).id("ice-cream-flavors");
 ///
-/// assert_eq!(datalist.bake(),
-/// r#"<datalist id="ice-cream-flavors">
+/// assert_eq!(
+///     datalist.bake(),
+///     r#"<datalist id="ice-cream-flavors">
 ///   <option value="Chocolate"></option>
 ///   <option value="Strawberry"></option>
 ///   <option value="Vanilla"></option>
-/// </datalist>"#);
+/// </datalist>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -68,8 +72,10 @@ pub struct HtmlDatalist<R: DatalistTag = ()> {
 ///
 /// let datalist = datalist!().id("html_data_list");
 ///
-/// assert_eq!(datalist.bake(),
-/// r#"<datalist id="html_data_list"></datalist>"#);
+/// assert_eq!(
+///     datalist.bake(),
+///     r#"<datalist id="html_data_list"></datalist>"#
+/// );
 /// ```
 ///
 /// ```rust

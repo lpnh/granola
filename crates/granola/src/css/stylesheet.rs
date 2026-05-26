@@ -17,16 +17,16 @@ use crate::prelude::*;
 /// let at_rule: CssAtRule = CssAtRule::new("import", r#"url("layout.css")"#);
 /// let rule: CssRule = CssRule::new("p", ("color", "rebeccapurple"));
 ///
-/// let css_stylesheet: CssStylesheet = CssStylesheet::new()
-///     .push(at_rule)
-///     .push(rule);
+/// let css_stylesheet: CssStylesheet = CssStylesheet::new().push(at_rule).push(rule);
 ///
-/// assert_eq!(css_stylesheet.bake(),
-/// r#"@import url("layout.css");
+/// assert_eq!(
+///     css_stylesheet.bake(),
+///     r#"@import url("layout.css");
 ///
 /// p {
 ///   color: rebeccapurple;
-/// }"#);
+/// }"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -36,8 +36,7 @@ use crate::prelude::*;
 ///
 /// let css_stylesheet: CssStylesheet = at_rule.into();
 ///
-/// assert_eq!(css_stylesheet.bake(),
-/// r#"@import url("layout.css");"#);
+/// assert_eq!(css_stylesheet.bake(), r#"@import url("layout.css");"#);
 /// ```
 ///
 /// ```rust
@@ -47,10 +46,12 @@ use crate::prelude::*;
 ///
 /// let css_stylesheet: CssStylesheet = rule.into();
 ///
-/// assert_eq!(css_stylesheet.bake(),
-/// "p {
+/// assert_eq!(
+///     css_stylesheet.bake(),
+///     "p {
 ///   color: rebeccapurple;
-/// }");
+/// }"
+/// );
 /// ```
 ///
 /// # Askama template
@@ -170,8 +171,7 @@ impl<R: AtRuleTag> From<CssAtRule<R>> for CssStatement {
 ///
 /// let css_stylesheet = stylesheet!(at_rule);
 ///
-/// assert_eq!(css_stylesheet.bake(),
-/// r#"@import url("layout.css");"#);
+/// assert_eq!(css_stylesheet.bake(), r#"@import url("layout.css");"#);
 /// ```
 ///
 /// ```rust

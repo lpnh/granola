@@ -14,8 +14,10 @@ use crate::{filters, prelude::*};
 ///
 /// let colgroup: HtmlColgroup = HtmlColgroup::empty().id("table_column_group");
 ///
-/// assert_eq!(colgroup.bake(),
-/// r#"<colgroup id="table_column_group"></colgroup>"#);
+/// assert_eq!(
+///     colgroup.bake(),
+///     r#"<colgroup id="table_column_group"></colgroup>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -26,11 +28,13 @@ use crate::{filters, prelude::*};
 ///
 /// let colgroup: HtmlColgroup = HtmlColgroup::new([item, description]);
 ///
-/// assert_eq!(colgroup.bake(),
-/// r#"<colgroup>
+/// assert_eq!(
+///     colgroup.bake(),
+///     r#"<colgroup>
 ///   <col class="item" />
 ///   <col class="description" />
-/// </colgroup>"#);
+/// </colgroup>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -111,8 +115,10 @@ impl<R: ColgroupTag> HasColgroupAttrs for HtmlColgroup<R> {
 ///
 /// let colgroup = colgroup!().id("table_column_group");
 ///
-/// assert_eq!(colgroup.bake(),
-/// r#"<colgroup id="table_column_group"></colgroup>"#);
+/// assert_eq!(
+///     colgroup.bake(),
+///     r#"<colgroup id="table_column_group"></colgroup>"#
+/// );
 /// ```
 ///
 /// ```rust
@@ -123,11 +129,13 @@ impl<R: ColgroupTag> HasColgroupAttrs for HtmlColgroup<R> {
 ///
 /// let colgroup = colgroup!(item, description);
 ///
-/// assert_eq!(colgroup.bake(),
-/// r#"<colgroup>
+/// assert_eq!(
+///     colgroup.bake(),
+///     r#"<colgroup>
 ///   <col class="item" />
 ///   <col class="description" />
-/// </colgroup>"#);
+/// </colgroup>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! colgroup {

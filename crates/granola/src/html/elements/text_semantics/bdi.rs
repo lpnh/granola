@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let bdi: HtmlBdi = HtmlBdi::empty().id("bidirectional_isolate");
 ///
-/// assert_eq!(bdi.bake(),
-/// r#"<bdi id="bidirectional_isolate"></bdi>"#);
+/// assert_eq!(bdi.bake(), r#"<bdi id="bidirectional_isolate"></bdi>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,7 @@ use crate::{filters, prelude::*};
 ///
 /// let notification = bake_inline![gal, " liked your post"];
 ///
-/// assert_eq!(notification,
-/// r#"<bdi>גל גדות</bdi> liked your post"#);
+/// assert_eq!(notification, r#"<bdi>גל גדות</bdi> liked your post"#);
 /// ```
 ///
 /// # Askama template
@@ -63,8 +61,7 @@ pub struct HtmlBdi<R: BdiTag = ()> {
 ///
 /// let bdi = bdi!().id("bidirectional_isolate");
 ///
-/// assert_eq!(bdi.bake(),
-/// r#"<bdi id="bidirectional_isolate"></bdi>"#);
+/// assert_eq!(bdi.bake(), r#"<bdi id="bidirectional_isolate"></bdi>"#);
 /// ```
 ///
 /// ```rust
@@ -74,8 +71,7 @@ pub struct HtmlBdi<R: BdiTag = ()> {
 ///
 /// let notification = bake_inline![gal, " liked your post"];
 ///
-/// assert_eq!(notification,
-/// r#"<bdi>גל גדות</bdi> liked your post"#);
+/// assert_eq!(notification, r#"<bdi>גל גדות</bdi> liked your post"#);
 /// ```
 #[macro_export]
 macro_rules! bdi {

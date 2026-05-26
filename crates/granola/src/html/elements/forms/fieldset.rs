@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let fieldset: HtmlFieldset = HtmlFieldset::empty().id("field_set");
 ///
-/// assert_eq!(fieldset.bake(),
-/// r#"<fieldset id="field_set"></fieldset>"#);
+/// assert_eq!(fieldset.bake(), r#"<fieldset id="field_set"></fieldset>"#);
 /// ```
 ///
 /// ```rust
@@ -30,12 +29,14 @@ use crate::{filters, prelude::*};
 ///
 /// let fieldset: HtmlFieldset = HtmlFieldset::new(bake_block![legend, input, label]);
 ///
-/// assert_eq!(fieldset.bake(),
-/// r#"<fieldset>
+/// assert_eq!(
+///     fieldset.bake(),
+///     r#"<fieldset>
 ///   <legend>To be, or not to be?</legend>
 ///   <input id="chbx" type="checkbox" name="to-be" value="dunno" />
 ///   <label for="chbx">That is the question</label>
-/// </fieldset>"#);
+/// </fieldset>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -87,7 +88,8 @@ pub struct FieldsetAttrs {
 pub trait HasFieldsetAttrs: Sized {
     fn fieldset_attrs_mut(&mut self) -> &mut FieldsetAttrs;
 
-    /// Whether the descendant form controls, except any inside legend, are disabled.
+    /// Whether the descendant form controls, except any inside legend, are
+    /// disabled.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled)
     fn disabled(mut self, value: bool) -> Self {
@@ -103,7 +105,8 @@ pub trait HasFieldsetAttrs: Sized {
         self
     }
 
-    /// Name of the element to use for form submission and in the form.elements API.
+    /// Name of the element to use for form submission and in the form.elements
+    /// API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/fieldset#name)
     fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -139,8 +142,7 @@ impl<R: FieldsetTag> HasFieldsetAttrs for HtmlFieldset<R> {
 ///
 /// let fieldset = fieldset!().id("field_set");
 ///
-/// assert_eq!(fieldset.bake(),
-/// r#"<fieldset id="field_set"></fieldset>"#);
+/// assert_eq!(fieldset.bake(), r#"<fieldset id="field_set"></fieldset>"#);
 /// ```
 ///
 /// ```rust

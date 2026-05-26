@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let title: HtmlTitle = HtmlTitle::empty().id("document_title");
 ///
-/// assert_eq!(title.bake(),
-/// r#"<title id="document_title"></title>"#);
+/// assert_eq!(title.bake(), r#"<title id="document_title"></title>"#);
 /// ```
 ///
 /// ```rust
@@ -23,8 +22,10 @@ use crate::{filters, prelude::*};
 ///
 /// let title: HtmlTitle = HtmlTitle::new("On the unabashed art of self-referential examples");
 ///
-/// assert_eq!(title.bake(),
-/// r#"<title>On the unabashed art of self-referential examples</title>"#);
+/// assert_eq!(
+///     title.bake(),
+///     r#"<title>On the unabashed art of self-referential examples</title>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -58,8 +59,7 @@ pub struct HtmlTitle<R: TitleTag = ()> {
 ///
 /// let title = title!().id("document_title");
 ///
-/// assert_eq!(title.bake(),
-/// r#"<title id="document_title"></title>"#);
+/// assert_eq!(title.bake(), r#"<title id="document_title"></title>"#);
 /// ```
 ///
 /// ```rust
@@ -67,8 +67,10 @@ pub struct HtmlTitle<R: TitleTag = ()> {
 ///
 /// let title = title!("On the unabashed art of self-referential examples");
 ///
-/// assert_eq!(title.bake(),
-/// r#"<title>On the unabashed art of self-referential examples</title>"#);
+/// assert_eq!(
+///     title.bake(),
+///     r#"<title>On the unabashed art of self-referential examples</title>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! title {

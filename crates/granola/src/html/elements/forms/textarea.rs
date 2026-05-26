@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let textarea: HtmlTextarea = HtmlTextarea::empty().id("textarea");
 ///
-/// assert_eq!(textarea.bake(),
-/// r#"<textarea id="textarea"></textarea>"#);
+/// assert_eq!(textarea.bake(), r#"<textarea id="textarea"></textarea>"#);
 /// ```
 ///
 /// ```rust
@@ -25,8 +24,10 @@ use crate::{filters, prelude::*};
 ///     .name("reminder")
 ///     .readonly(true);
 ///
-/// assert_eq!(textarea.bake(),
-/// r#"<textarea name="reminder" readonly>Carpe diem</textarea>"#);
+/// assert_eq!(
+///     textarea.bake(),
+///     r#"<textarea name="reminder" readonly>Carpe diem</textarea>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -111,8 +112,8 @@ pub trait HasTextareaAttrs: Sized {
         self
     }
 
-    /// Name of form control to use for sending the element's directionality in form
-    /// submission.
+    /// Name of form control to use for sending the element's directionality in
+    /// form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/dirname)
     fn dirname(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -152,7 +153,8 @@ pub trait HasTextareaAttrs: Sized {
         self
     }
 
-    /// Name of the element to use for form submission and in the `form.elements` API.
+    /// Name of the element to use for form submission and in the
+    /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#name)
     fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
@@ -228,8 +230,7 @@ impl<R: TextareaTag> HasTextareaAttrs for HtmlTextarea<R> {
 ///
 /// let textarea = textarea!().id("textarea");
 ///
-/// assert_eq!(textarea.bake(),
-/// r#"<textarea id="textarea"></textarea>"#);
+/// assert_eq!(textarea.bake(), r#"<textarea id="textarea"></textarea>"#);
 /// ```
 ///
 /// ```rust
@@ -237,8 +238,10 @@ impl<R: TextareaTag> HasTextareaAttrs for HtmlTextarea<R> {
 ///
 /// let textarea = textarea!("Carpe diem").name("reminder").readonly(true);
 ///
-/// assert_eq!(textarea.bake(),
-/// r#"<textarea name="reminder" readonly>Carpe diem</textarea>"#);
+/// assert_eq!(
+///     textarea.bake(),
+///     r#"<textarea name="reminder" readonly>Carpe diem</textarea>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! textarea {

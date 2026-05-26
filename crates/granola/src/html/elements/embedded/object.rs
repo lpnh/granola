@@ -14,8 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let object: HtmlObject = HtmlObject::empty().id("external_object");
 ///
-/// assert_eq!(object.bake(),
-/// r#"<object id="external_object"></object>"#);
+/// assert_eq!(object.bake(), r#"<object id="external_object"></object>"#);
 /// ```
 ///
 /// ```rust
@@ -27,8 +26,10 @@ use crate::{filters, prelude::*};
 ///     .width(420)
 ///     .height(420);
 ///
-/// assert_eq!(object.bake(),
-/// r#"<object type="video/mp4" data="/videos/flower.mp4" width="420" height="420"></object>"#);
+/// assert_eq!(
+///     object.bake(),
+///     r#"<object type="video/mp4" data="/videos/flower.mp4" width="420" height="420"></object>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -162,8 +163,7 @@ impl<R: ObjectTag> HasObjectAttrs for HtmlObject<R> {
 ///
 /// let object = object!().id("external_object");
 ///
-/// assert_eq!(object.bake(),
-/// r#"<object id="external_object"></object>"#);
+/// assert_eq!(object.bake(), r#"<object id="external_object"></object>"#);
 /// ```
 ///
 /// ```rust
@@ -175,8 +175,10 @@ impl<R: ObjectTag> HasObjectAttrs for HtmlObject<R> {
 ///     .width(420)
 ///     .height(420);
 ///
-/// assert_eq!(object.bake(),
-/// r#"<object type="video/mp4" data="/videos/flower.mp4" width="420" height="420"></object>"#);
+/// assert_eq!(
+///     object.bake(),
+///     r#"<object type="video/mp4" data="/videos/flower.mp4" width="420" height="420"></object>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! object {

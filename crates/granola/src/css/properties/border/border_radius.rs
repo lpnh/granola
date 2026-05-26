@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_border_radius: CssBorderRadius = CssBorderRadius::new("0.4em");
 ///
-/// assert_eq!(css_border_radius.bake(),
-/// "border-radius: 0.4em;");
+/// assert_eq!(css_border_radius.bake(), "border-radius: 0.4em;");
 /// ```
 ///
 /// # Askama template
