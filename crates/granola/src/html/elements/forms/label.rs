@@ -48,8 +48,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LabelTag, content = Cow<'static, str>)]
-pub struct HtmlLabel<R: LabelTag = ()> {
+#[recipe(name = LabelRecipe, content = Cow<'static, str>)]
+pub struct HtmlLabel<R: LabelRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -86,7 +86,7 @@ impl HasLabelAttrs for &mut LabelAttrs {
     }
 }
 
-impl<R: LabelTag> HasLabelAttrs for HtmlLabel<R> {
+impl<R: LabelRecipe> HasLabelAttrs for HtmlLabel<R> {
     fn label_attrs_mut(&mut self) -> &mut LabelAttrs {
         &mut self.specific_attrs
     }

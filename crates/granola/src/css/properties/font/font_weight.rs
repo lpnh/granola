@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// font-weight: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontWeightTag)]
+#[recipe(name = FontWeightRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssFontWeight<R: FontWeightTag = ()> {
+pub struct CssFontWeight<R: FontWeightRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: FontWeightTag> CssFontWeight<R> {
+impl<R: FontWeightRecipe> CssFontWeight<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: FontWeightTag> CssFontWeight<R> {
     }
 }
 
-impl<R: FontWeightTag> From<CssFontWeight<R>> for CssDeclaration {
+impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclaration {
     fn from(css_font_weight: CssFontWeight<R>) -> Self {
         Self::new("font-weight", css_font_weight.value)
     }
 }
 
-impl<R: FontWeightTag> From<CssFontWeight<R>> for CssPropertiesList {
+impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssPropertiesList {
     fn from(css_font_weight: CssFontWeight<R>) -> Self {
         Self {
             declarations: vec![css_font_weight.into()],

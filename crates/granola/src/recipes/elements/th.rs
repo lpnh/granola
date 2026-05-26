@@ -14,7 +14,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Col;
 
-impl ThTag for Col {
+impl ThRecipe for Col {
     fn specific_attrs_recipe(th_attrs: &mut ThAttrs) {
         th_attrs.scope("col");
     }
@@ -34,7 +34,7 @@ impl ThTag for Col {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Row;
 
-impl ThTag for Row {
+impl ThRecipe for Row {
     fn specific_attrs_recipe(th_attrs: &mut ThAttrs) {
         th_attrs.scope("row");
     }

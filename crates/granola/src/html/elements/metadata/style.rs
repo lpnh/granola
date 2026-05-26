@@ -48,8 +48,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = StyleTag, content = CssStylesheet)]
-pub struct HtmlStyle<R: StyleTag = ()> {
+#[recipe(name = StyleRecipe, content = CssStylesheet)]
+pub struct HtmlStyle<R: StyleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -108,7 +108,7 @@ impl HasStyleAttrs for &mut StyleAttrs {
     }
 }
 
-impl<R: StyleTag> HasStyleAttrs for HtmlStyle<R> {
+impl<R: StyleRecipe> HasStyleAttrs for HtmlStyle<R> {
     fn style_attrs_mut(&mut self) -> &mut StyleAttrs {
         &mut self.specific_attrs
     }

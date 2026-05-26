@@ -24,13 +24,13 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Center;
 
-impl AlignItemsTag for Center {
+impl AlignItemsRecipe for Center {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "center".into();
     }
 }
 
-impl JustifyContentTag for Center {
+impl JustifyContentRecipe for Center {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "center".into();
     }

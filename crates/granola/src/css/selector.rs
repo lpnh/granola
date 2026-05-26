@@ -31,14 +31,14 @@ use crate::prelude::*;
 /// {{ selector }}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = SelectorTag)]
+#[recipe(name = SelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssSelector<R: SelectorTag = ()> {
+pub struct CssSelector<R: SelectorRecipe = ()> {
     _recipe: PhantomData<R>,
     pub selector: Cow<'static, str>,
 }
 
-impl<R: SelectorTag> CssSelector<R> {
+impl<R: SelectorRecipe> CssSelector<R> {
     pub fn new(selector: impl Into<Cow<'static, str>>) -> Self {
         Self {
             selector: selector.into(),
@@ -146,7 +146,7 @@ impl<S: Into<CssSelector>> From<Vec<S>> for CssSelectorsList {
     }
 }
 
-impl<R: SelectorTag> From<CssSelector<R>> for CssSelectorsList {
+impl<R: SelectorRecipe> From<CssSelector<R>> for CssSelectorsList {
     fn from(css_selector: CssSelector<R>) -> Self {
         Self {
             selectors: vec![css_selector.bake_recipe()],

@@ -44,8 +44,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ColTag)]
-pub struct HtmlCol<R: ColTag = ()> {
+#[recipe(name = ColRecipe)]
+pub struct HtmlCol<R: ColRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ColAttrs,
@@ -54,7 +54,7 @@ pub struct HtmlCol<R: ColTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: ColTag> HtmlCol<R> {
+impl<R: ColRecipe> HtmlCol<R> {
     pub fn new() -> Self {
         Self::from_recipe()
     }
@@ -99,7 +99,7 @@ impl HasColAttrs for &mut ColAttrs {
     }
 }
 
-impl<R: ColTag> HasColAttrs for HtmlCol<R> {
+impl<R: ColRecipe> HasColAttrs for HtmlCol<R> {
     fn col_attrs_mut(&mut self) -> &mut ColAttrs {
         &mut self.specific_attrs
     }

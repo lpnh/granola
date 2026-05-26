@@ -45,8 +45,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DelTag, content = Cow<'static, str>)]
-pub struct HtmlDel<R: DelTag = ()> {
+#[recipe(name = DelRecipe, content = Cow<'static, str>)]
+pub struct HtmlDel<R: DelRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -108,7 +108,7 @@ impl HasDelAttrs for &mut DelAttrs {
     }
 }
 
-impl<R: DelTag> HasDelAttrs for HtmlDel<R> {
+impl<R: DelRecipe> HasDelAttrs for HtmlDel<R> {
     fn del_attrs_mut(&mut self) -> &mut DelAttrs {
         &mut self.specific_attrs
     }

@@ -14,7 +14,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Charset;
 
-impl MetaTag for Charset {
+impl MetaRecipe for Charset {
     fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
         meta_attrs.charset();
     }
@@ -37,7 +37,7 @@ impl MetaTag for Charset {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Viewport;
 
-impl MetaTag for Viewport {
+impl MetaRecipe for Viewport {
     fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
         meta_attrs.name("viewport");
     }
@@ -60,7 +60,7 @@ impl MetaTag for Viewport {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Robots;
 
-impl MetaTag for Robots {
+impl MetaRecipe for Robots {
     fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
         meta_attrs.name("robots");
     }

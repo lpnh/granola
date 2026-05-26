@@ -31,7 +31,7 @@ use askama::{FastWritable, NO_VALUES, Template, Values};
 /// #[derive(Default, Debug, Clone)]
 /// struct Answer;
 ///
-/// impl OutputTag for Answer {
+/// impl OutputRecipe for Answer {
 ///     type Content = BakeFrom<u32>;
 /// }
 ///
@@ -355,7 +355,7 @@ mod from_content_type_tests {
     #[derive(Default, Debug, Clone)]
     struct Number;
 
-    impl PTag for Number {
+    impl PRecipe for Number {
         type Content = BakeFrom<u32>;
     }
 
@@ -372,7 +372,7 @@ mod from_content_type_tests {
     #[derive(Default, Debug, Clone)]
     struct Temperature;
 
-    impl PTag for Temperature {
+    impl PRecipe for Temperature {
         type Content = BakeFrom<Celsius>;
     }
 

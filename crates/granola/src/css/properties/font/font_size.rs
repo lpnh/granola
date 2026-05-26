@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// font-size: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontSizeTag)]
+#[recipe(name = FontSizeRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssFontSize<R: FontSizeTag = ()> {
+pub struct CssFontSize<R: FontSizeRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: FontSizeTag> CssFontSize<R> {
+impl<R: FontSizeRecipe> CssFontSize<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: FontSizeTag> CssFontSize<R> {
     }
 }
 
-impl<R: FontSizeTag> From<CssFontSize<R>> for CssDeclaration {
+impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclaration {
     fn from(css_font_size: CssFontSize<R>) -> Self {
         Self::new("font-size", css_font_size.value)
     }
 }
 
-impl<R: FontSizeTag> From<CssFontSize<R>> for CssPropertiesList {
+impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssPropertiesList {
     fn from(css_font_size: CssFontSize<R>) -> Self {
         Self {
             declarations: vec![css_font_size.into()],

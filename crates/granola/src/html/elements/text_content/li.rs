@@ -45,8 +45,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LiTag, content = Cow<'static, str>)]
-pub struct HtmlLi<R: LiTag = ()> {
+#[recipe(name = LiRecipe, content = Cow<'static, str>)]
+pub struct HtmlLi<R: LiRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -99,7 +99,7 @@ impl HasLiAttrs for &mut LiAttrs {
     }
 }
 
-impl<R: LiTag> HasLiAttrs for HtmlLi<R> {
+impl<R: LiRecipe> HasLiAttrs for HtmlLi<R> {
     fn li_attrs_mut(&mut self) -> &mut LiAttrs {
         &mut self.specific_attrs
     }

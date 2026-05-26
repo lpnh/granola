@@ -59,8 +59,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TbodyTag, content = TableRows)]
-pub struct HtmlTbody<R: TbodyTag = ()> {
+#[recipe(name = TbodyRecipe, content = TableRows)]
+pub struct HtmlTbody<R: TbodyRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles

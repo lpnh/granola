@@ -40,8 +40,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AreaTag)]
-pub struct HtmlArea<R: AreaTag = ()> {
+#[recipe(name = AreaRecipe)]
+pub struct HtmlArea<R: AreaRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: AreaAttrs,
@@ -50,7 +50,7 @@ pub struct HtmlArea<R: AreaTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: AreaTag> HtmlArea<R> {
+impl<R: AreaRecipe> HtmlArea<R> {
     pub fn new(href: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -235,7 +235,7 @@ impl HasAreaAttrs for &mut AreaAttrs {
     }
 }
 
-impl<R: AreaTag> HasAreaAttrs for HtmlArea<R> {
+impl<R: AreaRecipe> HasAreaAttrs for HtmlArea<R> {
     fn area_attrs_mut(&mut self) -> &mut AreaAttrs {
         &mut self.specific_attrs
     }

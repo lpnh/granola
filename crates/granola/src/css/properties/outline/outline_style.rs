@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// outline-style: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OutlineStyleTag)]
+#[recipe(name = OutlineStyleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssOutlineStyle<R: OutlineStyleTag = ()> {
+pub struct CssOutlineStyle<R: OutlineStyleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: OutlineStyleTag> CssOutlineStyle<R> {
+impl<R: OutlineStyleRecipe> CssOutlineStyle<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: OutlineStyleTag> CssOutlineStyle<R> {
     }
 }
 
-impl<R: OutlineStyleTag> From<CssOutlineStyle<R>> for CssDeclaration {
+impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssDeclaration {
     fn from(css_outline_style: CssOutlineStyle<R>) -> Self {
         Self::new("outline-style", css_outline_style.value)
     }
 }
 
-impl<R: OutlineStyleTag> From<CssOutlineStyle<R>> for CssPropertiesList {
+impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssPropertiesList {
     fn from(css_outline_style: CssOutlineStyle<R>) -> Self {
         Self {
             declarations: vec![css_outline_style.into()],

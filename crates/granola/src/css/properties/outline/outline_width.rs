@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// outline-width: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OutlineWidthTag)]
+#[recipe(name = OutlineWidthRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssOutlineWidth<R: OutlineWidthTag = ()> {
+pub struct CssOutlineWidth<R: OutlineWidthRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: OutlineWidthTag> CssOutlineWidth<R> {
+impl<R: OutlineWidthRecipe> CssOutlineWidth<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: OutlineWidthTag> CssOutlineWidth<R> {
     }
 }
 
-impl<R: OutlineWidthTag> From<CssOutlineWidth<R>> for CssDeclaration {
+impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclaration {
     fn from(css_outline_width: CssOutlineWidth<R>) -> Self {
         Self::new("outline-width", css_outline_width.value)
     }
 }
 
-impl<R: OutlineWidthTag> From<CssOutlineWidth<R>> for CssPropertiesList {
+impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssPropertiesList {
     fn from(css_outline_width: CssOutlineWidth<R>) -> Self {
         Self {
             declarations: vec![css_outline_width.into()],

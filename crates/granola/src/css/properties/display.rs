@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// display: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DisplayTag)]
+#[recipe(name = DisplayRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDisplay<R: DisplayTag = ()> {
+pub struct CssDisplay<R: DisplayRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: DisplayTag> CssDisplay<R> {
+impl<R: DisplayRecipe> CssDisplay<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: DisplayTag> CssDisplay<R> {
     }
 }
 
-impl<R: DisplayTag> From<CssDisplay<R>> for CssDeclaration {
+impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclaration {
     fn from(css_display: CssDisplay<R>) -> Self {
         Self::new("display", css_display.value)
     }
 }
 
-impl<R: DisplayTag> From<CssDisplay<R>> for CssPropertiesList {
+impl<R: DisplayRecipe> From<CssDisplay<R>> for CssPropertiesList {
     fn from(css_display: CssDisplay<R>) -> Self {
         Self {
             declarations: vec![css_display.into()],

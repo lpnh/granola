@@ -3,7 +3,7 @@ use granola::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 struct SomeRecipe;
 
-impl ButtonTag for SomeRecipe {
+impl ButtonRecipe for SomeRecipe {
     fn global_aria_attrs_recipe(global_aria_attrs: &mut GlobalAriaAttrs) {
         global_aria_attrs.aria_label("Search");
     }

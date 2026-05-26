@@ -37,8 +37,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LinkTag)]
-pub struct HtmlLink<R: LinkTag = ()> {
+#[recipe(name = LinkRecipe)]
+pub struct HtmlLink<R: LinkRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: LinkAttrs,
@@ -90,7 +90,7 @@ pub struct LinkAttrs {
     pub disabled: bool,
 }
 
-impl<R: LinkTag> HtmlLink<R> {
+impl<R: LinkRecipe> HtmlLink<R> {
     pub fn new(href: impl Into<Cow<'static, str>>, rel: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -283,7 +283,7 @@ impl HasLinkAttrs for &mut LinkAttrs {
     }
 }
 
-impl<R: LinkTag> HasLinkAttrs for HtmlLink<R> {
+impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
     fn link_attrs_mut(&mut self) -> &mut LinkAttrs {
         &mut self.specific_attrs
     }

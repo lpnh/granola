@@ -54,8 +54,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OptgroupTag, content = Options)]
-pub struct HtmlOptgroup<R: OptgroupTag = ()> {
+#[recipe(name = OptgroupRecipe, content = Options)]
+pub struct HtmlOptgroup<R: OptgroupRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -114,7 +114,7 @@ impl HasOptgroupAttrs for &mut OptgroupAttrs {
     }
 }
 
-impl<R: OptgroupTag> HasOptgroupAttrs for HtmlOptgroup<R> {
+impl<R: OptgroupRecipe> HasOptgroupAttrs for HtmlOptgroup<R> {
     fn optgroup_attrs_mut(&mut self) -> &mut OptgroupAttrs {
         &mut self.specific_attrs
     }

@@ -65,14 +65,14 @@ use crate::prelude::*;
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = StylesheetTag)]
+#[recipe(name = StylesheetRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssStylesheet<R: StylesheetTag = ()> {
+pub struct CssStylesheet<R: StylesheetRecipe = ()> {
     _recipe: PhantomData<R>,
     pub statements: Vec<CssStatement>,
 }
 
-impl<R: StylesheetTag> CssStylesheet<R> {
+impl<R: StylesheetRecipe> CssStylesheet<R> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -101,13 +101,13 @@ impl<S: Into<CssStatement>> From<Vec<S>> for CssStylesheet {
     }
 }
 
-impl<R: RuleTag> From<CssRule<R>> for CssStylesheet {
+impl<R: RuleRecipe> From<CssRule<R>> for CssStylesheet {
     fn from(rule: CssRule<R>) -> Self {
         Self::new().push(rule)
     }
 }
 
-impl<R: AtRuleTag> From<CssAtRule<R>> for CssStylesheet {
+impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStylesheet {
     fn from(at_rule: CssAtRule<R>) -> Self {
         Self::new().push(at_rule)
     }
@@ -132,13 +132,13 @@ pub enum CssStatement {
     AtRule(CssAtRule),
 }
 
-impl<R: RuleTag> From<CssRule<R>> for CssStatement {
+impl<R: RuleRecipe> From<CssRule<R>> for CssStatement {
     fn from(rule: CssRule<R>) -> Self {
         Self::Rule(rule.bake_recipe())
     }
 }
 
-impl<R: AtRuleTag> From<CssAtRule<R>> for CssStatement {
+impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
     fn from(at_rule: CssAtRule<R>) -> Self {
         Self::AtRule(at_rule.bake_recipe())
     }

@@ -16,7 +16,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Solid;
 
-impl OutlineStyleTag for Solid {
+impl OutlineStyleRecipe for Solid {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "solid".into();
     }

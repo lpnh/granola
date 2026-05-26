@@ -43,8 +43,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ScriptTag, content = Cow<'static, str>)]
-pub struct HtmlScript<R: ScriptTag = ()> {
+#[recipe(name = ScriptRecipe, content = Cow<'static, str>)]
+pub struct HtmlScript<R: ScriptRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -54,7 +54,7 @@ pub struct HtmlScript<R: ScriptTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: ScriptTag> HtmlScript<R> {
+impl<R: ScriptRecipe> HtmlScript<R> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -211,7 +211,7 @@ impl HasScriptAttrs for &mut ScriptAttrs {
     }
 }
 
-impl<R: ScriptTag> HasScriptAttrs for HtmlScript<R> {
+impl<R: ScriptRecipe> HasScriptAttrs for HtmlScript<R> {
     fn script_attrs_mut(&mut self) -> &mut ScriptAttrs {
         &mut self.specific_attrs
     }

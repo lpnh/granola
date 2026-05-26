@@ -16,7 +16,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Inline;
 
-impl DisplayTag for Inline {
+impl DisplayRecipe for Inline {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "inline".into();
     }

@@ -16,13 +16,13 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Button;
 
-impl ButtonTag for Button {
+impl ButtonRecipe for Button {
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.button_type(ButtonType::Button);
     }
 }
 
-impl InputTag for Button {
+impl InputRecipe for Button {
     fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.input_type(InputType::Button);
     }

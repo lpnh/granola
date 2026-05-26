@@ -40,8 +40,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = InputTag)]
-pub struct HtmlInput<R: InputTag = ()> {
+#[recipe(name = InputRecipe)]
+pub struct HtmlInput<R: InputRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
@@ -66,7 +66,7 @@ pub struct HtmlInput<R: InputTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: InputTag> HtmlInput<R> {
+impl<R: InputRecipe> HtmlInput<R> {
     pub fn new(name: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -551,7 +551,7 @@ impl HasInputAttrs for &mut InputAttrs {
     }
 }
 
-impl<R: InputTag> HasInputAttrs for HtmlInput<R> {
+impl<R: InputRecipe> HasInputAttrs for HtmlInput<R> {
     fn input_attrs_mut(&mut self) -> &mut InputAttrs {
         &mut self.specific_attrs
     }

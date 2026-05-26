@@ -79,7 +79,7 @@ impl Parse for RecipeArgs {
     }
 }
 
-/// Derive macro for element recipes.
+/// Derive macro for recipes.
 ///
 /// Field-driven: generates one recipe hook per struct field (excluding
 /// `_recipe`). Special fields:
@@ -129,8 +129,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         panic!("first field must be `_recipe: PhantomData<...>`");
     }
 
-    // All fields except _recipe, and except `content` when it uses an associated
-    // type
+    // All fields except `_recipe` and `content`
     let other_fields: Vec<_> = named_fields
         .iter()
         .skip(1)
@@ -253,7 +252,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // empty() only for HTML-like structs (those with global_attrs)
     let empty_method = if has_global_attrs {
         quote! {
             pub fn empty() -> Self {
@@ -293,20 +291,18 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // on_unimplemented messages for the recipe trait (the `{Self}` braces are
-    // doubled so they pass through `format!` and reach the diagnostic as
-    // literal placeholders).
-    let trait_str = trait_name.to_string();
-    let chain_msg = format!("`{{Self}}` is not a recipe of `{trait_str}`");
-    let chain_label = format!("all recipes must implement `{trait_str}`");
-
     let trait_doc = format!("Recipe trait for [`{struct_name}`].");
+
+    // on_unimplemented messages for the recipe trait
+    let trait_str = trait_name.to_string();
+    let msg = format!("`{{Self}}` is not a recipe of `{trait_str}`");
+    let label = format!("all recipes must implement `{trait_str}`");
 
     quote! {
         #[doc = #trait_doc]
         #[diagnostic::on_unimplemented(
-            message = #chain_msg,
-            label = #chain_label,
+            message = #msg,
+            label = #label,
         )]
         pub trait #trait_name:
             ::std::default::Default

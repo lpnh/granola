@@ -94,7 +94,7 @@ const BTN_BG_DARKENED: &str =
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Btn;
 
-impl StylesheetTag for Btn {
+impl StylesheetRecipe for Btn {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.push(CssRule::<Btn>::from_recipe().into());
         statements.push(CssRule::<BtnHover>::from_recipe().into());
@@ -104,13 +104,13 @@ impl StylesheetTag for Btn {
     }
 }
 
-impl SelectorTag for Btn {
+impl SelectorRecipe for Btn {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn".into();
     }
 }
 
-impl RuleTag for Btn {
+impl RuleRecipe for Btn {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
@@ -143,13 +143,13 @@ impl RuleTag for Btn {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnHover;
 
-impl SelectorTag for BtnHover {
+impl SelectorRecipe for BtnHover {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn:hover".into();
     }
 }
 
-impl RuleTag for BtnHover {
+impl RuleRecipe for BtnHover {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
@@ -163,13 +163,13 @@ impl RuleTag for BtnHover {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnActive;
 
-impl SelectorTag for BtnActive {
+impl SelectorRecipe for BtnActive {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn:active".into();
     }
 }
 
-impl RuleTag for BtnActive {
+impl RuleRecipe for BtnActive {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
@@ -186,13 +186,13 @@ impl RuleTag for BtnActive {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnFocusVisible;
 
-impl SelectorTag for BtnFocusVisible {
+impl SelectorRecipe for BtnFocusVisible {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn:focus-visible".into();
     }
 }
 
-impl RuleTag for BtnFocusVisible {
+impl RuleRecipe for BtnFocusVisible {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
@@ -227,13 +227,13 @@ impl RuleTag for BtnFocusVisible {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnPrimary;
 
-impl SelectorTag for BtnPrimary {
+impl SelectorRecipe for BtnPrimary {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn-primary".into();
     }
 }
 
-impl RuleTag for BtnPrimary {
+impl RuleRecipe for BtnPrimary {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }

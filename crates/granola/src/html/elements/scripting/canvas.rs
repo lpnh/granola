@@ -58,8 +58,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = CanvasTag, content = Cow<'static, str>)]
-pub struct HtmlCanvas<R: CanvasTag = ()> {
+#[recipe(name = CanvasRecipe, content = Cow<'static, str>)]
+pub struct HtmlCanvas<R: CanvasRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -121,7 +121,7 @@ impl HasCanvasAttrs for &mut CanvasAttrs {
     }
 }
 
-impl<R: CanvasTag> HasCanvasAttrs for HtmlCanvas<R> {
+impl<R: CanvasRecipe> HasCanvasAttrs for HtmlCanvas<R> {
     fn canvas_attrs_mut(&mut self) -> &mut CanvasAttrs {
         &mut self.specific_attrs
     }

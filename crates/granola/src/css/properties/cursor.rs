@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// cursor: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = CursorTag)]
+#[recipe(name = CursorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssCursor<R: CursorTag = ()> {
+pub struct CssCursor<R: CursorRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: CursorTag> CssCursor<R> {
+impl<R: CursorRecipe> CssCursor<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: CursorTag> CssCursor<R> {
     }
 }
 
-impl<R: CursorTag> From<CssCursor<R>> for CssDeclaration {
+impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclaration {
     fn from(css_cursor: CssCursor<R>) -> Self {
         Self::new("cursor", css_cursor.value)
     }
 }
 
-impl<R: CursorTag> From<CssCursor<R>> for CssPropertiesList {
+impl<R: CursorRecipe> From<CssCursor<R>> for CssPropertiesList {
     fn from(css_cursor: CssCursor<R>) -> Self {
         Self {
             declarations: vec![css_cursor.into()],

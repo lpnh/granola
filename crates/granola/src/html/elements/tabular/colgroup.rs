@@ -50,8 +50,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ColgroupTag, content = TableColumns)]
-pub struct HtmlColgroup<R: ColgroupTag = ()> {
+#[recipe(name = ColgroupRecipe, content = TableColumns)]
+pub struct HtmlColgroup<R: ColgroupRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -100,7 +100,7 @@ impl HasColgroupAttrs for &mut ColgroupAttrs {
     }
 }
 
-impl<R: ColgroupTag> HasColgroupAttrs for HtmlColgroup<R> {
+impl<R: ColgroupRecipe> HasColgroupAttrs for HtmlColgroup<R> {
     fn colgroup_attrs_mut(&mut self) -> &mut ColgroupAttrs {
         &mut self.specific_attrs
     }

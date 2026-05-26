@@ -34,14 +34,14 @@ use crate::prelude::*;
 /// padding: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = PaddingTag)]
+#[recipe(name = PaddingRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssPadding<R: PaddingTag = ()> {
+pub struct CssPadding<R: PaddingRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: PaddingTag> CssPadding<R> {
+impl<R: PaddingRecipe> CssPadding<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -50,13 +50,13 @@ impl<R: PaddingTag> CssPadding<R> {
     }
 }
 
-impl<R: PaddingTag> From<CssPadding<R>> for CssDeclaration {
+impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclaration {
     fn from(css_padding: CssPadding<R>) -> Self {
         Self::new("padding", css_padding.value)
     }
 }
 
-impl<R: PaddingTag> From<CssPadding<R>> for CssPropertiesList {
+impl<R: PaddingRecipe> From<CssPadding<R>> for CssPropertiesList {
     fn from(css_padding: CssPadding<R>) -> Self {
         Self {
             declarations: vec![css_padding.into()],

@@ -70,8 +70,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = HtmlTag, content = HtmlRootContent)]
-pub struct HtmlRoot<R: HtmlTag = ()> {
+#[recipe(name = HtmlRecipe, content = HtmlRootContent)]
+pub struct HtmlRoot<R: HtmlRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -99,7 +99,7 @@ pub struct HtmlRootContent {
     pub body: Option<HtmlBody>,
 }
 
-impl<H: HeadTag, B: BodyTag> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootContent {
+impl<H: HeadRecipe, B: BodyRecipe> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootContent {
     fn from((head, body): (HtmlHead<H>, HtmlBody<B>)) -> Self {
         Self {
             head: Some(head.bake_recipe()),
@@ -108,7 +108,7 @@ impl<H: HeadTag, B: BodyTag> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootConten
     }
 }
 
-impl<H: HeadTag> From<HtmlHead<H>> for HtmlRootContent {
+impl<H: HeadRecipe> From<HtmlHead<H>> for HtmlRootContent {
     fn from(head: HtmlHead<H>) -> Self {
         Self {
             head: Some(head.bake_recipe()),
@@ -117,7 +117,7 @@ impl<H: HeadTag> From<HtmlHead<H>> for HtmlRootContent {
     }
 }
 
-impl<B: BodyTag> From<HtmlBody<B>> for HtmlRootContent {
+impl<B: BodyRecipe> From<HtmlBody<B>> for HtmlRootContent {
     fn from(body: HtmlBody<B>) -> Self {
         Self {
             head: None,

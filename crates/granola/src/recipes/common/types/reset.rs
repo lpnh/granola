@@ -16,13 +16,13 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Reset;
 
-impl ButtonTag for Reset {
+impl ButtonRecipe for Reset {
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.button_type(ButtonType::Reset);
     }
 }
 
-impl InputTag for Reset {
+impl InputRecipe for Reset {
     fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.input_type(InputType::Reset);
     }

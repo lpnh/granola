@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// justify-content: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = JustifyContentTag)]
+#[recipe(name = JustifyContentRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssJustifyContent<R: JustifyContentTag = ()> {
+pub struct CssJustifyContent<R: JustifyContentRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: JustifyContentTag> CssJustifyContent<R> {
+impl<R: JustifyContentRecipe> CssJustifyContent<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: JustifyContentTag> CssJustifyContent<R> {
     }
 }
 
-impl<R: JustifyContentTag> From<CssJustifyContent<R>> for CssDeclaration {
+impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclaration {
     fn from(css_justify_content: CssJustifyContent<R>) -> Self {
         Self::new("justify-content", css_justify_content.value)
     }
 }
 
-impl<R: JustifyContentTag> From<CssJustifyContent<R>> for CssPropertiesList {
+impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssPropertiesList {
     fn from(css_justify_content: CssJustifyContent<R>) -> Self {
         Self {
             declarations: vec![css_justify_content.into()],

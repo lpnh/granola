@@ -3,7 +3,7 @@ use granola::{prelude::*, recipes::*, templates::*};
 #[derive(Default, Debug, Clone)]
 struct FooRecipe;
 
-impl HtmlTag for FooRecipe {
+impl HtmlRecipe for FooRecipe {
     type Content = HomemadeRootContent;
 
     fn content_recipe(content: &mut Self::Content) {
@@ -28,7 +28,7 @@ impl HtmlTag for FooRecipe {
     }
 }
 
-impl PTag for FooRecipe {
+impl PRecipe for FooRecipe {
     type Content = String;
 
     fn content_recipe(content: &mut Self::Content) {
@@ -40,7 +40,7 @@ impl PTag for FooRecipe {
     }
 }
 
-impl ButtonTag for FooRecipe {
+impl ButtonRecipe for FooRecipe {
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("rounded-full").id("foo-button");
     }
@@ -49,7 +49,7 @@ impl ButtonTag for FooRecipe {
 #[derive(Default, Debug, Clone)]
 struct BarRecipe;
 
-impl HtmlTag for BarRecipe {
+impl HtmlRecipe for BarRecipe {
     type Content = HomemadeRootContent;
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
@@ -61,7 +61,7 @@ impl HtmlTag for BarRecipe {
     }
 }
 
-impl PTag for BarRecipe {
+impl PRecipe for BarRecipe {
     type Content = String;
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
@@ -73,7 +73,7 @@ impl PTag for BarRecipe {
     }
 }
 
-impl ButtonTag for BarRecipe {
+impl ButtonRecipe for BarRecipe {
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.id("bar-button");
     }
@@ -86,7 +86,7 @@ impl ButtonTag for BarRecipe {
 #[derive(Default, Debug, Clone)]
 struct OneLastRecipe;
 
-impl HtmlTag for OneLastRecipe {
+impl HtmlRecipe for OneLastRecipe {
     type Content = HomemadeRootContent;
 
     fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
@@ -94,7 +94,7 @@ impl HtmlTag for OneLastRecipe {
     }
 }
 
-impl PTag for OneLastRecipe {
+impl PRecipe for OneLastRecipe {
     type Content = String;
 
     fn content_recipe(content: &mut Self::Content) {
@@ -106,7 +106,7 @@ impl PTag for OneLastRecipe {
     }
 }
 
-impl ButtonTag for OneLastRecipe {
+impl ButtonRecipe for OneLastRecipe {
     fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
         custom_data_attrs.custom_data("recipe", "last");
     }

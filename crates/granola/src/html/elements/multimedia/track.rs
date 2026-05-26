@@ -42,8 +42,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TrackTag)]
-pub struct HtmlTrack<R: TrackTag = ()> {
+#[recipe(name = TrackRecipe)]
+pub struct HtmlTrack<R: TrackRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: TrackAttrs,
@@ -52,7 +52,7 @@ pub struct HtmlTrack<R: TrackTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: TrackTag> HtmlTrack<R> {
+impl<R: TrackRecipe> HtmlTrack<R> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -159,7 +159,7 @@ impl HasTrackAttrs for &mut TrackAttrs {
     }
 }
 
-impl<R: TrackTag> HasTrackAttrs for HtmlTrack<R> {
+impl<R: TrackRecipe> HasTrackAttrs for HtmlTrack<R> {
     fn track_attrs_mut(&mut self) -> &mut TrackAttrs {
         &mut self.specific_attrs
     }

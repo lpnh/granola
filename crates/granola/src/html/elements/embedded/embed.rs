@@ -43,8 +43,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = EmbedTag)]
-pub struct HtmlEmbed<R: EmbedTag = ()> {
+#[recipe(name = EmbedRecipe)]
+pub struct HtmlEmbed<R: EmbedRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
@@ -56,7 +56,7 @@ pub struct HtmlEmbed<R: EmbedTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: EmbedTag> HtmlEmbed<R> {
+impl<R: EmbedRecipe> HtmlEmbed<R> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -153,7 +153,7 @@ impl HasEmbedAttrs for &mut EmbedAttrs {
     }
 }
 
-impl<R: EmbedTag> HasEmbedAttrs for HtmlEmbed<R> {
+impl<R: EmbedRecipe> HasEmbedAttrs for HtmlEmbed<R> {
     fn embed_attrs_mut(&mut self) -> &mut EmbedAttrs {
         &mut self.specific_attrs
     }

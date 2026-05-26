@@ -16,7 +16,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Nowrap;
 
-impl WhiteSpaceTag for Nowrap {
+impl WhiteSpaceRecipe for Nowrap {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "nowrap".into();
     }

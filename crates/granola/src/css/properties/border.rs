@@ -86,14 +86,14 @@ use crate::prelude::*;
 /// border: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BorderTag)]
+#[recipe(name = BorderRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssBorder<R: BorderTag = ()> {
+pub struct CssBorder<R: BorderRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: BorderTag> CssBorder<R> {
+impl<R: BorderRecipe> CssBorder<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -102,13 +102,13 @@ impl<R: BorderTag> CssBorder<R> {
     }
 }
 
-impl<R: BorderTag> From<CssBorder<R>> for CssDeclaration {
+impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclaration {
     fn from(css_border: CssBorder<R>) -> Self {
         Self::new("border", css_border.value)
     }
 }
 
-impl<R: BorderTag> From<CssBorder<R>> for CssPropertiesList {
+impl<R: BorderRecipe> From<CssBorder<R>> for CssPropertiesList {
     fn from(css_border: CssBorder<R>) -> Self {
         Self {
             declarations: vec![css_border.into()],

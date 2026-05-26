@@ -51,8 +51,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OlTag, content = ListItems)]
-pub struct HtmlOl<R: OlTag = ()> {
+#[recipe(name = OlRecipe, content = ListItems)]
+pub struct HtmlOl<R: OlRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -125,7 +125,7 @@ impl HasOlAttrs for &mut OlAttrs {
     }
 }
 
-impl<R: OlTag> HasOlAttrs for HtmlOl<R> {
+impl<R: OlRecipe> HasOlAttrs for HtmlOl<R> {
     fn ol_attrs_mut(&mut self) -> &mut OlAttrs {
         &mut self.specific_attrs
     }

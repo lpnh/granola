@@ -44,11 +44,11 @@ use crate::prelude::*;
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct TmplBase<R: HtmlTag = ()> {
+pub struct TmplBase<R: HtmlRecipe = ()> {
     pub html_root: HtmlRoot<R>,
 }
 
-impl<R: HtmlTag> TmplBase<R> {
+impl<R: HtmlRecipe> TmplBase<R> {
     pub fn new(content: impl Into<R::Content>) -> Self {
         Self {
             html_root: HtmlRoot::<R>::new(content),

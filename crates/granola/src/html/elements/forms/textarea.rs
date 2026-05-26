@@ -43,8 +43,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TextareaTag, content = Cow<'static, str>)]
-pub struct HtmlTextarea<R: TextareaTag = ()> {
+#[recipe(name = TextareaRecipe, content = Cow<'static, str>)]
+pub struct HtmlTextarea<R: TextareaRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -215,7 +215,7 @@ impl HasTextareaAttrs for &mut TextareaAttrs {
     }
 }
 
-impl<R: TextareaTag> HasTextareaAttrs for HtmlTextarea<R> {
+impl<R: TextareaRecipe> HasTextareaAttrs for HtmlTextarea<R> {
     fn textarea_attrs_mut(&mut self) -> &mut TextareaAttrs {
         &mut self.specific_attrs
     }

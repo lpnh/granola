@@ -38,8 +38,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ThTag, content = Cow<'static, str>)]
-pub struct HtmlTh<R: ThTag = ()> {
+#[recipe(name = ThRecipe, content = Cow<'static, str>)]
+pub struct HtmlTh<R: ThRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -132,7 +132,7 @@ impl HasThAttrs for &mut ThAttrs {
     }
 }
 
-impl<R: ThTag> HasThAttrs for HtmlTh<R> {
+impl<R: ThRecipe> HasThAttrs for HtmlTh<R> {
     fn th_attrs_mut(&mut self) -> &mut ThAttrs {
         &mut self.specific_attrs
     }

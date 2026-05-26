@@ -47,16 +47,16 @@ use crate::prelude::*;
 /// {%- endif %}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = AtRuleTag)]
+#[recipe(name = AtRuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssAtRule<R: AtRuleTag = ()> {
+pub struct CssAtRule<R: AtRuleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub identifier: Cow<'static, str>,
     pub rule: Cow<'static, str>,
     pub block: Option<Cow<'static, str>>,
 }
 
-impl<R: AtRuleTag> CssAtRule<R> {
+impl<R: AtRuleRecipe> CssAtRule<R> {
     pub fn new(
         identifier: impl Into<Cow<'static, str>>,
         rule: impl Into<Cow<'static, str>>,

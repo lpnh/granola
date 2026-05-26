@@ -16,7 +16,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Pointer;
 
-impl CursorTag for Pointer {
+impl CursorRecipe for Pointer {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "pointer".into();
     }

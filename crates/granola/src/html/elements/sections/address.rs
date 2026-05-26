@@ -50,8 +50,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AddressTag, content = Cow<'static, str>)]
-pub struct HtmlAddress<R: AddressTag = ()> {
+#[recipe(name = AddressRecipe, content = Cow<'static, str>)]
+pub struct HtmlAddress<R: AddressRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles

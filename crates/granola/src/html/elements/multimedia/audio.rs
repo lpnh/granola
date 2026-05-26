@@ -41,8 +41,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AudioTag, content = Cow<'static, str>)]
-pub struct HtmlAudio<R: AudioTag = ()> {
+#[recipe(name = AudioRecipe, content = Cow<'static, str>)]
+pub struct HtmlAudio<R: AudioRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -55,7 +55,7 @@ pub struct HtmlAudio<R: AudioTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: AudioTag> HtmlAudio<R> {
+impl<R: AudioRecipe> HtmlAudio<R> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -195,7 +195,7 @@ impl HasAudioAttrs for &mut AudioAttrs {
     }
 }
 
-impl<R: AudioTag> HasAudioAttrs for HtmlAudio<R> {
+impl<R: AudioRecipe> HasAudioAttrs for HtmlAudio<R> {
     fn audio_attrs_mut(&mut self) -> &mut AudioAttrs {
         &mut self.specific_attrs
     }

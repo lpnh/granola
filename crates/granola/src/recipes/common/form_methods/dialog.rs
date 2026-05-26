@@ -28,19 +28,19 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Dialog;
 
-impl FormTag for Dialog {
+impl FormRecipe for Dialog {
     fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
         form_attrs.method(FormMethod::Dialog);
     }
 }
 
-impl ButtonTag for Dialog {
+impl ButtonRecipe for Dialog {
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.formmethod(FormMethod::Dialog);
     }
 }
 
-impl InputTag for Dialog {
+impl InputRecipe for Dialog {
     fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.formmethod(FormMethod::Dialog);
     }

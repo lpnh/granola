@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// line-height: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = LineHeightTag)]
+#[recipe(name = LineHeightRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssLineHeight<R: LineHeightTag = ()> {
+pub struct CssLineHeight<R: LineHeightRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: LineHeightTag> CssLineHeight<R> {
+impl<R: LineHeightRecipe> CssLineHeight<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: LineHeightTag> CssLineHeight<R> {
     }
 }
 
-impl<R: LineHeightTag> From<CssLineHeight<R>> for CssDeclaration {
+impl<R: LineHeightRecipe> From<CssLineHeight<R>> for CssDeclaration {
     fn from(css_line_height: CssLineHeight<R>) -> Self {
         Self::new("line-height", css_line_height.value)
     }
 }
 
-impl<R: LineHeightTag> From<CssLineHeight<R>> for CssPropertiesList {
+impl<R: LineHeightRecipe> From<CssLineHeight<R>> for CssPropertiesList {
     fn from(css_line_height: CssLineHeight<R>) -> Self {
         Self {
             declarations: vec![css_line_height.into()],

@@ -27,14 +27,14 @@ use crate::prelude::*;
 /// color: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = ColorTag)]
+#[recipe(name = ColorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssColor<R: ColorTag = ()> {
+pub struct CssColor<R: ColorRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: ColorTag> CssColor<R> {
+impl<R: ColorRecipe> CssColor<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -43,13 +43,13 @@ impl<R: ColorTag> CssColor<R> {
     }
 }
 
-impl<R: ColorTag> From<CssColor<R>> for CssDeclaration {
+impl<R: ColorRecipe> From<CssColor<R>> for CssDeclaration {
     fn from(css_color: CssColor<R>) -> Self {
         Self::new("color", css_color.value)
     }
 }
 
-impl<R: ColorTag> From<CssColor<R>> for CssPropertiesList {
+impl<R: ColorRecipe> From<CssColor<R>> for CssPropertiesList {
     fn from(css_color: CssColor<R>) -> Self {
         Self {
             declarations: vec![css_color.into()],

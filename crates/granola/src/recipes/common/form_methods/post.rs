@@ -28,19 +28,19 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Post;
 
-impl FormTag for Post {
+impl FormRecipe for Post {
     fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
         form_attrs.method(FormMethod::Post);
     }
 }
 
-impl ButtonTag for Post {
+impl ButtonRecipe for Post {
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.formmethod(FormMethod::Post);
     }
 }
 
-impl InputTag for Post {
+impl InputRecipe for Post {
     fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.formmethod(FormMethod::Post);
     }

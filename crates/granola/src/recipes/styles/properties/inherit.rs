@@ -16,7 +16,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Inherit;
 
-impl FontFamilyTag for Inherit {
+impl FontFamilyRecipe for Inherit {
     fn value_recipe(value: &mut Cow<'static, str>) {
         if value.is_empty() {
             *value = "inherit".into();

@@ -27,14 +27,14 @@ use crate::prelude::*;
 /// transform: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TransformTag)]
+#[recipe(name = TransformRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssTransform<R: TransformTag = ()> {
+pub struct CssTransform<R: TransformRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: TransformTag> CssTransform<R> {
+impl<R: TransformRecipe> CssTransform<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -43,13 +43,13 @@ impl<R: TransformTag> CssTransform<R> {
     }
 }
 
-impl<R: TransformTag> From<CssTransform<R>> for CssDeclaration {
+impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclaration {
     fn from(css_transform: CssTransform<R>) -> Self {
         Self::new("transform", css_transform.value)
     }
 }
 
-impl<R: TransformTag> From<CssTransform<R>> for CssPropertiesList {
+impl<R: TransformRecipe> From<CssTransform<R>> for CssPropertiesList {
     fn from(css_transform: CssTransform<R>) -> Self {
         Self {
             declarations: vec![css_transform.into()],

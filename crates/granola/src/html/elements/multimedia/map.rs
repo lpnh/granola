@@ -55,8 +55,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MapTag, content = Areas)]
-pub struct HtmlMap<R: MapTag = ()> {
+#[recipe(name = MapRecipe, content = Areas)]
+pub struct HtmlMap<R: MapRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -105,7 +105,7 @@ impl HasMapAttrs for &mut MapAttrs {
     }
 }
 
-impl<R: MapTag> HasMapAttrs for HtmlMap<R> {
+impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
     fn map_attrs_mut(&mut self) -> &mut MapAttrs {
         &mut self.specific_attrs
     }

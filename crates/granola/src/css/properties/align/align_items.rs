@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// align-items: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = AlignItemsTag)]
+#[recipe(name = AlignItemsRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssAlignItems<R: AlignItemsTag = ()> {
+pub struct CssAlignItems<R: AlignItemsRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: AlignItemsTag> CssAlignItems<R> {
+impl<R: AlignItemsRecipe> CssAlignItems<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: AlignItemsTag> CssAlignItems<R> {
     }
 }
 
-impl<R: AlignItemsTag> From<CssAlignItems<R>> for CssDeclaration {
+impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclaration {
     fn from(css_align_items: CssAlignItems<R>) -> Self {
         Self::new("align-items", css_align_items.value)
     }
 }
 
-impl<R: AlignItemsTag> From<CssAlignItems<R>> for CssPropertiesList {
+impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssPropertiesList {
     fn from(css_align_items: CssAlignItems<R>) -> Self {
         Self {
             declarations: vec![css_align_items.into()],

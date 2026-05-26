@@ -41,8 +41,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = OptionTag, content = Cow<'static, str>)]
-pub struct HtmlOption<R: OptionTag = ()> {
+#[recipe(name = OptionRecipe, content = Cow<'static, str>)]
+pub struct HtmlOption<R: OptionRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -52,7 +52,7 @@ pub struct HtmlOption<R: OptionTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: OptionTag> HtmlOption<R> {
+impl<R: OptionRecipe> HtmlOption<R> {
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -149,7 +149,7 @@ impl HasOptionAttrs for &mut OptionAttrs {
     }
 }
 
-impl<R: OptionTag> HasOptionAttrs for HtmlOption<R> {
+impl<R: OptionRecipe> HasOptionAttrs for HtmlOption<R> {
     fn option_attrs_mut(&mut self) -> &mut OptionAttrs {
         &mut self.specific_attrs
     }

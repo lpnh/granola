@@ -24,7 +24,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Flex;
 
-impl DisplayTag for Flex {
+impl DisplayRecipe for Flex {
     fn value_recipe(value: &mut Cow<'static, str>) {
         if value.is_empty() {
             *value = "flex".into();

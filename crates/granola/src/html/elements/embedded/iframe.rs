@@ -40,8 +40,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = IframeTag, content = Cow<'static, str>)]
-pub struct HtmlIframe<R: IframeTag = ()> {
+#[recipe(name = IframeRecipe, content = Cow<'static, str>)]
+pub struct HtmlIframe<R: IframeRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -54,7 +54,7 @@ pub struct HtmlIframe<R: IframeTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: IframeTag> HtmlIframe<R> {
+impl<R: IframeRecipe> HtmlIframe<R> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -223,7 +223,7 @@ impl HasIframeAttrs for &mut IframeAttrs {
     }
 }
 
-impl<R: IframeTag> HasIframeAttrs for HtmlIframe<R> {
+impl<R: IframeRecipe> HasIframeAttrs for HtmlIframe<R> {
     fn iframe_attrs_mut(&mut self) -> &mut IframeAttrs {
         &mut self.specific_attrs
     }

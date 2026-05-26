@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// font-family: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontFamilyTag)]
+#[recipe(name = FontFamilyRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssFontFamily<R: FontFamilyTag = ()> {
+pub struct CssFontFamily<R: FontFamilyRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: FontFamilyTag> CssFontFamily<R> {
+impl<R: FontFamilyRecipe> CssFontFamily<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: FontFamilyTag> CssFontFamily<R> {
     }
 }
 
-impl<R: FontFamilyTag> From<CssFontFamily<R>> for CssDeclaration {
+impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclaration {
     fn from(css_font_family: CssFontFamily<R>) -> Self {
         Self::new("font-family", css_font_family.value)
     }
 }
 
-impl<R: FontFamilyTag> From<CssFontFamily<R>> for CssPropertiesList {
+impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssPropertiesList {
     fn from(css_font_family: CssFontFamily<R>) -> Self {
         Self {
             declarations: vec![css_font_family.into()],

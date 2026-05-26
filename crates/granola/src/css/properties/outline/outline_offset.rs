@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// outline-offset: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OutlineOffsetTag)]
+#[recipe(name = OutlineOffsetRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssOutlineOffset<R: OutlineOffsetTag = ()> {
+pub struct CssOutlineOffset<R: OutlineOffsetRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: OutlineOffsetTag> CssOutlineOffset<R> {
+impl<R: OutlineOffsetRecipe> CssOutlineOffset<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: OutlineOffsetTag> CssOutlineOffset<R> {
     }
 }
 
-impl<R: OutlineOffsetTag> From<CssOutlineOffset<R>> for CssDeclaration {
+impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclaration {
     fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
         Self::new("outline-offset", css_outline_offset.value)
     }
 }
 
-impl<R: OutlineOffsetTag> From<CssOutlineOffset<R>> for CssPropertiesList {
+impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssPropertiesList {
     fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
         Self {
             declarations: vec![css_outline_offset.into()],

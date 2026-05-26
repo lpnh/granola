@@ -40,8 +40,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MetaTag)]
-pub struct HtmlMeta<R: MetaTag = ()> {
+#[recipe(name = MetaRecipe)]
+pub struct HtmlMeta<R: MetaRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: MetaAttrs,
@@ -50,7 +50,7 @@ pub struct HtmlMeta<R: MetaTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: MetaTag> HtmlMeta<R> {
+impl<R: MetaRecipe> HtmlMeta<R> {
     pub fn new(content: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -160,7 +160,7 @@ impl HasMetaAttrs for &mut MetaAttrs {
     }
 }
 
-impl<R: MetaTag> HasMetaAttrs for HtmlMeta<R> {
+impl<R: MetaRecipe> HasMetaAttrs for HtmlMeta<R> {
     fn media_attrs_mut(&mut self) -> &mut MetaAttrs {
         &mut self.specific_attrs
     }

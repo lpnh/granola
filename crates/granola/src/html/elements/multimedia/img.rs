@@ -43,8 +43,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ImgTag)]
-pub struct HtmlImg<R: ImgTag = ()> {
+#[recipe(name = ImgRecipe)]
+pub struct HtmlImg<R: ImgRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles
     ///
@@ -60,7 +60,7 @@ pub struct HtmlImg<R: ImgTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: ImgTag> HtmlImg<R> {
+impl<R: ImgRecipe> HtmlImg<R> {
     pub fn new(src: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -284,7 +284,7 @@ impl HasImgAttrs for &mut ImgAttrs {
     }
 }
 
-impl<R: ImgTag> HasImgAttrs for HtmlImg<R> {
+impl<R: ImgRecipe> HasImgAttrs for HtmlImg<R> {
     fn img_attrs_mut(&mut self) -> &mut ImgAttrs {
         &mut self.specific_attrs
     }

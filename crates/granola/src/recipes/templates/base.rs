@@ -67,7 +67,7 @@ use crate::{prelude::*, recipes::*, templates::*};
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Homemade;
 
-impl HtmlTag for Homemade {
+impl HtmlRecipe for Homemade {
     type Content = HomemadeRootContent;
 
     fn content_recipe(content: &mut Self::Content) {
@@ -111,7 +111,7 @@ impl From<HtmlBody> for HomemadeRootContent {
     }
 }
 
-impl HeadTag for Homemade {
+impl HeadRecipe for Homemade {
     type Content = HomemadeHeadContent;
 
     fn content_recipe(content: &mut Self::Content) {
@@ -157,7 +157,7 @@ impl TmplBase<Homemade> {
         self
     }
 
-    pub fn push_meta<R: MetaTag>(mut self, meta: HtmlMeta<R>) -> Self {
+    pub fn push_meta<R: MetaRecipe>(mut self, meta: HtmlMeta<R>) -> Self {
         self.html_root
             .content
             .head
@@ -167,12 +167,12 @@ impl TmplBase<Homemade> {
         self
     }
 
-    pub fn push_title<R: TitleTag>(mut self, title: HtmlTitle<R>) -> Self {
+    pub fn push_title<R: TitleRecipe>(mut self, title: HtmlTitle<R>) -> Self {
         self.html_root.content.head.content.title = Some(title.bake_recipe());
         self
     }
 
-    pub fn push_link<R: LinkTag>(mut self, link: HtmlLink<R>) -> Self {
+    pub fn push_link<R: LinkRecipe>(mut self, link: HtmlLink<R>) -> Self {
         self.html_root
             .content
             .head
@@ -182,7 +182,7 @@ impl TmplBase<Homemade> {
         self
     }
 
-    pub fn push_style<R: StyleTag>(mut self, style: HtmlStyle<R>) -> Self {
+    pub fn push_style<R: StyleRecipe>(mut self, style: HtmlStyle<R>) -> Self {
         self.html_root
             .content
             .head

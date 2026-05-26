@@ -43,8 +43,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = VideoTag, content = Cow<'static, str>)]
-pub struct HtmlVideo<R: VideoTag = ()> {
+#[recipe(name = VideoRecipe, content = Cow<'static, str>)]
+pub struct HtmlVideo<R: VideoRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles
@@ -57,7 +57,7 @@ pub struct HtmlVideo<R: VideoTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: VideoTag> HtmlVideo<R> {
+impl<R: VideoRecipe> HtmlVideo<R> {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -234,7 +234,7 @@ impl HasVideoAttrs for &mut VideoAttrs {
     }
 }
 
-impl<R: VideoTag> HasVideoAttrs for HtmlVideo<R> {
+impl<R: VideoRecipe> HasVideoAttrs for HtmlVideo<R> {
     fn video_attrs_mut(&mut self) -> &mut VideoAttrs {
         &mut self.specific_attrs
     }

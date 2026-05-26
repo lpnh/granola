@@ -40,8 +40,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SourceTag)]
-pub struct HtmlSource<R: SourceTag = ()> {
+#[recipe(name = SourceRecipe)]
+pub struct HtmlSource<R: SourceRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: SourceAttrs,
@@ -50,7 +50,7 @@ pub struct HtmlSource<R: SourceTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: SourceTag> HtmlSource<R> {
+impl<R: SourceRecipe> HtmlSource<R> {
     pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -178,7 +178,7 @@ impl HasSourceAttrs for &mut SourceAttrs {
     }
 }
 
-impl<R: SourceTag> HasSourceAttrs for HtmlSource<R> {
+impl<R: SourceRecipe> HasSourceAttrs for HtmlSource<R> {
     fn source_attrs_mut(&mut self) -> &mut SourceAttrs {
         &mut self.specific_attrs
     }

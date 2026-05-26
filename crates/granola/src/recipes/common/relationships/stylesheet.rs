@@ -14,7 +14,7 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Stylesheet;
 
-impl LinkTag for Stylesheet {
+impl LinkRecipe for Stylesheet {
     fn specific_attrs_recipe(link_attrs: &mut LinkAttrs) {
         link_attrs.rel("stylesheet");
     }

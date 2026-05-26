@@ -39,8 +39,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ITag, content = Cow<'static, str>)]
-pub struct HtmlI<R: ITag = ()> {
+#[recipe(name = IRecipe, content = Cow<'static, str>)]
+pub struct HtmlI<R: IRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     /// # Permitted ARIA roles

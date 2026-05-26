@@ -105,15 +105,15 @@ use crate::prelude::*;
 /// }
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = RuleTag)]
+#[recipe(name = RuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssRule<R: RuleTag = ()> {
+pub struct CssRule<R: RuleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub selectors_list: CssSelectorsList,
     pub properties_list: CssPropertiesList,
 }
 
-impl<R: RuleTag> CssRule<R> {
+impl<R: RuleRecipe> CssRule<R> {
     pub fn new(
         selectors_list: impl Into<CssSelectorsList>,
         properties_list: impl Into<CssPropertiesList>,

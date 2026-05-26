@@ -26,14 +26,14 @@ use crate::prelude::*;
 /// background-color: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BackgroundColorTag)]
+#[recipe(name = BackgroundColorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssBackgroundColor<R: BackgroundColorTag = ()> {
+pub struct CssBackgroundColor<R: BackgroundColorRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: BackgroundColorTag> CssBackgroundColor<R> {
+impl<R: BackgroundColorRecipe> CssBackgroundColor<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -42,13 +42,13 @@ impl<R: BackgroundColorTag> CssBackgroundColor<R> {
     }
 }
 
-impl<R: BackgroundColorTag> From<CssBackgroundColor<R>> for CssDeclaration {
+impl<R: BackgroundColorRecipe> From<CssBackgroundColor<R>> for CssDeclaration {
     fn from(css_background_color: CssBackgroundColor<R>) -> Self {
         Self::new("background-color", css_background_color.value)
     }
 }
 
-impl<R: BackgroundColorTag> From<CssBackgroundColor<R>> for CssPropertiesList {
+impl<R: BackgroundColorRecipe> From<CssBackgroundColor<R>> for CssPropertiesList {
     fn from(css_background_color: CssBackgroundColor<R>) -> Self {
         Self {
             declarations: vec![css_background_color.into()],

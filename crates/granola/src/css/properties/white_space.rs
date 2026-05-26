@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// white-space: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = WhiteSpaceTag)]
+#[recipe(name = WhiteSpaceRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssWhiteSpace<R: WhiteSpaceTag = ()> {
+pub struct CssWhiteSpace<R: WhiteSpaceRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: WhiteSpaceTag> CssWhiteSpace<R> {
+impl<R: WhiteSpaceRecipe> CssWhiteSpace<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: WhiteSpaceTag> CssWhiteSpace<R> {
     }
 }
 
-impl<R: WhiteSpaceTag> From<CssWhiteSpace<R>> for CssDeclaration {
+impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclaration {
     fn from(css_white_space: CssWhiteSpace<R>) -> Self {
         Self::new("white-space", css_white_space.value)
     }
 }
 
-impl<R: WhiteSpaceTag> From<CssWhiteSpace<R>> for CssPropertiesList {
+impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssPropertiesList {
     fn from(css_white_space: CssWhiteSpace<R>) -> Self {
         Self {
             declarations: vec![css_white_space.into()],

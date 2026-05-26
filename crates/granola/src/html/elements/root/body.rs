@@ -42,8 +42,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = BodyTag, content = Cow<'static, str>)]
-pub struct HtmlBody<R: BodyTag = ()> {
+#[recipe(name = BodyRecipe, content = Cow<'static, str>)]
+pub struct HtmlBody<R: BodyRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,

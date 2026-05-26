@@ -32,14 +32,14 @@ use crate::prelude::*;
 /// transition: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TransitionTag)]
+#[recipe(name = TransitionRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssTransition<R: TransitionTag = ()> {
+pub struct CssTransition<R: TransitionRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: TransitionTag> CssTransition<R> {
+impl<R: TransitionRecipe> CssTransition<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -48,13 +48,13 @@ impl<R: TransitionTag> CssTransition<R> {
     }
 }
 
-impl<R: TransitionTag> From<CssTransition<R>> for CssDeclaration {
+impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclaration {
     fn from(css_transition: CssTransition<R>) -> Self {
         Self::new("transition", css_transition.value)
     }
 }
 
-impl<R: TransitionTag> From<CssTransition<R>> for CssPropertiesList {
+impl<R: TransitionRecipe> From<CssTransition<R>> for CssPropertiesList {
     fn from(css_transition: CssTransition<R>) -> Self {
         Self {
             declarations: vec![css_transition.into()],

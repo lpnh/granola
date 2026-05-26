@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// border-radius: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BorderRadiusTag)]
+#[recipe(name = BorderRadiusRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssBorderRadius<R: BorderRadiusTag = ()> {
+pub struct CssBorderRadius<R: BorderRadiusRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: BorderRadiusTag> CssBorderRadius<R> {
+impl<R: BorderRadiusRecipe> CssBorderRadius<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: BorderRadiusTag> CssBorderRadius<R> {
     }
 }
 
-impl<R: BorderRadiusTag> From<CssBorderRadius<R>> for CssDeclaration {
+impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclaration {
     fn from(css_border_radius: CssBorderRadius<R>) -> Self {
         Self::new("border-radius", css_border_radius.value)
     }
 }
 
-impl<R: BorderRadiusTag> From<CssBorderRadius<R>> for CssPropertiesList {
+impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssPropertiesList {
     fn from(css_border_radius: CssBorderRadius<R>) -> Self {
         Self {
             declarations: vec![css_border_radius.into()],

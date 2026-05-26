@@ -10,9 +10,9 @@ help: the trait `BakeInto<Cow<'static, str>>` is not implemented for `Foo`
  9 | struct Foo;
    | ^^^^^^^^^^
    = note: for non-foreign types, consider providing a conversion by implementing `From<Foo>` for `Cow<'static, str>`
-note: required by a bound in `granola::html::PTag::Content`
+note: required by a bound in `granola::html::PRecipe::Content`
   --> $WORKSPACE/crates/granola/src/html/elements/text_content/p.rs
    |
    | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-   |                                                    ^^^^^^ required by this bound in `PTag::Content`
+   |                                                    ^^^^^^ required by this bound in `PRecipe::Content`
    = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)

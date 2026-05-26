@@ -49,8 +49,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MeterTag, content = Cow<'static, str>)]
-pub struct HtmlMeter<R: MeterTag = ()> {
+#[recipe(name = MeterRecipe, content = Cow<'static, str>)]
+pub struct HtmlMeter<R: MeterRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
@@ -85,7 +85,7 @@ pub struct MeterAttrs {
     pub optimum: Option<Cow<'static, str>>,
 }
 
-impl<R: MeterTag> HtmlMeter<R> {
+impl<R: MeterRecipe> HtmlMeter<R> {
     pub fn from_value(value: f64) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -177,7 +177,7 @@ impl HasMeterAttrs for &mut MeterAttrs {
     }
 }
 
-impl<R: MeterTag> HasMeterAttrs for HtmlMeter<R> {
+impl<R: MeterRecipe> HasMeterAttrs for HtmlMeter<R> {
     fn meter_attrs_mut(&mut self) -> &mut MeterAttrs {
         &mut self.specific_attrs
     }

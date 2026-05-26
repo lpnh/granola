@@ -16,13 +16,13 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Submit;
 
-impl ButtonTag for Submit {
+impl ButtonRecipe for Submit {
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.button_type(ButtonType::Submit);
     }
 }
 
-impl InputTag for Submit {
+impl InputRecipe for Submit {
     fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
         input_attrs.input_type(InputType::Submit);
     }

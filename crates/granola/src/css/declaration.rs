@@ -31,15 +31,15 @@ use crate::prelude::*;
 /// {{ property }}: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DeclarationTag)]
+#[recipe(name = DeclarationRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDeclaration<R: DeclarationTag = ()> {
+pub struct CssDeclaration<R: DeclarationRecipe = ()> {
     _recipe: PhantomData<R>,
     pub property: Cow<'static, str>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: DeclarationTag> CssDeclaration<R> {
+impl<R: DeclarationRecipe> CssDeclaration<R> {
     pub fn new(
         property: impl Into<Cow<'static, str>>,
         value: impl Into<Cow<'static, str>>,

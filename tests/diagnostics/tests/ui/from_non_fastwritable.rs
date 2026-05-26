@@ -9,7 +9,7 @@ struct Foo;
 #[derive(Default, Debug, Clone)]
 struct BrokenRecipe;
 
-impl PTag for BrokenRecipe {
+impl PRecipe for BrokenRecipe {
     type Content = BakeFrom<Foo>;
 }
 

@@ -37,8 +37,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = BaseTag)]
-pub struct HtmlBase<R: BaseTag = ()> {
+#[recipe(name = BaseRecipe)]
+pub struct HtmlBase<R: BaseRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: BaseAttrs,
@@ -47,7 +47,7 @@ pub struct HtmlBase<R: BaseTag = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: BaseTag> HtmlBase<R> {
+impl<R: BaseRecipe> HtmlBase<R> {
     pub fn new(href: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
@@ -124,7 +124,7 @@ impl HasBaseAttrs for &mut BaseAttrs {
     }
 }
 
-impl<R: BaseTag> HasBaseAttrs for HtmlBase<R> {
+impl<R: BaseRecipe> HasBaseAttrs for HtmlBase<R> {
     fn base_attrs_mut(&mut self) -> &mut BaseAttrs {
         &mut self.specific_attrs
     }

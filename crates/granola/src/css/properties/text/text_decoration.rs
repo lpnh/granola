@@ -23,14 +23,14 @@ use crate::prelude::*;
 /// text-decoration: {{ value }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextDecorationTag)]
+#[recipe(name = TextDecorationRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssTextDecoration<R: TextDecorationTag = ()> {
+pub struct CssTextDecoration<R: TextDecorationRecipe = ()> {
     _recipe: PhantomData<R>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: TextDecorationTag> CssTextDecoration<R> {
+impl<R: TextDecorationRecipe> CssTextDecoration<R> {
     pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
         Self {
             value: value.into(),
@@ -39,13 +39,13 @@ impl<R: TextDecorationTag> CssTextDecoration<R> {
     }
 }
 
-impl<R: TextDecorationTag> From<CssTextDecoration<R>> for CssDeclaration {
+impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclaration {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
         Self::new("text-decoration", css_text_decoration.value)
     }
 }
 
-impl<R: TextDecorationTag> From<CssTextDecoration<R>> for CssPropertiesList {
+impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssPropertiesList {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
         Self {
             declarations: vec![css_text_decoration.into()],

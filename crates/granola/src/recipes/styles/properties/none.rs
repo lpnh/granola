@@ -24,13 +24,13 @@ use crate::prelude::*;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct None;
 
-impl BorderTag for None {
+impl BorderRecipe for None {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "none".into();
     }
 }
 
-impl TextDecorationTag for None {
+impl TextDecorationRecipe for None {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "none".into();
     }

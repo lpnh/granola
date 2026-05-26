@@ -53,8 +53,8 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DatalistTag, content = Options)]
-pub struct HtmlDatalist<R: DatalistTag = ()> {
+#[recipe(name = DatalistRecipe, content = Options)]
+pub struct HtmlDatalist<R: DatalistRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
     pub global_attrs: GlobalAttrs,
