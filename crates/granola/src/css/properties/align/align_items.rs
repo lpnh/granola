@@ -45,7 +45,7 @@ impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclaration {
     }
 }
 
-impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssPropertiesList {
+impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclarationsBlock {
     fn from(css_align_items: CssAlignItems<R>) -> Self {
         Self {
             declarations: vec![css_align_items.into()],

@@ -45,7 +45,7 @@ impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssPropertiesList {
+impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssDeclarationsBlock {
     fn from(css_outline_style: CssOutlineStyle<R>) -> Self {
         Self {
             declarations: vec![css_outline_style.into()],

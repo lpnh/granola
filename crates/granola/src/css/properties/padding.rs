@@ -56,7 +56,7 @@ impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclaration {
     }
 }
 
-impl<R: PaddingRecipe> From<CssPadding<R>> for CssPropertiesList {
+impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclarationsBlock {
     fn from(css_padding: CssPadding<R>) -> Self {
         Self {
             declarations: vec![css_padding.into()],

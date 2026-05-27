@@ -45,7 +45,7 @@ impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclaration {
     }
 }
 
-impl<R: DisplayRecipe> From<CssDisplay<R>> for CssPropertiesList {
+impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclarationsBlock {
     fn from(css_display: CssDisplay<R>) -> Self {
         Self {
             declarations: vec![css_display.into()],

@@ -49,7 +49,7 @@ impl<R: ColorRecipe> From<CssColor<R>> for CssDeclaration {
     }
 }
 
-impl<R: ColorRecipe> From<CssColor<R>> for CssPropertiesList {
+impl<R: ColorRecipe> From<CssColor<R>> for CssDeclarationsBlock {
     fn from(css_color: CssColor<R>) -> Self {
         Self {
             declarations: vec![css_color.into()],

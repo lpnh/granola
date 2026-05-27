@@ -45,7 +45,7 @@ impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssPropertiesList {
+impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclarationsBlock {
     fn from(css_outline_width: CssOutlineWidth<R>) -> Self {
         Self {
             declarations: vec![css_outline_width.into()],

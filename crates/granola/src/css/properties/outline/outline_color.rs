@@ -45,7 +45,7 @@ impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssPropertiesList {
+impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssDeclarationsBlock {
     fn from(css_outline_color: CssOutlineColor<R>) -> Self {
         Self {
             declarations: vec![css_outline_color.into()],

@@ -48,7 +48,7 @@ impl<R: BackgroundColorRecipe> From<CssBackgroundColor<R>> for CssDeclaration {
     }
 }
 
-impl<R: BackgroundColorRecipe> From<CssBackgroundColor<R>> for CssPropertiesList {
+impl<R: BackgroundColorRecipe> From<CssBackgroundColor<R>> for CssDeclarationsBlock {
     fn from(css_background_color: CssBackgroundColor<R>) -> Self {
         Self {
             declarations: vec![css_background_color.into()],

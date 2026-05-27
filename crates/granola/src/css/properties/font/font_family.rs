@@ -45,7 +45,7 @@ impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclaration {
     }
 }
 
-impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssPropertiesList {
+impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclarationsBlock {
     fn from(css_font_family: CssFontFamily<R>) -> Self {
         Self {
             declarations: vec![css_font_family.into()],

@@ -54,7 +54,7 @@ impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclaration {
     }
 }
 
-impl<R: TransitionRecipe> From<CssTransition<R>> for CssPropertiesList {
+impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclarationsBlock {
     fn from(css_transition: CssTransition<R>) -> Self {
         Self {
             declarations: vec![css_transition.into()],

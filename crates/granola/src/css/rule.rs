@@ -26,7 +26,8 @@ use crate::prelude::*;
 /// use granola::prelude::*;
 ///
 /// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
+/// let css_properties_list: CssDeclarationsBlock =
+///     CssDeclarationsBlock::new().push(css_declaration);
 ///
 /// let css_selector: CssSelector = CssSelector::new("p");
 /// let css_selector_list: CssSelectorsList = CssSelectorsList::new().push(css_selector);
@@ -110,13 +111,13 @@ use crate::prelude::*;
 pub struct CssRule<R: RuleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub selectors_list: CssSelectorsList,
-    pub properties_list: CssPropertiesList,
+    pub properties_list: CssDeclarationsBlock,
 }
 
 impl<R: RuleRecipe> CssRule<R> {
     pub fn new(
         selectors_list: impl Into<CssSelectorsList>,
-        properties_list: impl Into<CssPropertiesList>,
+        properties_list: impl Into<CssDeclarationsBlock>,
     ) -> Self {
         Self {
             selectors_list: selectors_list.into(),
@@ -136,7 +137,7 @@ impl<R: RuleRecipe> CssRule<R> {
     }
 }
 
-impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for CssRule {
+impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for CssRule {
     fn from((css_selectors_list, css_properties_list): (S, D)) -> Self {
         Self {
             selectors_list: css_selectors_list.into(),
@@ -165,7 +166,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssPropertiesList>> From<(S, D)> for Css
 /// use granola::{macros::*, prelude::*};
 ///
 /// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
+/// let css_properties_list: CssDeclarationsBlock = CssDeclarationsBlock::new().push(css_declaration);
 ///
 /// let css_selector: CssSelector = CssSelector::new("p");
 /// let css_selector_list: CssSelectorsList = CssSelectorsList::new().push(css_selector);

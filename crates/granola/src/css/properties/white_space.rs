@@ -45,7 +45,7 @@ impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclaration {
     }
 }
 
-impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssPropertiesList {
+impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclarationsBlock {
     fn from(css_white_space: CssWhiteSpace<R>) -> Self {
         Self {
             declarations: vec![css_white_space.into()],

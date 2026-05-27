@@ -113,7 +113,7 @@ impl RuleRecipe for Btn {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssPropertiesList) {
+    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssDisplay::<(Inline, Flex)>::from_recipe().into(),
             CssAlignItems::<Center>::from_recipe().into(),
@@ -152,7 +152,7 @@ impl RuleRecipe for BtnHover {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssPropertiesList) {
+    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![("--btn-bg", BTN_BG_DARKENED).into()];
     }
 }
@@ -172,7 +172,7 @@ impl RuleRecipe for BtnActive {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssPropertiesList) {
+    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             ("--btn-bg", BTN_BG_DARKENED).into(),
             CssTransform::<()>::new("scale(0.97)").into(),
@@ -195,7 +195,7 @@ impl RuleRecipe for BtnFocusVisible {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssPropertiesList) {
+    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssOutlineWidth::<()>::new("2px").into(),
             CssOutlineStyle::<Solid>::from_recipe().into(),
@@ -230,7 +230,7 @@ impl RuleRecipe for BtnPrimary {
         *selectors_list = CssSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssPropertiesList) {
+    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             ("--btn-color", "var(--color-primary)").into(),
             ("--btn-fg", "var(--color-primary-content)").into(),

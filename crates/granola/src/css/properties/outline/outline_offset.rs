@@ -45,7 +45,7 @@ impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssPropertiesList {
+impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclarationsBlock {
     fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
         Self {
             declarations: vec![css_outline_offset.into()],

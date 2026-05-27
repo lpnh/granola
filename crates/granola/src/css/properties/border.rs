@@ -108,7 +108,7 @@ impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclaration {
     }
 }
 
-impl<R: BorderRecipe> From<CssBorder<R>> for CssPropertiesList {
+impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclarationsBlock {
     fn from(css_border: CssBorder<R>) -> Self {
         Self {
             declarations: vec![css_border.into()],

@@ -45,7 +45,7 @@ impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclaration {
     }
 }
 
-impl<R: CursorRecipe> From<CssCursor<R>> for CssPropertiesList {
+impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclarationsBlock {
     fn from(css_cursor: CssCursor<R>) -> Self {
         Self {
             declarations: vec![css_cursor.into()],

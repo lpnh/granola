@@ -45,7 +45,7 @@ impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclaration {
     }
 }
 
-impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssPropertiesList {
+impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclarationsBlock {
     fn from(css_font_weight: CssFontWeight<R>) -> Self {
         Self {
             declarations: vec![css_font_weight.into()],

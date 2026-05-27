@@ -45,7 +45,7 @@ impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclaration {
     }
 }
 
-impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssPropertiesList {
+impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclarationsBlock {
     fn from(css_justify_content: CssJustifyContent<R>) -> Self {
         Self {
             declarations: vec![css_justify_content.into()],

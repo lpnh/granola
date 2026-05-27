@@ -45,7 +45,7 @@ impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclaration {
     }
 }
 
-impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssPropertiesList {
+impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclarationsBlock {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
         Self {
             declarations: vec![css_text_decoration.into()],

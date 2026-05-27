@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::borrow::Cow;
 
 use crate::prelude::*;
 
@@ -30,16 +30,14 @@ use crate::prelude::*;
 /// ```askama
 /// {{ property }}: {{ value }};
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DeclarationRecipe)]
+#[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDeclaration<R: DeclarationRecipe = ()> {
-    _recipe: PhantomData<R>,
+pub struct CssDeclaration {
     pub property: Cow<'static, str>,
     pub value: Cow<'static, str>,
 }
 
-impl<R: DeclarationRecipe> CssDeclaration<R> {
+impl CssDeclaration {
     pub fn new(
         property: impl Into<Cow<'static, str>>,
         value: impl Into<Cow<'static, str>>,
@@ -47,7 +45,6 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
         Self {
             property: property.into(),
             value: value.into(),
-            ..Default::default()
         }
     }
 }
@@ -57,7 +54,6 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
         Self {
             property: property.into(),
             value: value.into(),
-            ..Default::default()
         }
     }
 }
@@ -71,9 +67,10 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
 ///
-/// let css_properties_list: CssPropertiesList = CssPropertiesList::new().push(css_declaration);
+/// let css_properties_list: CssDeclarationsBlock =
+///     CssDeclarationsBlock::new().push(css_declaration);
 ///
 /// assert_eq!(css_properties_list.bake(), "color: rgb(102, 51, 153);");
 /// ```
@@ -83,7 +80,7 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 ///
 /// let css_declaration: CssDeclaration = ("color", "rebeccapurple").into();
 ///
-/// let css_properties_list: CssPropertiesList = css_declaration.into();
+/// let css_properties_list: CssDeclarationsBlock = css_declaration.into();
 ///
 /// assert_eq!(css_properties_list.bake(), "color: rebeccapurple;");
 /// ```
@@ -91,7 +88,7 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_properties_list: CssPropertiesList =
+/// let css_properties_list: CssDeclarationsBlock =
 ///     [("color", "violet"), ("font-weight", "lighter")].into();
 ///
 /// assert_eq!(
@@ -112,11 +109,11 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssPropertiesList {
+pub struct CssDeclarationsBlock {
     pub declarations: Vec<CssDeclaration>,
 }
 
-impl CssPropertiesList {
+impl CssDeclarationsBlock {
     pub fn new() -> Self {
         Self::default()
     }
@@ -136,7 +133,7 @@ impl CssPropertiesList {
     }
 }
 
-impl<D: Into<CssDeclaration>, const N: usize> From<[D; N]> for CssPropertiesList {
+impl<D: Into<CssDeclaration>, const N: usize> From<[D; N]> for CssDeclarationsBlock {
     fn from(items: [D; N]) -> Self {
         Self {
             declarations: items.into_iter().map(Into::into).collect(),
@@ -144,7 +141,7 @@ impl<D: Into<CssDeclaration>, const N: usize> From<[D; N]> for CssPropertiesList
     }
 }
 
-impl<D: Into<CssDeclaration>> From<Vec<D>> for CssPropertiesList {
+impl<D: Into<CssDeclaration>> From<Vec<D>> for CssDeclarationsBlock {
     fn from(items: Vec<D>) -> Self {
         Self {
             declarations: items.into_iter().map(Into::into).collect(),
@@ -152,7 +149,7 @@ impl<D: Into<CssDeclaration>> From<Vec<D>> for CssPropertiesList {
     }
 }
 
-impl From<CssDeclaration> for CssPropertiesList {
+impl From<CssDeclaration> for CssDeclarationsBlock {
     fn from(css_declaration: CssDeclaration) -> Self {
         Self {
             declarations: vec![css_declaration],
@@ -160,7 +157,7 @@ impl From<CssDeclaration> for CssPropertiesList {
     }
 }
 
-impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssPropertiesList {
+impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssDeclarationsBlock {
     fn from(decl: (P, V)) -> Self {
         Self {
             declarations: vec![decl.into()],

@@ -45,7 +45,7 @@ impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclaration {
     }
 }
 
-impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssPropertiesList {
+impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclarationsBlock {
     fn from(css_font_size: CssFontSize<R>) -> Self {
         Self {
             declarations: vec![css_font_size.into()],
