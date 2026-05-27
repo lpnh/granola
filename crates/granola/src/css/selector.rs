@@ -45,6 +45,133 @@ impl<R: SelectorRecipe> CssSelector<R> {
             ..Default::default()
         }
     }
+
+    /// Appends a selector to the end of this [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors/Selector_structure#compound_selector)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector: CssSelector = CssSelector::new("col").compound(".highlighted");
+    ///
+    /// assert_eq!(selector.bake(), "col.highlighted");
+    /// ```
+    pub fn compound(mut self, selector: impl Into<Cow<'static, str>>) -> Self {
+        self.selector.to_mut().push_str(selector.into().as_ref());
+        self
+    }
+
+    /// Appends a selector after a child combinator (`>`) to the end of this
+    /// [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Child_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector: CssSelector = CssSelector::new("details").child("summary");
+    ///
+    /// assert_eq!(selector.bake(), "details > summary");
+    /// ```
+    pub fn child(mut self, selector: impl Into<Cow<'static, str>>) -> Self {
+        let s = self.selector.to_mut();
+        s.push_str(" > ");
+        s.push_str(selector.into().as_ref());
+        self
+    }
+
+    /// Appends a selector after a column combinator (`||`) to the end of this
+    /// [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Column_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector: CssSelector = CssSelector::new("col")
+    ///     .compound(".highlighted")
+    ///     .column("td");
+    ///
+    /// assert_eq!(selector.bake(), "col.highlighted || td");
+    /// ```
+    pub fn column(mut self, other: impl Into<Cow<'static, str>>) -> Self {
+        let s = self.selector.to_mut();
+        s.push_str(" || ");
+        s.push_str(other.into().as_ref());
+        self
+    }
+
+    /// Appends a selector after a descendant combinator (single whitespace) to
+    /// the end of this [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Descendant_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector: CssSelector = CssSelector::new("form").descendant("input");
+    ///
+    /// assert_eq!(selector.bake(), "form input");
+    /// ```
+    pub fn descendant(mut self, other: impl Into<Cow<'static, str>>) -> Self {
+        let s = self.selector.to_mut();
+        s.push(' ');
+        s.push_str(other.into().as_ref());
+        self
+    }
+
+    /// Appends a selector after a next-sibling combinator (`+`) to the end of
+    /// this [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Next-sibling_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector: CssSelector = CssSelector::new("label").next_sibling("input");
+    ///
+    /// assert_eq!(selector.bake(), "label + input");
+    /// ```
+    pub fn next_sibling(mut self, other: impl Into<Cow<'static, str>>) -> Self {
+        let s = self.selector.to_mut();
+        s.push_str(" + ");
+        s.push_str(other.into().as_ref());
+        self
+    }
+
+    /// Appends a selector after a subsequent-sibling combinator (`~`) to the
+    /// end of this [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Subsequent-sibling_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector: CssSelector = CssSelector::new("input")
+    ///     .compound(":checked")
+    ///     .subsequent_sibling("label");
+    ///
+    /// assert_eq!(selector.bake(), "input:checked ~ label");
+    /// ```
+    pub fn subsequent_sibling(mut self, other: impl Into<Cow<'static, str>>) -> Self {
+        let s = self.selector.to_mut();
+        s.push_str(" ~ ");
+        s.push_str(other.into().as_ref());
+        self
+    }
 }
 
 impl From<Cow<'static, str>> for CssSelector {
