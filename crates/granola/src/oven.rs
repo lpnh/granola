@@ -8,7 +8,7 @@
 //! order.
 //!
 //! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed
-//! collections. [`cookbook!`](crate::cookbook) is the shorthand for `(A, (B,
+//! collections. [`cookbook!`](crate::cookbook!) is the shorthand for `(A, (B,
 //! C))` when composing multiple recipes.
 //!
 //! [autoref-based specialization]:
