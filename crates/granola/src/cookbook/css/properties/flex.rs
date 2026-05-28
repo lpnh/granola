@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `flex` property value.
+/// The `flex` property value recipe.
 ///
 /// # Example
 ///

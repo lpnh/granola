@@ -2,9 +2,17 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `auto` property value.
+/// The `auto` property value recipe.
 ///
 /// # Example
+///
+/// ```rust
+/// use granola::{cookbook::*, prelude::*};
+///
+/// let css_height: CssHeight<Auto> = CssHeight::from_recipe();
+///
+/// assert_eq!(css_height.bake(), "height: auto;");
+/// ```
 ///
 /// ```rust
 /// use granola::{cookbook::*, prelude::*};
@@ -19,6 +27,12 @@ use crate::prelude::*;
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Auto;
+
+impl HeightRecipe for Auto {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "auto".into();
+    }
+}
 
 impl TextDecorationSkipInkRecipe for Auto {
     fn value_recipe(value: &mut Cow<'static, str>) {

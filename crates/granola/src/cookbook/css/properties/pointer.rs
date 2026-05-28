@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `pointer` property value.
+/// The `pointer` property value recipe.
 ///
 /// # Example
 ///

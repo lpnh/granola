@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `solid` property value.
+/// The `solid` property value recipe.
 ///
 /// # Example
 ///

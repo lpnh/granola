@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `border-box` property value.
+/// The `border-box` property value recipe.
 ///
 /// # Example
 ///

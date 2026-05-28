@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `inline` property value.
+/// The `inline` property value recipe.
 ///
 /// # Example
 ///

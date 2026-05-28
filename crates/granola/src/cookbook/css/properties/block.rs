@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `block` property value.
+/// The `block` property value recipe.
 ///
 /// # Example
 ///

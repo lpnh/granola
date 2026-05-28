@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `center` property value.
+/// The `center` property value recipe.
 ///
 /// # Example
 ///

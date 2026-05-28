@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `none` property value.
+/// The `none` property value recipe.
 ///
 /// # Example
 ///

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `balance` property value.
+/// The `balance` property value recipe.
 ///
 /// # Example
 ///

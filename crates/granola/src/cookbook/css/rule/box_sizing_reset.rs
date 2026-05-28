@@ -1,6 +1,6 @@
 use crate::{cookbook::*, prelude::*};
 
-/// Rule: `*, *::before, *::after { box-sizing: border-box; }`.
+/// The universal reset `box-sizing: border-box` rule recipe.
 ///
 /// # Example
 ///

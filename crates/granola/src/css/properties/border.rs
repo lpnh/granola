@@ -1,3 +1,5 @@
+mod border_color;
+pub use border_color::*;
 mod border_radius;
 pub use border_radius::*;
 
@@ -20,7 +22,6 @@ pub use border_radius::*;
 // mod border_bottom_style;
 // mod border_bottom_width;
 // mod border_collapse;
-// mod border_color;
 // mod border_end_end_radius;
 // mod border_end_start_radius;
 // mod border_image;

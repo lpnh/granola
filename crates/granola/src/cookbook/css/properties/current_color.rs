@@ -2,9 +2,17 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `currentColor` property value.
+/// The `currentcolor` property value recipe.
 ///
 /// # Example
+///
+/// ```rust
+/// use granola::{cookbook::*, prelude::*};
+///
+/// let css_border_color: CssBorderColor<Currentcolor> = CssBorderColor::from_recipe();
+///
+/// assert_eq!(css_border_color.bake(), "border-color: currentcolor;");
+/// ```
 ///
 /// ```rust
 /// use granola::{cookbook::*, prelude::*};
@@ -15,6 +23,12 @@ use crate::prelude::*;
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Currentcolor;
+
+impl BorderColorRecipe for Currentcolor {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "currentcolor".into();
+    }
+}
 
 impl ColorRecipe for Currentcolor {
     fn value_recipe(value: &mut Cow<'static, str>) {

@@ -1,5 +1,5 @@
-// A recipe that overrides `type Content` with a `BakeFrom<T>` whose inner `T` does
-// not implement `FastWritable`.
+// A recipe that overrides `type Content` with a `BakeFrom<T>` whose inner `T`
+// does not implement `FastWritable`.
 
 use granola::prelude::*;
 

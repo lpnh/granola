@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `nowrap` property value.
+/// The `nowrap` property value recipe.
 ///
 /// # Example
 ///

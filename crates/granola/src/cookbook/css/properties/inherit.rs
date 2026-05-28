@@ -2,9 +2,17 @@ use std::borrow::Cow;
 
 use crate::prelude::*;
 
-/// Recipe for the `inherit` property value.
+/// The `inherit` property value recipe.
 ///
 /// # Example
+///
+/// ```rust
+/// use granola::{cookbook::*, prelude::*};
+///
+/// let css_font: CssFont<Inherit> = CssFont::from_recipe();
+///
+/// assert_eq!(css_font.bake(), "font: inherit;");
+/// ```
 ///
 /// ```rust
 /// use granola::{cookbook::*, prelude::*};
@@ -23,6 +31,12 @@ use crate::prelude::*;
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Inherit;
+
+impl FontRecipe for Inherit {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "inherit".into();
+    }
+}
 
 impl FontFamilyRecipe for Inherit {
     fn value_recipe(value: &mut Cow<'static, str>) {
