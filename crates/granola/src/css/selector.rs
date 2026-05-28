@@ -235,13 +235,15 @@ impl From<String> for CssSelector {
 /// {%- if !loop.last %}, {% endif -%}
 /// {%- endfor -%}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = SelectorsListRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssSelectorsList {
+pub struct CssSelectorsList<R: SelectorsListRecipe = ()> {
+    _recipe: PhantomData<R>,
     pub selectors: Vec<CssSelector>,
 }
 
-impl CssSelectorsList {
+impl<R: SelectorsListRecipe> CssSelectorsList<R> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -250,17 +252,13 @@ impl CssSelectorsList {
         self.selectors.push(css_selector.into());
         self
     }
-
-    pub fn new_selector(mut self, selector: impl Into<Cow<'static, str>>) -> Self {
-        self.selectors.push(CssSelector::new(selector));
-        self
-    }
 }
 
 impl<S: Into<CssSelector>, const N: usize> From<[S; N]> for CssSelectorsList {
     fn from(items: [S; N]) -> Self {
         Self {
             selectors: items.into_iter().map(Into::into).collect(),
+            ..Default::default()
         }
     }
 }
@@ -269,6 +267,7 @@ impl<S: Into<CssSelector>> From<Vec<S>> for CssSelectorsList {
     fn from(items: Vec<S>) -> Self {
         Self {
             selectors: items.into_iter().map(Into::into).collect(),
+            ..Default::default()
         }
     }
 }
@@ -277,6 +276,7 @@ impl<R: SelectorRecipe> From<CssSelector<R>> for CssSelectorsList {
     fn from(css_selector: CssSelector<R>) -> Self {
         Self {
             selectors: vec![css_selector.bake_recipe()],
+            ..Default::default()
         }
     }
 }
@@ -285,6 +285,7 @@ impl From<Cow<'static, str>> for CssSelectorsList {
     fn from(s: Cow<'static, str>) -> Self {
         Self {
             selectors: vec![s.into()],
+            ..Default::default()
         }
     }
 }
@@ -293,6 +294,7 @@ impl From<&'static str> for CssSelectorsList {
     fn from(s: &'static str) -> Self {
         Self {
             selectors: vec![s.into()],
+            ..Default::default()
         }
     }
 }
@@ -301,6 +303,7 @@ impl From<String> for CssSelectorsList {
     fn from(s: String) -> Self {
         Self {
             selectors: vec![s.into()],
+            ..Default::default()
         }
     }
 }

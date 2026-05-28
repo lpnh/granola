@@ -117,11 +117,11 @@ pub struct CssRule<R: RuleRecipe = ()> {
 impl<R: RuleRecipe> CssRule<R> {
     pub fn new(
         selectors_list: impl Into<CssSelectorsList>,
-        properties_list: impl Into<CssDeclarationsBlock>,
+        declarations_block: impl Into<CssDeclarationsBlock>,
     ) -> Self {
         Self {
             selectors_list: selectors_list.into(),
-            properties_list: properties_list.into(),
+            properties_list: declarations_block.into(),
             ..Default::default()
         }
     }
