@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, oven::BakeInto, prelude::*};
 
 /// The `display` CSS property.
 ///
@@ -20,35 +20,28 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// display: {{ value }};
+/// display: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DisplayRecipe)]
+#[recipe(name = DisplayRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssDisplay<R: DisplayRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: DisplayRecipe> CssDisplay<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclaration {
     fn from(css_display: CssDisplay<R>) -> Self {
-        Self::new("display", css_display.value)
+        Self::new("display", css_display.content.bake_into())
     }
 }
 
-impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssDisplay<R>> for CssDeclarationsBlock<B>
+where
+    R: DisplayRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_display: CssDisplay<R>) -> Self {
-        Self {
-            declarations: vec![css_display.into()],
-        }
+        Self::new().push(css_display)
     }
 }

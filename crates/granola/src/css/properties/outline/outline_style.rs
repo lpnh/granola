@@ -45,10 +45,12 @@ impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineStyleRecipe> From<CssOutlineStyle<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssOutlineStyle<R>> for CssDeclarationsBlock<B>
+where
+    R: OutlineStyleRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_outline_style: CssOutlineStyle<R>) -> Self {
-        Self {
-            declarations: vec![css_outline_style.into()],
-        }
+        Self::new().push(css_outline_style)
     }
 }

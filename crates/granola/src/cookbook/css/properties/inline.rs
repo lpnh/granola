@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `inline` property value recipe.
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Inline;
 
 impl DisplayRecipe for Inline {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inline".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inline".into();
     }
 }

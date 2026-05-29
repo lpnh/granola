@@ -45,10 +45,12 @@ impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclaration {
     }
 }
 
-impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssJustifyContent<R>> for CssDeclarationsBlock<B>
+where
+    R: JustifyContentRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_justify_content: CssJustifyContent<R>) -> Self {
-        Self {
-            declarations: vec![css_justify_content.into()],
-        }
+        Self::new().push(css_justify_content)
     }
 }

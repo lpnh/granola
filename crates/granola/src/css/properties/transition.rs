@@ -54,10 +54,12 @@ impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclaration {
     }
 }
 
-impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssTransition<R>> for CssDeclarationsBlock<B>
+where
+    R: TransitionRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_transition: CssTransition<R>) -> Self {
-        Self {
-            declarations: vec![css_transition.into()],
-        }
+        Self::new().push(css_transition)
     }
 }

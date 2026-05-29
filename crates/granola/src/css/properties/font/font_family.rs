@@ -45,10 +45,12 @@ impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclaration {
     }
 }
 
-impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssFontFamily<R>> for CssDeclarationsBlock<B>
+where
+    R: FontFamilyRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_font_family: CssFontFamily<R>) -> Self {
-        Self {
-            declarations: vec![css_font_family.into()],
-        }
+        Self::new().push(css_font_family)
     }
 }

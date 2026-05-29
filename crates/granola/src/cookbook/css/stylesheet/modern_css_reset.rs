@@ -17,7 +17,9 @@ use crate::{cookbook::*, prelude::*};
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
-///     "*, *::before, *::after {
+///     "*,
+/// ::after,
+/// ::before {
 ///   box-sizing: border-box;
 /// }
 ///
@@ -27,11 +29,21 @@ use crate::{cookbook::*, prelude::*};
 ///   text-size-adjust: none;
 /// }
 ///
-/// body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
+/// body,
+/// h1,
+/// h2,
+/// h3,
+/// h4,
+/// p,
+/// figure,
+/// blockquote,
+/// dl,
+/// dd {
 ///   margin-block-end: 0;
 /// }
 ///
-/// ul[role='list'], ol[role='list'] {
+/// ul[role='list'],
+/// ol[role='list'] {
 ///   list-style: none;
 /// }
 ///
@@ -40,11 +52,20 @@ use crate::{cookbook::*, prelude::*};
 ///   line-height: 1.5;
 /// }
 ///
-/// h1, h2, h3, h4, button, input, label {
+/// h1,
+/// h2,
+/// h3,
+/// h4,
+/// button,
+/// input,
+/// label {
 ///   line-height: 1.1;
 /// }
 ///
-/// h1, h2, h3, h4 {
+/// h1,
+/// h2,
+/// h3,
+/// h4 {
 ///   text-wrap: balance;
 /// }
 ///
@@ -53,12 +74,16 @@ use crate::{cookbook::*, prelude::*};
 ///   color: currentcolor;
 /// }
 ///
-/// img, picture {
+/// img,
+/// picture {
 ///   max-width: 100%;
 ///   display: block;
 /// }
 ///
-/// input, button, textarea, select {
+/// button,
+/// input,
+/// select,
+/// textarea {
 ///   font-family: inherit;
 ///   font-size: inherit;
 /// }
@@ -96,7 +121,7 @@ fn text_size_adjust_reset() -> CssStatement {
     let selectors_list: CssSelectorsList = "html".into();
     let declarations_block: [CssDeclaration; 3] = [
         ("-moz-text-size-adjust", "none").into(),
-        ("-webkit-text-size-adjust", "none").into(),
+        CssWebkitTextSizeAdjust::<None>::from_recipe().into(),
         CssTextSizeAdjust::<None>::from_recipe().into(),
     ];
 
@@ -178,7 +203,7 @@ fn images_width_and_display() -> CssStatement {
 }
 
 fn form_controls_font_inherit() -> CssStatement {
-    let selectors_list: CssSelectorsList = ["input", "button", "textarea", "select"].into();
+    let selectors_list = CssSelectorsList::<FormControls>::from_recipe().bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
         CssFontFamily::<Inherit>::from_recipe().into(),
         CssFontSize::<Inherit>::from_recipe().into(),

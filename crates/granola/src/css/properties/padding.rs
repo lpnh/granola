@@ -1,10 +1,13 @@
-// mod padding_block;
+mod padding_block;
+pub use padding_block::*;
+mod padding_inline_start;
+pub use padding_inline_start::*;
+
 // mod padding_block-end;
 // mod padding_block-start;
 // mod padding_bottom;
 // mod padding_inline;
 // mod padding_inline-end;
-// mod padding_inline-start;
 // mod padding_left;
 // mod padding_right;
 // mod padding_top;
@@ -56,10 +59,12 @@ impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclaration {
     }
 }
 
-impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssPadding<R>> for CssDeclarationsBlock<B>
+where
+    R: PaddingRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_padding: CssPadding<R>) -> Self {
-        Self {
-            declarations: vec![css_padding.into()],
-        }
+        Self::new().push(css_padding)
     }
 }

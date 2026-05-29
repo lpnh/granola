@@ -1,3 +1,5 @@
+mod border_collapse;
+pub use border_collapse::*;
 mod border_color;
 pub use border_color::*;
 mod border_radius;
@@ -65,7 +67,7 @@ pub use border_radius::*;
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, oven::BakeInto, prelude::*};
 
 /// The CSS `border` property.
 ///
@@ -84,35 +86,28 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// border: {{ value }};
+/// border: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BorderRecipe)]
+#[recipe(name = BorderRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssBorder<R: BorderRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: BorderRecipe> CssBorder<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclaration {
     fn from(css_border: CssBorder<R>) -> Self {
-        Self::new("border", css_border.value)
+        Self::new("border", css_border.content.bake_into())
     }
 }
 
-impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssBorder<R>> for CssDeclarationsBlock<B>
+where
+    R: BorderRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_border: CssBorder<R>) -> Self {
-        Self {
-            declarations: vec![css_border.into()],
-        }
+        Self::new().push(css_border)
     }
 }

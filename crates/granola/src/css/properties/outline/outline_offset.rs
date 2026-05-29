@@ -45,10 +45,12 @@ impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssOutlineOffset<R>> for CssDeclarationsBlock<B>
+where
+    R: OutlineOffsetRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
-        Self {
-            declarations: vec![css_outline_offset.into()],
-        }
+        Self::new().push(css_outline_offset)
     }
 }

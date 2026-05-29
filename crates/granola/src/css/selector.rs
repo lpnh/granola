@@ -232,7 +232,8 @@ impl From<String> for CssSelector {
 /// ```askama
 /// {%- for s in selectors -%}
 /// {{- s -}}
-/// {%- if !loop.last %}, {% endif -%}
+/// {%- if !loop.last %},
+/// {% endif -%}
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]

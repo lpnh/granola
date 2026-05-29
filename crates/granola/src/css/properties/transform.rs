@@ -49,10 +49,12 @@ impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclaration {
     }
 }
 
-impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssTransform<R>> for CssDeclarationsBlock<B>
+where
+    R: TransformRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_transform: CssTransform<R>) -> Self {
-        Self {
-            declarations: vec![css_transform.into()],
-        }
+        Self::new().push(css_transform)
     }
 }

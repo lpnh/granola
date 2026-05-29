@@ -45,10 +45,12 @@ impl<R: TabSizeRecipe> From<CssTabSize<R>> for CssDeclaration {
     }
 }
 
-impl<R: TabSizeRecipe> From<CssTabSize<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssTabSize<R>> for CssDeclarationsBlock<B>
+where
+    R: TabSizeRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_tab_size: CssTabSize<R>) -> Self {
-        Self {
-            declarations: vec![css_tab_size.into()],
-        }
+        Self::new().push(css_tab_size)
     }
 }

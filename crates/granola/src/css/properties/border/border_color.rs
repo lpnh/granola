@@ -45,10 +45,12 @@ impl<R: BorderColorRecipe> From<CssBorderColor<R>> for CssDeclaration {
     }
 }
 
-impl<R: BorderColorRecipe> From<CssBorderColor<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssBorderColor<R>> for CssDeclarationsBlock<B>
+where
+    R: BorderColorRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_border_color: CssBorderColor<R>) -> Self {
-        Self {
-            declarations: vec![css_border_color.into()],
-        }
+        Self::new().push(css_border_color)
     }
 }

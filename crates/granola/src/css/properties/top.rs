@@ -45,10 +45,12 @@ impl<R: TopRecipe> From<CssTop<R>> for CssDeclaration {
     }
 }
 
-impl<R: TopRecipe> From<CssTop<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssTop<R>> for CssDeclarationsBlock<B>
+where
+    R: TopRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_top: CssTop<R>) -> Self {
-        Self {
-            declarations: vec![css_top.into()],
-        }
+        Self::new().push(css_top)
     }
 }

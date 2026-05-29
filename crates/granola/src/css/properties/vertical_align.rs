@@ -45,10 +45,12 @@ impl<R: VerticalAlignRecipe> From<CssVerticalAlign<R>> for CssDeclaration {
     }
 }
 
-impl<R: VerticalAlignRecipe> From<CssVerticalAlign<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssVerticalAlign<R>> for CssDeclarationsBlock<B>
+where
+    R: VerticalAlignRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_vertical_align: CssVerticalAlign<R>) -> Self {
-        Self {
-            declarations: vec![css_vertical_align.into()],
-        }
+        Self::new().push(css_vertical_align)
     }
 }

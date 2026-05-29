@@ -45,10 +45,12 @@ impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclaration {
     }
 }
 
-impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssWhiteSpace<R>> for CssDeclarationsBlock<B>
+where
+    R: WhiteSpaceRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_white_space: CssWhiteSpace<R>) -> Self {
-        Self {
-            declarations: vec![css_white_space.into()],
-        }
+        Self::new().push(css_white_space)
     }
 }

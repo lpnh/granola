@@ -45,10 +45,12 @@ impl<R: TextWrapRecipe> From<CssTextWrap<R>> for CssDeclaration {
     }
 }
 
-impl<R: TextWrapRecipe> From<CssTextWrap<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssTextWrap<R>> for CssDeclarationsBlock<B>
+where
+    R: TextWrapRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_text_wrap: CssTextWrap<R>) -> Self {
-        Self {
-            declarations: vec![css_text_wrap.into()],
-        }
+        Self::new().push(css_text_wrap)
     }
 }

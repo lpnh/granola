@@ -1,9 +1,11 @@
+mod margin_inline_end;
+pub use margin_inline_end::*;
+
 // margin_block
 // margin_block_end
 // margin_block_start
 // margin_bottom
 // margin_inline
-// margin_inline_end
 // margin_inline_start
 // margin_left
 // margin_right
@@ -56,10 +58,12 @@ impl<R: MarginRecipe> From<CssMargin<R>> for CssDeclaration {
     }
 }
 
-impl<R: MarginRecipe> From<CssMargin<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssMargin<R>> for CssDeclarationsBlock<B>
+where
+    R: MarginRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_margin: CssMargin<R>) -> Self {
-        Self {
-            declarations: vec![css_margin.into()],
-        }
+        Self::new().push(css_margin)
     }
 }

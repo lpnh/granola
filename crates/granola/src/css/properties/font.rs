@@ -1,7 +1,11 @@
 mod font_family;
 pub use font_family::*;
+mod font_feature_settings;
+pub use font_feature_settings::*;
 mod font_size;
 pub use font_size::*;
+mod font_variation_settings;
+pub use font_variation_settings::*;
 mod font_weight;
 pub use font_weight::*;
 
@@ -52,10 +56,12 @@ impl<R: FontRecipe> From<CssFont<R>> for CssDeclaration {
     }
 }
 
-impl<R: FontRecipe> From<CssFont<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssFont<R>> for CssDeclarationsBlock<B>
+where
+    R: FontRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_font: CssFont<R>) -> Self {
-        Self {
-            declarations: vec![css_font.into()],
-        }
+        Self::new().push(css_font)
     }
 }

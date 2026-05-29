@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `block` property value recipe.
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Block;
 
 impl DisplayRecipe for Block {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "block".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "block".into();
     }
 }

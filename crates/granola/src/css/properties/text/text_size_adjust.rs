@@ -45,10 +45,12 @@ impl<R: TextSizeAdjustRecipe> From<CssTextSizeAdjust<R>> for CssDeclaration {
     }
 }
 
-impl<R: TextSizeAdjustRecipe> From<CssTextSizeAdjust<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssTextSizeAdjust<R>> for CssDeclarationsBlock<B>
+where
+    R: TextSizeAdjustRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_text_size_adjust: CssTextSizeAdjust<R>) -> Self {
-        Self {
-            declarations: vec![css_text_size_adjust.into()],
-        }
+        Self::new().push(css_text_size_adjust)
     }
 }

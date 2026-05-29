@@ -45,10 +45,12 @@ impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssDeclaration {
     }
 }
 
-impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssOutlineColor<R>> for CssDeclarationsBlock<B>
+where
+    R: OutlineColorRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_outline_color: CssOutlineColor<R>) -> Self {
-        Self {
-            declarations: vec![css_outline_color.into()],
-        }
+        Self::new().push(css_outline_color)
     }
 }

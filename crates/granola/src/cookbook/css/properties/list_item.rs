@@ -17,7 +17,7 @@ use crate::prelude::*;
 pub struct ListItem;
 
 impl DisplayRecipe for ListItem {
-    fn value_recipe(value: &mut Cow<'static, str>) {
+    fn content_recipe(value: &mut Cow<'static, str>) {
         *value = "list-item".into();
     }
 }

@@ -39,3 +39,9 @@ impl TextDecorationSkipInkRecipe for Auto {
         *value = "auto".into();
     }
 }
+
+impl OutlineRecipe for Auto {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "auto".into();
+    }
+}

@@ -45,10 +45,12 @@ impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclaration {
     }
 }
 
-impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssBorderRadius<R>> for CssDeclarationsBlock<B>
+where
+    R: BorderRadiusRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_border_radius: CssBorderRadius<R>) -> Self {
-        Self {
-            declarations: vec![css_border_radius.into()],
-        }
+        Self::new().push(css_border_radius)
     }
 }

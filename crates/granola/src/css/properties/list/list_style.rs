@@ -45,10 +45,12 @@ impl<R: ListStyleRecipe> From<CssListStyle<R>> for CssDeclaration {
     }
 }
 
-impl<R: ListStyleRecipe> From<CssListStyle<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssListStyle<R>> for CssDeclarationsBlock<B>
+where
+    R: ListStyleRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_list_style: CssListStyle<R>) -> Self {
-        Self {
-            declarations: vec![css_list_style.into()],
-        }
+        Self::new().push(css_list_style)
     }
 }

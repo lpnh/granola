@@ -1,5 +1,5 @@
 use askama::Template;
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
@@ -107,13 +107,15 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// {% endif -%}
 /// {%- endfor -%}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
+#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[recipe(name = DeclarationsBlockRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDeclarationsBlock {
+pub struct CssDeclarationsBlock<R: DeclarationsBlockRecipe = ()> {
+    _recipe: PhantomData<R>,
     pub declarations: Vec<CssDeclaration>,
 }
 
-impl CssDeclarationsBlock {
+impl<R: DeclarationsBlockRecipe> CssDeclarationsBlock<R> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -122,21 +124,13 @@ impl CssDeclarationsBlock {
         self.declarations.push(css_declaration.into());
         self
     }
-
-    pub fn new_declaration(
-        mut self,
-        property: impl Into<Cow<'static, str>>,
-        value: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.declarations.push(CssDeclaration::new(property, value));
-        self
-    }
 }
 
 impl<D: Into<CssDeclaration>, const N: usize> From<[D; N]> for CssDeclarationsBlock {
     fn from(items: [D; N]) -> Self {
         Self {
             declarations: items.into_iter().map(Into::into).collect(),
+            ..Default::default()
         }
     }
 }
@@ -145,6 +139,7 @@ impl<D: Into<CssDeclaration>> From<Vec<D>> for CssDeclarationsBlock {
     fn from(items: Vec<D>) -> Self {
         Self {
             declarations: items.into_iter().map(Into::into).collect(),
+            ..Default::default()
         }
     }
 }
@@ -153,6 +148,7 @@ impl From<CssDeclaration> for CssDeclarationsBlock {
     fn from(css_declaration: CssDeclaration) -> Self {
         Self {
             declarations: vec![css_declaration],
+            ..Default::default()
         }
     }
 }
@@ -161,6 +157,7 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
     fn from(decl: (P, V)) -> Self {
         Self {
             declarations: vec![decl.into()],
+            ..Default::default()
         }
     }
 }

@@ -1,3 +1,5 @@
+mod declarations_block;
+pub use declarations_block::*;
 mod properties;
 pub use properties::*;
 mod rule;

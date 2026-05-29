@@ -45,10 +45,12 @@ impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclaration {
     }
 }
 
-impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssFontSize<R>> for CssDeclarationsBlock<B>
+where
+    R: FontSizeRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_font_size: CssFontSize<R>) -> Self {
-        Self {
-            declarations: vec![css_font_size.into()],
-        }
+        Self::new().push(css_font_size)
     }
 }

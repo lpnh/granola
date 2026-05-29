@@ -45,10 +45,12 @@ impl<R: LineHeightRecipe> From<CssLineHeight<R>> for CssDeclaration {
     }
 }
 
-impl<R: LineHeightRecipe> From<CssLineHeight<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssLineHeight<R>> for CssDeclarationsBlock<B>
+where
+    R: LineHeightRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_line_height: CssLineHeight<R>) -> Self {
-        Self {
-            declarations: vec![css_line_height.into()],
-        }
+        Self::new().push(css_line_height)
     }
 }

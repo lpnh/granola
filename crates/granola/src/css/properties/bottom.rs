@@ -45,10 +45,12 @@ impl<R: BottomRecipe> From<CssBottom<R>> for CssDeclaration {
     }
 }
 
-impl<R: BottomRecipe> From<CssBottom<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssBottom<R>> for CssDeclarationsBlock<B>
+where
+    R: BottomRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_bottom: CssBottom<R>) -> Self {
-        Self {
-            declarations: vec![css_bottom.into()],
-        }
+        Self::new().push(css_bottom)
     }
 }

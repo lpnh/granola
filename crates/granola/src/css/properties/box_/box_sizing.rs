@@ -45,10 +45,12 @@ impl<R: BoxSizingRecipe> From<CssBoxSizing<R>> for CssDeclaration {
     }
 }
 
-impl<R: BoxSizingRecipe> From<CssBoxSizing<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssBoxSizing<R>> for CssDeclarationsBlock<B>
+where
+    R: BoxSizingRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_box_sizing: CssBoxSizing<R>) -> Self {
-        Self {
-            declarations: vec![css_box_sizing.into()],
-        }
+        Self::new().push(css_box_sizing)
     }
 }

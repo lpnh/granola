@@ -17,6 +17,14 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{cookbook::*, prelude::*};
 ///
+/// let css_box_shadow: CssBoxShadow<None> = CssBoxShadow::from_recipe();
+///
+/// assert_eq!(css_box_shadow.bake(), "box-shadow: none;");
+/// ```
+///
+/// ```rust
+/// use granola::{cookbook::*, prelude::*};
+///
 /// let css_list_style: CssListStyle<None> = CssListStyle::from_recipe();
 ///
 /// assert_eq!(css_list_style.bake(), "list-style: none;");
@@ -41,6 +49,18 @@ use crate::prelude::*;
 pub struct None;
 
 impl BorderRecipe for None {
+    fn content_recipe(value: &mut Cow<'static, str>) {
+        *value = "none".into();
+    }
+}
+
+impl DisplayRecipe for None {
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
+    }
+}
+
+impl BoxShadowRecipe for None {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "none".into();
     }
@@ -59,6 +79,18 @@ impl TextDecorationRecipe for None {
 }
 
 impl TextSizeAdjustRecipe for None {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "none".into();
+    }
+}
+
+impl WebkitTextSizeAdjustRecipe for None {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "none".into();
+    }
+}
+
+impl WebkitTextDecorationRecipe for None {
     fn value_recipe(value: &mut Cow<'static, str>) {
         *value = "none".into();
     }

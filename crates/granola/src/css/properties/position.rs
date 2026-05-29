@@ -45,10 +45,12 @@ impl<R: PositionRecipe> From<CssPosition<R>> for CssDeclaration {
     }
 }
 
-impl<R: PositionRecipe> From<CssPosition<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssPosition<R>> for CssDeclarationsBlock<B>
+where
+    R: PositionRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_position: CssPosition<R>) -> Self {
-        Self {
-            declarations: vec![css_position.into()],
-        }
+        Self::new().push(css_position)
     }
 }

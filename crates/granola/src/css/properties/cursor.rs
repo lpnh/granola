@@ -45,10 +45,12 @@ impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclaration {
     }
 }
 
-impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssCursor<R>> for CssDeclarationsBlock<B>
+where
+    R: CursorRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_cursor: CssCursor<R>) -> Self {
-        Self {
-            declarations: vec![css_cursor.into()],
-        }
+        Self::new().push(css_cursor)
     }
 }

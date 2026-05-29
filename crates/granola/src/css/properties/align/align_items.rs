@@ -45,10 +45,12 @@ impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclaration {
     }
 }
 
-impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclarationsBlock {
+impl<R, B> From<CssAlignItems<R>> for CssDeclarationsBlock<B>
+where
+    R: AlignItemsRecipe,
+    B: DeclarationsBlockRecipe,
+{
     fn from(css_align_items: CssAlignItems<R>) -> Self {
-        Self {
-            declarations: vec![css_align_items.into()],
-        }
+        Self::new().push(css_align_items)
     }
 }
