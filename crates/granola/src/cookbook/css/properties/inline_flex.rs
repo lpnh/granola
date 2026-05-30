@@ -1,4 +1,4 @@
-use crate::{cookbook::*, prelude::*};
+use crate::cookbook::*;
 
 /// The `inline flex` display value recipe.
 ///
@@ -11,12 +11,4 @@ use crate::{cookbook::*, prelude::*};
 ///
 /// assert_eq!(css_display.bake(), "display: inline flex;");
 /// ```
-#[derive(Default, Debug, Clone, PartialEq)]
-pub struct InlineFlex;
-
-impl DisplayRecipe for InlineFlex {
-    fn content_recipe(content: &mut Self::Content) {
-        Inline::content_recipe(content);
-        Flex::content_recipe(content);
-    }
-}
+pub type InlineFlex = (Inline, Flex);
