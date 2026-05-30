@@ -102,18 +102,20 @@ pub struct ModernCSSReset;
 
 impl StylesheetRecipe for ModernCSSReset {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.push(CssRule::<BoxSizingReset>::from_recipe().into());
-        statements.push(text_size_adjust_reset());
-        statements.push(default_margin_reset());
-        statements.push(list_style_reset());
-        statements.push(body_defaults());
-        statements.push(headings_and_forms_line_height());
-        statements.push(headings_text_wrap());
-        statements.push(unclassed_anchor_default_style());
-        statements.push(images_width_and_display());
-        statements.push(form_controls_font_inherit());
-        statements.push(textarea_min_height());
-        statements.push(target_scroll_margin());
+        statements.extend([
+            CssRule::<BoxSizingReset>::from_recipe().into(),
+            text_size_adjust_reset(),
+            default_margin_reset(),
+            list_style_reset(),
+            body_defaults(),
+            headings_and_forms_line_height(),
+            headings_text_wrap(),
+            unclassed_anchor_default_style(),
+            images_width_and_display(),
+            form_controls_font_inherit(),
+            textarea_min_height(),
+            target_scroll_margin(),
+        ]);
     }
 }
 

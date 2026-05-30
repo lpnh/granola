@@ -126,25 +126,27 @@ pub struct ModernNormalize;
 
 impl StylesheetRecipe for ModernNormalize {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.push(CssRule::<BoxSizingReset>::from_recipe().into());
-        statements.push(html_defaults());
-        statements.push(body_defaults());
-        statements.push(CssRule::<BStrongFontWeight>::from_recipe().into());
-        statements.push(monospace_defaults());
-        statements.push(CssRule::<SmallFontSize>::from_recipe().into());
-        statements.push(CssRule::<SubSupDefaults>::from_recipe().into());
-        statements.push(CssRule::<SubVerticalPos>::from_recipe().into());
-        statements.push(CssRule::<SupVerticalPos>::from_recipe().into());
-        statements.push(table_border_color());
-        statements.push(forms_defaults());
-        statements.push(button_appearance());
-        statements.push(legend_padding());
-        statements.push(CssRule::<ProgressVerticalAlignment>::from_recipe().into());
-        statements.push(CssRule::<SpinButtonHeight>::from_recipe().into());
-        statements.push(search_appearance());
-        statements.push(CssRule::<SearchDecorationAppearance>::from_recipe().into());
-        statements.push(file_upload_button());
-        statements.push(CssRule::<SummaryDisplay>::from_recipe().into());
+        statements.extend([
+            CssRule::<BoxSizingReset>::from_recipe().into(),
+            html_defaults(),
+            body_defaults(),
+            CssRule::<BStrongFontWeight>::from_recipe().into(),
+            monospace_defaults(),
+            CssRule::<SmallFontSize>::from_recipe().into(),
+            CssRule::<SubSupDefaults>::from_recipe().into(),
+            CssRule::<SubVerticalPos>::from_recipe().into(),
+            CssRule::<SupVerticalPos>::from_recipe().into(),
+            table_border_color(),
+            forms_defaults(),
+            button_appearance(),
+            legend_padding(),
+            CssRule::<ProgressVerticalAlignment>::from_recipe().into(),
+            CssRule::<SpinButtonHeight>::from_recipe().into(),
+            search_appearance(),
+            CssRule::<SearchDecorationAppearance>::from_recipe().into(),
+            file_upload_button(),
+            CssRule::<SummaryDisplay>::from_recipe().into(),
+        ]);
     }
 }
 
