@@ -25,7 +25,7 @@ impl RuleRecipe for BStrongFontWeight {
         *selectors_list = ["b", "strong"].into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![CssFontWeight::<Bolder>::from_recipe().into()];
     }
 }

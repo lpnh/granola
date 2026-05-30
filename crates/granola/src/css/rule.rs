@@ -102,7 +102,7 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// {{ selectors_list }} {
-///   {{ properties_list | indent(2) }}
+///   {{ declarations_block | indent(2) }}
 /// }
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
@@ -111,7 +111,7 @@ use crate::prelude::*;
 pub struct CssRule<R: RuleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub selectors_list: CssSelectorsList,
-    pub properties_list: CssDeclarationsBlock,
+    pub declarations_block: CssDeclarationsBlock,
 }
 
 impl<R: RuleRecipe> CssRule<R> {
@@ -121,7 +121,7 @@ impl<R: RuleRecipe> CssRule<R> {
     ) -> Self {
         Self {
             selectors_list: selectors_list.into(),
-            properties_list: declarations_block.into(),
+            declarations_block: declarations_block.into(),
             ..Default::default()
         }
     }
@@ -132,7 +132,7 @@ impl<R: RuleRecipe> CssRule<R> {
     }
 
     pub fn push_property(mut self, declaration: impl Into<CssDeclaration>) -> Self {
-        self.properties_list = self.properties_list.push(declaration.into());
+        self.declarations_block = self.declarations_block.push(declaration.into());
         self
     }
 }
@@ -141,7 +141,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
     fn from((css_selectors_list, css_properties_list): (S, D)) -> Self {
         Self {
             selectors_list: css_selectors_list.into(),
-            properties_list: css_properties_list.into(),
+            declarations_block: css_properties_list.into(),
             ..Default::default()
         }
     }

@@ -28,7 +28,7 @@ impl RuleRecipe for SubSupDefaults {
         *selectors_list = ["sub", "sup"].into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssFontSize::<()>::new("75%").into(),
             CssLineHeight::<()>::new("0").into(),

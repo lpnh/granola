@@ -24,7 +24,7 @@ impl RuleRecipe for SearchDecorationAppearance {
         *selectors_list = "::-webkit-search-decoration".into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![("-webkit-appearance", "none").into()];
     }
 }

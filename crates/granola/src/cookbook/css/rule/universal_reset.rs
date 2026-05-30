@@ -31,7 +31,7 @@ impl RuleRecipe for UniversalReset {
         UniversalSelectorsExt::selectors_recipe(&mut selectors_list.selectors);
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         BoxSizingBorderBox::declarations_recipe(&mut properties_list.declarations);
         MarginPaddingReset::declarations_recipe(&mut properties_list.declarations);
         BorderReset::declarations_recipe(&mut properties_list.declarations);

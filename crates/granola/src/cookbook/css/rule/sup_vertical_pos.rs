@@ -24,7 +24,7 @@ impl RuleRecipe for SupVerticalPos {
         *selectors_list = "sup".into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![CssTop::<()>::new("-0.5em").into()];
     }
 }

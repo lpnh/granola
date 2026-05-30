@@ -420,7 +420,7 @@ fn replaced_element_sizing() -> CssStatement {
 
 fn form_controls_reset() -> CssStatement {
     let selectors_list = CssSelectorsList::<FormControlsExt>::from_recipe()
-        .push(CssSelector::<UniversalFileSelectorButton>::from_recipe().bake_recipe())
+        .push(CssSimpleSelector::<UniversalFileSelectorButton>::from_recipe())
         .bake_recipe();
     let declarations_block: [CssDeclaration; 8] = [
         CssFont::<Inherit>::from_recipe().into(),
@@ -438,7 +438,7 @@ fn form_controls_reset() -> CssStatement {
 
 fn optgroup_font_weight() -> CssStatement {
     let selectors_list: CssSelectorsList =
-        CssSelector::<()>::new(":where(select:is([multiple], [size]))")
+        CssSimpleSelector::<()>::new(":where(select:is([multiple], [size]))")
             .descendant("optgroup")
             .into();
     let declarations_block: CssDeclaration = CssFontWeight::<Bolder>::from_recipe().into();
@@ -448,7 +448,7 @@ fn optgroup_font_weight() -> CssStatement {
 
 fn optgroup_option_indent() -> CssStatement {
     let selectors_list: CssSelectorsList =
-        CssSelector::<()>::new(":where(select:is([multiple], [size]))")
+        CssSimpleSelector::<()>::new(":where(select:is([multiple], [size]))")
             .descendant("optgroup")
             .descendant("option")
             .into();
@@ -458,14 +458,14 @@ fn optgroup_option_indent() -> CssStatement {
 }
 
 fn file_selector_button_spacing() -> CssStatement {
-    let selectors_list = CssSelector::<UniversalFileSelectorButton>::from_recipe();
+    let selectors_list = CssSimpleSelector::<UniversalFileSelectorButton>::from_recipe();
     let declarations_block: CssDeclaration = CssMarginInlineEnd::<()>::new("4px").into();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
 
 fn placeholder_opacity() -> CssStatement {
-    let selectors_list = CssSelector::<UniversalPlaceholder>::from_recipe();
+    let selectors_list = CssSimpleSelector::<UniversalPlaceholder>::from_recipe();
     let declarations_block: CssDeclaration = CssOpacity::<()>::new("1").into();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
@@ -476,7 +476,7 @@ fn placeholder_color_supports() -> CssStatement {
   (contain-intrinsic-size: 1px)";
 
     let placeholder: CssRule = CssRule::<()>::new(
-        CssSelector::<UniversalPlaceholder>::from_recipe(),
+        CssSimpleSelector::<UniversalPlaceholder>::from_recipe(),
         CssColor::<()>::new("color-mix(in oklab, currentcolor 50%, transparent)"),
     );
 

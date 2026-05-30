@@ -24,7 +24,7 @@ impl RuleRecipe for SummaryDisplay {
         *selectors_list = "summary".into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![CssDisplay::<ListItem>::from_recipe().into()];
     }
 }

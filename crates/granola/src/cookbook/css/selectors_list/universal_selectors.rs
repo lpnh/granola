@@ -22,9 +22,9 @@ pub struct UniversalSelectors;
 impl SelectorsListRecipe for UniversalSelectors {
     fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
         selectors.extend([
-            CssSelector::<Universal>::from_recipe().bake_recipe(),
-            CssSelector::<UniversalAfter>::from_recipe().bake_recipe(),
-            CssSelector::<UniversalBefore>::from_recipe().bake_recipe(),
+            CssSimpleSelector::<Universal>::from_recipe().into(),
+            CssSimpleSelector::<UniversalAfter>::from_recipe().into(),
+            CssSimpleSelector::<UniversalBefore>::from_recipe().into(),
         ]);
     }
 }

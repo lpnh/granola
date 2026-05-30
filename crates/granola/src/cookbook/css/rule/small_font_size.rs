@@ -24,7 +24,7 @@ impl RuleRecipe for SmallFontSize {
         *selectors_list = "small".into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![CssFontSize::<()>::new("80%").into()];
     }
 }

@@ -26,7 +26,7 @@ impl RuleRecipe for AnchorInherit {
         *selectors_list = "a".into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssColor::<Inherit>::from_recipe().into(),
             CssWebkitTextDecoration::<Inherit>::from_recipe().into(),

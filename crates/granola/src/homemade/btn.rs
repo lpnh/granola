@@ -102,7 +102,7 @@ impl StylesheetRecipe for Btn {
     }
 }
 
-impl SelectorRecipe for Btn {
+impl SimpleSelectorRecipe for Btn {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn".into();
     }
@@ -110,10 +110,10 @@ impl SelectorRecipe for Btn {
 
 impl RuleRecipe for Btn {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssDisplay::<(Inline, Flex)>::from_recipe().into(),
             CssAlignItems::<Center>::from_recipe().into(),
@@ -141,7 +141,7 @@ impl RuleRecipe for Btn {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnHover;
 
-impl SelectorRecipe for BtnHover {
+impl SimpleSelectorRecipe for BtnHover {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn:hover".into();
     }
@@ -149,10 +149,10 @@ impl SelectorRecipe for BtnHover {
 
 impl RuleRecipe for BtnHover {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![("--btn-bg", BTN_BG_DARKENED).into()];
     }
 }
@@ -161,7 +161,7 @@ impl RuleRecipe for BtnHover {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnActive;
 
-impl SelectorRecipe for BtnActive {
+impl SimpleSelectorRecipe for BtnActive {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn:active".into();
     }
@@ -169,10 +169,10 @@ impl SelectorRecipe for BtnActive {
 
 impl RuleRecipe for BtnActive {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             ("--btn-bg", BTN_BG_DARKENED).into(),
             CssTransform::<()>::new("scale(0.97)").into(),
@@ -184,7 +184,7 @@ impl RuleRecipe for BtnActive {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct BtnFocusVisible;
 
-impl SelectorRecipe for BtnFocusVisible {
+impl SimpleSelectorRecipe for BtnFocusVisible {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn:focus-visible".into();
     }
@@ -192,10 +192,10 @@ impl SelectorRecipe for BtnFocusVisible {
 
 impl RuleRecipe for BtnFocusVisible {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssOutlineWidth::<()>::new("2px").into(),
             CssOutlineStyle::<Solid>::from_recipe().into(),
@@ -227,10 +227,10 @@ pub struct BtnPrimary;
 
 impl RuleRecipe for BtnPrimary {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
     }
 
-    fn properties_list_recipe(properties_list: &mut CssDeclarationsBlock) {
+    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             ("--btn-color", "var(--color-primary)").into(),
             ("--btn-fg", "var(--color-primary-content)").into(),
@@ -238,7 +238,7 @@ impl RuleRecipe for BtnPrimary {
     }
 }
 
-impl SelectorRecipe for BtnPrimary {
+impl SimpleSelectorRecipe for BtnPrimary {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = ".btn-primary".into();
     }
