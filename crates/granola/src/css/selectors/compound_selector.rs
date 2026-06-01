@@ -17,6 +17,8 @@ use crate::prelude::*;
 ///     .push(".highlighted");
 ///
 /// assert_eq!(selector.bake(), "col.highlighted");
+/// assert_eq!(selector.type_selector.unwrap().selector, "col");
+/// assert_eq!(selector.selectors[0].selector, ".highlighted");
 /// ```
 ///
 /// # Askama template
@@ -277,4 +279,34 @@ impl From<String> for CssCompoundSelector {
     fn from(selector: String) -> Self {
         Self::from(Cow::Owned(selector))
     }
+}
+
+/// Shorthand for `CssCompoundSelector`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let selector = compound_selector!("col", ".highlighted");
+///
+/// assert_eq!(selector.bake(), "col.highlighted");
+/// assert_eq!(selector.type_selector.unwrap().selector, "col");
+/// assert_eq!(selector.selectors[0].selector, ".highlighted");
+/// ```
+#[macro_export]
+macro_rules! compound_selector {
+    ($selector: expr $(,)?) => {
+        $crate::css::CssCompoundSelector::<()>::from($selector)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::css::CssCompoundSelector::<()>::from($first)$(.push($rest))*
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::css::CssCompoundSelector::<$crate::cookbook!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::css::CssCompoundSelector::<$crate::cookbook!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+    };
 }

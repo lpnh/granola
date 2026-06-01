@@ -159,3 +159,25 @@ where
         Self::new(simple_selector)
     }
 }
+
+/// Shorthand for `CssComplexSelector`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let selector = complex_selector!("form").child("input");
+///
+/// assert_eq!(selector.bake(), "form > input");
+/// ```
+#[macro_export]
+macro_rules! complex_selector {
+    ($decl: expr $(,)?) => {
+        $crate::css::CssComplexSelector::<()>::new($decl)
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::css::CssComplexSelector::<$crate::cookbook!($($r),+)>::from_recipe()
+    };
+}

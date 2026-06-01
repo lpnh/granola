@@ -22,7 +22,10 @@ pub mod prelude {
 
 pub mod macros {
     // css
-    pub use crate::{at_rule, rule, stylesheet};
+    pub use crate::{
+        at_rule, complex_selector, compound_selector, declaration, declarations_block, rule,
+        selectors_list, simple_selector, stylesheet,
+    };
     // html
     pub use crate::{
         a, abbr, address, area, article, aside, audio, b, base, bdi, bdo, blockquote, body, br,

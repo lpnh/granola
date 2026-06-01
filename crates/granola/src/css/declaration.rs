@@ -3,61 +3,6 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
-/// A CSS property and a CSS value pair.
-///
-/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/Introduction#css_declarations)
-///
-/// # Example
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-///
-/// assert_eq!(css_declaration.bake(), "color: rgb(102, 51, 153);");
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let css_declaration: CssDeclaration = ("color", "rebeccapurple").into();
-///
-/// assert_eq!(css_declaration.bake(), "color: rebeccapurple;");
-/// ```
-///
-/// # Askama template
-///
-/// ```askama
-/// {{ property }}: {{ value }};
-/// ```
-#[derive(Debug, Clone, Default, Template, Granola)]
-#[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDeclaration {
-    pub property: Cow<'static, str>,
-    pub value: Cow<'static, str>,
-}
-
-impl CssDeclaration {
-    pub fn new(
-        property: impl Into<Cow<'static, str>>,
-        value: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        Self {
-            property: property.into(),
-            value: value.into(),
-        }
-    }
-}
-
-impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssDeclaration {
-    fn from((property, value): (P, V)) -> Self {
-        Self {
-            property: property.into(),
-            value: value.into(),
-        }
-    }
-}
-
 /// A collection of [`CssDeclaration`].
 ///
 /// The properties-list of [`CssRule`].
@@ -67,32 +12,23 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_declaration = CssDeclaration::new("color", "rebeccapurple");
 ///
-/// let css_properties_list: CssDeclarationsBlock =
+/// let css_declarations_block: CssDeclarationsBlock =
 ///     CssDeclarationsBlock::new().push(css_declaration);
 ///
-/// assert_eq!(css_properties_list.bake(), "color: rgb(102, 51, 153);");
+/// assert_eq!(css_declarations_block.bake(), "color: rebeccapurple;");
 /// ```
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration: CssDeclaration = ("color", "rebeccapurple").into();
-///
-/// let css_properties_list: CssDeclarationsBlock = css_declaration.into();
-///
-/// assert_eq!(css_properties_list.bake(), "color: rebeccapurple;");
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let css_properties_list: CssDeclarationsBlock =
-///     [("color", "violet"), ("font-weight", "lighter")].into();
+/// let css_declarations_block: CssDeclarationsBlock = CssDeclarationsBlock::new()
+///     .push(("color", "violet"))
+///     .push(("font-weight", "lighter"));
 ///
 /// assert_eq!(
-///     css_properties_list.bake(),
+///     css_declarations_block.bake(),
 ///     "color: violet;
 /// font-weight: lighter;"
 /// );
@@ -160,4 +96,110 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
             ..Default::default()
         }
     }
+}
+
+/// A CSS property and a CSS value pair.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/Introduction#css_declarations)
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rebeccapurple");
+///
+/// assert_eq!(css_declaration.bake(), "color: rebeccapurple;");
+/// ```
+///
+/// # Askama template
+///
+/// ```askama
+/// {{ property }}: {{ value }};
+/// ```
+#[derive(Debug, Clone, Default, Template, Granola)]
+#[template(ext = "html", in_doc = true, escape = "none")]
+pub struct CssDeclaration {
+    pub property: Cow<'static, str>,
+    pub value: Cow<'static, str>,
+}
+
+impl CssDeclaration {
+    pub fn new(
+        property: impl Into<Cow<'static, str>>,
+        value: impl Into<Cow<'static, str>>,
+    ) -> Self {
+        Self {
+            property: property.into(),
+            value: value.into(),
+        }
+    }
+}
+
+impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssDeclaration {
+    fn from((property, value): (P, V)) -> Self {
+        Self {
+            property: property.into(),
+            value: value.into(),
+        }
+    }
+}
+
+/// Shorthand for `CssDeclarationsBlock`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let css_declarations_block = declarations_block!(("color", "rebeccapurple"));
+///
+/// assert_eq!(css_declarations_block.bake(), "color: rebeccapurple;");
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let css_declarations_block =
+///     declarations_block![("color", "violet"), ("font-weight", "lighter")];
+///
+/// assert_eq!(
+///     css_declarations_block.bake(),
+///     "color: violet;
+/// font-weight: lighter;"
+/// );
+/// ```
+#[macro_export]
+macro_rules! declarations_block {
+    ($decl: expr $(,)?) => {
+        $crate::css::CssDeclarationsBlock::<()>::from($decl)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::css::CssDeclarationsBlock::<()>::new().push($first)$(.push($rest))*
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::css::CssDeclarationsBlock::<$crate::cookbook!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
+        $crate::css::CssDeclarationsBlock::<$crate::cookbook!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+    };
+}
+
+/// Shorthand for `CssDeclaration`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let css_declaration = declaration!("color", "rebeccapurple");
+///
+/// assert_eq!(css_declaration.bake(), "color: rebeccapurple;");
+/// ```
+#[macro_export]
+macro_rules! declaration {
+    ($prop: expr, $value: expr $(,)?) => {
+        $crate::css::CssDeclaration::new($prop, $value)
+    };
 }

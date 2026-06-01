@@ -14,19 +14,9 @@ use crate::prelude::*;
 ///
 /// let selector: CssSelector = CssSelector::new("p");
 ///
-/// let list: CssSelectorsList = CssSelectorsList::new().push(selector);
+/// let selector_list: CssSelectorsList = CssSelectorsList::new().push(selector);
 ///
-/// assert_eq!(list.bake(), "p");
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let selector: CssSelector = "p".into();
-///
-/// let list: CssSelectorsList = selector.into();
-///
-/// assert_eq!(list.bake(), "p");
+/// assert_eq!(selector_list.bake(), "p");
 /// ```
 ///
 /// # Askama template
@@ -115,4 +105,32 @@ impl From<String> for CssSelectorsList {
     fn from(s: String) -> Self {
         Self::new().push(s)
     }
+}
+
+/// Shorthand for `CssSelectorsList`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let selector_list = selectors_list!("p");
+///
+/// assert_eq!(selector_list.bake(), "p");
+/// ```
+#[macro_export]
+macro_rules! selectors_list {
+    ($decl: expr $(,)?) => {
+        $crate::css::CssSelectorsList::<()>::from($decl)
+    };
+    ($first: expr $(, $rest: expr)+ $(,)?) => {
+        $crate::css::CssSelectorsList::<()>::new().push($first)$(.push($rest))*
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::css::CssSelectorsList::<$crate::cookbook!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
+        $crate::css::CssSelectorsList::<$crate::cookbook!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+    };
 }

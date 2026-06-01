@@ -186,6 +186,94 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 ///   color: rebeccapurple;
 /// }");
 /// ```
+///
+/// ```rust
+/// use granola::{macros::*, cookbook::*, prelude::*};
+///
+/// let stylesheet = stylesheet!(@recipe ModernCSSReset);
+///
+/// assert_eq!(
+///     stylesheet.bake(),
+///     "*,
+/// ::after,
+/// ::before {
+///   box-sizing: border-box;
+/// }
+///
+/// html {
+///   -moz-text-size-adjust: none;
+///   -webkit-text-size-adjust: none;
+///   text-size-adjust: none;
+/// }
+///
+/// body,
+/// h1,
+/// h2,
+/// h3,
+/// h4,
+/// p,
+/// figure,
+/// blockquote,
+/// dl,
+/// dd {
+///   margin-block-end: 0;
+/// }
+///
+/// ul[role='list'],
+/// ol[role='list'] {
+///   list-style: none;
+/// }
+///
+/// body {
+///   min-height: 100vh;
+///   line-height: 1.5;
+/// }
+///
+/// h1,
+/// h2,
+/// h3,
+/// h4,
+/// button,
+/// input,
+/// label {
+///   line-height: 1.1;
+/// }
+///
+/// h1,
+/// h2,
+/// h3,
+/// h4 {
+///   text-wrap: balance;
+/// }
+///
+/// a:not([class]) {
+///   text-decoration-skip-ink: auto;
+///   color: currentcolor;
+/// }
+///
+/// img,
+/// picture {
+///   max-width: 100%;
+///   display: block;
+/// }
+///
+/// button,
+/// input,
+/// select,
+/// textarea {
+///   font-family: inherit;
+///   font-size: inherit;
+/// }
+///
+/// textarea:not([rows]) {
+///   min-height: 10em;
+/// }
+///
+/// :target {
+///   scroll-margin-block: 5ex;
+/// }"
+/// );
+/// ```
 #[macro_export]
 macro_rules! stylesheet {
     () => {
@@ -195,6 +283,19 @@ macro_rules! stylesheet {
         $crate::css::CssStylesheet::from($rule)
     };
     ($first_rule: expr $(, $rest_rule: expr)+ $(,)?) => {
+        $crate::css::CssStylesheet::from([
+            $crate::css::CssStatement::from($first_rule)
+            $(, $crate::css::CssStatement::from($rest_rule))*
+        ])
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::css::CssStylesheet::<$crate::cookbook!($($r),+)>::from_recipe()
+    };
+    (@recipe $($r:ty),+ ; $rule: expr $(,)?) => {
+        $crate::css::CssStylesheet::<$crate::cookbook!($($r),+)>::from_recipe().push(rule)
+    };
+    (@recipe $($r:ty),+ ; $first_rule: expr $(, $rest_rule: expr)+ $(,)?) => {
         $crate::css::CssStylesheet::from([
             $crate::css::CssStatement::from($first_rule)
             $(, $crate::css::CssStatement::from($rest_rule))*

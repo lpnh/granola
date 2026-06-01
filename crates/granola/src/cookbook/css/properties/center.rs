@@ -35,3 +35,9 @@ impl JustifyContentRecipe for Center {
         *value = "center".into();
     }
 }
+
+impl TextAlignRecipe for Center {
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "center".into();
+    }
+}

@@ -17,14 +17,6 @@ use crate::prelude::*;
 /// assert_eq!(selector.bake(), "p");
 /// ```
 ///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let selector: CssSimpleSelector = "p".into();
-///
-/// assert_eq!(selector.bake(), "p");
-/// ```
-///
 /// # Askama template
 ///
 /// ```askama
@@ -38,6 +30,8 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSimpleSelector<R: SimpleSelectorRecipe = ()> {
     _recipe: PhantomData<R>,
+    /// The CSS namespace prefix.
+    ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator)
     pub namespace: Option<Cow<'static, str>>,
     pub selector: Cow<'static, str>,
@@ -253,4 +247,24 @@ impl From<String> for CssSimpleSelector {
     fn from(s: String) -> Self {
         Self::new(s)
     }
+}
+
+/// Shorthand for `CssSimpleSelector`.
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let selector = simple_selector!("p");
+///
+/// assert_eq!(selector.bake(), "p");
+/// ```
+#[macro_export]
+macro_rules! simple_selector {
+    ($selector: expr $(,)?) => {
+        $crate::css::CssSimpleSelector::<()>::new($selector)
+    };
+
+    (@recipe $($r:ty),+) => {
+        $crate::css::CssSimpleSelector::<$crate::cookbook!($($r),+)>::from_recipe()
+    };
 }
