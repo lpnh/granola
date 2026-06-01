@@ -1,24 +1,37 @@
 use axum::{
     Form,
+    body::Body,
     extract::State,
+    http::header,
     response::{Html, Redirect},
 };
+use http::Response;
 use serde::Deserialize;
 use std::sync::{Arc, RwLock};
 
-use granola::{
-    cookbook::{MethodPost, RelStylesheet},
-    homemade::Homemade,
-    macros::*,
-    prelude::*,
-    template::TmplBase,
+use crate::{
+    css::STATIC_STYLESHEET,
+    html::home_page,
+    utils::{Palette, is_valid_hex},
 };
-
-use crate::utils::{Palette, is_valid_hex};
 
 #[derive(Deserialize)]
 pub struct PaletteForm {
     bg_color: String,
+}
+
+pub async fn home_handler(State(shared_palette): State<Arc<RwLock<Palette>>>) -> Html<String> {
+    let palette = shared_palette.read().unwrap().clone();
+
+    let home_page = home_page(
+        palette.base_100,
+        palette.base_200,
+        palette.base_300,
+        palette.base_content,
+        palette.source,
+    );
+
+    Html(home_page.bake())
 }
 
 pub async fn input_handler(
@@ -29,59 +42,29 @@ pub async fn input_handler(
         let mut palette = shared_palette.write().unwrap();
         *palette = Palette::from_hex(&user_input.bg_color);
     }
+
     Redirect::to("/")
 }
 
-pub async fn home(State(shared_palette): State<Arc<RwLock<Palette>>>) -> Html<String> {
-    let palette = shared_palette.read().unwrap().clone();
+pub async fn stylesheet_handler() -> Response<Body> {
+    let body = Body::new(STATIC_STYLESHEET.to_string());
+    let mut res = Response::new(body);
 
-    let body = body!(palette_div(&palette));
-
-    let title = title!("palette example");
-    let link = link!(@recipe RelStylesheet; @from_href "/static/style.css");
-    let style_content = rule!(
-        ":root";
-        ("--base-100", palette.base_100),
-        ("--base-200", palette.base_200),
-        ("--base-300", palette.base_300),
-        ("--base-content", palette.base_content),
+    // The HTTP `Content-Type: text/css; charset=utf-8` header.
+    //
+    // <https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Type#serving_assets_with_correct_content_type>
+    res.headers_mut().insert(
+        header::CONTENT_TYPE,
+        header::HeaderValue::from_static(mime::TEXT_CSS_UTF_8.as_ref()),
     );
-    let style = style!(style_content);
 
-    let tmpl: TmplBase<Homemade> = TmplBase::new(body)
-        .lang("en")
-        .push_title(title)
-        .push_link(link)
-        .push_style(style);
+    // The HTTP `Cache-Control: public, max-age=31536000, immutable` header.
+    //
+    // <https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control>
+    res.headers_mut().insert(
+        header::CACHE_CONTROL,
+        header::HeaderValue::from_static("public, max-age=31536000, immutable"),
+    );
 
-    Html(tmpl.bake())
-}
-
-fn palette_div(palette: &Palette) -> HtmlDiv {
-    let h1 = h1!("Palette");
-
-    let swatches = div!(
-        swatch_div("base-100", &palette.base_100),
-        swatch_div("base-200", &palette.base_200),
-        swatch_div("base-300", &palette.base_300),
-        swatch_div("base-content", &palette.base_content),
-    )
-    .class("swatches");
-
-    let input = input!(@from_type InputType::Color)
-        .name("bg_color")
-        .value(palette.source.clone());
-    let button = button!("Update");
-    let form = form!(@recipe MethodPost; input, button).action("/form_endpoint");
-
-    div!(h1, swatches, form).class("palette")
-}
-
-fn swatch_div(name: &str, value: &str) -> HtmlDiv {
-    let square = div!()
-        .class("square")
-        .style(format!("background: var(--{name});"));
-    let name = p!(name.to_string());
-    let val = p!(code!(value.to_string()));
-    div!(square, name, val).class("swatch")
+    res
 }
