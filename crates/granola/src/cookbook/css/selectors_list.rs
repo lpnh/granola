@@ -1,11 +1,15 @@
 mod all_headings;
 pub use all_headings::*;
+mod all_headings_ext;
+pub use all_headings_ext::*;
 mod form_controls;
 pub use form_controls::*;
 mod form_controls_ext;
 pub use form_controls_ext::*;
 mod headings;
 pub use headings::*;
+mod media_selectors;
+pub use media_selectors::*;
 mod monospace_selectors;
 pub use monospace_selectors::*;
 mod universal_selectors;

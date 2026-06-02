@@ -190,7 +190,7 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 /// ```rust
 /// use granola::{macros::*, cookbook::*, prelude::*};
 ///
-/// let stylesheet = stylesheet!(@recipe ModernCSSReset);
+/// let stylesheet = stylesheet!(@recipe AndyBell);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),

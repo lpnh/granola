@@ -13,7 +13,7 @@ use crate::{cookbook::*, prelude::*};
 /// ```rust
 /// use granola::{cookbook::*, prelude::*};
 ///
-/// let stylesheet: CssStylesheet<ModernCSSReset> = CssStylesheet::from_recipe();
+/// let stylesheet: CssStylesheet<AndyBell> = CssStylesheet::from_recipe();
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -98,9 +98,9 @@ use crate::{cookbook::*, prelude::*};
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
-pub struct ModernCSSReset;
+pub struct AndyBell;
 
-impl StylesheetRecipe for ModernCSSReset {
+impl StylesheetRecipe for AndyBell {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
             CssRule::<BoxSizingReset>::from_recipe().into(),
