@@ -8,8 +8,9 @@
 //! order.
 //!
 //! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed
-//! collections. [`cookbook!`](crate::cookbook!) is the shorthand for `(A, (B,
-//! C))` when composing multiple recipes.
+//! collections. [`cookbook!`](crate::cookbook_type!) composes multiple recipes
+//! into `(A, (B, C))` in type position; [`cookbook!`](crate::cookbook!) is its
+//! value-level counterpart.
 //!
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
@@ -318,19 +319,20 @@ macro_rules! bake_newline {
     }};
 }
 
-/// Recursively right-folds a list of types into a nested tuple.
+/// Composes recipe **types** into a single nested-tuple type.
 ///
-/// A single type passes through unchanged.
-/// Two or more types become `(A, (B, (C, …)))`.
+/// A single type passes through unchanged; two or more fold right into
+/// `(A, (B, (C, …)))`. Use it wherever a composed recipe is needed in type
+/// position, such as a type alias or a generic argument.
 ///
-/// It facilitates recipe composition.
+/// See [`cookbook!`](crate::cookbook!) for the value-level counterpart.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{cookbook::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// type SubmitPost = (TypeSubmit, FormmethodPost);
+/// type SubmitPost = cookbook_type!(TypeSubmit, FormmethodPost);
 ///
 /// let input: HtmlInput<SubmitPost> = HtmlInput::from_value("Send");
 ///
@@ -339,10 +341,77 @@ macro_rules! bake_newline {
 ///     r#"<input type="submit" value="Send" formmethod="post" />"#
 /// );
 /// ```
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// type InlineFlex = cookbook_type!(Inline, Flex);
+///
+/// let display: CssDisplay<InlineFlex> = CssDisplay::from_recipe();
+///
+/// assert_eq!(display.bake(), "display: inline flex;");
+/// ```
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// type InlineFlexImportant = cookbook_type!(Inline, Flex, Important);
+///
+/// let display: CssDisplay<InlineFlexImportant> = CssDisplay::from_recipe();
+///
+/// assert_eq!(display.bake(), "display: inline flex !important;");
+/// ```
+#[macro_export]
+macro_rules! cookbook_type {
+    ($a:ty) => { $a };
+    ($a:ty, $($rest:ty),+) => { ($a, $crate::cookbook_type!($($rest),+)) };
+}
+
+/// Composes recipe **values** into a single nested-tuple value.
+///
+/// A single value passes through unchanged; two or more fold right into
+/// `(a, (b, (c, …)))`. It is the value-level counterpart of
+/// [`cookbook_type!`](crate::cookbook_type), for passing a composed recipe to
+/// a value-form constructor such as `Type::from(...)`.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// let submit_post = cookbook!(TypeSubmit, FormmethodPost);
+///
+/// let input = HtmlInput::from(submit_post).value("Send");
+///
+/// assert_eq!(
+///     input.bake(),
+///     r#"<input type="submit" value="Send" formmethod="post" />"#
+/// );
+/// ```
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// let inline_flex = cookbook!(Inline, Flex);
+///
+/// let display = CssDisplay::from(inline_flex);
+///
+/// assert_eq!(display.bake(), "display: inline flex;");
+/// ```
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// let inline_flex_important = cookbook!(Inline, Flex, Important);
+///
+/// let display = CssDisplay::from(inline_flex_important);
+///
+/// assert_eq!(display.bake(), "display: inline flex !important;");
+/// ```
 #[macro_export]
 macro_rules! cookbook {
-    ($a:ty) => { $a };
-    ($a:ty, $($rest:ty),+) => { ($a, $crate::cookbook!($($rest),+)) };
+    ($a:expr) => { $a };
+    ($a:expr, $($rest:expr),+) => { ($a, $crate::cookbook!($($rest),+)) };
 }
 
 #[cfg(test)]

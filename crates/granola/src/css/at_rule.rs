@@ -120,10 +120,10 @@ macro_rules! at_rule {
         $crate::css::CssAtRule::<()>::new($identifier, $rule)
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::css::CssAtRule::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
-        $crate::css::CssAtRule::<$crate::cookbook!($($r),+)>::new($identifier, $rule)
+    (@cookbook $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
+        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::new($identifier, $rule)
     };
 }

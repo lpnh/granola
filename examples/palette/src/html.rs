@@ -1,8 +1,8 @@
 use granola::{
-    cookbook::{MethodPost, RelStylesheet},
     homemade::Homemade,
     macros::*,
     prelude::*,
+    recipes::{MethodPost, RelStylesheet},
     template::TmplBase,
 };
 
@@ -26,7 +26,7 @@ pub fn home_page(
     let body = body!(body_content);
 
     let title = title!("palette example");
-    let stylesheet_link = link!(@recipe RelStylesheet; @from_href STYLESHEET_URL.as_str());
+    let stylesheet_link = link!(@cookbook RelStylesheet; @from_href STYLESHEET_URL.as_str());
     let css_rule = rule!(
         ":root";
         ("--base-100", base_100),
@@ -64,7 +64,7 @@ fn palette_div(
         .name("bg_color")
         .value(palette_source);
     let button = button!("Update");
-    let form = form!(@recipe MethodPost; input, button).action("/form_endpoint");
+    let form = form!(@cookbook MethodPost; input, button).action("/form_endpoint");
 
     div!(h1, swatches, form).class("palette")
 }

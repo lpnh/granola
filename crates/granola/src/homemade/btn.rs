@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::{cookbook::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 const BTN_BG_DARKENED: &str =
     "color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 7%)";

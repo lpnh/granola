@@ -321,13 +321,13 @@ macro_rules! link {
         $crate::html::HtmlLink::<()>::from_href($href)
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::html::HtmlLink::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $href: expr, $rel: expr $(,)?) => {
-        $crate::html::HtmlLink::<$crate::cookbook!($($r),+)>::new($href, $rel)
+    (@cookbook $($r:ty),+ ; $href: expr, $rel: expr $(,)?) => {
+        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::new($href, $rel)
     };
-    (@recipe $($r:ty),+ ; @from_href $href:expr $(,)?) => {
-        $crate::html::HtmlLink::<$crate::cookbook!($($r),+)>::from_href($href)
+    (@cookbook $($r:ty),+ ; @from_href $href:expr $(,)?) => {
+        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_href($href)
     };
 }

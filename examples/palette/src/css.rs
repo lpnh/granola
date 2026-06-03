@@ -1,6 +1,6 @@
 use std::sync::LazyLock;
 
-use granola::{cookbook::*, macros::*, prelude::*};
+use granola::{macros::*, prelude::*, recipes::*};
 
 /// The stylesheet url.
 ///

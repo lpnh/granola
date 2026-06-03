@@ -1,7 +1,7 @@
 use askama::Template;
 use std::borrow::Cow;
 
-use crate::{cookbook::*, prelude::*, template::*};
+use crate::{prelude::*, recipes::*, template::*};
 
 /// The homemade recipe for the [`TmplBase`] template.
 ///
@@ -26,7 +26,7 @@ use crate::{cookbook::*, prelude::*, template::*};
 /// ```
 ///
 /// ```rust
-/// use granola::{cookbook::*, homemade::*, prelude::*, template::*};
+/// use granola::{homemade::*, prelude::*, recipes::*, template::*};
 ///
 /// let meta: HtmlMeta<NameRobots> = HtmlMeta::new("noindex, nofollow");
 /// let title: HtmlTitle = HtmlTitle::new("Home");

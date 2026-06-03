@@ -228,9 +228,9 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 /// ```
 ///
 /// ```rust
-/// use granola::{cookbook::*, macros::*, prelude::*};
+/// use granola::{recipes::*, macros::*, prelude::*};
 ///
-/// let rule = rule!(@recipe BoxSizingReset);
+/// let rule = rule!(@cookbook BoxSizingReset);
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -256,19 +256,19 @@ macro_rules! rule {
         $crate::css::CssRule::<()>::new([$first_sel $(, $rest_sel)*], [$first_decl $(, $rest_decl)*])
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::css::CssRule::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
-        $crate::css::CssRule::<$crate::cookbook!($($r),+)>::new($identifier, $rule)
+    (@cookbook $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
+        $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::new($identifier, $rule)
     };
-    (@recipe $($r:ty),+ ; $sel: expr ; $first_decl: expr $(, $rest_decl: expr)+ $(,)?) => {
-        $crate::css::CssRule::<$crate::cookbook!($($r),+)>::new($sel, [$first_decl $(, $rest_decl)*])
+    (@cookbook $($r:ty),+ ; $sel: expr ; $first_decl: expr $(, $rest_decl: expr)+ $(,)?) => {
+        $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::new($sel, [$first_decl $(, $rest_decl)*])
     };
-    (@recipe $($r:ty),+ ; $first_sel: expr $(, $rest_sel: expr)+ ; $decl: expr $(,)?) => {
-        $crate::css::CssRule::<$crate::cookbook!($($r),+)>::new([$first_sel $(, $rest_sel)*], $decl)
+    (@cookbook $($r:ty),+ ; $first_sel: expr $(, $rest_sel: expr)+ ; $decl: expr $(,)?) => {
+        $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::new([$first_sel $(, $rest_sel)*], $decl)
     };
-    (@recipe $($r:ty),+ ; $first_sel: expr $(, $rest_sel: expr)+ ; $first_decl: expr $(, $rest_decl: expr)+ $(,)?) => {
-        $crate::css::CssRule::<$crate::cookbook!($($r),+)>::new([$first_sel $(, $rest_sel)*], [$first_decl $(, $rest_decl)*])
+    (@cookbook $($r:ty),+ ; $first_sel: expr $(, $rest_sel: expr)+ ; $first_decl: expr $(, $rest_decl: expr)+ $(,)?) => {
+        $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::new([$first_sel $(, $rest_sel)*], [$first_decl $(, $rest_decl)*])
     };
 }

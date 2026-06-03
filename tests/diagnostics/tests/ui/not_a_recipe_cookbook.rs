@@ -1,4 +1,4 @@
-use granola::{cookbook::*, prelude::*};
+use granola::{prelude::*, recipes::*};
 
 #[derive(Default, Debug, Clone, PartialEq)]
 struct SomeRecipe;
@@ -12,7 +12,7 @@ impl ButtonRecipe for SomeRecipe {
 #[derive(Default, Debug, Clone, PartialEq)]
 struct NotARecipe;
 
-type Cookbook = cookbook![FormmethodGet, SomeRecipe, NotARecipe, Center];
+type Cookbook = cookbook_type![FormmethodGet, SomeRecipe, NotARecipe, Center];
 
 fn main() {
     let _button = HtmlButton::<Cookbook>::from_recipe();

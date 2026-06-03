@@ -264,7 +264,7 @@ macro_rules! simple_selector {
         $crate::css::CssSimpleSelector::<()>::new($selector)
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::css::CssSimpleSelector::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::css::CssSimpleSelector::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
 }

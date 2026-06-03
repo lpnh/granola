@@ -127,10 +127,10 @@ macro_rules! selectors_list {
         $crate::css::CssSelectorsList::<()>::new().push($first)$(.push($rest))*
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::css::CssSelectorsList::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
-        $crate::css::CssSelectorsList::<$crate::cookbook!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+    (@cookbook $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
+        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_recipe().push($first)$(.push($rest))*
     };
 }

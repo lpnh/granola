@@ -188,9 +188,9 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 /// ```
 ///
 /// ```rust
-/// use granola::{macros::*, cookbook::*, prelude::*};
+/// use granola::{macros::*, recipes::*, prelude::*};
 ///
-/// let stylesheet = stylesheet!(@recipe AndyBell);
+/// let stylesheet = stylesheet!(@cookbook AndyBell);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -289,13 +289,13 @@ macro_rules! stylesheet {
         ])
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::css::CssStylesheet::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $rule: expr $(,)?) => {
-        $crate::css::CssStylesheet::<$crate::cookbook!($($r),+)>::from_recipe().push(rule)
+    (@cookbook $($r:ty),+ ; $rule: expr $(,)?) => {
+        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_recipe().push(rule)
     };
-    (@recipe $($r:ty),+ ; $first_rule: expr $(, $rest_rule: expr)+ $(,)?) => {
+    (@cookbook $($r:ty),+ ; $first_rule: expr $(, $rest_rule: expr)+ $(,)?) => {
         $crate::css::CssStylesheet::from([
             $crate::css::CssStatement::from($first_rule)
             $(, $crate::css::CssStatement::from($rest_rule))*

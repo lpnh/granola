@@ -2,12 +2,12 @@
 
 pub use granola_derive::{Granola, Recipe};
 
-pub mod cookbook;
 pub mod css;
 pub mod filters;
 pub mod homemade;
 pub mod html;
 pub mod oven;
+pub mod recipes;
 pub mod template;
 
 pub mod prelude {
@@ -16,8 +16,9 @@ pub mod prelude {
         css::*,
         html::*,
         oven::{BakeFrom, BakeRecipe},
+        recipes,
     };
-    pub use crate::{bake_block, bake_inline, bake_newline, cookbook};
+    pub use crate::{bake_block, bake_inline, bake_newline, cookbook, cookbook_type};
 }
 
 pub mod macros {

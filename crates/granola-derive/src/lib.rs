@@ -81,12 +81,19 @@ impl Parse for RecipeArgs {
 
 /// Derive macro for recipes.
 ///
-/// Field-driven: generates one recipe hook per struct field (excluding
-/// `_recipe`). Special fields:
-/// - `content`: when `#[recipe(content = DefaultType)]` is set, uses an
-///   associated type with `Into<DefaultType>` bound; also generates `new()`.
+/// For a struct `Foo<R>`, it generates:
+///
+/// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
+///   and impls for `()` and `(A, B)` so recipes compose as tuples;
+/// - the `from_recipe()` and `From<Bar>` constructors (`Foo::from(recipe)`);
+/// - a `BakeRecipe` impl lowering `Foo<Bar>` to `Foo<()>`.
+///
+/// Some field names add more:
+/// - `content` (with `#[recipe(content = T)]`): a `Content` associated type and
+///   a `new(content)` constructor;
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
-///   `event_handlers`: generate `Has*` impls and `empty()`.
+///   `event_handlers`: the matching `Has*` impl, plus `empty()` for
+///   `global_attrs`.
 #[proc_macro_derive(Recipe, attributes(recipe))]
 pub fn recipe_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -352,6 +359,14 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             }
 
             #new_method
+        }
+
+        impl<#type_param: #trait_name> ::std::convert::From<#type_param>
+            for #struct_name #ty_generics #where_clause
+        {
+            fn from(_recipe: #type_param) -> Self {
+                Self::from_recipe()
+            }
         }
 
         impl<#type_param: #trait_name> crate::oven::BakeRecipe

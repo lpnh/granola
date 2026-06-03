@@ -215,10 +215,10 @@ macro_rules! source {
         $crate::html::HtmlSource::<()>::new($src)
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::html::HtmlObject::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $src:expr $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook!($($r),+)>::new($src)
+    (@cookbook $($r:ty),+ ; $src:expr $(,)?) => {
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($src)
     };
 }

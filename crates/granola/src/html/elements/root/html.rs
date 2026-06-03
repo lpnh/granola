@@ -186,13 +186,13 @@ macro_rules! root {
         $crate::html::HtmlRoot::<()>::new(($head, $body))
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::html::HtmlRoot::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlRoot::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlRoot::<$crate::cookbook!($($r),+)>::new($content)
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlRoot::<$crate::cookbook_type!($($r),+)>::new($content)
     };
-    (@recipe $($r:ty),+ ; $head:expr, $body:expr $(,)?) => {
-        $crate::html::HtmlRoot::<$crate::cookbook!($($r),+)>::new(($head, $body))
+    (@cookbook $($r:ty),+ ; $head:expr, $body:expr $(,)?) => {
+        $crate::html::HtmlRoot::<$crate::cookbook_type!($($r),+)>::new(($head, $body))
     };
 }

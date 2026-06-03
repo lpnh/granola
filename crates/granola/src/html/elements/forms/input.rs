@@ -660,16 +660,16 @@ macro_rules! input {
         $crate::html::HtmlInput::<()>::from_type($type)
     };
 
-    (@recipe $($r:ty),+) => {
-        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::from_recipe()
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_recipe()
     };
-    (@recipe $($r:ty),+ ; $name:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::new($name)
+    (@cookbook $($r:ty),+ ; $name:expr $(,)?) => {
+        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::new($name)
     };
-    (@recipe $($r:ty),+ ; @from_value $value:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::from_value($value)
+    (@cookbook $($r:ty),+ ; @from_value $value:expr $(,)?) => {
+        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_value($value)
     };
-    (@recipe $($r:ty),+ ; @from_type $type:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook!($($r),+)>::from_type($type)
+    (@cookbook $($r:ty),+ ; @from_type $type:expr $(,)?) => {
+        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_type($type)
     };
 }
