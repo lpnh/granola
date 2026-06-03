@@ -12,7 +12,7 @@ const BTN_BG_DARKENED: &str =
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let rule: CssRule<Btn> = CssRule::from_recipe();
+/// let rule: CssRule<Btn> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -42,7 +42,7 @@ const BTN_BG_DARKENED: &str =
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let stylesheet: CssStylesheet<Btn> = CssStylesheet::from_recipe();
+/// let stylesheet: CssStylesheet<Btn> = CssStylesheet::from_cookbook();
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -94,11 +94,11 @@ pub struct Btn;
 
 impl StylesheetRecipe for Btn {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.push(CssRule::<Btn>::from_recipe().into());
-        statements.push(CssRule::<BtnHover>::from_recipe().into());
-        statements.push(CssRule::<BtnActive>::from_recipe().into());
-        statements.push(CssRule::<BtnFocusVisible>::from_recipe().into());
-        statements.push(CssRule::<BtnPrimary>::from_recipe().into());
+        statements.push(CssRule::<Btn>::from_cookbook().into());
+        statements.push(CssRule::<BtnHover>::from_cookbook().into());
+        statements.push(CssRule::<BtnActive>::from_cookbook().into());
+        statements.push(CssRule::<BtnFocusVisible>::from_cookbook().into());
+        statements.push(CssRule::<BtnPrimary>::from_cookbook().into());
     }
 }
 
@@ -110,26 +110,26 @@ impl SimpleSelectorRecipe for Btn {
 
 impl RuleRecipe for Btn {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssDisplay::<(Inline, Flex)>::from_recipe().into(),
-            CssAlignItems::<Center>::from_recipe().into(),
-            CssJustifyContent::<Center>::from_recipe().into(),
+            CssDisplay::<(Inline, Flex)>::from_cookbook().into(),
+            CssAlignItems::<Center>::from_cookbook().into(),
+            CssJustifyContent::<Center>::from_cookbook().into(),
             CssPadding::<()>::new("0.6em 1.2em").into(),
             CssFontSize::<()>::new("0.875rem").into(),
             CssFontWeight::<()>::new("500").into(),
             CssLineHeight::<()>::new("1.25rem").into(),
-            CssTextDecoration::<None>::from_recipe().into(),
-            CssWhiteSpace::<Nowrap>::from_recipe().into(),
-            CssBorder::<None>::from_recipe().into(),
+            CssTextDecoration::<None>::from_cookbook().into(),
+            CssWhiteSpace::<Nowrap>::from_cookbook().into(),
+            CssBorder::<None>::from_cookbook().into(),
             CssBorderRadius::<()>::new("0.4em").into(),
             CssBackgroundColor::<()>::new("var(--btn-bg)").into(),
             CssColor::<()>::new("var(--btn-fg)").into(),
-            CssCursor::<Pointer>::from_recipe().into(),
-            CssFontFamily::<Inherit>::from_recipe().into(),
+            CssCursor::<Pointer>::from_cookbook().into(),
+            CssFontFamily::<Inherit>::from_cookbook().into(),
             CssTransition::<()>::new("background-color 150ms ease").into(),
             ("--btn-bg", "var(--btn-color, var(--color-base-200))").into(),
             ("--btn-fg", "var(--color-base-content)").into(),
@@ -149,7 +149,7 @@ impl SimpleSelectorRecipe for BtnHover {
 
 impl RuleRecipe for BtnHover {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
@@ -169,7 +169,7 @@ impl SimpleSelectorRecipe for BtnActive {
 
 impl RuleRecipe for BtnActive {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
@@ -192,13 +192,13 @@ impl SimpleSelectorRecipe for BtnFocusVisible {
 
 impl RuleRecipe for BtnFocusVisible {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssOutlineWidth::<()>::new("2px").into(),
-            CssOutlineStyle::<Solid>::from_recipe().into(),
+            CssOutlineStyle::<Solid>::from_cookbook().into(),
             CssOutlineColor::<()>::new("var(--btn-color, var(--color-base-200))").into(),
             CssOutlineOffset::<()>::new("2px").into(),
         ];
@@ -212,7 +212,7 @@ impl RuleRecipe for BtnFocusVisible {
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let rule: CssRule<BtnPrimary> = CssRule::from_recipe();
+/// let rule: CssRule<BtnPrimary> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -227,7 +227,7 @@ pub struct BtnPrimary;
 
 impl RuleRecipe for BtnPrimary {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_recipe().into();
+        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {

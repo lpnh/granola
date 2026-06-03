@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_box_sizing: CssBoxSizing<BorderBox> = CssBoxSizing::from_recipe();
+/// let css_box_sizing: CssBoxSizing<BorderBox> = CssBoxSizing::from_cookbook();
 ///
 /// assert_eq!(css_box_sizing.bake(), "box-sizing: border-box;");
 /// ```

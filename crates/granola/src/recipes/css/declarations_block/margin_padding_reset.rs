@@ -8,7 +8,7 @@ use crate::prelude::*;
 /// use granola::{recipes::*, prelude::*};
 ///
 /// let declarations_block: CssDeclarationsBlock<MarginPaddingReset> =
-///     CssDeclarationsBlock::from_recipe();
+///     CssDeclarationsBlock::from_cookbook();
 ///
 /// assert_eq!(
 ///     declarations_block.bake(),

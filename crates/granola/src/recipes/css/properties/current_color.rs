@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_border_color: CssBorderColor<Currentcolor> = CssBorderColor::from_recipe();
+/// let css_border_color: CssBorderColor<Currentcolor> = CssBorderColor::from_cookbook();
 ///
 /// assert_eq!(css_border_color.bake(), "border-color: currentcolor;");
 /// ```
@@ -17,7 +17,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_color: CssColor<Currentcolor> = CssColor::from_recipe();
+/// let css_color: CssColor<Currentcolor> = CssColor::from_cookbook();
 ///
 /// assert_eq!(css_color.bake(), "color: currentcolor;");
 /// ```

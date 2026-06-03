@@ -179,10 +179,10 @@ macro_rules! declarations_block {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::css::CssDeclarationsBlock::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::css::CssDeclarationsBlock::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
-        $crate::css::CssDeclarationsBlock::<$crate::cookbook_type!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+        $crate::css::CssDeclarationsBlock::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
     };
 }
 

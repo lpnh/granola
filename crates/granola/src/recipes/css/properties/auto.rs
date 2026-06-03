@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_height: CssHeight<Auto> = CssHeight::from_recipe();
+/// let css_height: CssHeight<Auto> = CssHeight::from_cookbook();
 ///
 /// assert_eq!(css_height.bake(), "height: auto;");
 /// ```
@@ -18,7 +18,7 @@ use crate::prelude::*;
 /// use granola::{recipes::*, prelude::*};
 ///
 /// let css_text_decoration_skip_ink: CssTextDecorationSkipInk<Auto> =
-///     CssTextDecorationSkipInk::from_recipe();
+///     CssTextDecorationSkipInk::from_cookbook();
 ///
 /// assert_eq!(
 ///     css_text_decoration_skip_ink.bake(),

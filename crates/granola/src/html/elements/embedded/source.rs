@@ -216,7 +216,7 @@ macro_rules! source {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $src:expr $(,)?) => {
         $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($src)

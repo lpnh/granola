@@ -304,9 +304,9 @@ macro_rules! compound_selector {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
     };
 }

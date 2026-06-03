@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let head: HtmlHead = HtmlHead::from_recipe().id("document_metadata");
+/// let head: HtmlHead = HtmlHead::from_cookbook().id("document_metadata");
 ///
 /// assert_eq!(head.bake(), r#"<head id="document_metadata"></head>"#);
 /// ```
@@ -109,7 +109,7 @@ macro_rules! head {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
         $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::new($content)

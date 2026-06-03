@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_font: CssFont<Inherit> = CssFont::from_recipe();
+/// let css_font: CssFont<Inherit> = CssFont::from_cookbook();
 ///
 /// assert_eq!(css_font.bake(), "font: inherit;");
 /// ```
@@ -17,7 +17,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_text_align: CssTextAlign<Inherit> = CssTextAlign::from_recipe();
+/// let css_text_align: CssTextAlign<Inherit> = CssTextAlign::from_cookbook();
 ///
 /// assert_eq!(css_text_align.bake(), "text-align: inherit;");
 /// ```
@@ -25,7 +25,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_font_family: CssFontFamily<Inherit> = CssFontFamily::from_recipe();
+/// let css_font_family: CssFontFamily<Inherit> = CssFontFamily::from_cookbook();
 ///
 /// assert_eq!(css_font_family.bake(), "font-family: inherit;");
 /// ```
@@ -33,7 +33,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_font_size: CssFontSize<Inherit> = CssFontSize::from_recipe();
+/// let css_font_size: CssFontSize<Inherit> = CssFontSize::from_cookbook();
 ///
 /// assert_eq!(css_font_size.bake(), "font-size: inherit;");
 /// ```
@@ -41,7 +41,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_font_weight: CssFontWeight<Inherit> = CssFontWeight::from_recipe();
+/// let css_font_weight: CssFontWeight<Inherit> = CssFontWeight::from_cookbook();
 ///
 /// assert_eq!(css_font_weight.bake(), "font-weight: inherit;");
 /// ```
@@ -49,7 +49,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_color: CssColor<Inherit> = CssColor::from_recipe();
+/// let css_color: CssColor<Inherit> = CssColor::from_cookbook();
 ///
 /// assert_eq!(css_color.bake(), "color: inherit;");
 /// ```
@@ -57,7 +57,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_text_decoration: CssTextDecoration<Inherit> = CssTextDecoration::from_recipe();
+/// let css_text_decoration: CssTextDecoration<Inherit> = CssTextDecoration::from_cookbook();
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: inherit;");
 /// ```

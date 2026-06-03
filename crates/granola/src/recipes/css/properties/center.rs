@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_align_items: CssAlignItems<Center> = CssAlignItems::from_recipe();
+/// let css_align_items: CssAlignItems<Center> = CssAlignItems::from_cookbook();
 ///
 /// assert_eq!(css_align_items.bake(), "align-items: center;");
 /// ```
@@ -17,7 +17,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_justify_content: CssJustifyContent<Center> = CssJustifyContent::from_recipe();
+/// let css_justify_content: CssJustifyContent<Center> = CssJustifyContent::from_cookbook();
 ///
 /// assert_eq!(css_justify_content.bake(), "justify-content: center;");
 /// ```

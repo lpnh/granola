@@ -269,7 +269,7 @@ macro_rules! form {
 
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
         $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::new($content)

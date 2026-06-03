@@ -61,7 +61,7 @@ pub struct HtmlBr<R: BrRecipe = ()> {
 
 impl<R: BrRecipe> HtmlBr<R> {
     pub fn new() -> Self {
-        Self::from_recipe()
+        Self::from_cookbook()
     }
 }
 
@@ -97,6 +97,6 @@ macro_rules! br {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

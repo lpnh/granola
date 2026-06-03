@@ -13,5 +13,5 @@ impl ButtonRecipe for SomeRecipe {
 struct NotARecipe;
 
 fn main() {
-    let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_recipe();
+    let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_cookbook();
 }

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_vertical_align: CssVerticalAlign<Baseline> = CssVerticalAlign::from_recipe();
+/// let css_vertical_align: CssVerticalAlign<Baseline> = CssVerticalAlign::from_cookbook();
 ///
 /// assert_eq!(css_vertical_align.bake(), "vertical-align: baseline;");
 /// ```

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_position: CssPosition<Relative> = CssPosition::from_recipe();
+/// let css_position: CssPosition<Relative> = CssPosition::from_cookbook();
 ///
 /// assert_eq!(css_position.bake(), "position: relative;");
 /// ```

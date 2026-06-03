@@ -7,7 +7,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let rule: CssRule<AllHeadingsFontReset> = CssRule::from_recipe();
+/// let rule: CssRule<AllHeadingsFontReset> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -27,13 +27,13 @@ pub struct AllHeadingsFontReset;
 
 impl RuleRecipe for AllHeadingsFontReset {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelectorsList::<AllHeadings>::from_recipe().bake_recipe();
+        *selectors_list = CssSelectorsList::<AllHeadings>::from_cookbook().bake_recipe();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssFontSize::<Inherit>::from_recipe().into(),
-            CssFontWeight::<Inherit>::from_recipe().into(),
+            CssFontSize::<Inherit>::from_cookbook().into(),
+            CssFontWeight::<Inherit>::from_cookbook().into(),
         ];
     }
 }

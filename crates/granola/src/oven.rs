@@ -347,7 +347,7 @@ macro_rules! bake_newline {
 ///
 /// type InlineFlex = cookbook_type!(Inline, Flex);
 ///
-/// let display: CssDisplay<InlineFlex> = CssDisplay::from_recipe();
+/// let display: CssDisplay<InlineFlex> = CssDisplay::from_cookbook();
 ///
 /// assert_eq!(display.bake(), "display: inline flex;");
 /// ```
@@ -357,7 +357,7 @@ macro_rules! bake_newline {
 ///
 /// type InlineFlexImportant = cookbook_type!(Inline, Flex, Important);
 ///
-/// let display: CssDisplay<InlineFlexImportant> = CssDisplay::from_recipe();
+/// let display: CssDisplay<InlineFlexImportant> = CssDisplay::from_cookbook();
 ///
 /// assert_eq!(display.bake(), "display: inline flex !important;");
 /// ```

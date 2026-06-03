@@ -56,7 +56,7 @@ pub struct HtmlCol<R: ColRecipe = ()> {
 
 impl<R: ColRecipe> HtmlCol<R> {
     pub fn new() -> Self {
-        Self::from_recipe()
+        Self::from_cookbook()
     }
 }
 

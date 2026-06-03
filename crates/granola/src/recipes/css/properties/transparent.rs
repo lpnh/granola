@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_background_color: CssBackgroundColor<Transparent> = CssBackgroundColor::from_recipe();
+/// let css_background_color: CssBackgroundColor<Transparent> = CssBackgroundColor::from_cookbook();
 ///
 /// assert_eq!(
 ///     css_background_color.bake(),

@@ -290,10 +290,10 @@ macro_rules! stylesheet {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $rule: expr $(,)?) => {
-        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_recipe().push(rule)
+        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_cookbook().push(rule)
     };
     (@cookbook $($r:ty),+ ; $first_rule: expr $(, $rest_rule: expr)+ $(,)?) => {
         $crate::css::CssStylesheet::from([

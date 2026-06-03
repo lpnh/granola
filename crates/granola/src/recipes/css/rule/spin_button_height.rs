@@ -8,7 +8,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let rule: CssRule<SpinButtonHeight> = CssRule::from_recipe();
+/// let rule: CssRule<SpinButtonHeight> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -27,6 +27,6 @@ impl RuleRecipe for SpinButtonHeight {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssHeight::<Auto>::from_recipe().into()];
+        properties_list.declarations = vec![CssHeight::<Auto>::from_cookbook().into()];
     }
 }

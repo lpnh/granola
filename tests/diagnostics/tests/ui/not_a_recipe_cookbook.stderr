@@ -1,7 +1,7 @@
 error[E0277]: `NotARecipe` is not a recipe of `ButtonRecipe`
   --> tests/ui/not_a_recipe_cookbook.rs:18:19
    |
-18 |     let _button = HtmlButton::<Cookbook>::from_recipe();
+18 |     let _button = HtmlButton::<Cookbook>::from_cookbook();
    |                   ^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonRecipe`
    |
 help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe`
@@ -31,7 +31,7 @@ note: required by a bound in `granola::html::HtmlButton`
 error[E0277]: `granola::recipes::Center` is not a recipe of `ButtonRecipe`
   --> tests/ui/not_a_recipe_cookbook.rs:18:19
    |
-18 |     let _button = HtmlButton::<Cookbook>::from_recipe();
+18 |     let _button = HtmlButton::<Cookbook>::from_cookbook();
    |                   ^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonRecipe`
    |
    = help: the trait `granola::html::ButtonRecipe` is not implemented for `granola::recipes::Center`
@@ -54,14 +54,14 @@ note: required by a bound in `granola::html::HtmlButton`
    | pub struct HtmlButton<R: ButtonRecipe = ()> {
    |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton`
 
-error[E0599]: the associated function or constant `from_recipe` exists for struct `granola::html::HtmlButton<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>`, but its trait bounds were not satisfied
+error[E0599]: the associated function or constant `from_cookbook` exists for struct `granola::html::HtmlButton<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>`, but its trait bounds were not satisfied
   --> tests/ui/not_a_recipe_cookbook.rs:18:43
    |
 13 | struct NotARecipe;
    | ----------------- doesn't satisfy `NotARecipe: granola::html::ButtonRecipe`
 ...
-18 |     let _button = HtmlButton::<Cookbook>::from_recipe();
-   |                                           ^^^^^^^^^^^ associated function or constant cannot be called due to unsatisfied trait bounds
+18 |     let _button = HtmlButton::<Cookbook>::from_cookbook();
+   |                                           ^^^^^^^^^^^^^ associated function or constant cannot be called due to unsatisfied trait bounds
    |
   ::: $WORKSPACE/crates/granola/src/recipes/css/properties/center.rs
    |

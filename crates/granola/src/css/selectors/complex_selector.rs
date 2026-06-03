@@ -178,6 +178,6 @@ macro_rules! complex_selector {
     };
 
     (@recipe $($r:ty),+) => {
-        $crate::css::CssComplexSelector::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::css::CssComplexSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

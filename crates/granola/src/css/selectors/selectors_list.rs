@@ -128,9 +128,9 @@ macro_rules! selectors_list {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
-        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_recipe().push($first)$(.push($rest))*
+        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
     };
 }

@@ -7,7 +7,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let rule: CssRule<SubSupDefaults> = CssRule::from_recipe();
+/// let rule: CssRule<SubSupDefaults> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -32,8 +32,8 @@ impl RuleRecipe for SubSupDefaults {
         properties_list.declarations = vec![
             CssFontSize::<()>::new("75%").into(),
             CssLineHeight::<()>::new("0").into(),
-            CssPosition::<Relative>::from_recipe().into(),
-            CssVerticalAlign::<Baseline>::from_recipe().into(),
+            CssPosition::<Relative>::from_cookbook().into(),
+            CssVerticalAlign::<Baseline>::from_cookbook().into(),
         ];
     }
 }

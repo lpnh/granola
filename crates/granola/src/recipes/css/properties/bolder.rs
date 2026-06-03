@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_font_weight: CssFontWeight<Bolder> = CssFontWeight::from_recipe();
+/// let css_font_weight: CssFontWeight<Bolder> = CssFontWeight::from_cookbook();
 ///
 /// assert_eq!(css_font_weight.bake(), "font-weight: bolder;");
 /// ```

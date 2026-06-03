@@ -7,7 +7,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let rule: CssRule<ProgressVerticalAlignment> = CssRule::from_recipe();
+/// let rule: CssRule<ProgressVerticalAlignment> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -25,6 +25,6 @@ impl RuleRecipe for ProgressVerticalAlignment {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssVerticalAlign::<Baseline>::from_recipe().into()];
+        properties_list.declarations = vec![CssVerticalAlign::<Baseline>::from_cookbook().into()];
     }
 }

@@ -15,5 +15,5 @@ struct NotARecipe;
 type Cookbook = cookbook_type![FormmethodGet, SomeRecipe, NotARecipe, Center];
 
 fn main() {
-    let _button = HtmlButton::<Cookbook>::from_recipe();
+    let _button = HtmlButton::<Cookbook>::from_cookbook();
 }

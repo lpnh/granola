@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_font_family: CssFontFamily<SansSerif> = CssFontFamily::from_recipe();
+/// let css_font_family: CssFontFamily<SansSerif> = CssFontFamily::from_cookbook();
 ///
 /// assert_eq!(css_font_family.bake(), "font-family: sans-serif;");
 /// ```

@@ -115,7 +115,7 @@ impl ButtonRecipe for OneLastRecipe {
 fn main() {
     type TmplCookbook = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
 
-    let tmpl: TmplBase<TmplCookbook> = TmplBase::from_recipe();
+    let tmpl: TmplBase<TmplCookbook> = TmplBase::from_cookbook();
 
     println!("{tmpl}");
 }
@@ -168,12 +168,12 @@ mod recipe_tests {
     }
 
     #[test]
-    fn from_recipe() {
-        let button: HtmlButton<FooRecipe> = HtmlButton::from_recipe();
+    fn from_cookbook() {
+        let button: HtmlButton<FooRecipe> = HtmlButton::from_cookbook();
 
-        let p: HtmlP<FooRecipe> = HtmlP::from_recipe();
+        let p: HtmlP<FooRecipe> = HtmlP::from_cookbook();
 
-        let html_root: HtmlRoot<Homemade> = HtmlRoot::from_recipe();
+        let html_root: HtmlRoot<Homemade> = HtmlRoot::from_cookbook();
 
         assert_eq!(
             button.bake(),
@@ -229,10 +229,10 @@ mod recipe_tests {
     }
 
     #[test]
-    fn composition_from_recipe() {
-        let button: HtmlButton<(FooRecipe, BarRecipe)> = HtmlButton::from_recipe();
-        let p: HtmlP<(FooRecipe, BarRecipe)> = HtmlP::from_recipe();
-        let html_root: HtmlRoot<(Homemade, FooRecipe)> = HtmlRoot::from_recipe();
+    fn composition_from_cookbook() {
+        let button: HtmlButton<(FooRecipe, BarRecipe)> = HtmlButton::from_cookbook();
+        let p: HtmlP<(FooRecipe, BarRecipe)> = HtmlP::from_cookbook();
+        let html_root: HtmlRoot<(Homemade, FooRecipe)> = HtmlRoot::from_cookbook();
 
         assert_eq!(
             button.bake(),
@@ -259,12 +259,12 @@ mod recipe_tests {
     }
 
     #[test]
-    fn composition_from_recipe_multiple() {
-        let button: HtmlButton<(TypeReset, FooBarLastCookbook)> = HtmlButton::from_recipe();
+    fn composition_from_cookbook_multiple() {
+        let button: HtmlButton<(TypeReset, FooBarLastCookbook)> = HtmlButton::from_cookbook();
 
-        let p: HtmlP<FooBarLastCookbook> = HtmlP::from_recipe();
+        let p: HtmlP<FooBarLastCookbook> = HtmlP::from_cookbook();
 
-        let html_root: HtmlRoot<(Homemade, FooBarLastCookbook)> = HtmlRoot::from_recipe();
+        let html_root: HtmlRoot<(Homemade, FooBarLastCookbook)> = HtmlRoot::from_cookbook();
 
         assert_eq!(
             button.bake(),
@@ -355,7 +355,7 @@ mod recipe_tests {
     #[test]
     fn template() {
         type TmplRecipe = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
-        let tmpl: TmplBase<TmplRecipe> = TmplBase::from_recipe();
+        let tmpl: TmplBase<TmplRecipe> = TmplBase::from_cookbook();
 
         assert_eq!(
             tmpl.bake(),

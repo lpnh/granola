@@ -8,7 +8,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let list: CssSelectorsList<UniversalSelectorsExt> = CssSelectorsList::from_recipe();
+/// let list: CssSelectorsList<UniversalSelectorsExt> = CssSelectorsList::from_cookbook();
 ///
 /// assert_eq!(
 ///     list.bake(),
@@ -26,8 +26,8 @@ impl SelectorsListRecipe for UniversalSelectorsExt {
     fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
         UniversalSelectors::selectors_recipe(selectors);
         selectors.extend([
-            CssSimpleSelector::<UniversalBackdrop>::from_recipe().into(),
-            CssSimpleSelector::<UniversalFileSelectorButton>::from_recipe().into(),
+            CssSimpleSelector::<UniversalBackdrop>::from_cookbook().into(),
+            CssSimpleSelector::<UniversalFileSelectorButton>::from_cookbook().into(),
         ])
     }
 }

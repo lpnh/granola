@@ -85,7 +85,7 @@ impl Parse for RecipeArgs {
 ///
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
 ///   and impls for `()` and `(A, B)` so recipes compose as tuples;
-/// - the `from_recipe()` and `From<Bar>` constructors (`Foo::from(recipe)`);
+/// - the `from_cookbook()` and `From<Bar>` constructors (`Foo::from(recipe)`);
 /// - a `BakeRecipe` impl lowering `Foo<Bar>` to `Foo<()>`.
 ///
 /// Some field names add more:
@@ -344,7 +344,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
             #empty_method
 
-            pub fn from_recipe() -> Self {
+            pub fn from_cookbook() -> Self {
                 #content_init
                 #(
                     let mut #field_idents =
@@ -365,7 +365,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             for #struct_name #ty_generics #where_clause
         {
             fn from(_recipe: #type_param) -> Self {
-                Self::from_recipe()
+                Self::from_cookbook()
             }
         }
 

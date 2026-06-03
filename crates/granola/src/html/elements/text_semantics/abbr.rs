@@ -95,7 +95,7 @@ macro_rules! abbr {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
         $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::new($content)

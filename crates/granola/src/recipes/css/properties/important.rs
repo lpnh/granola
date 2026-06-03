@@ -10,7 +10,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_display: CssDisplay<(None, Important)> = CssDisplay::from_recipe();
+/// let css_display: CssDisplay<(None, Important)> = CssDisplay::from_cookbook();
 ///
 /// assert_eq!(css_display.bake(), "display: none !important;");
 /// ```

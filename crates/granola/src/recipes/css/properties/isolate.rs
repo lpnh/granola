@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_isolation: CssIsolation<Isolate> = CssIsolation::from_recipe();
+/// let css_isolation: CssIsolation<Isolate> = CssIsolation::from_cookbook();
 ///
 /// assert_eq!(css_isolation.bake(), "isolation: isolate;");
 /// ```

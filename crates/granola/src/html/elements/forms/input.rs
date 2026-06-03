@@ -661,7 +661,7 @@ macro_rules! input {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $name:expr $(,)?) => {
         $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::new($name)

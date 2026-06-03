@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let selector: CssSimpleSelector<UniversalBefore> = CssSimpleSelector::from_recipe();
+/// let selector: CssSimpleSelector<UniversalBefore> = CssSimpleSelector::from_cookbook();
 ///
 /// assert_eq!(selector.bake(), "::before");
 /// ```

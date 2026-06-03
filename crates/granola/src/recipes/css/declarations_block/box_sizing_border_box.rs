@@ -8,7 +8,7 @@ use crate::{recipes::*, prelude::*};
 /// use granola::{recipes::*, prelude::*};
 ///
 /// let declarations_block: CssDeclarationsBlock<BoxSizingBorderBox> =
-///     CssDeclarationsBlock::from_recipe();
+///     CssDeclarationsBlock::from_cookbook();
 ///
 /// assert_eq!(declarations_block.bake(), "box-sizing: border-box;");
 /// ```
@@ -17,6 +17,6 @@ pub struct BoxSizingBorderBox;
 
 impl DeclarationsBlockRecipe for BoxSizingBorderBox {
     fn declarations_recipe(declarations: &mut Vec<CssDeclaration>) {
-        declarations.push(CssBoxSizing::<BorderBox>::from_recipe().into());
+        declarations.push(CssBoxSizing::<BorderBox>::from_cookbook().into());
     }
 }

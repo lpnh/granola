@@ -121,7 +121,7 @@ macro_rules! at_rule {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
         $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::new($identifier, $rule)

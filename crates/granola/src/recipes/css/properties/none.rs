@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_border: CssBorder<None> = CssBorder::from_recipe();
+/// let css_border: CssBorder<None> = CssBorder::from_cookbook();
 ///
 /// assert_eq!(css_border.bake(), "border: none;");
 /// ```
@@ -17,7 +17,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_box_shadow: CssBoxShadow<None> = CssBoxShadow::from_recipe();
+/// let css_box_shadow: CssBoxShadow<None> = CssBoxShadow::from_cookbook();
 ///
 /// assert_eq!(css_box_shadow.bake(), "box-shadow: none;");
 /// ```
@@ -25,7 +25,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_list_style: CssListStyle<None> = CssListStyle::from_recipe();
+/// let css_list_style: CssListStyle<None> = CssListStyle::from_cookbook();
 ///
 /// assert_eq!(css_list_style.bake(), "list-style: none;");
 /// ```
@@ -33,7 +33,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_text_decoration: CssTextDecoration<None> = CssTextDecoration::from_recipe();
+/// let css_text_decoration: CssTextDecoration<None> = CssTextDecoration::from_cookbook();
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: none;");
 /// ```
@@ -41,7 +41,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_text_size_adjust: CssTextSizeAdjust<None> = CssTextSizeAdjust::from_recipe();
+/// let css_text_size_adjust: CssTextSizeAdjust<None> = CssTextSizeAdjust::from_cookbook();
 ///
 /// assert_eq!(css_text_size_adjust.bake(), "text-size-adjust: none;");
 /// ```

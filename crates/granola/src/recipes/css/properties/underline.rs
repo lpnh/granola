@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_text_decoration: CssTextDecoration<Underline> = CssTextDecoration::from_recipe();
+/// let css_text_decoration: CssTextDecoration<Underline> = CssTextDecoration::from_cookbook();
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: underline;");
 /// ```

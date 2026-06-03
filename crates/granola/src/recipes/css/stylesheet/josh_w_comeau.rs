@@ -13,7 +13,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let stylesheet: CssStylesheet<JoshWComeau> = CssStylesheet::from_recipe();
+/// let stylesheet: CssStylesheet<JoshWComeau> = CssStylesheet::from_cookbook();
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -89,7 +89,7 @@ pub struct JoshWComeau;
 impl StylesheetRecipe for JoshWComeau {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
-            CssRule::<BoxSizingReset>::from_recipe().into(),
+            CssRule::<BoxSizingReset>::from_cookbook().into(),
             default_margin_reset(),
             keyword_animations(),
             body_defaults(),
@@ -108,7 +108,7 @@ fn default_margin_reset() -> CssStatement {
 }
 
 fn keyword_animations() -> CssStatement {
-    let inner_rule = CssRule::<()>::new("html", CssInterpolateSize::<AllowKeywords>::from_recipe());
+    let inner_rule = CssRule::<()>::new("html", CssInterpolateSize::<AllowKeywords>::from_cookbook());
 
     CssAtRule::<()>::new("media", "(prefers-reduced-motion: no-preference)")
         .block(inner_rule)
@@ -125,9 +125,9 @@ fn body_defaults() -> CssStatement {
 }
 
 fn media_defaults() -> CssStatement {
-    let selectors_list = CssSelectorsList::<MediaSelectors>::from_recipe().bake_recipe();
+    let selectors_list = CssSelectorsList::<MediaSelectors>::from_cookbook().bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
-        CssDisplay::<Block>::from_recipe().into(),
+        CssDisplay::<Block>::from_cookbook().into(),
         CssMaxWidth::<()>::new("100%").into(),
     ];
 
@@ -135,33 +135,33 @@ fn media_defaults() -> CssStatement {
 }
 
 fn form_controls_font_inherit() -> CssStatement {
-    let selectors_list = CssSelectorsList::<FormControls>::from_recipe().bake_recipe();
-    let declarations_block = CssFont::<Inherit>::from_recipe();
+    let selectors_list = CssSelectorsList::<FormControls>::from_cookbook().bake_recipe();
+    let declarations_block = CssFont::<Inherit>::from_cookbook();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
 
 fn text_overflow_reset() -> CssStatement {
-    let selectors_list = CssSelectorsList::<AllHeadingsExt>::from_recipe().bake_recipe();
-    let declarations_block = CssOverflowWrap::<BreakWord>::from_recipe();
+    let selectors_list = CssSelectorsList::<AllHeadingsExt>::from_cookbook().bake_recipe();
+    let declarations_block = CssOverflowWrap::<BreakWord>::from_cookbook();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
 
 fn paragraph_text_wrap() -> CssStatement {
-    CssRule::<()>::new("p", CssTextWrap::<Pretty>::from_recipe()).into()
+    CssRule::<()>::new("p", CssTextWrap::<Pretty>::from_cookbook()).into()
 }
 
 fn headings_text_wrap() -> CssStatement {
-    let selectors_list = CssSelectorsList::<AllHeadings>::from_recipe().bake_recipe();
-    let declarations_block = CssTextWrap::<Balance>::from_recipe();
+    let selectors_list = CssSelectorsList::<AllHeadings>::from_cookbook().bake_recipe();
+    let declarations_block = CssTextWrap::<Balance>::from_cookbook();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
 
 fn root_stacking_context() -> CssStatement {
     let selectors_list: CssSelectorsList = ["#root", "#__next"].into();
-    let declarations_block = CssIsolation::<Isolate>::from_recipe();
+    let declarations_block = CssIsolation::<Isolate>::from_cookbook();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_flex_wrap: CssFlexWrap<Wrap> = CssFlexWrap::from_recipe();
+/// let css_flex_wrap: CssFlexWrap<Wrap> = CssFlexWrap::from_cookbook();
 ///
 /// assert_eq!(css_flex_wrap.bake(), "flex-wrap: wrap;");
 /// ```

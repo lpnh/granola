@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_overflow_wrap: CssOverflowWrap<BreakWord> = CssOverflowWrap::from_recipe();
+/// let css_overflow_wrap: CssOverflowWrap<BreakWord> = CssOverflowWrap::from_cookbook();
 ///
 /// assert_eq!(css_overflow_wrap.bake(), "overflow-wrap: break-word;");
 /// ```

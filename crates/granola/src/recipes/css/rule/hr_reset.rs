@@ -7,7 +7,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let rule: CssRule<HrReset> = CssRule::from_recipe();
+/// let rule: CssRule<HrReset> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -29,7 +29,7 @@ impl RuleRecipe for HrReset {
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             CssHeight::<()>::new("0").into(),
-            CssColor::<Inherit>::from_recipe().into(),
+            CssColor::<Inherit>::from_cookbook().into(),
             ("border-top-width", "1px").into(),
         ];
     }

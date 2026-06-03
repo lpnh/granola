@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// use granola::{recipes::*, prelude::*};
 ///
 /// let css_text_decoration: CssTextDecoration<(Underline, Dotted)> =
-///     CssTextDecoration::from_recipe();
+///     CssTextDecoration::from_cookbook();
 ///
 /// assert_eq!(
 ///     css_text_decoration.bake(),

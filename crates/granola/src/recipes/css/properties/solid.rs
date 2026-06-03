@@ -17,7 +17,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_outline_style: CssOutlineStyle<Solid> = CssOutlineStyle::from_recipe();
+/// let css_outline_style: CssOutlineStyle<Solid> = CssOutlineStyle::from_cookbook();
 ///
 /// assert_eq!(css_outline_style.bake(), "outline-style: solid;");
 /// ```

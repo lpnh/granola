@@ -28,10 +28,10 @@ fn stylesheet() -> CssStylesheet {
             declarations_block![
                 CssBackgroundColor::<()>::new("var(--base-100)"),
                 CssColor::<()>::new("var(--base-content)"),
-                CssFontFamily::<SansSerif>::from_recipe(),
-                CssDisplay::<Flex>::from_recipe(),
-                CssJustifyContent::<Center>::from_recipe(),
-                CssAlignItems::<Center>::from_recipe(),
+                CssFontFamily::<SansSerif>::from_cookbook(),
+                CssDisplay::<Flex>::from_cookbook(),
+                CssJustifyContent::<Center>::from_cookbook(),
+                CssAlignItems::<Center>::from_cookbook(),
                 CssMinHeight::<()>::new("100vh"),
                 CssMargin::<()>::new("0"),
             ]
@@ -45,26 +45,26 @@ fn stylesheet() -> CssStylesheet {
                 CssBoxShadow::<()>::new(
                     "0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",
                 ),
-                CssTextAlign::<Center>::from_recipe(),
+                CssTextAlign::<Center>::from_cookbook(),
             ]
         ),
         rule!(
             ".swatches";
             declarations_block![
-                CssDisplay::<Flex>::from_recipe(),
-                CssFlexDirection::<Column>::from_recipe(),
+                CssDisplay::<Flex>::from_cookbook(),
+                CssFlexDirection::<Column>::from_cookbook(),
                 CssGap::<()>::new("1rem"),
-                CssJustifyContent::<Center>::from_recipe(),
+                CssJustifyContent::<Center>::from_cookbook(),
                 CssMargin::<()>::new("1.5rem 0"),
-                CssFlexWrap::<Wrap>::from_recipe(),
+                CssFlexWrap::<Wrap>::from_cookbook(),
             ]
         ),
         rule!(
             ".swatch";
             declarations_block![
-                CssDisplay::<Flex>::from_recipe(),
-                CssFlexDirection::<Column>::from_recipe(),
-                CssAlignItems::<Center>::from_recipe(),
+                CssDisplay::<Flex>::from_cookbook(),
+                CssFlexDirection::<Column>::from_cookbook(),
+                CssAlignItems::<Center>::from_cookbook(),
                 CssGap::<()>::new("0.25rem"),
             ]
         ),
@@ -96,10 +96,10 @@ fn stylesheet() -> CssStylesheet {
         rule!(
             simple_selector!(".palette").descendant("form");
             declarations_block![
-                CssDisplay::<Flex>::from_recipe(),
+                CssDisplay::<Flex>::from_cookbook(),
                 CssGap::<()>::new("0.5rem"),
-                CssJustifyContent::<Center>::from_recipe(),
-                CssAlignItems::<Center>::from_recipe(),
+                CssJustifyContent::<Center>::from_cookbook(),
+                CssAlignItems::<Center>::from_cookbook(),
                 CssMarginTop::<()>::new("1rem"),
             ]
         ),

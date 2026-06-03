@@ -13,7 +13,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let stylesheet: CssStylesheet<AndyBell> = CssStylesheet::from_recipe();
+/// let stylesheet: CssStylesheet<AndyBell> = CssStylesheet::from_cookbook();
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -103,7 +103,7 @@ pub struct AndyBell;
 impl StylesheetRecipe for AndyBell {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
-            CssRule::<BoxSizingReset>::from_recipe().into(),
+            CssRule::<BoxSizingReset>::from_cookbook().into(),
             text_size_adjust_reset(),
             default_margin_reset(),
             list_style_reset(),
@@ -123,8 +123,8 @@ fn text_size_adjust_reset() -> CssStatement {
     let selectors_list: CssSelectorsList = "html".into();
     let declarations_block: [CssDeclaration; 3] = [
         ("-moz-text-size-adjust", "none").into(),
-        CssWebkitTextSizeAdjust::<None>::from_recipe().into(),
-        CssTextSizeAdjust::<None>::from_recipe().into(),
+        CssWebkitTextSizeAdjust::<None>::from_cookbook().into(),
+        CssTextSizeAdjust::<None>::from_cookbook().into(),
     ];
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
@@ -151,7 +151,7 @@ fn default_margin_reset() -> CssStatement {
 
 fn list_style_reset() -> CssStatement {
     let selectors_list: CssSelectorsList = ["ul[role='list']", "ol[role='list']"].into();
-    let declarations_block = CssListStyle::<None>::from_recipe();
+    let declarations_block = CssListStyle::<None>::from_cookbook();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
@@ -167,7 +167,7 @@ fn body_defaults() -> CssStatement {
 }
 
 fn headings_and_forms_line_height() -> CssStatement {
-    let selectors_list = CssSelectorsList::<Headings>::from_recipe()
+    let selectors_list = CssSelectorsList::<Headings>::from_cookbook()
         .push("button")
         .push("input")
         .push("label")
@@ -178,8 +178,8 @@ fn headings_and_forms_line_height() -> CssStatement {
 }
 
 fn headings_text_wrap() -> CssStatement {
-    let selectors_list = CssSelectorsList::<Headings>::from_recipe().bake_recipe();
-    let declarations_block = CssTextWrap::<Balance>::from_recipe();
+    let selectors_list = CssSelectorsList::<Headings>::from_cookbook().bake_recipe();
+    let declarations_block = CssTextWrap::<Balance>::from_cookbook();
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
@@ -187,8 +187,8 @@ fn headings_text_wrap() -> CssStatement {
 fn unclassed_anchor_default_style() -> CssStatement {
     let selectors_list: CssSelectorsList = "a:not([class])".into();
     let declarations_block: [CssDeclaration; 2] = [
-        CssTextDecorationSkipInk::<Auto>::from_recipe().into(),
-        CssColor::<Currentcolor>::from_recipe().into(),
+        CssTextDecorationSkipInk::<Auto>::from_cookbook().into(),
+        CssColor::<Currentcolor>::from_cookbook().into(),
     ];
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
@@ -198,17 +198,17 @@ fn images_width_and_display() -> CssStatement {
     let selectors_list: CssSelectorsList = ["img", "picture"].into();
     let declarations_block: [CssDeclaration; 2] = [
         ("max-width", "100%").into(),
-        CssDisplay::<Block>::from_recipe().into(),
+        CssDisplay::<Block>::from_cookbook().into(),
     ];
 
     CssRule::<()>::new(selectors_list, declarations_block).into()
 }
 
 fn form_controls_font_inherit() -> CssStatement {
-    let selectors_list = CssSelectorsList::<FormControls>::from_recipe().bake_recipe();
+    let selectors_list = CssSelectorsList::<FormControls>::from_cookbook().bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
-        CssFontFamily::<Inherit>::from_recipe().into(),
-        CssFontSize::<Inherit>::from_recipe().into(),
+        CssFontFamily::<Inherit>::from_cookbook().into(),
+        CssFontSize::<Inherit>::from_cookbook().into(),
     ];
 
     CssRule::<()>::new(selectors_list, declarations_block).into()

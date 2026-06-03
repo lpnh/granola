@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let css_display: CssDisplay<Flex> = CssDisplay::from_recipe();
+/// let css_display: CssDisplay<Flex> = CssDisplay::from_cookbook();
 ///
 /// assert_eq!(css_display.bake(), "display: flex;");
 /// ```

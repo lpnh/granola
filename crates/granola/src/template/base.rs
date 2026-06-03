@@ -61,9 +61,9 @@ impl<R: HtmlRecipe> TmplBase<R> {
         }
     }
 
-    pub fn from_recipe() -> Self {
+    pub fn from_cookbook() -> Self {
         Self {
-            html_root: HtmlRoot::<R>::from_recipe(),
+            html_root: HtmlRoot::<R>::from_cookbook(),
         }
     }
 }

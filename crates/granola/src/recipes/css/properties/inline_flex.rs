@@ -7,7 +7,7 @@ use crate::recipes::{Flex, Inline};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_display: CssDisplay<InlineFlex> = CssDisplay::from_recipe();
+/// let css_display: CssDisplay<InlineFlex> = CssDisplay::from_cookbook();
 ///
 /// assert_eq!(css_display.bake(), "display: inline flex;");
 /// ```

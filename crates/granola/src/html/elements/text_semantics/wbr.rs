@@ -42,7 +42,7 @@ pub struct HtmlWbr<R: WbrRecipe = ()> {
 
 impl<R: WbrRecipe> HtmlWbr<R> {
     pub fn new() -> Self {
-        Self::from_recipe()
+        Self::from_cookbook()
     }
 }
 
@@ -64,6 +64,6 @@ macro_rules! wbr {
     };
 
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_recipe()
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

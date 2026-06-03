@@ -7,7 +7,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let declarations_block: CssDeclarationsBlock<BorderReset> = CssDeclarationsBlock::from_recipe();
+/// let declarations_block: CssDeclarationsBlock<BorderReset> = CssDeclarationsBlock::from_cookbook();
 ///
 /// assert_eq!(declarations_block.bake(), "border: 0 solid;");
 /// ```

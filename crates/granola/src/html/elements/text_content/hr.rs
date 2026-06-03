@@ -63,7 +63,7 @@ pub struct HtmlHr<R: HrRecipe = ()> {
 
 impl<R: HrRecipe> HtmlHr<R> {
     pub fn new() -> Self {
-        Self::from_recipe()
+        Self::from_cookbook()
     }
 }
 

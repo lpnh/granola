@@ -7,7 +7,7 @@ use crate::{recipes::*, prelude::*};
 /// ```rust
 /// use granola::{recipes::*, prelude::*};
 ///
-/// let rule: CssRule<BStrongFontWeight> = CssRule::from_recipe();
+/// let rule: CssRule<BStrongFontWeight> = CssRule::from_cookbook();
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -26,6 +26,6 @@ impl RuleRecipe for BStrongFontWeight {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssFontWeight::<Bolder>::from_recipe().into()];
+        properties_list.declarations = vec![CssFontWeight::<Bolder>::from_cookbook().into()];
     }
 }
