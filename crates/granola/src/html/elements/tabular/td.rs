@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let td: HtmlTd = HtmlTd::empty().id("table_data_cell");
+/// let td = HtmlTd::new().id("table_data_cell");
 ///
 /// assert_eq!(td.bake(), r#"<td id="table_data_cell"></td>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let td: HtmlTd = HtmlTd::new("Melted dark chocolate with milk");
+/// let td = HtmlTd::new().content("Melted dark chocolate with milk");
 ///
 /// assert_eq!(td.bake(), r#"<td>Melted dark chocolate with milk</td>"#);
 /// ```
@@ -139,19 +139,19 @@ impl<R: TdRecipe> HasTdAttrs for HtmlTd<R> {
 #[macro_export]
 macro_rules! td {
     () => {
-        $crate::html::HtmlTd::<()>::empty()
+        $crate::html::HtmlTd::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTd::<()>::new($content)
+        $crate::html::HtmlTd::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTd::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTd::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTd::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTd::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTd::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTd::new().content($crate::bake_inline![$($content),+])
     };
 }

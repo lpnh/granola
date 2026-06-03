@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let i: HtmlI = HtmlI::empty().id("idiomatic_text");
+/// let i = HtmlI::new().id("idiomatic_text");
 ///
 /// assert_eq!(i.bake(), r#"<i id="idiomatic_text"></i>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let voila: HtmlI = HtmlI::new("voilà");
+/// let voila = HtmlI::new().content("voilà");
 ///
 /// let quote = bake_inline!["and ", voila, "!"];
 ///
@@ -76,18 +76,18 @@ pub struct HtmlI<R: IRecipe = ()> {
 #[macro_export]
 macro_rules! i {
     () => {
-        $crate::html::HtmlI::<()>::empty()
+        $crate::html::HtmlI::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlI::<()>::new($content)
+        $crate::html::HtmlI::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlI::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlI::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlI::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlI::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlI::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlI::new().content($crate::bake_inline![$($content),+])
     };
 }

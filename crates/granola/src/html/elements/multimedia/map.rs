@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let map: HtmlMap = HtmlMap::empty().id("image_map");
+/// let map = HtmlMap::new().id("image_map");
 ///
 /// assert_eq!(map.bake(), r#"<map id="image_map"></map>"#);
 /// ```
@@ -20,16 +20,20 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::new("mg_flag.png", "MG flag")
+/// let img = HtmlImg::new()
+///     .src("mg_flag.png")
+///     .alt("MG flag")
 ///     .width(600)
 ///     .height(420)
 ///     .usemap("#minas-gerais");
 ///
-/// let area: HtmlArea = HtmlArea::new("https://w.wiki/LTnF", "Red triangle")
+/// let area = HtmlArea::new()
+///     .href("https://w.wiki/LTnF")
+///     .alt("Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
-/// let map: HtmlMap = HtmlMap::new(area).name("minas-gerais");
+/// let map = HtmlMap::new().content(area).name("minas-gerais");
 ///
 /// let img_map = bake_block![img, map];
 ///
@@ -126,7 +130,7 @@ impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let img = img!("mg_flag.png", "MG flag")
+/// let img = img!(@from_src_alt "mg_flag.png", "MG flag")
 ///     .width(600)
 ///     .height(420)
 ///     .usemap("#minas-gerais");
@@ -150,12 +154,19 @@ impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
 #[macro_export]
 macro_rules! map {
     () => {
-        $crate::html::HtmlMap::<()>::empty()
+        $crate::html::HtmlMap::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlMap::<()>::new($content)
+        $crate::html::HtmlMap::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlMap::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlMap::new().content($crate::bake_block![$first $(, $rest)*])
+    };
+
+    (@newline $content: expr $(,)?) => {
+        $crate::html::HtmlMap::new().content($crate::bake_newline!($content))
+    };
+    (@inline $($content: expr),+ $(,)?) => {
+        $crate::html::HtmlMap::new().content($crate::bake_inline![$($content),+])
     };
 }

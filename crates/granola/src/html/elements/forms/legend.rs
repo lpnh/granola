@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let legend: HtmlLegend = HtmlLegend::empty().id("field_set_legend");
+/// let legend = HtmlLegend::new().id("field_set_legend");
 ///
 /// assert_eq!(legend.bake(), r#"<legend id="field_set_legend"></legend>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let legend: HtmlLegend = HtmlLegend::new("Choose your favorite spoon");
+/// let legend = HtmlLegend::new().content("Choose your favorite spoon");
 ///
 /// assert_eq!(
 ///     legend.bake(),
@@ -75,19 +75,19 @@ pub struct HtmlLegend<R: LegendRecipe = ()> {
 #[macro_export]
 macro_rules! legend {
     () => {
-        $crate::html::HtmlLegend::<()>::empty()
+        $crate::html::HtmlLegend::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlLegend::<()>::new($content)
+        $crate::html::HtmlLegend::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlLegend::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlLegend::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlLegend::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlLegend::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlLegend::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlLegend::new().content($crate::bake_inline![$($content),+])
     };
 }

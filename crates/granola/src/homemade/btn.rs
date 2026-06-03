@@ -12,7 +12,7 @@ const BTN_BG_DARKENED: &str =
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let rule: CssRule<Btn> = CssRule::from_cookbook();
+/// let rule = CssRule::from(Btn);
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -94,11 +94,13 @@ pub struct Btn;
 
 impl StylesheetRecipe for Btn {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.push(CssRule::<Btn>::from_cookbook().into());
-        statements.push(CssRule::<BtnHover>::from_cookbook().into());
-        statements.push(CssRule::<BtnActive>::from_cookbook().into());
-        statements.push(CssRule::<BtnFocusVisible>::from_cookbook().into());
-        statements.push(CssRule::<BtnPrimary>::from_cookbook().into());
+        statements.extend([
+            CssRule::from(Btn).into(),
+            CssRule::from(BtnHover).into(),
+            CssRule::from(BtnActive).into(),
+            CssRule::from(BtnFocusVisible).into(),
+            CssRule::from(BtnPrimary).into(),
+        ])
     }
 }
 
@@ -115,22 +117,24 @@ impl RuleRecipe for Btn {
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssDisplay::<(Inline, Flex)>::from_cookbook().into(),
-            CssAlignItems::<Center>::from_cookbook().into(),
+            CssDisplay::from((Inline, Flex)).into(),
+            CssAlignItems::from(Center).into(),
             CssJustifyContent::<Center>::from_cookbook().into(),
-            CssPadding::<()>::new("0.6em 1.2em").into(),
-            CssFontSize::<()>::new("0.875rem").into(),
-            CssFontWeight::<()>::new("500").into(),
-            CssLineHeight::<()>::new("1.25rem").into(),
-            CssTextDecoration::<None>::from_cookbook().into(),
+            CssPadding::new().content("0.6em 1.2em").into(),
+            CssFontSize::new().content("0.875rem").into(),
+            CssFontWeight::new().content("500").into(),
+            CssLineHeight::new().content("1.25rem").into(),
+            CssTextDecoration::from(None).into(),
             CssWhiteSpace::<Nowrap>::from_cookbook().into(),
-            CssBorder::<None>::from_cookbook().into(),
-            CssBorderRadius::<()>::new("0.4em").into(),
-            CssBackgroundColor::<()>::new("var(--btn-bg)").into(),
-            CssColor::<()>::new("var(--btn-fg)").into(),
+            CssBorder::from(None).into(),
+            CssBorderRadius::new().content("0.4em").into(),
+            CssBackgroundColor::new().content("var(--btn-bg)").into(),
+            CssColor::new().content("var(--btn-fg)").into(),
             CssCursor::<Pointer>::from_cookbook().into(),
-            CssFontFamily::<Inherit>::from_cookbook().into(),
-            CssTransition::<()>::new("background-color 150ms ease").into(),
+            CssFontFamily::from(Inherit).into(),
+            CssTransition::new()
+                .content("background-color 150ms ease")
+                .into(),
             ("--btn-bg", "var(--btn-color, var(--color-base-200))").into(),
             ("--btn-fg", "var(--color-base-content)").into(),
         ];
@@ -175,7 +179,7 @@ impl RuleRecipe for BtnActive {
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
             ("--btn-bg", BTN_BG_DARKENED).into(),
-            CssTransform::<()>::new("scale(0.97)").into(),
+            CssTransform::new().content("scale(0.97)").into(),
         ];
     }
 }
@@ -197,10 +201,12 @@ impl RuleRecipe for BtnFocusVisible {
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssOutlineWidth::<()>::new("2px").into(),
+            CssOutlineWidth::new().content("2px").into(),
             CssOutlineStyle::<Solid>::from_cookbook().into(),
-            CssOutlineColor::<()>::new("var(--btn-color, var(--color-base-200))").into(),
-            CssOutlineOffset::<()>::new("2px").into(),
+            CssOutlineColor::new()
+                .content("var(--btn-color, var(--color-base-200))")
+                .into(),
+            CssOutlineOffset::new().content("2px").into(),
         ];
     }
 }

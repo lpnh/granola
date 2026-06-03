@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `flex-direction` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_flex_direction: CssFlexDirection = CssFlexDirection::new("row");
+/// let css_flex_direction = CssFlexDirection::new().content("row");
 ///
 /// assert_eq!(css_flex_direction.bake(), "flex-direction: row;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// flex-direction: {{ value }};
+/// flex-direction: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FlexDirectionRecipe)]
+#[recipe(name = FlexDirectionRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFlexDirection<R: FlexDirectionRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FlexDirectionRecipe> CssFlexDirection<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FlexDirectionRecipe> From<CssFlexDirection<R>> for CssDeclaration {
     fn from(css_flex_direction: CssFlexDirection<R>) -> Self {
-        Self::new("flex-direction", css_flex_direction.value)
+        Self::new("flex-direction", css_flex_direction.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssFlexDirection<R>> for CssDeclarationsBlock<B>
-where
-    R: FlexDirectionRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FlexDirectionRecipe> From<CssFlexDirection<R>> for CssDeclarationsBlock {
     fn from(css_flex_direction: CssFlexDirection<R>) -> Self {
         Self::new().push(css_flex_direction)
     }

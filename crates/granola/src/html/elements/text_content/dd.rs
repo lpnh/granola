@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dd: HtmlDd = HtmlDd::empty().id("description_details");
+/// let dd = HtmlDd::new().id("description_details");
 ///
 /// assert_eq!(dd.bake(), r#"<dd id="description_details"></dd>"#);
 /// ```
@@ -20,9 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dt: HtmlDt = HtmlDt::new("Hiraeth");
-/// let dd: HtmlDd =
-///     HtmlDd::new("A longing for a home that no longer exists, or perhaps never did.");
+/// let dt = HtmlDt::new().content("Hiraeth");
+/// let dd =
+///     HtmlDd::new().content("A longing for a home that no longer exists, or perhaps never did.");
 ///
 /// let term = bake_block![dt, dd];
 ///
@@ -84,18 +84,18 @@ pub struct HtmlDd<R: DdRecipe = ()> {
 #[macro_export]
 macro_rules! dd {
     () => {
-        $crate::html::HtmlDd::<()>::empty()
+        $crate::html::HtmlDd::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDd::<()>::new($content)
+        $crate::html::HtmlDd::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDd::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDd::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDd::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDd::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDd::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDd::new().content($crate::bake_inline![$($content),+])
     };
 }

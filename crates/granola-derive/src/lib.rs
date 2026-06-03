@@ -85,15 +85,16 @@ impl Parse for RecipeArgs {
 ///
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
 ///   and impls for `()` and `(A, B)` so recipes compose as tuples;
+/// - the `new()` constructor and `From<Bar>` constructors
+///   (`Foo::from(recipe)`);
 /// - the `from_cookbook()` and `From<Bar>` constructors (`Foo::from(recipe)`);
 /// - a `BakeRecipe` impl lowering `Foo<Bar>` to `Foo<()>`.
 ///
 /// Some field names add more:
 /// - `content` (with `#[recipe(content = T)]`): a `Content` associated type and
-///   a `new(content)` constructor;
+///   a `content(content)` constructor;
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
-///   `event_handlers`: the matching `Has*` impl, plus `empty()` for
-///   `global_attrs`.
+///   `event_handlers`: the matching `Has*` impl.
 #[proc_macro_derive(Recipe, attributes(recipe))]
 pub fn recipe_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -259,33 +260,28 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    let empty_method = if has_global_attrs {
-        quote! {
-            pub fn empty() -> Self {
-                Self {
-                    ..::std::default::Default::default()
-                }
+    // `new()`: empty constructor, only on `#struct_name<()>`.
+    let new_method = quote! {
+        pub fn new() -> Self {
+            Self {
+                ..::std::default::Default::default()
             }
         }
-    } else {
-        quote! {}
     };
 
-    let new_method = if has_content {
+    // `content(content)`: sets the content on `#struct_name<R>`, keeping the
+    // recipe `R`. Returns `Self`, so the recipe is fixed at construction and
+    // flows through unchanged.
+    let content_method = if has_content {
         quote! {
-            pub fn new(content: impl ::std::convert::Into<#type_param::Content>) -> Self {
+            pub fn content(
+                mut self,
+                content: impl ::std::convert::Into<#type_param::Content>,
+            ) -> Self {
                 let mut content = content.into();
                 #type_param::content_recipe(&mut content);
-                #(
-                    let mut #field_idents =
-                        <#field_types as ::std::default::Default>::default();
-                    #type_param::#method_names(&mut #field_idents);
-                )*
-                Self {
-                    content,
-                    #(#field_idents,)*
-                    ..::std::default::Default::default()
-                }
+                self.content = content;
+                self
             }
         }
     } else {
@@ -341,8 +337,12 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         #custom_data_attrs_impl
         #event_handlers_impl
 
+        impl #struct_name<()> {
+            #new_method
+        }
+
         impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
-            #empty_method
+            #content_method
 
             pub fn from_cookbook() -> Self {
                 #content_init
@@ -357,8 +357,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                     ..::std::default::Default::default()
                 }
             }
-
-            #new_method
         }
 
         impl<#type_param: #trait_name> ::std::convert::From<#type_param>

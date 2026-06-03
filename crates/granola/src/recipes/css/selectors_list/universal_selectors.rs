@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `*, ::after, ::before` selectors list recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let list: CssSelectorsList<UniversalSelectors> = CssSelectorsList::from_cookbook();
 ///

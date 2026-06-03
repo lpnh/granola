@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `appearance` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_appearance: CssAppearance = CssAppearance::new("button");
+/// let css_appearance = CssAppearance::new().content("button");
 ///
 /// assert_eq!(css_appearance.bake(), "appearance: button;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// appearance: {{ value }};
+/// appearance: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = AppearanceRecipe)]
+#[recipe(name = AppearanceRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssAppearance<R: AppearanceRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: AppearanceRecipe> CssAppearance<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: AppearanceRecipe> From<CssAppearance<R>> for CssDeclaration {
     fn from(css_appearance: CssAppearance<R>) -> Self {
-        Self::new("appearance", css_appearance.value)
+        Self::new("appearance", css_appearance.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssAppearance<R>> for CssDeclarationsBlock<B>
-where
-    R: AppearanceRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: AppearanceRecipe> From<CssAppearance<R>> for CssDeclarationsBlock {
     fn from(css_appearance: CssAppearance<R>) -> Self {
         Self::new().push(css_appearance)
     }

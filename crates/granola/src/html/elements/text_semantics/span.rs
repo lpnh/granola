@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let span: HtmlSpan = HtmlSpan::empty().id("content_span");
+/// let span = HtmlSpan::new().id("content_span");
 ///
 /// assert_eq!(span.bake(), r#"<span id="content_span"></span>"#);
 /// ```
@@ -20,7 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let span: HtmlSpan = HtmlSpan::new("aesthetic").class("tracking-widest");
+/// let span = HtmlSpan::new()
+///     .content("aesthetic")
+///     .class("tracking-widest");
 ///
 /// assert_eq!(
 ///     span.bake(),
@@ -78,18 +80,18 @@ pub struct HtmlSpan<R: SpanRecipe = ()> {
 #[macro_export]
 macro_rules! span {
     () => {
-        $crate::html::HtmlSpan::<()>::empty()
+        $crate::html::HtmlSpan::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSpan::<()>::new($content)
+        $crate::html::HtmlSpan::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSpan::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSpan::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSpan::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSpan::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSpan::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSpan::new().content($crate::bake_inline![$($content),+])
     };
 }

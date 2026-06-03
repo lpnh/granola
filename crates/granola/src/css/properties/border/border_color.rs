@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `border-color` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_border_color: CssBorderColor = CssBorderColor::new("currentcolor");
+/// let css_border_color = CssBorderColor::new().content("currentcolor");
 ///
 /// assert_eq!(css_border_color.bake(), "border-color: currentcolor;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// border-color: {{ value }};
+/// border-color: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BorderColorRecipe)]
+#[recipe(name = BorderColorRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssBorderColor<R: BorderColorRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: BorderColorRecipe> CssBorderColor<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: BorderColorRecipe> From<CssBorderColor<R>> for CssDeclaration {
     fn from(css_border_color: CssBorderColor<R>) -> Self {
-        Self::new("border-color", css_border_color.value)
+        Self::new("border-color", css_border_color.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssBorderColor<R>> for CssDeclarationsBlock<B>
-where
-    R: BorderColorRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: BorderColorRecipe> From<CssBorderColor<R>> for CssDeclarationsBlock {
     fn from(css_border_color: CssBorderColor<R>) -> Self {
         Self::new().push(css_border_color)
     }

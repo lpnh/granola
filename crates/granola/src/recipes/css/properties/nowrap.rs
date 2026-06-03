@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `nowrap` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_white_space: CssWhiteSpace<Nowrap> = CssWhiteSpace::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Nowrap;
 
 impl WhiteSpaceRecipe for Nowrap {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "nowrap".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "nowrap".into();
     }
 }

@@ -3,9 +3,9 @@ use crate::prelude::*;
 /// The `formmethod="dialog"` recipe.
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let button: HtmlButton<FormmethodDialog> = HtmlButton::new("Ok");
+/// let button = HtmlButton::from(FormmethodDialog).content("Ok");
 ///
 /// let input: HtmlInput<FormmethodDialog> = HtmlInput::from_type("submit").value("Ok");
 ///

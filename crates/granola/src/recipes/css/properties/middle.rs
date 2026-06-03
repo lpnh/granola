@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `middle` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_vertical_align: CssVerticalAlign<Middle> = CssVerticalAlign::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Middle;
 
 impl VerticalAlignRecipe for Middle {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "middle".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "middle".into();
     }
 }

@@ -1,13 +1,13 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `h1, h2, h3, h4, h5, h6` font reset rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<AllHeadingsFontReset> = CssRule::from_cookbook();
+/// let rule = CssRule::from(AllHeadingsFontReset);
 ///
 /// assert_eq!(
 ///     rule.bake(),
@@ -27,13 +27,13 @@ pub struct AllHeadingsFontReset;
 
 impl RuleRecipe for AllHeadingsFontReset {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelectorsList::<AllHeadings>::from_cookbook().bake_recipe();
+        *selectors_list = CssSelectorsList::from(AllHeadings).bake_recipe();
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssFontSize::<Inherit>::from_cookbook().into(),
-            CssFontWeight::<Inherit>::from_cookbook().into(),
+            CssFontSize::from(Inherit).into(),
+            CssFontWeight::from(Inherit).into(),
         ];
     }
 }

@@ -2,7 +2,7 @@
 // Source: https://www.joshwcomeau.com/css/custom-css-reset/
 // Released to the public domain by the author
 
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The "Custom CSS Reset" stylesheet recipe.
 ///
@@ -11,7 +11,7 @@ use crate::{recipes::*, prelude::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let stylesheet: CssStylesheet<JoshWComeau> = CssStylesheet::from_cookbook();
 ///
@@ -104,64 +104,92 @@ impl StylesheetRecipe for JoshWComeau {
 }
 
 fn default_margin_reset() -> CssStatement {
-    CssRule::<()>::new("*:not(dialog)", CssMargin::<()>::new("0")).into()
+    CssRule::new()
+        .selectors_list("*:not(dialog)")
+        .declarations_block(CssMargin::new().content("0"))
+        .into()
 }
 
 fn keyword_animations() -> CssStatement {
-    let inner_rule = CssRule::<()>::new("html", CssInterpolateSize::<AllowKeywords>::from_cookbook());
+    let inner_rule = CssRule::new()
+        .selectors_list("html")
+        .declarations_block(CssInterpolateSize::from(AllowKeywords));
 
-    CssAtRule::<()>::new("media", "(prefers-reduced-motion: no-preference)")
+    CssAtRule::new()
+        .identifier("media")
+        .rule("(prefers-reduced-motion: no-preference)")
         .block(inner_rule)
         .into()
 }
 
 fn body_defaults() -> CssStatement {
     let declarations_block: [CssDeclaration; 2] = [
-        CssLineHeight::<()>::new("1.5").into(),
+        CssLineHeight::new().content("1.5").into(),
         ("-webkit-font-smoothing", "antialiased").into(),
     ];
 
-    CssRule::<()>::new("body", declarations_block).into()
+    CssRule::new()
+        .selectors_list("body")
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn media_defaults() -> CssStatement {
-    let selectors_list = CssSelectorsList::<MediaSelectors>::from_cookbook().bake_recipe();
+    let selectors_list = CssSelectorsList::from(MediaSelectors).bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
         CssDisplay::<Block>::from_cookbook().into(),
-        CssMaxWidth::<()>::new("100%").into(),
+        CssMaxWidth::new().content("100%").into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn form_controls_font_inherit() -> CssStatement {
     let selectors_list = CssSelectorsList::<FormControls>::from_cookbook().bake_recipe();
     let declarations_block = CssFont::<Inherit>::from_cookbook();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn text_overflow_reset() -> CssStatement {
     let selectors_list = CssSelectorsList::<AllHeadingsExt>::from_cookbook().bake_recipe();
     let declarations_block = CssOverflowWrap::<BreakWord>::from_cookbook();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn paragraph_text_wrap() -> CssStatement {
-    CssRule::<()>::new("p", CssTextWrap::<Pretty>::from_cookbook()).into()
+    CssRule::new()
+        .selectors_list("p")
+        .declarations_block(CssTextWrap::from(Pretty))
+        .into()
 }
 
 fn headings_text_wrap() -> CssStatement {
     let selectors_list = CssSelectorsList::<AllHeadings>::from_cookbook().bake_recipe();
     let declarations_block = CssTextWrap::<Balance>::from_cookbook();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn root_stacking_context() -> CssStatement {
     let selectors_list: CssSelectorsList = ["#root", "#__next"].into();
     let declarations_block = CssIsolation::<Isolate>::from_cookbook();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }

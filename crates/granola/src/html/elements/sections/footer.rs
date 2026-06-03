@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let footer: HtmlFooter = HtmlFooter::empty().id("footer");
+/// let footer = HtmlFooter::new().id("footer");
 ///
 /// assert_eq!(footer.bake(), r#"<footer id="footer"></footer>"#);
 /// ```
@@ -20,10 +20,10 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let content: HtmlSmall = HtmlSmall::new("&copy; 2026 Oats &amp; Ends Café");
-/// let paragraph: HtmlP = HtmlP::new(content);
+/// let content = HtmlSmall::new().content("&copy; 2026 Oats &amp; Ends Café");
+/// let paragraph = HtmlP::new().content(content);
 ///
-/// let footer: HtmlFooter = HtmlFooter::new(bake_newline!(paragraph));
+/// let footer = HtmlFooter::new().content(bake_newline!(paragraph));
 ///
 /// assert_eq!(
 ///     footer.bake(),
@@ -87,19 +87,19 @@ pub struct HtmlFooter<R: FooterRecipe = ()> {
 #[macro_export]
 macro_rules! footer {
     () => {
-        $crate::html::HtmlFooter::<()>::empty()
+        $crate::html::HtmlFooter::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlFooter::<()>::new($content)
+        $crate::html::HtmlFooter::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlFooter::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlFooter::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlFooter::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlFooter::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlFooter::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlFooter::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The universal reset rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<UniversalReset> = CssRule::from_cookbook();
 ///
@@ -32,8 +32,11 @@ impl RuleRecipe for UniversalReset {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        BoxSizingBorderBox::declarations_recipe(&mut properties_list.declarations);
-        MarginPaddingReset::declarations_recipe(&mut properties_list.declarations);
-        BorderReset::declarations_recipe(&mut properties_list.declarations);
+        properties_list.declarations.extend([
+            CssBoxSizing::from(BorderBox).into(),
+            CssMargin::new().content("0").into(),
+            CssPadding::new().content("0").into(),
+            CssBorder::from(Solid).content("0").into(),
+        ])
     }
 }

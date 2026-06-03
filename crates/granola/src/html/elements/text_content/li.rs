@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let li: HtmlLi = HtmlLi::empty().id("list_item");
+/// let li = HtmlLi::new().id("list_item");
 ///
 /// assert_eq!(li.bake(), r#"<li id="list_item"></li>"#);
 /// ```
@@ -20,8 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let sugar: HtmlLi = HtmlLi::new("sugar");
-/// let spice: HtmlLi = HtmlLi::new("spice");
+/// let sugar = HtmlLi::new().content("sugar");
+/// let spice = HtmlLi::new().content("spice");
 ///
 /// let items = bake_block![sugar, spice];
 ///
@@ -163,19 +163,19 @@ impl From<HtmlLi> for ListItems {
 #[macro_export]
 macro_rules! li {
     () => {
-        $crate::html::HtmlLi::<()>::empty()
+        $crate::html::HtmlLi::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlLi::<()>::new($content)
+        $crate::html::HtmlLi::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlLi::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlLi::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlLi::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlLi::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlLi::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlLi::new().content($crate::bake_inline![$($content),+])
     };
 }

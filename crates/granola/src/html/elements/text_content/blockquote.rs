@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let blockquote: HtmlBlockquote = HtmlBlockquote::empty().id("block_quotation");
+/// let blockquote = HtmlBlockquote::new().id("block_quotation");
 ///
 /// assert_eq!(
 ///     blockquote.bake(),
@@ -30,9 +30,9 @@ use crate::{filters, prelude::*};
 ///   "while a text representation of the source can be given using the &lt;cite&gt; element.",
 /// ];
 ///
-/// let paragraph: HtmlP = HtmlP::new(content);
+/// let paragraph = HtmlP::new().content(content);
 ///
-/// let blockquote: HtmlBlockquote = HtmlBlockquote::new(paragraph)
+/// let blockquote = HtmlBlockquote::new().content(paragraph)
 ///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote");
 ///
 /// assert_eq!(blockquote.bake(),
@@ -159,18 +159,18 @@ impl<R: BlockquoteRecipe> HasBlockquoteAttrs for HtmlBlockquote<R> {
 #[macro_export]
 macro_rules! blockquote {
     () => {
-        $crate::html::HtmlBlockquote::<()>::empty()
+        $crate::html::HtmlBlockquote::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlBlockquote::<()>::new($content)
+        $crate::html::HtmlBlockquote::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlBlockquote::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlBlockquote::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlBlockquote::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlBlockquote::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlBlockquote::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlBlockquote::new().content($crate::bake_inline![$($content),+])
     };
 }

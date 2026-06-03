@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `summary { display: list-item }` rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<SummaryDisplay> = CssRule::from_cookbook();
 ///

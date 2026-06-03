@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `font-feature-settings` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_font_feature_settings: CssFontFeatureSettings = CssFontFeatureSettings::new("inherit");
+/// let css_font_feature_settings = CssFontFeatureSettings::new().content("inherit");
 ///
 /// assert_eq!(
 ///     css_font_feature_settings.bake(),
@@ -23,36 +23,26 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// font-feature-settings: {{ value }};
+/// font-feature-settings: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontFeatureSettingsRecipe)]
+#[recipe(name = FontFeatureSettingsRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFontFeatureSettings<R: FontFeatureSettingsRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FontFeatureSettingsRecipe> CssFontFeatureSettings<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FontFeatureSettingsRecipe> From<CssFontFeatureSettings<R>> for CssDeclaration {
     fn from(css_font_feature_settings: CssFontFeatureSettings<R>) -> Self {
-        Self::new("font-feature-settings", css_font_feature_settings.value)
+        Self::new(
+            "font-feature-settings",
+            css_font_feature_settings.bake_recipe().content,
+        )
     }
 }
 
-impl<R, B> From<CssFontFeatureSettings<R>> for CssDeclarationsBlock<B>
-where
-    R: FontFeatureSettingsRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FontFeatureSettingsRecipe> From<CssFontFeatureSettings<R>> for CssDeclarationsBlock {
     fn from(css_font_feature_settings: CssFontFeatureSettings<R>) -> Self {
         Self::new().push(css_font_feature_settings)
     }

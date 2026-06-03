@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let summary: HtmlSummary = HtmlSummary::empty().id("disclosure_summary");
+/// let summary = HtmlSummary::new().id("disclosure_summary");
 ///
 /// assert_eq!(
 ///     summary.bake(),
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let summary: HtmlSummary = HtmlSummary::new("Don't forget");
+/// let summary = HtmlSummary::new().content("Don't forget");
 ///
 /// assert_eq!(summary.bake(), r#"<summary>Don't forget</summary>"#);
 /// ```
@@ -75,19 +75,19 @@ pub struct HtmlSummary<R: SummaryRecipe = ()> {
 #[macro_export]
 macro_rules! summary {
     () => {
-        $crate::html::HtmlSummary::<()>::empty()
+        $crate::html::HtmlSummary::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSummary::<()>::new($content)
+        $crate::html::HtmlSummary::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSummary::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSummary::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSummary::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSummary::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSummary::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSummary::new().content($crate::bake_inline![$($content),+])
     };
 }

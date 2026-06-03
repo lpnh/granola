@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `cursor` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_cursor: CssCursor = CssCursor::new("pointer");
+/// let css_cursor = CssCursor::new().content("pointer");
 ///
 /// assert_eq!(css_cursor.bake(), "cursor: pointer;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// cursor: {{ value }};
+/// cursor: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = CursorRecipe)]
+#[recipe(name = CursorRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssCursor<R: CursorRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: CursorRecipe> CssCursor<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclaration {
     fn from(css_cursor: CssCursor<R>) -> Self {
-        Self::new("cursor", css_cursor.value)
+        Self::new("cursor", css_cursor.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssCursor<R>> for CssDeclarationsBlock<B>
-where
-    R: CursorRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclarationsBlock {
     fn from(css_cursor: CssCursor<R>) -> Self {
         Self::new().push(css_cursor)
     }

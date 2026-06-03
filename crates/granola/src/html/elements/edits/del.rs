@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let del: HtmlDel = HtmlDel::empty().id("deleted_text");
+/// let del = HtmlDel::new().id("deleted_text");
 ///
 /// assert_eq!(del.bake(), r#"<del id="deleted_text"></del>"#);
 /// ```
@@ -20,7 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let del: HtmlDel = HtmlDel::new(bake_newline!("try!"))
+/// let del = HtmlDel::new()
+///     .content(bake_newline!("try!"))
 ///     .datetime("2019-11-07")
 ///     .cite("https://github.com/rust-lang/rust/pull/62672");
 ///
@@ -141,35 +142,35 @@ impl<R: DelRecipe> HasDelAttrs for HtmlDel<R> {
 #[macro_export]
 macro_rules! del {
     () => {
-        $crate::html::HtmlDel::<()>::empty()
+        $crate::html::HtmlDel::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDel::<()>::new($content)
+        $crate::html::HtmlDel::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDel::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDel::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDel::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDel::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDel::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDel::new().content($crate::bake_inline![$($content),+])
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::new($content)
+        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
     };
     (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

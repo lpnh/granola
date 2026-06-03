@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let q: HtmlQ = HtmlQ::empty().id("inline_quotation");
+/// let q = HtmlQ::new().id("inline_quotation");
 ///
 /// assert_eq!(q.bake(), r#"<q id="inline_quotation"></q>"#);
 /// ```
@@ -20,10 +20,11 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let q: HtmlQ = HtmlQ::new(bake_newline!(
-///     "This element is intended for short quotations"
-/// ))
-/// .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
+/// let q = HtmlQ::new()
+///     .content(bake_newline!(
+///         "This element is intended for short quotations"
+///     ))
+///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
 ///
 /// assert_eq!(
 ///     q.bake(),
@@ -131,19 +132,19 @@ impl<R: QRecipe> HasQAttrs for HtmlQ<R> {
 #[macro_export]
 macro_rules! q {
     () => {
-        $crate::html::HtmlQ::<()>::empty()
+        $crate::html::HtmlQ::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlQ::<()>::new($content)
+        $crate::html::HtmlQ::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlQ::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlQ::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlQ::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlQ::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlQ::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlQ::new().content($crate::bake_inline![$($content),+])
     };
 }

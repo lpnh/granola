@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let search: HtmlSearch = HtmlSearch::empty().id("generic_search");
+/// let search = HtmlSearch::new().id("generic_search");
 ///
 /// assert_eq!(search.bake(), r#"<search id="generic_search"></search>"#);
 /// ```
@@ -20,17 +20,21 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let label: HtmlLabel = HtmlLabel::new("Search the haystack").for_id("query");
-/// let input: HtmlInput = HtmlInput::empty()
+/// let label = HtmlLabel::new()
+///     .content("Search the haystack")
+///     .for_id("query");
+/// let input = HtmlInput::new()
 ///     .input_type("search")
 ///     .id("query")
 ///     .name("q")
 ///     .placeholder("needle");
-/// let button: HtmlButton = HtmlButton::new("Search");
+/// let button = HtmlButton::new().content("Search");
 ///
-/// let form: HtmlForm = HtmlForm::new(bake_block![label, input, button]).action("/search");
+/// let form = HtmlForm::new()
+///     .content(bake_block![label, input, button])
+///     .action("/search");
 ///
-/// let search: HtmlSearch = HtmlSearch::new(form);
+/// let search = HtmlSearch::new().content(form);
 ///
 /// assert_eq!(
 ///     search.bake(),
@@ -110,19 +114,19 @@ pub struct HtmlSearch<R: SearchRecipe = ()> {
 #[macro_export]
 macro_rules! search {
     () => {
-        $crate::html::HtmlSearch::<()>::empty()
+        $crate::html::HtmlSearch::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSearch::<()>::new($content)
+        $crate::html::HtmlSearch::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSearch::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSearch::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSearch::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSearch::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSearch::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSearch::new().content($crate::bake_inline![$($content),+])
     };
 }

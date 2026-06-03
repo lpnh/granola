@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let em: HtmlEm = HtmlEm::empty().id("emphasis");
+/// let em = HtmlEm::new().id("emphasis");
 ///
 /// assert_eq!(em.bake(), r#"<em id="emphasis"></em>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let owned: HtmlEm = HtmlEm::new("owned");
+/// let owned = HtmlEm::new().content("owned");
 /// let borrow_checker = bake_inline!("I never said he ", owned, " it.");
 ///
 /// assert_eq!(borrow_checker, r#"I never said he <em>owned</em> it."#);
@@ -74,18 +74,18 @@ pub struct HtmlEm<R: EmRecipe = ()> {
 #[macro_export]
 macro_rules! em {
     () => {
-        $crate::html::HtmlEm::<()>::empty()
+        $crate::html::HtmlEm::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlEm::<()>::new($content)
+        $crate::html::HtmlEm::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlEm::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlEm::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlEm::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlEm::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlEm::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlEm::new().content($crate::bake_inline![$($content),+])
     };
 }

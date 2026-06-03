@@ -5,9 +5,10 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let viewport: HtmlMeta<NameViewport> = HtmlMeta::new("width=device-width, initial-scale=1");
+/// let viewport: HtmlMeta<NameViewport> =
+///     HtmlMeta::from_content("width=device-width, initial-scale=1");
 ///
 /// assert_eq!(
 ///     viewport.bake(),

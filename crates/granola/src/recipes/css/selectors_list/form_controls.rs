@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let selectors_list: CssSelectorsList<FormControls> = CssSelectorsList::from_cookbook();
 ///

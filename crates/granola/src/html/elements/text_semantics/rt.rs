@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let rt: HtmlRt = HtmlRt::empty().id("ruby_text");
+/// let rt = HtmlRt::new().id("ruby_text");
 ///
 /// assert_eq!(rt.bake(), r#"<rt id="ruby_text"></rt>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let tori: HtmlRt = HtmlRt::new("tori");
+/// let tori = HtmlRt::new().content("tori");
 ///
 /// assert_eq!(tori.bake(), r#"<rt>tori</rt>"#);
 /// ```
@@ -72,19 +72,19 @@ pub struct HtmlRt<R: RtRecipe = ()> {
 #[macro_export]
 macro_rules! rt {
     () => {
-        $crate::html::HtmlRt::<()>::empty()
+        $crate::html::HtmlRt::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlRt::<()>::new($content)
+        $crate::html::HtmlRt::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlRt::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlRt::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlRt::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlRt::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlRt::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlRt::new().content($crate::bake_inline![$($content),+])
     };
 }

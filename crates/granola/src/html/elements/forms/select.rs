@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let select: HtmlSelect = HtmlSelect::empty().id("html_select");
+/// let select = HtmlSelect::new().id("html_select");
 ///
 /// assert_eq!(select.bake(), r#"<select id="html_select"></select>"#);
 /// ```
@@ -20,10 +20,12 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let opt_1: HtmlOption = HtmlOption::new("Salmon").value("salmon");
-/// let opt_2: HtmlOption = HtmlOption::new("Turbot").value("turbot");
+/// let opt_1 = HtmlOption::new().content("Salmon").value("salmon");
+/// let opt_2 = HtmlOption::new().content("Turbot").value("turbot");
 ///
-/// let select: HtmlSelect = HtmlSelect::new(bake_block![opt_1, opt_2]).name("fishes");
+/// let select = HtmlSelect::new()
+///     .content(bake_block![opt_1, opt_2])
+///     .name("fishes");
 ///
 /// assert_eq!(
 ///     select.bake(),
@@ -198,18 +200,18 @@ impl<R: SelectRecipe> HasSelectAttrs for HtmlSelect<R> {
 #[macro_export]
 macro_rules! select {
     () => {
-        $crate::html::HtmlSelect::<()>::empty()
+        $crate::html::HtmlSelect::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSelect::<()>::new($content)
+        $crate::html::HtmlSelect::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSelect::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSelect::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSelect::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSelect::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSelect::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSelect::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let code: HtmlCode = HtmlCode::empty().id("inline_code");
+/// let code = HtmlCode::new().id("inline_code");
 ///
 /// assert_eq!(code.bake(), r#"<code id="inline_code"></code>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let code: HtmlCode = HtmlCode::new("todo!()");
+/// let code = HtmlCode::new().content("todo!()");
 ///
 /// assert_eq!(code.bake(), r#"<code>todo!()</code>"#);
 /// ```
@@ -72,19 +72,19 @@ pub struct HtmlCode<R: CodeRecipe = ()> {
 #[macro_export]
 macro_rules! code {
     () => {
-        $crate::html::HtmlCode::<()>::empty()
+        $crate::html::HtmlCode::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlCode::<()>::new($content)
+        $crate::html::HtmlCode::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlCode::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlCode::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlCode::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlCode::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlCode::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlCode::new().content($crate::bake_inline![$($content),+])
     };
 }

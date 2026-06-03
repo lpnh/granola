@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dt: HtmlDt = HtmlDt::empty().id("description_term");
+/// let dt = HtmlDt::new().id("description_term");
 ///
 /// assert_eq!(dt.bake(), r#"<dt id="description_term"></dt>"#);
 /// ```
@@ -20,8 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dt: HtmlDt = HtmlDt::new("Pålegg");
-/// let dd: HtmlDd = HtmlDd::new("Anything and everything you might put on a slice of bread.");
+/// let dt = HtmlDt::new().content("Pålegg");
+/// let dd = HtmlDd::new().content("Anything and everything you might put on a slice of bread.");
 ///
 /// let term = bake_block![dt, dd];
 ///
@@ -86,18 +86,18 @@ pub struct HtmlDt<R: DtRecipe = ()> {
 #[macro_export]
 macro_rules! dt {
     () => {
-        $crate::html::HtmlDt::<()>::empty()
+        $crate::html::HtmlDt::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDt::<()>::new($content)
+        $crate::html::HtmlDt::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDt::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDt::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDt::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDt::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDt::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDt::new().content($crate::bake_inline![$($content),+])
     };
 }

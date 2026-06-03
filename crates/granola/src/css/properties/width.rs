@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `width` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_width: CssWidth = CssWidth::new("100%");
+/// let css_width = CssWidth::new().content("100%");
 ///
 /// assert_eq!(css_width.bake(), "width: 100%;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// width: {{ value }};
+/// width: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = WidthRecipe)]
+#[recipe(name = WidthRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssWidth<R: WidthRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: WidthRecipe> CssWidth<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: WidthRecipe> From<CssWidth<R>> for CssDeclaration {
     fn from(css_width: CssWidth<R>) -> Self {
-        Self::new("width", css_width.value)
+        Self::new("width", css_width.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssWidth<R>> for CssDeclarationsBlock<B>
-where
-    R: WidthRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: WidthRecipe> From<CssWidth<R>> for CssDeclarationsBlock {
     fn from(css_width: CssWidth<R>) -> Self {
         Self::new().push(css_width)
     }

@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<SupVerticalPos> = CssRule::from_cookbook();
 ///
@@ -25,6 +25,6 @@ impl RuleRecipe for SupVerticalPos {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssTop::<()>::new("-0.5em").into()];
+        properties_list.push_mut(CssTop::new().content("-0.5em"));
     }
 }

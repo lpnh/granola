@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let main: HtmlMain = HtmlMain::empty().id("main");
+/// let main = HtmlMain::new().id("main");
 ///
 /// assert_eq!(main.bake(), r#"<main id="main"></main>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let main: HtmlMain = HtmlMain::new("hello, world!");
+/// let main = HtmlMain::new().content("hello, world!");
 ///
 /// assert_eq!(main.bake(), r#"<main>hello, world!</main>"#);
 /// ```
@@ -69,19 +69,19 @@ pub struct HtmlMain<R: MainRecipe = ()> {
 #[macro_export]
 macro_rules! main {
     () => {
-        $crate::html::HtmlMain::<()>::empty()
+        $crate::html::HtmlMain::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlMain::<()>::new($content)
+        $crate::html::HtmlMain::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlMain::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlMain::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlMain::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlMain::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlMain::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlMain::new().content($crate::bake_inline![$($content),+])
     };
 }

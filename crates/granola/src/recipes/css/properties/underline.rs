@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `underline` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_decoration: CssTextDecoration<Underline> = CssTextDecoration::from_cookbook();
 ///
@@ -17,13 +15,13 @@ use crate::prelude::*;
 pub struct Underline;
 
 impl TextDecorationRecipe for Underline {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "underline".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "underline".into();
     }
 }
 
 impl WebkitTextDecorationRecipe for Underline {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "underline".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "underline".into();
     }
 }

@@ -14,10 +14,14 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let at_rule: CssAtRule = CssAtRule::new("import", r#"url("layout.css")"#);
-/// let rule: CssRule = CssRule::new("p", ("color", "rebeccapurple"));
+/// let at_rule = CssAtRule::new()
+///     .identifier("import")
+///     .rule(r#"url("layout.css")"#);
+/// let rule = CssRule::new()
+///     .selectors_list("p")
+///     .declarations_block(("color", "rebeccapurple"));
 ///
-/// let css_stylesheet: CssStylesheet = CssStylesheet::new().push(at_rule).push(rule);
+/// let css_stylesheet = CssStylesheet::new().push(at_rule).push(rule);
 ///
 /// assert_eq!(
 ///     css_stylesheet.bake(),
@@ -73,10 +77,6 @@ pub struct CssStylesheet<R: StylesheetRecipe = ()> {
 }
 
 impl<R: StylesheetRecipe> CssStylesheet<R> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn push(mut self, rule: impl Into<CssStatement>) -> Self {
         self.statements.push(rule.into());
         self
@@ -277,7 +277,7 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 #[macro_export]
 macro_rules! stylesheet {
     () => {
-        $crate::css::CssStylesheet::<()>::new()
+        $crate::css::CssStylesheet::new()
     };
     ($rule: expr $(,)?) => {
         $crate::css::CssStylesheet::from($rule)

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `font-weight` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_font_weight: CssFontWeight = CssFontWeight::new("500");
+/// let css_font_weight = CssFontWeight::new().content("500");
 ///
 /// assert_eq!(css_font_weight.bake(), "font-weight: 500;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// font-weight: {{ value }};
+/// font-weight: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontWeightRecipe)]
+#[recipe(name = FontWeightRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFontWeight<R: FontWeightRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FontWeightRecipe> CssFontWeight<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclaration {
     fn from(css_font_weight: CssFontWeight<R>) -> Self {
-        Self::new("font-weight", css_font_weight.value)
+        Self::new("font-weight", css_font_weight.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssFontWeight<R>> for CssDeclarationsBlock<B>
-where
-    R: FontWeightRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclarationsBlock {
     fn from(css_font_weight: CssFontWeight<R>) -> Self {
         Self::new().push(css_font_weight)
     }

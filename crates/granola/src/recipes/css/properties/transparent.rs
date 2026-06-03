@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `transparent` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_background_color: CssBackgroundColor<Transparent> = CssBackgroundColor::from_cookbook();
 ///
@@ -20,7 +18,7 @@ use crate::prelude::*;
 pub struct Transparent;
 
 impl BackgroundColorRecipe for Transparent {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "transparent".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "transparent".into();
     }
 }

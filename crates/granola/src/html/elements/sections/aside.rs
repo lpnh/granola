@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let aside: HtmlAside = HtmlAside::empty().id("aside");
+/// let aside = HtmlAside::new().id("aside");
 ///
 /// assert_eq!(aside.bake(), r#"<aside id="aside"></aside>"#);
 /// ```
@@ -20,10 +20,13 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let tip: HtmlStrong = HtmlStrong::new("Tip:");
-/// let content: HtmlP = HtmlP::new(bake_inline![tip, " trust your senses more than the timer."]);
+/// let tip = HtmlStrong::new().content("Tip:");
+/// let content =
+///     HtmlP::new().content(bake_inline![tip, " trust your senses more than the timer."]);
 ///
-/// let aside: HtmlAside = HtmlAside::new(bake_newline!(content)).role("note");
+/// let aside = HtmlAside::new()
+///     .content(bake_newline!(content))
+///     .role("note");
 ///
 /// assert_eq!(
 ///     aside.bake(),
@@ -86,18 +89,18 @@ pub struct HtmlAside<R: AsideRecipe = ()> {
 #[macro_export]
 macro_rules! aside {
     () => {
-        $crate::html::HtmlAside::<()>::empty()
+        $crate::html::HtmlAside::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlAside::<()>::new($content)
+        $crate::html::HtmlAside::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlAside::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlAside::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlAside::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlAside::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlAside::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlAside::new().content($crate::bake_inline![$($content),+])
     };
 }

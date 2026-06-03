@@ -12,14 +12,15 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let video: HtmlVideo = HtmlVideo::empty().id("video_embed");
+/// let video = HtmlVideo::new().id("video_embed");
 ///
 /// assert_eq!(video.bake(), r#"<video id="video_embed"></video>"#);
 /// ```
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let video: HtmlVideo = HtmlVideo::from_src("Never_Gonna_Give_You_Up.mp4")
+/// let video = HtmlVideo::new()
+///     .src("Never_Gonna_Give_You_Up.mp4")
 ///     .width(800)
 ///     .height(600)
 ///     .autoplay(true);
@@ -57,31 +58,9 @@ pub struct HtmlVideo<R: VideoRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: VideoRecipe> HtmlVideo<R> {
+impl HtmlVideo {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = VideoAttrs::default().src(src);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().src(src)
     }
 }
 
@@ -265,23 +244,23 @@ impl<R: VideoRecipe> HasVideoAttrs for HtmlVideo<R> {
 #[macro_export]
 macro_rules! video {
     () => {
-        $crate::html::HtmlVideo::<()>::empty()
+        $crate::html::HtmlVideo::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlVideo::<()>::new($content)
+        $crate::html::HtmlVideo::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlVideo::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlVideo::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlVideo::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlVideo::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlVideo::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlVideo::new().content($crate::bake_inline![$($content),+])
     };
 
     (@from_src $src: expr $(,)?) => {
-        $crate::html::HtmlVideo::<()>::from_src($src)
+        $crate::html::HtmlVideo::from_src($src)
     };
 }

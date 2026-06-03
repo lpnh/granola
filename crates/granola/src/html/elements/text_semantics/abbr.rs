@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let abbr: HtmlAbbr = HtmlAbbr::empty().id("abbreviation");
+/// let abbr = HtmlAbbr::new().id("abbreviation");
 ///
 /// assert_eq!(abbr.bake(), r#"<abbr id="abbreviation"></abbr>"#);
 /// ```
@@ -20,7 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let abbr: HtmlAbbr = HtmlAbbr::new("TMNT").title("Teenage Mutant Ninja Turtles");
+/// let abbr = HtmlAbbr::new()
+///     .content("TMNT")
+///     .title("Teenage Mutant Ninja Turtles");
 ///
 /// assert_eq!(
 ///     abbr.bake(),
@@ -78,35 +80,35 @@ pub struct HtmlAbbr<R: AbbrRecipe = ()> {
 #[macro_export]
 macro_rules! abbr {
     () => {
-        $crate::html::HtmlAbbr::<()>::empty()
+        $crate::html::HtmlAbbr::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlAbbr::<()>::new($content)
+        $crate::html::HtmlAbbr::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlAbbr::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlAbbr::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlAbbr::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlAbbr::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlAbbr::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlAbbr::new().content($crate::bake_inline![$($content),+])
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::new($content)
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
     };
     (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let caption: HtmlCaption = HtmlCaption::empty().id("table_caption");
+/// let caption = HtmlCaption::new().id("table_caption");
 ///
 /// assert_eq!(caption.bake(), r#"<caption id="table_caption"></caption>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let caption: HtmlCaption = HtmlCaption::new("Our favorites, yours to try.");
+/// let caption = HtmlCaption::new().content("Our favorites, yours to try.");
 ///
 /// assert_eq!(
 ///     caption.bake(),
@@ -75,18 +75,18 @@ pub struct HtmlCaption<R: CaptionRecipe = ()> {
 #[macro_export]
 macro_rules! caption {
     () => {
-        $crate::html::HtmlCaption::<()>::empty()
+        $crate::html::HtmlCaption::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlCaption::<()>::new($content)
+        $crate::html::HtmlCaption::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlCaption::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlCaption::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlCaption::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlCaption::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlCaption::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlCaption::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `-webkit-text-decoration` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css: CssWebkitTextDecoration = CssWebkitTextDecoration::new("none");
+/// let css = CssWebkitTextDecoration::new().content("none");
 ///
 /// assert_eq!(css.bake(), "-webkit-text-decoration: none;");
 /// ```
@@ -20,37 +20,27 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// -webkit-text-decoration: {{ value }};
+/// -webkit-text-decoration: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = WebkitTextDecorationRecipe)]
+#[recipe(name = WebkitTextDecorationRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssWebkitTextDecoration<R: WebkitTextDecorationRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: WebkitTextDecorationRecipe> CssWebkitTextDecoration<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: WebkitTextDecorationRecipe> From<CssWebkitTextDecoration<R>> for CssDeclaration {
-    fn from(css: CssWebkitTextDecoration<R>) -> Self {
-        Self::new("-webkit-text-decoration", css.value)
+    fn from(css_webkit_text_decoartion: CssWebkitTextDecoration<R>) -> Self {
+        Self::new(
+            "-webkit-text-decoration",
+            css_webkit_text_decoartion.bake_recipe().content,
+        )
     }
 }
 
-impl<R, B> From<CssWebkitTextDecoration<R>> for CssDeclarationsBlock<B>
-where
-    R: WebkitTextDecorationRecipe,
-    B: DeclarationsBlockRecipe,
-{
-    fn from(css: CssWebkitTextDecoration<R>) -> Self {
-        Self::new().push(css)
+impl<R: WebkitTextDecorationRecipe> From<CssWebkitTextDecoration<R>> for CssDeclarationsBlock {
+    fn from(css_webkit_text_decoartion: CssWebkitTextDecoration<R>) -> Self {
+        Self::new().push(css_webkit_text_decoartion)
     }
 }

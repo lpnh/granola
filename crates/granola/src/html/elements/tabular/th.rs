@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let th: HtmlTh = HtmlTh::empty().id("table_header");
+/// let th = HtmlTh::new().id("table_header");
 ///
 /// assert_eq!(th.bake(), r#"<th id="table_header"></th>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let th: HtmlTh = HtmlTh::new("Hot chocolate").scope("row");
+/// let th = HtmlTh::new().content("Hot chocolate").scope("row");
 ///
 /// assert_eq!(th.bake(), r#"<th scope="row">Hot chocolate</th>"#);
 /// ```
@@ -160,19 +160,19 @@ impl<R: ThRecipe> HasThAttrs for HtmlTh<R> {
 #[macro_export]
 macro_rules! th {
     () => {
-        $crate::html::HtmlTh::<()>::empty()
+        $crate::html::HtmlTh::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTh::<()>::new($content)
+        $crate::html::HtmlTh::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTh::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTh::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTh::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTh::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTh::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTh::new().content($crate::bake_inline![$($content),+])
     };
 }

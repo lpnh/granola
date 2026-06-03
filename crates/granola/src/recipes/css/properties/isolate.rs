@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `isolate` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_isolation: CssIsolation<Isolate> = CssIsolation::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Isolate;
 
 impl IsolationRecipe for Isolate {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "isolate".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "isolate".into();
     }
 }

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `interpolate-size` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_interpolate_size: CssInterpolateSize = CssInterpolateSize::new("allow-keywords");
+/// let css_interpolate_size = CssInterpolateSize::new().content("allow-keywords");
 ///
 /// assert_eq!(
 ///     css_interpolate_size.bake(),
@@ -23,36 +23,26 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// interpolate-size: {{ value }};
+/// interpolate-size: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = InterpolateSizeRecipe)]
+#[recipe(name = InterpolateSizeRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssInterpolateSize<R: InterpolateSizeRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: InterpolateSizeRecipe> CssInterpolateSize<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: InterpolateSizeRecipe> From<CssInterpolateSize<R>> for CssDeclaration {
     fn from(css_interpolate_size: CssInterpolateSize<R>) -> Self {
-        Self::new("interpolate-size", css_interpolate_size.value)
+        Self::new(
+            "interpolate-size",
+            css_interpolate_size.bake_recipe().content,
+        )
     }
 }
 
-impl<R, B> From<CssInterpolateSize<R>> for CssDeclarationsBlock<B>
-where
-    R: InterpolateSizeRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: InterpolateSizeRecipe> From<CssInterpolateSize<R>> for CssDeclarationsBlock {
     fn from(css_interpolate_size: CssInterpolateSize<R>) -> Self {
         Self::new().push(css_interpolate_size)
     }

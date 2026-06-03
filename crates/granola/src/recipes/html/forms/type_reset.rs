@@ -5,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let button: HtmlButton<TypeReset> = HtmlButton::new("Clear");
+/// let button = HtmlButton::from(TypeReset).content("Clear");
 /// let input: HtmlInput<TypeReset> = HtmlInput::from_value("Clear");
 ///
 /// assert_eq!(button.bake(), r#"<button type="reset">Clear</button>"#);

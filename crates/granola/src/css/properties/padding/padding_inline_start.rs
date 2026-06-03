@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `padding-inline-start` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_padding_inline_start: CssPaddingInlineStart = CssPaddingInlineStart::new("20px");
+/// let css_padding_inline_start = CssPaddingInlineStart::new().content("20px");
 ///
 /// assert_eq!(
 ///     css_padding_inline_start.bake(),
@@ -23,36 +23,26 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// padding-inline-start: {{ value }};
+/// padding-inline-start: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = PaddingInlineStartRecipe)]
+#[recipe(name = PaddingInlineStartRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssPaddingInlineStart<R: PaddingInlineStartRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: PaddingInlineStartRecipe> CssPaddingInlineStart<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: PaddingInlineStartRecipe> From<CssPaddingInlineStart<R>> for CssDeclaration {
     fn from(css_padding_inline_start: CssPaddingInlineStart<R>) -> Self {
-        Self::new("padding-inline-start", css_padding_inline_start.value)
+        Self::new(
+            "padding-inline-start",
+            css_padding_inline_start.bake_recipe().content,
+        )
     }
 }
 
-impl<R, B> From<CssPaddingInlineStart<R>> for CssDeclarationsBlock<B>
-where
-    R: PaddingInlineStartRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: PaddingInlineStartRecipe> From<CssPaddingInlineStart<R>> for CssDeclarationsBlock {
     fn from(css_padding_inline_start: CssPaddingInlineStart<R>) -> Self {
         Self::new().push(css_padding_inline_start)
     }

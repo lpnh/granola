@@ -4,36 +4,36 @@ use crate::{Stats, bake_block, bake_block_naive, bake_naive, measure};
 
 pub fn root_empty() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
-        let charset: HtmlMeta = HtmlMeta::empty();
-        let viewport: HtmlMeta = HtmlMeta::empty();
-        let title: HtmlTitle = HtmlTitle::empty();
+        let charset = HtmlMeta::new();
+        let viewport = HtmlMeta::new();
+        let title = HtmlTitle::new();
 
-        let head: HtmlHead = HtmlHead::new(bake_block![charset, viewport, title]);
+        let head = HtmlHead::new().content(bake_block![charset, viewport, title]);
 
-        let span: HtmlSpan = HtmlSpan::empty();
-        let p: HtmlP = HtmlP::new(span);
-        let div: HtmlDiv = HtmlDiv::new(p);
+        let span = HtmlSpan::new();
+        let p = HtmlP::new().content(span);
+        let div = HtmlDiv::new().content(p);
 
-        let body: HtmlBody = HtmlBody::new(div);
+        let body = HtmlBody::new().content(div);
 
-        let html: HtmlRoot = HtmlRoot::new((head, body));
+        let html = HtmlRoot::new().content((head, body));
         html.bake()
     });
 
     let (naive_out, naive) = measure(|| {
-        let charset: HtmlMeta = HtmlMeta::empty();
-        let viewport: HtmlMeta = HtmlMeta::empty();
-        let title: HtmlTitle = HtmlTitle::empty();
+        let charset = HtmlMeta::new();
+        let viewport = HtmlMeta::new();
+        let title = HtmlTitle::new();
 
-        let head: HtmlHead = HtmlHead::new(bake_block_naive![charset, viewport, title]);
+        let head = HtmlHead::new().content(bake_block_naive![charset, viewport, title]);
 
-        let span: HtmlSpan = HtmlSpan::empty();
-        let p: HtmlP = HtmlP::new(span);
-        let div: HtmlDiv = HtmlDiv::new(p);
+        let span = HtmlSpan::new();
+        let p = HtmlP::new().content(span);
+        let div = HtmlDiv::new().content(p);
 
-        let body: HtmlBody = HtmlBody::new(div);
+        let body = HtmlBody::new().content(div);
 
-        let html: HtmlRoot = HtmlRoot::new((head, body));
+        let html = HtmlRoot::new().content((head, body));
         bake_naive(&html)
     });
 
@@ -44,40 +44,40 @@ pub fn root_empty() -> (Stats, Stats) {
 
 pub fn root_example() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
-        let charset: HtmlMeta = HtmlMeta::empty().charset();
-        let viewport: HtmlMeta = HtmlMeta::empty()
+        let charset: HtmlMeta = HtmlMeta::new().charset();
+        let viewport: HtmlMeta = HtmlMeta::new()
             .name("viewport")
             .content("width=device-width");
-        let title: HtmlTitle = HtmlTitle::new("Document title");
+        let title = HtmlTitle::new().content("Document title");
 
-        let head: HtmlHead = HtmlHead::new(bake_block![charset, viewport, title]);
+        let head = HtmlHead::new().content(bake_block![charset, viewport, title]);
 
-        let span: HtmlSpan = HtmlSpan::new("hello, world!");
-        let p: HtmlP = HtmlP::new(span).id("paragraph");
-        let div: HtmlDiv = HtmlDiv::new(p).class("container");
+        let span = HtmlSpan::new().content("hello, world!");
+        let p = HtmlP::new().content(span).id("paragraph");
+        let div = HtmlDiv::new().content(p).class("container");
 
-        let body: HtmlBody = HtmlBody::new(div);
+        let body = HtmlBody::new().content(div);
 
-        let html: HtmlRoot = HtmlRoot::new((head, body)).lang("en");
+        let html = HtmlRoot::new().content((head, body)).lang("en");
         html.bake()
     });
 
     let (naive_out, naive) = measure(|| {
-        let charset: HtmlMeta = HtmlMeta::empty().charset();
-        let viewport: HtmlMeta = HtmlMeta::empty()
+        let charset: HtmlMeta = HtmlMeta::new().charset();
+        let viewport: HtmlMeta = HtmlMeta::new()
             .name("viewport")
             .content("width=device-width");
-        let title: HtmlTitle = HtmlTitle::new("Document title");
+        let title = HtmlTitle::new().content("Document title");
 
-        let head: HtmlHead = HtmlHead::new(bake_block_naive![charset, viewport, title]);
+        let head = HtmlHead::new().content(bake_block_naive![charset, viewport, title]);
 
-        let span: HtmlSpan = HtmlSpan::new("hello, world!");
-        let p: HtmlP = HtmlP::new(span).id("paragraph");
-        let div: HtmlDiv = HtmlDiv::new(p).class("container");
+        let span = HtmlSpan::new().content("hello, world!");
+        let p = HtmlP::new().content(span).id("paragraph");
+        let div = HtmlDiv::new().content(p).class("container");
 
-        let body: HtmlBody = HtmlBody::new(div);
+        let body = HtmlBody::new().content(div);
 
-        let html: HtmlRoot = HtmlRoot::new((head, body)).lang("en");
+        let html = HtmlRoot::new().content((head, body)).lang("en");
         bake_naive(&html)
     });
 

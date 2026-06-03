@@ -11,7 +11,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let doctype: HtmlDoctype = HtmlDoctype::new();
+/// let doctype = HtmlDoctype::new();
 ///
 /// assert_eq!(doctype.bake(), r#"<!doctype html>"#);
 /// ```

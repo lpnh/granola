@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `height` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_height: CssHeight = CssHeight::new("auto");
+/// let css_height = CssHeight::new().content("auto");
 ///
 /// assert_eq!(css_height.bake(), "height: auto;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// height: {{ value }};
+/// height: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = HeightRecipe)]
+#[recipe(name = HeightRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssHeight<R: HeightRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: HeightRecipe> CssHeight<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: HeightRecipe> From<CssHeight<R>> for CssDeclaration {
     fn from(css_height: CssHeight<R>) -> Self {
-        Self::new("height", css_height.value)
+        Self::new("height", css_height.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssHeight<R>> for CssDeclarationsBlock<B>
-where
-    R: HeightRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: HeightRecipe> From<CssHeight<R>> for CssDeclarationsBlock {
     fn from(css_height: CssHeight<R>) -> Self {
         Self::new().push(css_height)
     }

@@ -1,4 +1,4 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `::-webkit-inner-spin-button, ::-webkit-outer-spin-button { height: auto
 /// }` rule recipe.
@@ -6,7 +6,7 @@ use crate::{recipes::*, prelude::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<SpinButtonHeight> = CssRule::from_cookbook();
 ///
@@ -27,6 +27,6 @@ impl RuleRecipe for SpinButtonHeight {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssHeight::<Auto>::from_cookbook().into()];
+        properties_list.declarations = vec![CssHeight::from(Auto).into()];
     }
 }

@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `none` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_border: CssBorder<None> = CssBorder::from_cookbook();
 ///
@@ -15,7 +13,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_box_shadow: CssBoxShadow<None> = CssBoxShadow::from_cookbook();
 ///
@@ -23,7 +21,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_list_style: CssListStyle<None> = CssListStyle::from_cookbook();
 ///
@@ -31,7 +29,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_decoration: CssTextDecoration<None> = CssTextDecoration::from_cookbook();
 ///
@@ -39,7 +37,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_size_adjust: CssTextSizeAdjust<None> = CssTextSizeAdjust::from_cookbook();
 ///
@@ -49,8 +47,8 @@ use crate::prelude::*;
 pub struct None;
 
 impl BorderRecipe for None {
-    fn content_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }
 
@@ -61,37 +59,37 @@ impl DisplayRecipe for None {
 }
 
 impl BoxShadowRecipe for None {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }
 
 impl ListStyleRecipe for None {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }
 
 impl TextDecorationRecipe for None {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }
 
 impl TextSizeAdjustRecipe for None {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }
 
 impl WebkitTextSizeAdjustRecipe for None {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }
 
 impl WebkitTextDecorationRecipe for None {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "none".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "none".into();
     }
 }

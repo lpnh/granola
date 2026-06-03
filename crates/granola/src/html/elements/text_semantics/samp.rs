@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let samp: HtmlSamp = HtmlSamp::empty().id("sample_output");
+/// let samp = HtmlSamp::new().id("sample_output");
 ///
 /// assert_eq!(samp.bake(), r#"<samp id="sample_output"></samp>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let error: HtmlSamp = HtmlSamp::new("No such file or directory");
+/// let error = HtmlSamp::new().content("No such file or directory");
 ///
 /// assert_eq!(error.bake(), r#"<samp>No such file or directory</samp>"#);
 /// ```
@@ -72,19 +72,19 @@ pub struct HtmlSamp<R: SampRecipe = ()> {
 #[macro_export]
 macro_rules! samp {
     () => {
-        $crate::html::HtmlSamp::<()>::empty()
+        $crate::html::HtmlSamp::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSamp::<()>::new($content)
+        $crate::html::HtmlSamp::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSamp::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSamp::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSamp::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSamp::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSamp::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSamp::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The universal reset `box-sizing: border-box` rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<BoxSizingReset> = CssRule::from_cookbook();
 ///
@@ -27,6 +27,6 @@ impl RuleRecipe for BoxSizingReset {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        BoxSizingBorderBox::declarations_recipe(&mut properties_list.declarations);
+        properties_list.push_mut(CssBoxSizing::from(BorderBox));
     }
 }

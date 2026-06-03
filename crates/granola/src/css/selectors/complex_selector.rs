@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let selector: CssComplexSelector = CssComplexSelector::new("form").child("input");
+/// let selector = CssComplexSelector::new().first("form").child("input");
 ///
 /// assert_eq!(selector.bake(), "form > input");
 /// ```
@@ -35,11 +35,18 @@ pub struct CssComplexSelector<R: ComplexSelectorRecipe = ()> {
 }
 
 impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
-    pub fn new(selector: impl Into<CssCompoundSelector>) -> Self {
-        Self {
-            first: selector.into(),
-            ..Default::default()
-        }
+    pub fn first(mut self, selector: impl Into<CssCompoundSelector>) -> Self {
+        self.first = selector.into();
+        self
+    }
+
+    pub fn combine(
+        mut self,
+        combinator: impl Into<CssCombinator>,
+        selector: impl Into<CssCompoundSelector>,
+    ) -> Self {
+        self.rest.push((combinator.into(), selector.into()));
+        self
     }
 
     /// Appends a selector after a descendant combinator (single whitespace) to
@@ -52,7 +59,7 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector: CssComplexSelector = CssComplexSelector::new("form").descendant("input");
+    /// let selector = CssComplexSelector::new().first("form").descendant("input");
     ///
     /// assert_eq!(selector.bake(), "form input");
     /// ```
@@ -71,7 +78,7 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector: CssComplexSelector = CssComplexSelector::new("details").child("summary");
+    /// let selector = CssComplexSelector::new().first("details").child("summary");
     ///
     /// assert_eq!(selector.bake(), "details > summary");
     /// ```
@@ -90,7 +97,9 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector: CssComplexSelector = CssComplexSelector::new("label").next_sibling("input");
+    /// let selector = CssComplexSelector::new()
+    ///     .first("label")
+    ///     .next_sibling("input");
     ///
     /// assert_eq!(selector.bake(), "label + input");
     /// ```
@@ -109,7 +118,9 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector: CssComplexSelector = CssComplexSelector::new("img").subsequent_sibling("p");
+    /// let selector = CssComplexSelector::new()
+    ///     .first("img")
+    ///     .subsequent_sibling("p");
     ///
     /// assert_eq!(selector.bake(), "img ~ p");
     /// ```
@@ -129,8 +140,9 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector: CssComplexSelector =
-    ///     CssComplexSelector::new("column-selector").column("cell-selector");
+    /// let selector: CssComplexSelector = CssComplexSelector::new()
+    ///     .first("column-selector")
+    ///     .column("cell-selector");
     ///
     /// assert_eq!(selector.bake(), "column-selector || cell-selector");
     /// ```
@@ -140,23 +152,15 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     }
 }
 
-impl<R, B> From<CssCompoundSelector<R>> for CssComplexSelector<B>
-where
-    R: CompoundSelectorRecipe,
-    B: ComplexSelectorRecipe,
-{
+impl<R: CompoundSelectorRecipe> From<CssCompoundSelector<R>> for CssComplexSelector {
     fn from(compound_selector: CssCompoundSelector<R>) -> Self {
-        Self::new(compound_selector.bake_recipe())
+        Self::new().first(compound_selector.bake_recipe())
     }
 }
 
-impl<R, B> From<CssSimpleSelector<R>> for CssComplexSelector<B>
-where
-    R: SimpleSelectorRecipe,
-    B: ComplexSelectorRecipe,
-{
+impl<R: SimpleSelectorRecipe> From<CssSimpleSelector<R>> for CssComplexSelector {
     fn from(simple_selector: CssSimpleSelector<R>) -> Self {
-        Self::new(simple_selector)
+        Self::new().first(simple_selector)
     }
 }
 
@@ -174,7 +178,7 @@ where
 #[macro_export]
 macro_rules! complex_selector {
     ($decl: expr $(,)?) => {
-        $crate::css::CssComplexSelector::<()>::new($decl)
+        $crate::css::CssComplexSelector::new().first($decl)
     };
 
     (@recipe $($r:ty),+) => {

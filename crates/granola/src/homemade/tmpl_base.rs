@@ -28,15 +28,18 @@ use crate::{prelude::*, recipes::*, template::*};
 /// ```rust
 /// use granola::{homemade::*, prelude::*, recipes::*, template::*};
 ///
-/// let meta: HtmlMeta<NameRobots> = HtmlMeta::new("noindex, nofollow");
-/// let title: HtmlTitle = HtmlTitle::new("Home");
+/// let meta: HtmlMeta<NameRobots> = HtmlMeta::from_content("noindex, nofollow");
+/// let title = HtmlTitle::new().content("Home");
 ///
-/// let css_rule: CssRule = CssRule::new("body", [("height", "100vh"), ("margin", "0")]);
-/// let style: HtmlStyle = HtmlStyle::new(css_rule);
+/// let css_rule = CssRule::new()
+///     .selectors_list("body")
+///     .declarations_block([("height", "100vh"), ("margin", "0")]);
+/// let style = HtmlStyle::new().content(css_rule);
 ///
-/// let body: HtmlBody = HtmlBody::new(bake_newline!("Hello, world!"));
+/// let body = HtmlBody::new().content(bake_newline!("Hello, world!"));
 ///
-/// let tmpl: TmplBase<Homemade> = TmplBase::new(body)
+/// let tmpl = TmplBase::<Homemade>::from_cookbook()
+///     .content(body)
 ///     .lang("en")
 ///     .push_meta(meta)
 ///     .push_title(title)
@@ -119,7 +122,8 @@ impl HeadRecipe for Homemade {
             .meta
             .push(HtmlMeta::<CharsetUtf8>::from_cookbook().bake_recipe());
         content.meta.push(
-            HtmlMeta::<NameViewport>::new("width=device-width, initial-scale=1").bake_recipe(),
+            HtmlMeta::<NameViewport>::from_content("width=device-width, initial-scale=1")
+                .bake_recipe(),
         );
     }
 }

@@ -49,7 +49,7 @@ pub enum CssCombinator {
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let selector: CssSelector = CssSelector::new("p");
+/// let selector = CssSelector::new("p");
 ///
 /// assert_eq!(selector.bake(), "p");
 /// ```
@@ -81,7 +81,7 @@ pub enum CssSelector {
 
 impl CssSelector {
     pub fn new(selector: impl Into<Cow<'static, str>>) -> Self {
-        CssSelector::Simple(CssSimpleSelector::new(selector))
+        CssSelector::Simple(CssSimpleSelector::new().selector(selector))
     }
 }
 

@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let selector: CssSimpleSelector<UniversalBackdrop> = CssSimpleSelector::from_cookbook();
 ///

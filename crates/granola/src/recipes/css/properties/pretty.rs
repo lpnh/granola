@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `pretty` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_wrap: CssTextWrap<Pretty> = CssTextWrap::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Pretty;
 
 impl TextWrapRecipe for Pretty {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "pretty".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "pretty".into();
     }
 }

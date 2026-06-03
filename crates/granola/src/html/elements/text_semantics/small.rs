@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let small: HtmlSmall = HtmlSmall::empty().id("side_comment");
+/// let small = HtmlSmall::new().id("side_comment");
 ///
 /// assert_eq!(small.bake(), r#"<small id="side_comment"></small>"#);
 /// ```
@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let unlicense = "This is free and unencumbered software released into the public domain.";
 ///
-/// let small: HtmlSmall = HtmlSmall::new(unlicense);
+/// let small = HtmlSmall::new().content(unlicense);
 ///
 /// assert_eq!(
 ///     small.bake(),
@@ -82,18 +82,18 @@ pub struct HtmlSmall<R: SmallRecipe = ()> {
 #[macro_export]
 macro_rules! small {
     () => {
-        $crate::html::HtmlSmall::<()>::empty()
+        $crate::html::HtmlSmall::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSmall::<()>::new($content)
+        $crate::html::HtmlSmall::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSmall::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSmall::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSmall::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSmall::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSmall::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSmall::new().content($crate::bake_inline![$($content),+])
     };
 }

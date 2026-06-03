@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let title: HtmlTitle = HtmlTitle::empty().id("document_title");
+/// let title = HtmlTitle::new().id("document_title");
 ///
 /// assert_eq!(title.bake(), r#"<title id="document_title"></title>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let title: HtmlTitle = HtmlTitle::new("On the unabashed art of self-referential examples");
+/// let title = HtmlTitle::new().content("On the unabashed art of self-referential examples");
 ///
 /// assert_eq!(
 ///     title.bake(),
@@ -75,19 +75,19 @@ pub struct HtmlTitle<R: TitleRecipe = ()> {
 #[macro_export]
 macro_rules! title {
     () => {
-        $crate::html::HtmlTitle::<()>::empty()
+        $crate::html::HtmlTitle::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTitle::<()>::new($content)
+        $crate::html::HtmlTitle::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTitle::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTitle::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTitle::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTitle::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTitle::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTitle::new().content($crate::bake_inline![$($content),+])
     };
 }

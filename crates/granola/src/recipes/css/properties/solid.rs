@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `solid` property value recipe.
@@ -7,15 +5,15 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border: CssBorder<Solid> = CssBorder::new("0");
+/// let css_border = CssBorder::from(Solid).content("0");
 ///
 /// assert_eq!(css_border.bake(), "border: 0 solid;");
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_outline_style: CssOutlineStyle<Solid> = CssOutlineStyle::from_cookbook();
 ///
@@ -25,17 +23,17 @@ use crate::prelude::*;
 pub struct Solid;
 
 impl BorderRecipe for Solid {
-    fn content_recipe(value: &mut Cow<'static, str>) {
-        if value.is_empty() {
-            *value = "solid".into();
+    fn content_recipe(content: &mut Self::Content) {
+        if content.is_empty() {
+            *content = "solid".into();
         } else {
-            *value = format!("{} {}", value, "solid").into();
+            *content = format!("{content} {}", "solid").into();
         }
     }
 }
 
 impl OutlineStyleRecipe for Solid {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "solid".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "solid".into();
     }
 }

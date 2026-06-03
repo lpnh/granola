@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let source: HtmlSource = HtmlSource::empty().id("media_or_image_source");
+/// let source = HtmlSource::new().id("media_or_image_source");
 ///
 /// assert_eq!(source.bake(), r#"<source id="media_or_image_source" />"#);
 /// ```
@@ -20,7 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let source: HtmlSource = HtmlSource::new("/videos/flower.mp4").mime_type("video/mp4");
+/// let source = HtmlSource::new()
+///     .src("/videos/flower.mp4")
+///     .mime_type("video/mp4");
 ///
 /// assert_eq!(
 ///     source.bake(),
@@ -50,31 +52,9 @@ pub struct HtmlSource<R: SourceRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: SourceRecipe> HtmlSource<R> {
-    pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = SourceAttrs::default().src(src);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+impl HtmlSource {
+    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+        Self::new().src(src)
     }
 }
 
@@ -199,7 +179,7 @@ impl<R: SourceRecipe> HasSourceAttrs for HtmlSource<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let source = source!("/videos/flower.mp4").mime_type("video/mp4");
+/// let source = source!(@from_src "/videos/flower.mp4").mime_type("video/mp4");
 ///
 /// assert_eq!(
 ///     source.bake(),
@@ -209,16 +189,16 @@ impl<R: SourceRecipe> HasSourceAttrs for HtmlSource<R> {
 #[macro_export]
 macro_rules! source {
     () => {
-        $crate::html::HtmlSource::<()>::empty()
+        $crate::html::HtmlSource::new()
     };
-    ($src: expr $(,)?) => {
-        $crate::html::HtmlSource::<()>::new($src)
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlSource::from_src($src)
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $src:expr $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($src)
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($src)
     };
 }

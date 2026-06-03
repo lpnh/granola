@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let datalist: HtmlDatalist = HtmlDatalist::empty().id("html_data_list");
+/// let datalist = HtmlDatalist::new().id("html_data_list");
 ///
 /// assert_eq!(
 ///     datalist.bake(),
@@ -24,12 +24,12 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let options = [
-///     HtmlOption::from_value("Chocolate"),
-///     HtmlOption::from_value("Strawberry"),
-///     HtmlOption::from_value("Vanilla"),
+///     HtmlOption::new().value("Chocolate"),
+///     HtmlOption::new().value("Strawberry"),
+///     HtmlOption::new().value("Vanilla"),
 /// ];
 ///
-/// let datalist: HtmlDatalist = HtmlDatalist::new(options).id("ice-cream-flavors");
+/// let datalist = HtmlDatalist::new().content(options).id("ice-cream-flavors");
 ///
 /// assert_eq!(
 ///     datalist.bake(),
@@ -114,12 +114,12 @@ pub struct HtmlDatalist<R: DatalistRecipe = ()> {
 #[macro_export]
 macro_rules! datalist {
     () => {
-        $crate::html::HtmlDatalist::<()>::empty()
+        $crate::html::HtmlDatalist::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDatalist::<()>::new($content)
+        $crate::html::HtmlDatalist::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDatalist::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlDatalist::new().content([$first $(, $rest)*])
     };
 }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let iframe: HtmlIframe = HtmlIframe::empty().id("inline_frame");
+/// let iframe = HtmlIframe::new().id("inline_frame");
 ///
 /// assert_eq!(iframe.bake(), r#"<iframe id="inline_frame"></iframe>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let iframe: HtmlIframe = HtmlIframe::from_src("https://w.wiki/LJK7")
+/// let iframe = HtmlIframe::new().src("https://w.wiki/LJK7")
 ///     .title("Pedestrians crossing an intersection.");
 ///
 /// assert_eq!(iframe.bake(),
@@ -253,20 +253,20 @@ impl<R: IframeRecipe> HasIframeAttrs for HtmlIframe<R> {
 #[macro_export]
 macro_rules! iframe {
     () => {
-        $crate::html::HtmlIframe::<()>::empty()
+        $crate::html::HtmlIframe::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlIframe::<()>::new($content)
+        $crate::html::HtmlIframe::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlIframe::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlIframe::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlIframe::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlIframe::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlIframe::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlIframe::new().content($crate::bake_inline![$($content),+])
     };
 
     (@from_src $src: expr $(,)?) => {

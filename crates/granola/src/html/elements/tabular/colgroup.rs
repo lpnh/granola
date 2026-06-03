@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let colgroup: HtmlColgroup = HtmlColgroup::empty().id("table_column_group");
+/// let colgroup = HtmlColgroup::new().id("table_column_group");
 ///
 /// assert_eq!(
 ///     colgroup.bake(),
@@ -23,10 +23,10 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let item: HtmlCol = HtmlCol::new().class("item");
-/// let description: HtmlCol = HtmlCol::new().class("description");
+/// let item = HtmlCol::new().class("item");
+/// let description = HtmlCol::new().class("description");
 ///
-/// let colgroup: HtmlColgroup = HtmlColgroup::new([item, description]);
+/// let colgroup = HtmlColgroup::new().content([item, description]);
 ///
 /// assert_eq!(
 ///     colgroup.bake(),
@@ -140,12 +140,12 @@ impl<R: ColgroupRecipe> HasColgroupAttrs for HtmlColgroup<R> {
 #[macro_export]
 macro_rules! colgroup {
     () => {
-        $crate::html::HtmlColgroup::<()>::empty()
+        $crate::html::HtmlColgroup::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlColgroup::<()>::new($content)
+        $crate::html::HtmlColgroup::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlColgroup::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlColgroup::new().content([$first $(, $rest)*])
     };
 }

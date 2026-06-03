@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let label: HtmlLabel = HtmlLabel::empty().id("label");
+/// let label = HtmlLabel::new().id("label");
 ///
 /// assert_eq!(label.bake(), r#"<label id="label"></label>"#);
 /// ```
@@ -20,11 +20,12 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let input: HtmlInput = HtmlInput::from_type("checkbox")
+/// let input = HtmlInput::new()
+///     .input_type("checkbox")
 ///     .name("reality-check")
 ///     .disabled(true);
 ///
-/// let label: HtmlLabel = HtmlLabel::new(bake_block!["We're so back", input]);
+/// let label = HtmlLabel::new().content(bake_block!["We're so back", input]);
 ///
 /// assert_eq!(
 ///     label.bake(),
@@ -132,19 +133,19 @@ pub trait HasLabelAttrs: Sized {
 #[macro_export]
 macro_rules! label {
     () => {
-        $crate::html::HtmlLabel::<()>::empty()
+        $crate::html::HtmlLabel::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlLabel::<()>::new($content)
+        $crate::html::HtmlLabel::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlLabel::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlLabel::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlLabel::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlLabel::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlLabel::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlLabel::new().content($crate::bake_inline![$($content),+])
     };
 }

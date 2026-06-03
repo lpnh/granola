@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let header: HtmlHeader = HtmlHeader::empty().id("header");
+/// let header = HtmlHeader::new().id("header");
 ///
 /// assert_eq!(header.bake(), r#"<header id="header"></header>"#);
 /// ```
@@ -20,9 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let logo: HtmlA = HtmlA::new("Oats &amp; Ends").href("/");
+/// let logo = HtmlA::new().content("Oats &amp; Ends").href("/");
 ///
-/// let header: HtmlHeader = HtmlHeader::new(bake_newline!(logo));
+/// let header = HtmlHeader::new().content(bake_newline!(logo));
 ///
 /// assert_eq!(
 ///     header.bake(),
@@ -84,18 +84,18 @@ pub struct HtmlHeader<R: HeaderRecipe = ()> {
 #[macro_export]
 macro_rules! header {
     () => {
-        $crate::html::HtmlHeader::<()>::empty()
+        $crate::html::HtmlHeader::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlHeader::<()>::new($content)
+        $crate::html::HtmlHeader::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlHeader::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlHeader::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlHeader::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlHeader::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlHeader::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHeader::new().content($crate::bake_inline![$($content),+])
     };
 }

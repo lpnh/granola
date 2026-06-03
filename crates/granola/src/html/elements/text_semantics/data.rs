@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let data: HtmlData = HtmlData::empty().id("data");
+/// let data = HtmlData::new().id("data");
 ///
 /// assert_eq!(data.bake(), r#"<data id="data"></data>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let data: HtmlData = HtmlData::new("$13.37").value("1337");
+/// let data = HtmlData::new().content("$13.37").value("1337");
 ///
 /// assert_eq!(data.bake(), r#"<data value="1337">$13.37</data>"#);
 /// ```
@@ -119,19 +119,19 @@ impl<R: DataRecipe> HasDataAttrs for HtmlData<R> {
 #[macro_export]
 macro_rules! data {
     () => {
-        $crate::html::HtmlData::<()>::empty()
+        $crate::html::HtmlData::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlData::<()>::new($content)
+        $crate::html::HtmlData::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlData::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlData::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlData::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlData::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlData::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlData::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, template::*};
 ///
-/// let tmpl: TmplBase = TmplBase::empty();
+/// let tmpl = TmplBase::new();
 ///
 /// assert_eq!(
 ///     tmpl.bake(),
@@ -21,9 +21,9 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, template::*};
 ///
-/// let body: HtmlBody = HtmlBody::new(bake_newline!("Hello, world!"));
+/// let body = HtmlBody::new().content(bake_newline!("Hello, world!"));
 ///
-/// let tmpl: TmplBase = TmplBase::new(body);
+/// let tmpl = TmplBase::new().content(body);
 ///
 /// assert_eq!(
 ///     tmpl.bake(),
@@ -48,17 +48,16 @@ pub struct TmplBase<R: HtmlRecipe = ()> {
     pub html_root: HtmlRoot<R>,
 }
 
-impl<R: HtmlRecipe> TmplBase<R> {
-    pub fn new(content: impl Into<R::Content>) -> Self {
-        Self {
-            html_root: HtmlRoot::<R>::new(content),
-        }
+impl TmplBase<()> {
+    pub fn new() -> Self {
+        Self::default()
     }
+}
 
-    pub fn empty() -> Self {
-        Self {
-            html_root: HtmlRoot::<R>::empty(),
-        }
+impl<R: HtmlRecipe> TmplBase<R> {
+    pub fn content(mut self, content: impl Into<R::Content>) -> Self {
+        self.html_root = self.html_root.content(content);
+        self
     }
 
     pub fn from_cookbook() -> Self {

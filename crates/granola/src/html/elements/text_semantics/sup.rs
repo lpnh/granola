@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let sup: HtmlSup = HtmlSup::empty().id("superscript");
+/// let sup = HtmlSup::new().id("superscript");
 ///
 /// assert_eq!(sup.bake(), r#"<sup id="superscript"></sup>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let sup: HtmlSup = HtmlSup::new("e");
+/// let sup = HtmlSup::new().content("e");
 ///
 /// let anniv = bake_inline!["100", sup, " anniversaire"];
 ///
@@ -76,19 +76,19 @@ pub struct HtmlSup<R: SupRecipe = ()> {
 #[macro_export]
 macro_rules! sup {
     () => {
-        $crate::html::HtmlSup::<()>::empty()
+        $crate::html::HtmlSup::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSup::<()>::new($content)
+        $crate::html::HtmlSup::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSup::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSup::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSup::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSup::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSup::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSup::new().content($crate::bake_inline![$($content),+])
     };
 }

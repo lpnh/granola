@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let style: HtmlStyle = HtmlStyle::empty().id("style_information");
+/// let style = HtmlStyle::new().id("style_information");
 ///
 /// assert_eq!(style.bake(), r#"<style id="style_information"></style>"#);
 /// ```
@@ -20,9 +20,11 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_rule: CssRule = CssRule::new("p", [("color", "violet"), ("font-weight", "lighter")]);
+/// let css_rule = CssRule::new()
+///     .selectors_list("p")
+///     .declarations_block([("color", "violet"), ("font-weight", "lighter")]);
 ///
-/// let style: HtmlStyle = HtmlStyle::new(css_rule);
+/// let style = HtmlStyle::new().content(css_rule);
 ///
 /// assert_eq!(
 ///     style.bake(),
@@ -148,18 +150,18 @@ impl<R: StyleRecipe> HasStyleAttrs for HtmlStyle<R> {
 #[macro_export]
 macro_rules! style {
     () => {
-        $crate::html::HtmlStyle::<()>::empty()
+        $crate::html::HtmlStyle::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlStyle::<()>::new($content)
+        $crate::html::HtmlStyle::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlStyle::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlStyle::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlStyle::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlStyle::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlStyle::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlStyle::new().content($crate::bake_inline![$($content),+])
     };
 }

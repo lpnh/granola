@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let fieldset: HtmlFieldset = HtmlFieldset::empty().id("field_set");
+/// let fieldset = HtmlFieldset::new().id("field_set");
 ///
 /// assert_eq!(fieldset.bake(), r#"<fieldset id="field_set"></fieldset>"#);
 /// ```
@@ -20,14 +20,17 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let legend: HtmlLegend = HtmlLegend::new("To be, or not to be?");
-/// let input: HtmlInput = HtmlInput::from_type("checkbox")
+/// let legend = HtmlLegend::new().content("To be, or not to be?");
+/// let input = HtmlInput::new()
+///     .input_type("checkbox")
 ///     .id("chbx")
 ///     .name("to-be")
 ///     .value("dunno");
-/// let label: HtmlLabel = HtmlLabel::new("That is the question").for_id("chbx");
+/// let label = HtmlLabel::new()
+///     .content("That is the question")
+///     .for_id("chbx");
 ///
-/// let fieldset: HtmlFieldset = HtmlFieldset::new(bake_block![legend, input, label]);
+/// let fieldset = HtmlFieldset::new().content(bake_block![legend, input, label]);
 ///
 /// assert_eq!(
 ///     fieldset.bake(),
@@ -167,19 +170,19 @@ impl<R: FieldsetRecipe> HasFieldsetAttrs for HtmlFieldset<R> {
 #[macro_export]
 macro_rules! fieldset {
     () => {
-        $crate::html::HtmlFieldset::<()>::empty()
+        $crate::html::HtmlFieldset::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlFieldset::<()>::new($content)
+        $crate::html::HtmlFieldset::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlFieldset::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlFieldset::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlFieldset::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlFieldset::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlFieldset::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlFieldset::new().content($crate::bake_inline![$($content),+])
     };
 }

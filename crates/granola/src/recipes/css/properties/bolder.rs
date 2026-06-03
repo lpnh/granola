@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `bolder` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_font_weight: CssFontWeight<Bolder> = CssFontWeight::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Bolder;
 
 impl FontWeightRecipe for Bolder {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "bolder".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "bolder".into();
     }
 }

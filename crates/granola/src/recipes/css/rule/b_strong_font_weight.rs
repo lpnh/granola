@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `b, strong { font-weight: bolder }` rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<BStrongFontWeight> = CssRule::from_cookbook();
 ///
@@ -26,6 +26,6 @@ impl RuleRecipe for BStrongFontWeight {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssFontWeight::<Bolder>::from_cookbook().into()];
+        properties_list.declarations = vec![CssFontWeight::from(Bolder).into()];
     }
 }

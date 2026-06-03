@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let bdo: HtmlBdo = HtmlBdo::empty().id("bidirectional_text_override");
+/// let bdo = HtmlBdo::new().id("bidirectional_text_override");
 ///
 /// assert_eq!(
 ///     bdo.bake(),
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let bdo: HtmlBdo = HtmlBdo::new("looking-glass").dir("rtl");
+/// let bdo = HtmlBdo::new().content("looking-glass").dir("rtl");
 ///
 /// assert_eq!(bdo.bake(), r#"<bdo dir="rtl">looking-glass</bdo>"#);
 /// ```
@@ -78,19 +78,19 @@ pub struct HtmlBdo<R: BdoRecipe = ()> {
 #[macro_export]
 macro_rules! bdo {
     () => {
-        $crate::html::HtmlBdo::<()>::empty()
+        $crate::html::HtmlBdo::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlBdo::<()>::new($content)
+        $crate::html::HtmlBdo::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlBdo::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlBdo::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlBdo::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlBdo::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlBdo::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlBdo::new().content($crate::bake_inline![$($content),+])
     };
 }

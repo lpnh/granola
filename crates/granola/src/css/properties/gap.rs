@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `gap` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_gap: CssGap = CssGap::new("1rem");
+/// let css_gap = CssGap::new().content("1rem");
 ///
 /// assert_eq!(css_gap.bake(), "gap: 1rem;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// gap: {{ value }};
+/// gap: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = GapRecipe)]
+#[recipe(name = GapRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssGap<R: GapRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: GapRecipe> CssGap<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: GapRecipe> From<CssGap<R>> for CssDeclaration {
     fn from(css_gap: CssGap<R>) -> Self {
-        Self::new("gap", css_gap.value)
+        Self::new("gap", css_gap.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssGap<R>> for CssDeclarationsBlock<B>
-where
-    R: GapRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: GapRecipe> From<CssGap<R>> for CssDeclarationsBlock {
     fn from(css_gap: CssGap<R>) -> Self {
         Self::new().push(css_gap)
     }

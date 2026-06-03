@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `text-wrap` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_text_wrap: CssTextWrap = CssTextWrap::new("balance");
+/// let css_text_wrap = CssTextWrap::new().content("balance");
 ///
 /// assert_eq!(css_text_wrap.bake(), "text-wrap: balance;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// text-wrap: {{ value }};
+/// text-wrap: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextWrapRecipe)]
+#[recipe(name = TextWrapRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextWrap<R: TextWrapRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TextWrapRecipe> CssTextWrap<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TextWrapRecipe> From<CssTextWrap<R>> for CssDeclaration {
     fn from(css_text_wrap: CssTextWrap<R>) -> Self {
-        Self::new("text-wrap", css_text_wrap.value)
+        Self::new("text-wrap", css_text_wrap.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTextWrap<R>> for CssDeclarationsBlock<B>
-where
-    R: TextWrapRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TextWrapRecipe> From<CssTextWrap<R>> for CssDeclarationsBlock {
     fn from(css_text_wrap: CssTextWrap<R>) -> Self {
         Self::new().push(css_text_wrap)
     }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let thead: HtmlThead = HtmlThead::empty().id("table_head");
+/// let thead = HtmlThead::new().id("table_head");
 ///
 /// assert_eq!(thead.bake(), r#"<thead id="table_head"></thead>"#);
 /// ```
@@ -20,12 +20,12 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let item: HtmlTh = HtmlTh::new("Item").scope("col");
-/// let description: HtmlTh = HtmlTh::new("Description").scope("col");
+/// let item = HtmlTh::new().content("Item").scope("col");
+/// let description = HtmlTh::new().content("Description").scope("col");
 ///
-/// let tr: HtmlTr = HtmlTr::new(bake_block![item, description]);
+/// let tr = HtmlTr::new().content(bake_block![item, description]);
 ///
-/// let thead: HtmlThead = HtmlThead::new(tr);
+/// let thead = HtmlThead::new().content(tr);
 ///
 /// assert_eq!(
 ///     thead.bake(),
@@ -98,12 +98,12 @@ pub struct HtmlThead<R: TheadRecipe = ()> {
 #[macro_export]
 macro_rules! thead {
     () => {
-        $crate::html::HtmlThead::<()>::empty()
+        $crate::html::HtmlThead::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlThead::<()>::new($content)
+        $crate::html::HtmlThead::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlThead::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlThead::new().content([$first $(, $rest)*])
     };
 }

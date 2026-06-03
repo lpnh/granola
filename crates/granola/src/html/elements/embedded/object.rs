@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let object: HtmlObject = HtmlObject::empty().id("external_object");
+/// let object = HtmlObject::new().id("external_object");
 ///
 /// assert_eq!(object.bake(), r#"<object id="external_object"></object>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let object: HtmlObject = HtmlObject::empty()
+/// let object = HtmlObject::new()
 ///     .mime_type("video/mp4")
 ///     .data("/videos/flower.mp4")
 ///     .width(420)
@@ -183,35 +183,35 @@ impl<R: ObjectRecipe> HasObjectAttrs for HtmlObject<R> {
 #[macro_export]
 macro_rules! object {
     () => {
-        $crate::html::HtmlObject::<()>::empty()
+        $crate::html::HtmlObject::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlObject::<()>::new($content)
+        $crate::html::HtmlObject::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlObject::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlObject::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlObject::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlObject::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlObject::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlObject::new().content($crate::bake_inline![$($content),+])
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($content)
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
     };
     (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

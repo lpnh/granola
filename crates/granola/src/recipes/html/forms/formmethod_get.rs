@@ -3,9 +3,9 @@ use crate::prelude::*;
 /// The `formmethod="get"` recipe.
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let button: HtmlButton<FormmethodGet> = HtmlButton::new("Search");
+/// let button = HtmlButton::from(FormmethodGet).content("Search");
 ///
 /// let input: HtmlInput<FormmethodGet> = HtmlInput::from_type("submit").value("Search");
 ///

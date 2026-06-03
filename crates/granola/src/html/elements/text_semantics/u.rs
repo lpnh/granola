@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let u: HtmlU = HtmlU::empty().id("unarticulated_annotation");
+/// let u = HtmlU::new().id("unarticulated_annotation");
 ///
 /// assert_eq!(u.bake(), r#"<u id="unarticulated_annotation"></u>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let wowwd: HtmlU = HtmlU::new("world");
+/// let wowwd = HtmlU::new().content("world");
 ///
 /// let hewwo_wowwd = bake_inline!["hewwo, ", wowwd, "!"];
 ///
@@ -76,19 +76,19 @@ pub struct HtmlU<R: URecipe = ()> {
 #[macro_export]
 macro_rules! u {
     () => {
-        $crate::html::HtmlU::<()>::empty()
+        $crate::html::HtmlU::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlU::<()>::new($content)
+        $crate::html::HtmlU::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlU::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlU::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlU::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlU::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlU::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlU::new().content($crate::bake_inline![$($content),+])
     };
 }

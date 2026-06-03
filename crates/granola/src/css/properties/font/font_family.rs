@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `font-family` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_font_family: CssFontFamily = CssFontFamily::new("inherit");
+/// let css_font_family = CssFontFamily::new().content("inherit");
 ///
 /// assert_eq!(css_font_family.bake(), "font-family: inherit;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// font-family: {{ value }};
+/// font-family: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontFamilyRecipe)]
+#[recipe(name = FontFamilyRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFontFamily<R: FontFamilyRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FontFamilyRecipe> CssFontFamily<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclaration {
     fn from(css_font_family: CssFontFamily<R>) -> Self {
-        Self::new("font-family", css_font_family.value)
+        Self::new("font-family", css_font_family.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssFontFamily<R>> for CssDeclarationsBlock<B>
-where
-    R: FontFamilyRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclarationsBlock {
     fn from(css_font_family: CssFontFamily<R>) -> Self {
         Self::new().push(css_font_family)
     }

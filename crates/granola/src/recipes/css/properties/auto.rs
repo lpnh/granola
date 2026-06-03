@@ -1,24 +1,21 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
-/// The `auto` property value recipe.
+/// The `auto` property content recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let css_height: CssHeight<Auto> = CssHeight::from_cookbook();
+/// let css_height = CssHeight::from(Auto);
 ///
 /// assert_eq!(css_height.bake(), "height: auto;");
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_decoration_skip_ink: CssTextDecorationSkipInk<Auto> =
-///     CssTextDecorationSkipInk::from_cookbook();
+/// let css_text_decoration_skip_ink = CssTextDecorationSkipInk::from(Auto);
 ///
 /// assert_eq!(
 ///     css_text_decoration_skip_ink.bake(),
@@ -29,19 +26,19 @@ use crate::prelude::*;
 pub struct Auto;
 
 impl HeightRecipe for Auto {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "auto".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "auto".into();
     }
 }
 
 impl TextDecorationSkipInkRecipe for Auto {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "auto".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "auto".into();
     }
 }
 
 impl OutlineRecipe for Auto {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "auto".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "auto".into();
     }
 }

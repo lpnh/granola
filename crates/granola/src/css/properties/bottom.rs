@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `bottom` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_bottom: CssBottom = CssBottom::new("-0.25em");
+/// let css_bottom = CssBottom::new().content("-0.25em");
 ///
 /// assert_eq!(css_bottom.bake(), "bottom: -0.25em;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// bottom: {{ value }};
+/// bottom: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BottomRecipe)]
+#[recipe(name = BottomRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssBottom<R: BottomRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: BottomRecipe> CssBottom<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: BottomRecipe> From<CssBottom<R>> for CssDeclaration {
     fn from(css_bottom: CssBottom<R>) -> Self {
-        Self::new("bottom", css_bottom.value)
+        Self::new("bottom", css_bottom.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssBottom<R>> for CssDeclarationsBlock<B>
-where
-    R: BottomRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: BottomRecipe> From<CssBottom<R>> for CssDeclarationsBlock {
     fn from(css_bottom: CssBottom<R>) -> Self {
         Self::new().push(css_bottom)
     }

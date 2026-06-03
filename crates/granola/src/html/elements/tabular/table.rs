@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let table: HtmlTable = HtmlTable::empty().id("table");
+/// let table = HtmlTable::new().id("table");
 ///
 /// assert_eq!(table.bake(), r#"<table id="table"></table>"#);
 /// ```
@@ -20,40 +20,42 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let caption: HtmlCaption = HtmlCaption::new("Our favorites, yours to try.");
+/// let caption = HtmlCaption::new().content("Our favorites, yours to try.");
 ///
-/// let col_1: HtmlCol = HtmlCol::new().class("item");
-/// let col_2: HtmlCol = HtmlCol::new().class("description");
+/// let col_1 = HtmlCol::new().class("item");
+/// let col_2 = HtmlCol::new().class("description");
 ///
-/// let colgroup: HtmlColgroup = HtmlColgroup::new([col_1, col_2]);
+/// let colgroup = HtmlColgroup::new().content([col_1, col_2]);
 ///
-/// let head_1: HtmlTh = HtmlTh::new("Item").scope("col");
-/// let head_2: HtmlTh = HtmlTh::new("Description").scope("col");
+/// let head_1 = HtmlTh::new().content("Item").scope("col");
+/// let head_2 = HtmlTh::new().content("Description").scope("col");
 ///
-/// let tr_head: HtmlTr = HtmlTr::new(bake_block![head_1, head_2]);
+/// let tr_head = HtmlTr::new().content(bake_block![head_1, head_2]);
 ///
-/// let thead: HtmlThead = HtmlThead::new(tr_head);
+/// let thead = HtmlThead::new().content(tr_head);
 ///
-/// let th_1: HtmlTh = HtmlTh::new("Black coffee").scope("row");
-/// let td_1: HtmlTd = HtmlTd::new("A good, hot, black coffee");
+/// let th_1 = HtmlTh::new().content("Black coffee").scope("row");
+/// let td_1 = HtmlTd::new().content("A good, hot, black coffee");
 ///
-/// let black_coffee: HtmlTr = HtmlTr::new(bake_block![th_1, td_1]);
+/// let black_coffee = HtmlTr::new().content(bake_block![th_1, td_1]);
 ///
-/// let th_2: HtmlTh = HtmlTh::new("Hot chocolate").scope("row");
-/// let td_2: HtmlTd = HtmlTd::new("Melted dark chocolate with milk");
+/// let th_2 = HtmlTh::new().content("Hot chocolate").scope("row");
+/// let td_2 = HtmlTd::new().content("Melted dark chocolate with milk");
 ///
-/// let hot_chocolate: HtmlTr = HtmlTr::new(bake_block![th_2, td_2]);
+/// let hot_chocolate = HtmlTr::new().content(bake_block![th_2, td_2]);
 ///
-/// let tbody: HtmlTbody = HtmlTbody::new([black_coffee, hot_chocolate]);
+/// let tbody = HtmlTbody::new().content([black_coffee, hot_chocolate]);
 ///
-/// let td_foot: HtmlTd = HtmlTd::new("Don't see what you're after? We'll do our best.").colspan(2);
-/// let tr_foot: HtmlTr = HtmlTr::new(bake_newline!(td_foot));
+/// let td_foot = HtmlTd::new()
+///     .content("Don't see what you're after? We'll do our best.")
+///     .colspan(2);
+/// let tr_foot = HtmlTr::new().content(bake_newline!(td_foot));
 ///
-/// let tfoot: HtmlTfoot = HtmlTfoot::new(tr_foot);
+/// let tfoot = HtmlTfoot::new().content(tr_foot);
 ///
 /// let content = bake_block![caption, colgroup, thead, tbody, tfoot,];
 ///
-/// let table: HtmlTable = HtmlTable::new(content);
+/// let table = HtmlTable::new().content(content);
 ///
 /// assert_eq!(
 ///     table.bake(),
@@ -200,19 +202,19 @@ pub struct HtmlTable<R: TableRecipe = ()> {
 #[macro_export]
 macro_rules! table {
     () => {
-        $crate::html::HtmlTable::<()>::empty()
+        $crate::html::HtmlTable::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTable::<()>::new($content)
+        $crate::html::HtmlTable::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTable::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTable::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTable::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTable::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTable::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTable::new().content($crate::bake_inline![$($content),+])
     };
 }

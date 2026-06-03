@@ -5,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let button: HtmlButton<FormmethodPost> = HtmlButton::new("Send");
+/// let button = HtmlButton::from(FormmethodPost).content("Send");
 ///
 /// let input: HtmlInput<FormmethodPost> = HtmlInput::from_type("submit").value("Send");
 ///

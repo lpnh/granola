@@ -12,7 +12,9 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let at_rule: CssAtRule = CssAtRule::new("import", r#"url("layout.css")"#);
+/// let at_rule = CssAtRule::new()
+///     .identifier("import")
+///     .rule(r#"url("layout.css")"#);
 ///
 /// assert_eq!(at_rule.bake(), r#"@import url("layout.css");"#);
 /// ```
@@ -25,7 +27,10 @@ use crate::prelude::*;
 ///     "to { transform: translateX(100%); }",
 /// ];
 ///
-/// let at_rule: CssAtRule = CssAtRule::new("keyframes", "slide-in").block(block);
+/// let at_rule = CssAtRule::new()
+///     .identifier("keyframes")
+///     .rule("slide-in")
+///     .block(block);
 ///
 /// assert_eq!(
 ///     at_rule.bake(),
@@ -57,15 +62,14 @@ pub struct CssAtRule<R: AtRuleRecipe = ()> {
 }
 
 impl<R: AtRuleRecipe> CssAtRule<R> {
-    pub fn new(
-        identifier: impl Into<Cow<'static, str>>,
-        rule: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        Self {
-            identifier: identifier.into(),
-            rule: rule.into(),
-            ..Default::default()
-        }
+    pub fn identifier(mut self, identifier: impl Into<Cow<'static, str>>) -> Self {
+        self.identifier = identifier.into();
+        self
+    }
+
+    pub fn rule(mut self, rule: impl Into<Cow<'static, str>>) -> Self {
+        self.rule = rule.into();
+        self
     }
 
     pub fn block(mut self, block: impl Into<Cow<'static, str>>) -> Self {
@@ -117,13 +121,13 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
 #[macro_export]
 macro_rules! at_rule {
     ($identifier: expr, $rule: expr $(,)?) => {
-        $crate::css::CssAtRule::<()>::new($identifier, $rule)
+        $crate::css::CssAtRule::from(($identifier, $rule))
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
-        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::new($identifier, $rule)
+        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_cookbook().identifier($identifier).rule($rule)
     };
 }

@@ -1,13 +1,11 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
-/// The `inherit` property value recipe.
+/// The `inherit` property content recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_font: CssFont<Inherit> = CssFont::from_cookbook();
 ///
@@ -15,7 +13,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_align: CssTextAlign<Inherit> = CssTextAlign::from_cookbook();
 ///
@@ -23,7 +21,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_font_family: CssFontFamily<Inherit> = CssFontFamily::from_cookbook();
 ///
@@ -31,7 +29,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_font_size: CssFontSize<Inherit> = CssFontSize::from_cookbook();
 ///
@@ -39,7 +37,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_font_weight: CssFontWeight<Inherit> = CssFontWeight::from_cookbook();
 ///
@@ -47,7 +45,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_color: CssColor<Inherit> = CssColor::from_cookbook();
 ///
@@ -55,7 +53,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_decoration: CssTextDecoration<Inherit> = CssTextDecoration::from_cookbook();
 ///
@@ -65,83 +63,83 @@ use crate::prelude::*;
 pub struct Inherit;
 
 impl FontRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl FontFamilyRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        if value.is_empty() {
-            *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        if content.is_empty() {
+            *content = "inherit".into();
         } else {
-            *value = format!("{} {}", value, "inherit").into();
+            *content = format!("{} {}", content, "inherit").into();
         }
     }
 }
 
 impl FontSizeRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl FontWeightRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl ColorRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl BorderColorRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl TextDecorationRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl WebkitTextDecorationRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl WebkitTextSizeAdjustRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl TextAlignRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl FontFeatureSettingsRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl FontVariationSettingsRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }
 
 impl LetterSpacingRecipe for Inherit {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "inherit".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "inherit".into();
     }
 }

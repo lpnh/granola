@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let tbody: HtmlTbody = HtmlTbody::empty().id("table_body");
+/// let tbody = HtmlTbody::new().id("table_body");
 ///
 /// assert_eq!(tbody.bake(), r#"<tbody id="table_body"></tbody>"#);
 /// ```
@@ -20,17 +20,17 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let th_1: HtmlTh = HtmlTh::new("Black coffee").scope("row");
-/// let td_1: HtmlTd = HtmlTd::new("A good, hot, black coffee");
+/// let th_1 = HtmlTh::new().content("Black coffee").scope("row");
+/// let td_1 = HtmlTd::new().content("A good, hot, black coffee");
 ///
-/// let black_coffee: HtmlTr = HtmlTr::new(bake_block![th_1, td_1]);
+/// let black_coffee = HtmlTr::new().content(bake_block![th_1, td_1]);
 ///
-/// let th_2: HtmlTh = HtmlTh::new("Hot chocolate").scope("row");
-/// let td_2: HtmlTd = HtmlTd::new("Melted dark chocolate with milk");
+/// let th_2 = HtmlTh::new().content("Hot chocolate").scope("row");
+/// let td_2 = HtmlTd::new().content("Melted dark chocolate with milk");
 ///
-/// let hot_chocolate: HtmlTr = HtmlTr::new(bake_block![th_2, td_2]);
+/// let hot_chocolate = HtmlTr::new().content(bake_block![th_2, td_2]);
 ///
-/// let tbody: HtmlTbody = HtmlTbody::new([black_coffee, hot_chocolate]);
+/// let tbody = HtmlTbody::new().content([black_coffee, hot_chocolate]);
 ///
 /// assert_eq!(
 ///     tbody.bake(),
@@ -116,12 +116,12 @@ pub struct HtmlTbody<R: TbodyRecipe = ()> {
 #[macro_export]
 macro_rules! tbody {
     () => {
-        $crate::html::HtmlTbody::<()>::empty()
+        $crate::html::HtmlTbody::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTbody::<()>::new($content)
+        $crate::html::HtmlTbody::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTbody::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlTbody::new().content([$first $(, $rest)*])
     };
 }

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `position` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_position: CssPosition = CssPosition::new("relative");
+/// let css_position = CssPosition::new().content("relative");
 ///
 /// assert_eq!(css_position.bake(), "position: relative;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// position: {{ value }};
+/// position: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = PositionRecipe)]
+#[recipe(name = PositionRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssPosition<R: PositionRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: PositionRecipe> CssPosition<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: PositionRecipe> From<CssPosition<R>> for CssDeclaration {
     fn from(css_position: CssPosition<R>) -> Self {
-        Self::new("position", css_position.value)
+        Self::new("position", css_position.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssPosition<R>> for CssDeclarationsBlock<B>
-where
-    R: PositionRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: PositionRecipe> From<CssPosition<R>> for CssDeclarationsBlock {
     fn from(css_position: CssPosition<R>) -> Self {
         Self::new().push(css_position)
     }

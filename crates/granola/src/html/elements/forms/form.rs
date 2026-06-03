@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let form: HtmlForm = HtmlForm::empty().id("form");
+/// let form = HtmlForm::new().id("form");
 ///
 /// assert_eq!(form.bake(), r#"<form id="form"></form>"#);
 /// ```
@@ -20,11 +20,13 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let input: HtmlInput = HtmlInput::new("cast-wish");
-/// let label: HtmlLabel = HtmlLabel::new(bake_block!["Wish:", input]);
-/// let button: HtmlButton = HtmlButton::new("Cast");
+/// let input = HtmlInput::new().name("cast-wish");
+/// let label = HtmlLabel::new().content(bake_block!["Wish:", input]);
+/// let button = HtmlButton::new().content("Cast");
 ///
-/// let form: HtmlForm = HtmlForm::new(bake_block![label, button]).method("get");
+/// let form = HtmlForm::new()
+///     .content(bake_block![label, button])
+///     .method("get");
 ///
 /// assert_eq!(
 ///     form.bake(),
@@ -251,20 +253,20 @@ impl From<FormMethod> for Cow<'static, str> {
 #[macro_export]
 macro_rules! form {
     () => {
-        $crate::html::HtmlForm::<()>::empty()
+        $crate::html::HtmlForm::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlForm::<()>::new($content)
+        $crate::html::HtmlForm::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlForm::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlForm::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlForm::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlForm::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlForm::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlForm::new().content($crate::bake_inline![$($content),+])
     };
 
 
@@ -272,15 +274,15 @@ macro_rules! form {
         $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::new($content)
+        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
     };
     (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

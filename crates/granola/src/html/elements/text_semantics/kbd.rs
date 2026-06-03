@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let kbd: HtmlKbd = HtmlKbd::empty().id("keyboard_input");
+/// let kbd = HtmlKbd::new().id("keyboard_input");
 ///
 /// assert_eq!(kbd.bake(), r#"<kbd id="keyboard_input"></kbd>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let kbd: HtmlKbd = HtmlKbd::new("Enter");
+/// let kbd = HtmlKbd::new().content("Enter");
 ///
 /// assert_eq!(kbd.bake(), r#"<kbd>Enter</kbd>"#);
 /// ```
@@ -72,19 +72,19 @@ pub struct HtmlKbd<R: KbdRecipe = ()> {
 #[macro_export]
 macro_rules! kbd {
     () => {
-        $crate::html::HtmlKbd::<()>::empty()
+        $crate::html::HtmlKbd::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlKbd::<()>::new($content)
+        $crate::html::HtmlKbd::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlKbd::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlKbd::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlKbd::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlKbd::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlKbd::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlKbd::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS simple selector.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let selector: CssSimpleSelector = CssSimpleSelector::new("p");
+/// let selector = CssSimpleSelector::new().selector("p");
 ///
 /// assert_eq!(selector.bake(), "p");
 /// ```
@@ -23,7 +23,7 @@ use crate::prelude::*;
 /// {%- if let Some(ns) = namespace -%}
 /// {{ ns }}|
 /// {%- endif -%}
-/// {{ selector }}
+/// {{ selector | kirei(0) }}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = SimpleSelectorRecipe)]
@@ -38,125 +38,9 @@ pub struct CssSimpleSelector<R: SimpleSelectorRecipe = ()> {
 }
 
 impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
-    pub fn new(selector: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            selector: selector.into(),
-            ..Default::default()
-        }
-    }
-
-    /// Returns a [`CssCompoundSelector`] that appends a selector to the end of
-    /// this [`CssSelector`].
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors/Selector_structure#compound_selector)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::<()>::new("col").compound(".highlighted");
-    ///
-    /// assert_eq!(selector.bake(), "col.highlighted");
-    /// ```
-    pub fn compound(self, selector: impl Into<CssSimpleSelector>) -> CssCompoundSelector {
-        CssCompoundSelector::from(self).push(selector)
-    }
-
-    /// Returns a [`CssCompoundSelector`] that appends a selector after a
-    /// descendant combinator (single whitespace) to the end of this
-    /// [`CssSimpleSelector`].
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Descendant_combinator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::<()>::new("form").descendant("input");
-    ///
-    /// assert_eq!(selector.bake(), "form input");
-    /// ```
-    pub fn descendant(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
-        CssComplexSelector::from(self).descendant(selector)
-    }
-
-    /// Returns a [`CssCompoundSelector`] that appends a selector after a child
-    /// combinator (`>`) to the end of this [`CssSimpleSelector`].
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Child_combinator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::<()>::new("details").child("summary");
-    ///
-    /// assert_eq!(selector.bake(), "details > summary");
-    /// ```
-    pub fn child(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
-        CssComplexSelector::from(self).child(selector)
-    }
-
-    /// Returns a [`CssCompoundSelector`] that appends a selector after a
-    /// next-sibling combinator (`+`) to the end of
-    /// this [`CssSimpleSelector`].
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Next-sibling_combinator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::<()>::new("label").next_sibling("input");
-    ///
-    /// assert_eq!(selector.bake(), "label + input");
-    /// ```
-    pub fn next_sibling(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
-        CssComplexSelector::from(self).next_sibling(selector)
-    }
-
-    /// Returns a [`CssCompoundSelector`] that appends a selector after a
-    /// subsequent-sibling combinator (`~`) to the end of this
-    /// [`CssSimpleSelector`].
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Subsequent-sibling_combinator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::<()>::new("input").subsequent_sibling("label");
-    ///
-    /// assert_eq!(selector.bake(), "input ~ label");
-    /// ```
-    pub fn subsequent_sibling(
-        self,
-        selector: impl Into<CssCompoundSelector>,
-    ) -> CssComplexSelector {
-        CssComplexSelector::from(self).subsequent_sibling(selector)
-    }
-
-    /// Returns a [`CssCompoundSelector`] that appends a selector after a column
-    /// combinator (`||`) to the end of this [`CssSimpleSelector`].
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Column_combinator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::<()>::new("col").column("td");
-    ///
-    /// assert_eq!(selector.bake(), "col || td");
-    /// ```
-    pub fn column(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
-        CssComplexSelector::from(self).column(selector)
+    pub fn selector(mut self, selector: impl Into<Cow<'static, str>>) -> Self {
+        self.selector = selector.into();
+        self
     }
 
     /// Qualifies this [`CssSimpleSelector`] with a namespace prefix, joined by
@@ -172,7 +56,7 @@ impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssSimpleSelector::<()>::new("a").namespace("svg");
+    /// let selector = CssSimpleSelector::new().selector("a").namespace("svg");
     ///
     /// assert_eq!(selector.bake(), "svg|a");
     /// ```
@@ -193,7 +77,7 @@ impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssSimpleSelector::<()>::new("a").any_namespace();
+    /// let selector = CssSimpleSelector::new().selector("a").any_namespace();
     ///
     /// assert_eq!(selector.bake(), "*|a");
     /// ```
@@ -214,12 +98,22 @@ impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssSimpleSelector::<()>::new("a").no_namespace();
+    /// let selector = CssSimpleSelector::new().selector("a").no_namespace();
     ///
     /// assert_eq!(selector.bake(), "|a");
     /// ```
     pub fn no_namespace(self) -> Self {
         self.add_namespace("")
+    }
+
+    pub fn try_namespace(mut self, option_namespace: Option<impl Into<Cow<'static, str>>>) -> Self {
+        if let Some(namespace) = option_namespace {
+            if self.selector.is_empty() {
+                self.selector = "*".into();
+            }
+            self.namespace = Some(namespace.into());
+        }
+        self
     }
 
     fn add_namespace(mut self, namespace: impl Into<Cow<'static, str>>) -> Self {
@@ -229,23 +123,147 @@ impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
         self.namespace = Some(namespace.into());
         self
     }
+
+    /// Returns a [`CssCompoundSelector`] that appends a selector to the end of
+    /// this [`CssSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors/Selector_structure#compound_selector)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector = CssSimpleSelector::new()
+    ///     .selector("col")
+    ///     .compound(".highlighted");
+    ///
+    /// assert_eq!(selector.bake(), "col.highlighted");
+    /// ```
+    pub fn compound(self, selector: impl Into<CssSimpleSelector>) -> CssCompoundSelector {
+        CssCompoundSelector::from(self).push(selector)
+    }
+
+    /// Returns a [`CssCompoundSelector`] that appends a selector after a
+    /// descendant combinator (single whitespace) to the end of this
+    /// [`CssSimpleSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Descendant_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector = CssSimpleSelector::new()
+    ///     .selector("form")
+    ///     .descendant("input");
+    ///
+    /// assert_eq!(selector.bake(), "form input");
+    /// ```
+    pub fn descendant(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
+        CssComplexSelector::from(self).descendant(selector)
+    }
+
+    /// Returns a [`CssCompoundSelector`] that appends a selector after a child
+    /// combinator (`>`) to the end of this [`CssSimpleSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Child_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector = CssSimpleSelector::new()
+    ///     .selector("details")
+    ///     .child("summary");
+    ///
+    /// assert_eq!(selector.bake(), "details > summary");
+    /// ```
+    pub fn child(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
+        CssComplexSelector::from(self).child(selector)
+    }
+
+    /// Returns a [`CssCompoundSelector`] that appends a selector after a
+    /// next-sibling combinator (`+`) to the end of
+    /// this [`CssSimpleSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Next-sibling_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector = CssSimpleSelector::new()
+    ///     .selector("label")
+    ///     .next_sibling("input");
+    ///
+    /// assert_eq!(selector.bake(), "label + input");
+    /// ```
+    pub fn next_sibling(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
+        CssComplexSelector::from(self).next_sibling(selector)
+    }
+
+    /// Returns a [`CssCompoundSelector`] that appends a selector after a
+    /// subsequent-sibling combinator (`~`) to the end of this
+    /// [`CssSimpleSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Subsequent-sibling_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector = CssSimpleSelector::new()
+    ///     .selector("input")
+    ///     .subsequent_sibling("label");
+    ///
+    /// assert_eq!(selector.bake(), "input ~ label");
+    /// ```
+    pub fn subsequent_sibling(
+        self,
+        selector: impl Into<CssCompoundSelector>,
+    ) -> CssComplexSelector {
+        CssComplexSelector::from(self).subsequent_sibling(selector)
+    }
+
+    /// Returns a [`CssCompoundSelector`] that appends a selector after a column
+    /// combinator (`||`) to the end of this [`CssSimpleSelector`].
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Column_combinator)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use granola::prelude::*;
+    ///
+    /// let selector = CssSimpleSelector::new().selector("col").column("td");
+    ///
+    /// assert_eq!(selector.bake(), "col || td");
+    /// ```
+    pub fn column(self, selector: impl Into<CssCompoundSelector>) -> CssComplexSelector {
+        CssComplexSelector::from(self).column(selector)
+    }
 }
 
 impl From<Cow<'static, str>> for CssSimpleSelector {
     fn from(s: Cow<'static, str>) -> Self {
-        Self::new(s)
+        Self::new().selector(s)
     }
 }
 
 impl From<&'static str> for CssSimpleSelector {
     fn from(s: &'static str) -> Self {
-        Self::new(s)
+        Self::new().selector(s)
     }
 }
 
 impl From<String> for CssSimpleSelector {
     fn from(s: String) -> Self {
-        Self::new(s)
+        Self::new().selector(s)
     }
 }
 
@@ -261,7 +279,7 @@ impl From<String> for CssSimpleSelector {
 #[macro_export]
 macro_rules! simple_selector {
     ($selector: expr $(,)?) => {
-        $crate::css::CssSimpleSelector::<()>::new($selector)
+        $crate::css::CssSimpleSelector::new().selector($selector)
     };
 
     (@cookbook $($r:ty),+) => {

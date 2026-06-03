@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let tfoot: HtmlTfoot = HtmlTfoot::empty().id("table_foot");
+/// let tfoot = HtmlTfoot::new().id("table_foot");
 ///
 /// assert_eq!(tfoot.bake(), r#"<tfoot id="table_foot"></tfoot>"#);
 /// ```
@@ -20,10 +20,12 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let td: HtmlTd = HtmlTd::new("Don't see what you're after? We'll do our best.").colspan(2);
-/// let tr: HtmlTr = HtmlTr::new(bake_newline!(td));
+/// let td = HtmlTd::new()
+///     .content("Don't see what you're after? We'll do our best.")
+///     .colspan(2);
+/// let tr = HtmlTr::new().content(bake_newline!(td));
 ///
-/// let tfoot: HtmlTfoot = HtmlTfoot::new(tr);
+/// let tfoot = HtmlTfoot::new().content(tr);
 ///
 /// assert_eq!(
 ///     tfoot.bake(),
@@ -90,12 +92,12 @@ pub struct HtmlTfoot<R: TfootRecipe = ()> {
 #[macro_export]
 macro_rules! tfoot {
     () => {
-        $crate::html::HtmlTfoot::<()>::empty()
+        $crate::html::HtmlTfoot::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTfoot::<()>::new($content)
+        $crate::html::HtmlTfoot::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTfoot::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlTfoot::new().content([$first $(, $rest)*])
     };
 }

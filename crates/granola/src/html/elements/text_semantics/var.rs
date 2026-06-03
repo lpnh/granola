@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let var: HtmlVar = HtmlVar::empty().id("variable");
+/// let var = HtmlVar::new().id("variable");
 ///
 /// assert_eq!(var.bake(), r#"<var id="variable"></var>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let var: HtmlVar = HtmlVar::new("a");
+/// let var = HtmlVar::new().content("a");
 ///
 /// let triangle = bake_inline!["An equilateral triangle with side ", var];
 ///
@@ -82,19 +82,19 @@ pub struct HtmlVar<R: VarRecipe = ()> {
 #[macro_export]
 macro_rules! var {
     () => {
-        $crate::html::HtmlVar::<()>::empty()
+        $crate::html::HtmlVar::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlVar::<()>::new($content)
+        $crate::html::HtmlVar::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlVar::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlVar::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlVar::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlVar::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlVar::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlVar::new().content($crate::bake_inline![$($content),+])
     };
 }

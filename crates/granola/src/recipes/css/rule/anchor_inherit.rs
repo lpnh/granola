@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `a` inherit rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<AnchorInherit> = CssRule::from_cookbook();
 ///
@@ -28,9 +28,9 @@ impl RuleRecipe for AnchorInherit {
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssColor::<Inherit>::from_cookbook().into(),
+            CssColor::from(Inherit).into(),
             CssWebkitTextDecoration::<Inherit>::from_cookbook().into(),
-            CssTextDecoration::<Inherit>::from_cookbook().into(),
+            CssTextDecoration::from(Inherit).into(),
         ];
     }
 }

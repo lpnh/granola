@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let input: HtmlInput = HtmlInput::empty().id("html_input");
+/// let input = HtmlInput::new().id("html_input");
 ///
 /// assert_eq!(input.bake(), r#"<input id="html_input" />"#);
 /// ```
@@ -20,7 +20,10 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let input: HtmlInput = HtmlInput::new("nickname").minlength(4).required(true);
+/// let input = HtmlInput::new()
+///     .name("nickname")
+///     .minlength(4)
+///     .required(true);
 ///
 /// assert_eq!(
 ///     input.bake(),
@@ -67,7 +70,7 @@ pub struct HtmlInput<R: InputRecipe = ()> {
 }
 
 impl<R: InputRecipe> HtmlInput<R> {
-    pub fn new(name: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_name(name: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
 
@@ -647,10 +650,10 @@ impl From<InputType> for Cow<'static, str> {
 #[macro_export]
 macro_rules! input {
     () => {
-        $crate::html::HtmlInput::<()>::empty()
+        $crate::html::HtmlInput::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlInput::<()>::new($content)
+        $crate::html::HtmlInput::<()>::from_name($content)
     };
 
     (@from_value $value: expr $(,)?) => {
@@ -664,7 +667,7 @@ macro_rules! input {
         $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $name:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::new($name)
+        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_name($name)
     };
     (@cookbook $($r:ty),+ ; @from_value $value:expr $(,)?) => {
         $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_value($value)

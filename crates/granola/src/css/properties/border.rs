@@ -67,7 +67,7 @@ pub use border_radius::*;
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::{filters, oven::BakeInto, prelude::*};
+use crate::{filters, prelude::*};
 
 /// The CSS `border` property.
 ///
@@ -78,7 +78,7 @@ use crate::{filters, oven::BakeInto, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_border: CssBorder = CssBorder::new("none");
+/// let css_border = CssBorder::new().content("none");
 ///
 /// assert_eq!(css_border.bake(), "border: none;");
 /// ```
@@ -98,15 +98,11 @@ pub struct CssBorder<R: BorderRecipe = ()> {
 
 impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclaration {
     fn from(css_border: CssBorder<R>) -> Self {
-        Self::new("border", css_border.content.bake_into())
+        Self::new("border", css_border.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssBorder<R>> for CssDeclarationsBlock<B>
-where
-    R: BorderRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclarationsBlock {
     fn from(css_border: CssBorder<R>) -> Self {
         Self::new().push(css_border)
     }

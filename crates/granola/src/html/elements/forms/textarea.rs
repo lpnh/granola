@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let textarea: HtmlTextarea = HtmlTextarea::empty().id("textarea");
+/// let textarea = HtmlTextarea::new().id("textarea");
 ///
 /// assert_eq!(textarea.bake(), r#"<textarea id="textarea"></textarea>"#);
 /// ```
@@ -20,7 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let textarea: HtmlTextarea = HtmlTextarea::new("Carpe diem")
+/// let textarea = HtmlTextarea::new()
+///     .content("Carpe diem")
 ///     .name("reminder")
 ///     .readonly(true);
 ///
@@ -246,18 +247,18 @@ impl<R: TextareaRecipe> HasTextareaAttrs for HtmlTextarea<R> {
 #[macro_export]
 macro_rules! textarea {
     () => {
-        $crate::html::HtmlTextarea::<()>::empty()
+        $crate::html::HtmlTextarea::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTextarea::<()>::new($content)
+        $crate::html::HtmlTextarea::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTextarea::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTextarea::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTextarea::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTextarea::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTextarea::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTextarea::new().content($crate::bake_inline![$($content),+])
     };
 }

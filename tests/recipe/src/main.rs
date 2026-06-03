@@ -7,17 +7,17 @@ impl HtmlRecipe for FooRecipe {
     type Content = HomemadeRootContent;
 
     fn content_recipe(content: &mut Self::Content) {
-        let paragraph: HtmlP = HtmlP::new("Hello, world!");
+        let paragraph = HtmlP::new().content("Hello, world!");
 
         if let Some(body) = content.body.take() {
             let old_content = body.content;
             let new_content = bake_block![paragraph, old_content];
 
-            let body: HtmlBody = HtmlBody::new(new_content);
+            let body = HtmlBody::new().content(new_content);
 
             content.body = Some(body);
         } else {
-            let body: HtmlBody = HtmlBody::new(bake_newline!(paragraph));
+            let body = HtmlBody::new().content(bake_newline!(paragraph));
 
             content.body = Some(body);
         }
@@ -130,13 +130,13 @@ mod recipe_tests {
 
     #[test]
     fn no_recipe() {
-        let button: HtmlButton = HtmlButton::new("Ok");
+        let button = HtmlButton::new().content("Ok");
 
-        let p: HtmlP = HtmlP::new("Oh, hi!");
+        let p = HtmlP::new().content("Oh, hi!");
 
-        let body: HtmlBody = HtmlBody::new(bake_newline!(p));
+        let body = HtmlBody::new().content(bake_newline!(p));
 
-        let html_root: HtmlRoot = HtmlRoot::new(body);
+        let html_root = HtmlRoot::new().content(body);
 
         assert_eq!(button.bake(), "<button>Ok</button>");
         assert_eq!(
@@ -151,20 +151,15 @@ mod recipe_tests {
 
     #[test]
     fn empty() {
-        let button: HtmlButton<FooRecipe> = HtmlButton::empty();
+        let button = HtmlButton::<()>::from_cookbook();
 
-        let p: HtmlP<FooRecipe> = HtmlP::empty();
+        let p = HtmlP::<()>::from_cookbook();
 
-        let html_root: HtmlRoot<FooRecipe> = HtmlRoot::empty();
+        let html_root = HtmlRoot::<()>::from_cookbook();
 
         assert_eq!(button.bake(), "<button></button>");
         assert_eq!(p.bake(), "<p></p>");
-        assert_eq!(
-            html_root.bake(),
-            r#"<html>
-  <head></head>
-</html>"#
-        );
+        assert_eq!(html_root.bake(), r#"<html></html>"#);
     }
 
     #[test]
@@ -173,7 +168,7 @@ mod recipe_tests {
 
         let p: HtmlP<FooRecipe> = HtmlP::from_cookbook();
 
-        let html_root: HtmlRoot<Homemade> = HtmlRoot::from_cookbook();
+        let html_root = HtmlRoot::from(Homemade);
 
         assert_eq!(
             button.bake(),
@@ -199,13 +194,13 @@ mod recipe_tests {
 
     #[test]
     fn new() {
-        let button: HtmlButton<FooRecipe> = HtmlButton::new("Dismiss");
+        let button = HtmlButton::from(FooRecipe).content("Dismiss");
 
-        let p: HtmlP<FooRecipe> = HtmlP::new("Oh, hi!");
+        let p = HtmlP::from(FooRecipe).content("Oh, hi!");
 
-        let body: HtmlBody = HtmlBody::new(bake_newline!(p));
+        let body = HtmlBody::new().content(bake_newline!(p));
 
-        let html_root: HtmlRoot<Homemade> = HtmlRoot::new(body);
+        let html_root = HtmlRoot::from(Homemade).content(body);
 
         assert_eq!(
             button.bake(),
@@ -231,8 +226,8 @@ mod recipe_tests {
     #[test]
     fn composition_from_cookbook() {
         let button: HtmlButton<(FooRecipe, BarRecipe)> = HtmlButton::from_cookbook();
-        let p: HtmlP<(FooRecipe, BarRecipe)> = HtmlP::from_cookbook();
-        let html_root: HtmlRoot<(Homemade, FooRecipe)> = HtmlRoot::from_cookbook();
+        let p = HtmlP::from((FooRecipe, BarRecipe));
+        let html_root = HtmlRoot::from((Homemade, FooRecipe));
 
         assert_eq!(
             button.bake(),
@@ -292,11 +287,11 @@ mod recipe_tests {
 
     #[test]
     fn composition_new() {
-        let button: HtmlButton<(FooRecipe, BarRecipe)> = HtmlButton::new("Ok");
-        let p: HtmlP<(FooRecipe, BarRecipe)> = HtmlP::new("Oh, hi!");
+        let button = HtmlButton::from((FooRecipe, BarRecipe)).content("Ok");
+        let p = HtmlP::from((FooRecipe, BarRecipe)).content("Oh, hi!");
 
-        let body: HtmlBody = HtmlBody::new(bake_newline!(p));
-        let html_root: HtmlRoot<(Homemade, FooRecipe)> = HtmlRoot::new(body);
+        let body = HtmlBody::new().content(bake_newline!(p));
+        let html_root = HtmlRoot::from((Homemade, FooRecipe)).content(body);
 
         assert_eq!(
             button.bake(),
@@ -323,12 +318,13 @@ mod recipe_tests {
 
     #[test]
     fn composition_new_multiple() {
-        let button: HtmlButton<(TypeReset, FooBarLastCookbook)> = HtmlButton::new("Dismiss");
+        let button =
+            HtmlButton::<(TypeReset, FooBarLastCookbook)>::from_cookbook().content("Dismiss");
 
-        let p: HtmlP<FooBarLastCookbook> = HtmlP::new("Oh, hi!");
+        let p = HtmlP::<FooBarLastCookbook>::from_cookbook().content("Oh, hi!");
 
-        let body: HtmlBody = HtmlBody::new(bake_newline!(p));
-        let html_root: HtmlRoot<(Homemade, FooBarLastCookbook)> = HtmlRoot::new(body);
+        let body = HtmlBody::new().content(bake_newline!(p));
+        let html_root = HtmlRoot::<(Homemade, FooBarLastCookbook)>::from_cookbook().content(body);
 
         assert_eq!(
             button.bake(),

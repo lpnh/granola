@@ -2,7 +2,7 @@
 // Source: https://github.com/sindresorhus/modern-normalize
 // Licensed under MIT License (https://github.com/sindresorhus/modern-normalize/blob/main/license)
 
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The modern-normalize stylesheet recipe.
 ///
@@ -11,7 +11,7 @@ use crate::{recipes::*, prelude::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let stylesheet: CssStylesheet<ModernNormalize> = CssStylesheet::from_cookbook();
 ///
@@ -155,20 +155,23 @@ fn html_defaults() -> CssStatement {
 
     let selectors_list: CssSelectorsList = "html".into();
     let declarations_block: [CssDeclaration; 4] = [
-        CssFontFamily::<()>::new(default_fonts).into(),
-        CssLineHeight::<()>::new("1.15").into(),
-        CssWebkitTextSizeAdjust::<()>::new("100%").into(),
-        CssTabSize::<()>::new("4").into(),
+        CssFontFamily::new().content(default_fonts).into(),
+        CssLineHeight::new().content("1.15").into(),
+        CssWebkitTextSizeAdjust::new().content("100%").into(),
+        CssTabSize::new().content("4").into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn body_defaults() -> CssStatement {
-    let selectors_list: CssSelectorsList = "body".into();
-    let declarations_block: CssDeclaration = CssMargin::<()>::new("0").into();
-
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .push_selector("body")
+        .push_property(CssMargin::new().content("0"))
+        .into()
 }
 
 fn monospace_defaults() -> CssStatement {
@@ -177,30 +180,39 @@ fn monospace_defaults() -> CssStatement {
 
     let selectors_list = CssSelectorsList::<MonospaceSelectors>::from_cookbook().bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
-        CssFontFamily::<()>::new(default_fonts).into(),
-        CssFontSize::<()>::new("1em").into(),
+        CssFontFamily::new().content(default_fonts).into(),
+        CssFontSize::new().content("1em").into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn table_border_color() -> CssStatement {
     let selectors_list: CssSelectorsList = "table".into();
     let declarations_block: CssDeclaration = CssBorderColor::<Currentcolor>::from_cookbook().into();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn forms_defaults() -> CssStatement {
     let selectors_list = CssSelectorsList::<FormControlsExt>::from_cookbook().bake_recipe();
     let declarations_block: [CssDeclaration; 4] = [
-        CssFontFamily::<Inherit>::from_cookbook().into(),
-        CssFontSize::<()>::new("100%").into(),
-        CssLineHeight::<()>::new("1.15").into(),
-        CssMargin::<()>::new("0").into(),
+        CssFontFamily::from(Inherit).into(),
+        CssFontSize::new().content("100%").into(),
+        CssLineHeight::new().content("1.15").into(),
+        CssMargin::new().content("0").into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn button_appearance() -> CssStatement {
@@ -213,24 +225,33 @@ fn button_appearance() -> CssStatement {
     .into();
     let declarations_block: CssDeclaration = ("-webkit-appearance", "button").into();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn legend_padding() -> CssStatement {
     let selectors_list: CssSelectorsList = "legend".into();
-    let declarations_block: CssDeclaration = CssPadding::<()>::new("0").into();
+    let declarations_block: CssDeclaration = CssPadding::new().content("0").into();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn search_appearance() -> CssStatement {
     let selectors_list: CssSelectorsList = r#"[type="search"]"#.into();
     let declarations_block: [CssDeclaration; 2] = [
         ("-webkit-appearance", "textfield").into(),
-        CssOutlineOffset::<()>::new("-2px").into(),
+        CssOutlineOffset::new().content("-2px").into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn file_upload_button() -> CssStatement {
@@ -240,5 +261,8 @@ fn file_upload_button() -> CssStatement {
         CssFont::<Inherit>::from_cookbook().into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }

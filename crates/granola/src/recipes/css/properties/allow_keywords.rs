@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `allow-keywords` property value recipe.
@@ -7,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let css_interpolate_size: CssInterpolateSize<AllowKeywords> = CssInterpolateSize::from_cookbook();
+/// let css_interpolate_size = CssInterpolateSize::from(AllowKeywords);
 ///
 /// assert_eq!(
 ///     css_interpolate_size.bake(),
@@ -20,7 +18,7 @@ use crate::prelude::*;
 pub struct AllowKeywords;
 
 impl InterpolateSizeRecipe for AllowKeywords {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "allow-keywords".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "allow-keywords".into();
     }
 }

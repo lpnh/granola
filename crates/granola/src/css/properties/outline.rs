@@ -10,7 +10,7 @@ pub use outline_width::*;
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `outline` shorthand property.
 ///
@@ -21,7 +21,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_outline: CssOutline = CssOutline::new("auto");
+/// let css_outline = CssOutline::new().content("auto");
 ///
 /// assert_eq!(css_outline.bake(), "outline: auto;");
 /// ```
@@ -29,36 +29,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// outline: {{ value }};
+/// outline: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OutlineRecipe)]
+#[recipe(name = OutlineRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssOutline<R: OutlineRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: OutlineRecipe> CssOutline<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: OutlineRecipe> From<CssOutline<R>> for CssDeclaration {
     fn from(css_outline: CssOutline<R>) -> Self {
-        Self::new("outline", css_outline.value)
+        Self::new("outline", css_outline.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssOutline<R>> for CssDeclarationsBlock<B>
-where
-    R: OutlineRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: OutlineRecipe> From<CssOutline<R>> for CssDeclarationsBlock {
     fn from(css_outline: CssOutline<R>) -> Self {
         Self::new().push(css_outline)
     }

@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `h1, h2, h3, h4, h5, h6` selectors list recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let selectors_list: CssSelectorsList<AllHeadings> = CssSelectorsList::from_cookbook();
 ///

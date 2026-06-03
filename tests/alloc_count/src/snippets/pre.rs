@@ -5,17 +5,17 @@ use crate::{Stats, bake_block, bake_block_naive, bake_newline, bake_newline_naiv
 pub fn pre_empty() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
         let ferris_ascii = bake_newline!("");
-        let pre: HtmlPre = HtmlPre::new(ferris_ascii);
-        let url: HtmlA = HtmlA::empty();
-        let cite: HtmlCite = HtmlCite::new(url);
+        let pre = HtmlPre::new().content(ferris_ascii);
+        let url: HtmlA = HtmlA::new();
+        let cite = HtmlCite::new().content(url);
         bake_block![pre, cite]
     });
 
     let (naive_out, naive) = measure(|| {
         let ferris_ascii = bake_newline_naive!("");
-        let pre: HtmlPre = HtmlPre::new(ferris_ascii);
-        let url: HtmlA = HtmlA::empty();
-        let cite: HtmlCite = HtmlCite::new(url);
+        let pre = HtmlPre::new().content(ferris_ascii);
+        let url: HtmlA = HtmlA::new();
+        let cite = HtmlCite::new().content(url);
         bake_block_naive![pre, cite]
     });
 
@@ -27,21 +27,27 @@ pub fn pre_empty() -> (Stats, Stats) {
 pub fn pre_example() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
         let ferris_ascii = bake_newline!(FERRIS);
-        let pre: HtmlPre = HtmlPre::new(ferris_ascii)
+        let pre = HtmlPre::new()
+            .content(ferris_ascii)
             .role("img")
             .aria_label("ASCII ferris");
-        let url: HtmlA = HtmlA::new("ferris-says").href("https://crates.io/crates/ferris-says");
-        let cite: HtmlCite = HtmlCite::new(url);
+        let url = HtmlA::new()
+            .content("ferris-says")
+            .href("https://crates.io/crates/ferris-says");
+        let cite = HtmlCite::new().content(url);
         bake_block![pre, cite]
     });
 
     let (naive_out, naive) = measure(|| {
         let ferris_ascii = bake_newline_naive!(FERRIS);
-        let pre: HtmlPre = HtmlPre::new(ferris_ascii)
+        let pre = HtmlPre::new()
+            .content(ferris_ascii)
             .role("img")
             .aria_label("ASCII ferris");
-        let url: HtmlA = HtmlA::new("ferris-says").href("https://crates.io/crates/ferris-says");
-        let cite: HtmlCite = HtmlCite::new(url);
+        let url = HtmlA::new()
+            .content("ferris-says")
+            .href("https://crates.io/crates/ferris-says");
+        let cite = HtmlCite::new().content(url);
         bake_block_naive![pre, cite]
     });
 

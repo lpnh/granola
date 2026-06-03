@@ -13,7 +13,7 @@ use crate::filters;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let button: HtmlButton = HtmlButton::new("🔍").aria_label("Search");
+/// let button = HtmlButton::new().content("🔍").aria_label("Search");
 ///
 /// assert_eq!(button.bake(), r#"<button aria-label="Search">🔍</button>"#);
 /// ```

@@ -5,7 +5,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `transform` property.
 ///
@@ -16,7 +16,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_transform: CssTransform = CssTransform::new("scale(0.97)");
+/// let css_transform = CssTransform::new().content("scale(0.97)");
 ///
 /// assert_eq!(css_transform.bake(), "transform: scale(0.97);");
 /// ```
@@ -24,36 +24,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// transform: {{ value }};
+/// transform: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TransformRecipe)]
+#[recipe(name = TransformRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTransform<R: TransformRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TransformRecipe> CssTransform<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclaration {
     fn from(css_transform: CssTransform<R>) -> Self {
-        Self::new("transform", css_transform.value)
+        Self::new("transform", css_transform.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTransform<R>> for CssDeclarationsBlock<B>
-where
-    R: TransformRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclarationsBlock {
     fn from(css_transform: CssTransform<R>) -> Self {
         Self::new().push(css_transform)
     }

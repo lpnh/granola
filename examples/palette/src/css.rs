@@ -26,23 +26,23 @@ fn stylesheet() -> CssStylesheet {
         rule!(
             "body";
             declarations_block![
-                CssBackgroundColor::<()>::new("var(--base-100)"),
-                CssColor::<()>::new("var(--base-content)"),
-                CssFontFamily::<SansSerif>::from_cookbook(),
+                CssBackgroundColor::new().content("var(--base-100)"),
+                CssColor::new().content("var(--base-content)"),
+                CssFontFamily::<SansSerif>::from_cookbook().bake_recipe(),
                 CssDisplay::<Flex>::from_cookbook(),
                 CssJustifyContent::<Center>::from_cookbook(),
-                CssAlignItems::<Center>::from_cookbook(),
-                CssMinHeight::<()>::new("100vh"),
-                CssMargin::<()>::new("0"),
+                CssAlignItems::<Center>::from_cookbook().bake_recipe(),
+                CssMinHeight::new().content("100vh"),
+                CssMargin::new().content("0"),
             ]
         ),
         rule!(
             ".palette";
             declarations_block![
-                CssBackground::<()>::new("var(--base-200)"),
-                CssPadding::<()>::new("2rem"),
-                CssBorderRadius::<()>::new("8px"),
-                CssBoxShadow::<()>::new(
+                CssBackground::new().content("var(--base-200)"),
+                CssPadding::new().content("2rem"),
+                CssBorderRadius::new().content("8px"),
+                CssBoxShadow::new().content(
                     "0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",
                 ),
                 CssTextAlign::<Center>::from_cookbook(),
@@ -53,9 +53,9 @@ fn stylesheet() -> CssStylesheet {
             declarations_block![
                 CssDisplay::<Flex>::from_cookbook(),
                 CssFlexDirection::<Column>::from_cookbook(),
-                CssGap::<()>::new("1rem"),
+                CssGap::new().content("1rem"),
                 CssJustifyContent::<Center>::from_cookbook(),
-                CssMargin::<()>::new("1.5rem 0"),
+                CssMargin::new().content("1.5rem 0"),
                 CssFlexWrap::<Wrap>::from_cookbook(),
             ]
         ),
@@ -64,17 +64,17 @@ fn stylesheet() -> CssStylesheet {
             declarations_block![
                 CssDisplay::<Flex>::from_cookbook(),
                 CssFlexDirection::<Column>::from_cookbook(),
-                CssAlignItems::<Center>::from_cookbook(),
-                CssGap::<()>::new("0.25rem"),
+                CssAlignItems::<Center>::from_cookbook().bake_recipe(),
+                CssGap::new().content("0.25rem"),
             ]
         ),
         rule!(
             ".square";
             declarations_block![
-                CssWidth::<()>::new("64px"),
-                CssHeight::<()>::new("64px"),
-                CssBorderRadius::<()>::new("8px"),
-                CssBoxShadow::<()>::new(
+                CssWidth::new().content("64px"),
+                CssHeight::new().content("64px"),
+                CssBorderRadius::new().content("8px"),
+                CssBoxShadow::new().content(
                     r#"/* TODO: fix formatting */
   0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000),
   0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset,
@@ -85,22 +85,22 @@ fn stylesheet() -> CssStylesheet {
         rule!(
             simple_selector!(".swatch").descendant("p");
             declarations_block![
-                CssFontSize::<()>::new("0.75rem"),
-                CssMargin::<()>::new("0"),
+                CssFontSize::new().content("0.75rem"),
+                CssMargin::new().content("0"),
             ]
         ),
         rule!(
             simple_selector!(".swatch").descendant("p").descendant("code");
-            CssFontSize::<()>::new("0.7rem")
+            CssFontSize::new().content("0.7rem")
         ),
         rule!(
             simple_selector!(".palette").descendant("form");
             declarations_block![
                 CssDisplay::<Flex>::from_cookbook(),
-                CssGap::<()>::new("0.5rem"),
+                CssGap::new().content("0.5rem"),
                 CssJustifyContent::<Center>::from_cookbook(),
-                CssAlignItems::<Center>::from_cookbook(),
-                CssMarginTop::<()>::new("1rem"),
+                CssAlignItems::from(Center).bake_recipe(),
+                CssMarginTop::new().content("1rem"),
             ]
         ),
     )

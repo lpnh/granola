@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `text-align` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_text_align: CssTextAlign = CssTextAlign::new("inherit");
+/// let css_text_align = CssTextAlign::new().content("inherit");
 ///
 /// assert_eq!(css_text_align.bake(), "text-align: inherit;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// text-align: {{ value }};
+/// text-align: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextAlignRecipe)]
+#[recipe(name = TextAlignRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextAlign<R: TextAlignRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TextAlignRecipe> CssTextAlign<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TextAlignRecipe> From<CssTextAlign<R>> for CssDeclaration {
     fn from(css_text_align: CssTextAlign<R>) -> Self {
-        Self::new("text-align", css_text_align.value)
+        Self::new("text-align", css_text_align.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTextAlign<R>> for CssDeclarationsBlock<B>
-where
-    R: TextAlignRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TextAlignRecipe> From<CssTextAlign<R>> for CssDeclarationsBlock {
     fn from(css_text_align: CssTextAlign<R>) -> Self {
         Self::new().push(css_text_align)
     }

@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let wbr: HtmlWbr = HtmlWbr::new().id("line_break_opportunity");
+/// let wbr = HtmlWbr::new().id("line_break_opportunity");
 ///
 /// assert_eq!(wbr.bake(), r#"<wbr id="line_break_opportunity" />"#);
 /// ```
@@ -40,12 +40,6 @@ pub struct HtmlWbr<R: WbrRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: WbrRecipe> HtmlWbr<R> {
-    pub fn new() -> Self {
-        Self::from_cookbook()
-    }
-}
-
 /// Shorthand for `HtmlWbr`.
 ///
 /// # Example
@@ -60,7 +54,7 @@ impl<R: WbrRecipe> HtmlWbr<R> {
 #[macro_export]
 macro_rules! wbr {
     () => {
-        $crate::html::HtmlWbr::<()>::new()
+        $crate::html::HtmlWbr::new()
     };
 
     (@cookbook $($r:ty),+) => {

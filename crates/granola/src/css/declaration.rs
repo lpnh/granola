@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::borrow::Cow;
 
 use crate::prelude::*;
 
@@ -23,7 +23,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declarations_block: CssDeclarationsBlock = CssDeclarationsBlock::new()
+/// let css_declarations_block = CssDeclarationsBlock::new()
 ///     .push(("color", "violet"))
 ///     .push(("font-weight", "lighter"));
 ///
@@ -43,20 +43,23 @@ use crate::prelude::*;
 /// {% endif -%}
 /// {%- endfor -%}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DeclarationsBlockRecipe)]
+#[derive(Debug, Clone, Default, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-pub struct CssDeclarationsBlock<R: DeclarationsBlockRecipe = ()> {
-    _recipe: PhantomData<R>,
+pub struct CssDeclarationsBlock {
     pub declarations: Vec<CssDeclaration>,
 }
 
-impl<R: DeclarationsBlockRecipe> CssDeclarationsBlock<R> {
+impl CssDeclarationsBlock {
     pub fn new() -> Self {
         Self::default()
     }
 
     pub fn push(mut self, css_declaration: impl Into<CssDeclaration>) -> Self {
+        self.declarations.push(css_declaration.into());
+        self
+    }
+
+    pub fn push_mut(&mut self, css_declaration: impl Into<CssDeclaration>) -> &mut Self {
         self.declarations.push(css_declaration.into());
         self
     }
@@ -66,7 +69,6 @@ impl<D: Into<CssDeclaration>, const N: usize> From<[D; N]> for CssDeclarationsBl
     fn from(items: [D; N]) -> Self {
         Self {
             declarations: items.into_iter().map(Into::into).collect(),
-            ..Default::default()
         }
     }
 }
@@ -75,7 +77,6 @@ impl<D: Into<CssDeclaration>> From<Vec<D>> for CssDeclarationsBlock {
     fn from(items: Vec<D>) -> Self {
         Self {
             declarations: items.into_iter().map(Into::into).collect(),
-            ..Default::default()
         }
     }
 }
@@ -84,7 +85,6 @@ impl From<CssDeclaration> for CssDeclarationsBlock {
     fn from(css_declaration: CssDeclaration) -> Self {
         Self {
             declarations: vec![css_declaration],
-            ..Default::default()
         }
     }
 }
@@ -93,7 +93,6 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
     fn from(decl: (P, V)) -> Self {
         Self {
             declarations: vec![decl.into()],
-            ..Default::default()
         }
     }
 }
@@ -107,7 +106,7 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration: CssDeclaration = CssDeclaration::new("color", "rebeccapurple");
+/// let css_declaration = CssDeclaration::new("color", "rebeccapurple");
 ///
 /// assert_eq!(css_declaration.bake(), "color: rebeccapurple;");
 /// ```
@@ -172,17 +171,10 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 #[macro_export]
 macro_rules! declarations_block {
     ($decl: expr $(,)?) => {
-        $crate::css::CssDeclarationsBlock::<()>::from($decl)
+        $crate::css::CssDeclarationsBlock::from($decl)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::css::CssDeclarationsBlock::<()>::new().push($first)$(.push($rest))*
-    };
-
-    (@cookbook $($r:ty),+) => {
-        $crate::css::CssDeclarationsBlock::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $first: expr $(, $rest: expr)* $(,)?) => {
-        $crate::css::CssDeclarationsBlock::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
+        $crate::css::CssDeclarationsBlock::new().push($first)$(.push($rest))*
     };
 }
 

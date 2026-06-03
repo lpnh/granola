@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `vertical-align` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_vertical_align: CssVerticalAlign = CssVerticalAlign::new("baseline");
+/// let css_vertical_align = CssVerticalAlign::new().content("baseline");
 ///
 /// assert_eq!(css_vertical_align.bake(), "vertical-align: baseline;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// vertical-align: {{ value }};
+/// vertical-align: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = VerticalAlignRecipe)]
+#[recipe(name = VerticalAlignRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssVerticalAlign<R: VerticalAlignRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: VerticalAlignRecipe> CssVerticalAlign<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: VerticalAlignRecipe> From<CssVerticalAlign<R>> for CssDeclaration {
     fn from(css_vertical_align: CssVerticalAlign<R>) -> Self {
-        Self::new("vertical-align", css_vertical_align.value)
+        Self::new("vertical-align", css_vertical_align.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssVerticalAlign<R>> for CssDeclarationsBlock<B>
-where
-    R: VerticalAlignRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: VerticalAlignRecipe> From<CssVerticalAlign<R>> for CssDeclarationsBlock {
     fn from(css_vertical_align: CssVerticalAlign<R>) -> Self {
         Self::new().push(css_vertical_align)
     }

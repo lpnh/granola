@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let tr: HtmlTr = HtmlTr::empty().id("table_row");
+/// let tr = HtmlTr::new().id("table_row");
 ///
 /// assert_eq!(tr.bake(), r#"<tr id="table_row"></tr>"#);
 /// ```
@@ -20,10 +20,10 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let th: HtmlTh = HtmlTh::new("Hot chocolate").scope("row");
-/// let td: HtmlTd = HtmlTd::new("Melted dark chocolate with milk");
+/// let th = HtmlTh::new().content("Hot chocolate").scope("row");
+/// let td = HtmlTd::new().content("Melted dark chocolate with milk");
 ///
-/// let tr: HtmlTr = HtmlTr::new(bake_block![th, td]);
+/// let tr = HtmlTr::new().content(bake_block![th, td]);
 ///
 /// assert_eq!(
 ///     tr.bake(),
@@ -119,19 +119,19 @@ impl From<HtmlTr> for TableRows {
 #[macro_export]
 macro_rules! tr {
     () => {
-        $crate::html::HtmlTr::<()>::empty()
+        $crate::html::HtmlTr::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTr::<()>::new($content)
+        $crate::html::HtmlTr::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTr::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTr::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTr::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTr::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTr::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTr::new().content($crate::bake_inline![$($content),+])
     };
 }

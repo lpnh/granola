@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let noscript: HtmlNoscript = HtmlNoscript::empty().id("noscript");
+/// let noscript = HtmlNoscript::new().id("noscript");
 ///
 /// assert_eq!(noscript.bake(), r#"<noscript id="noscript"></noscript>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let noscript: HtmlNoscript = HtmlNoscript::new("It's javascript all the way down");
+/// let noscript = HtmlNoscript::new().content("It's javascript all the way down");
 ///
 /// assert_eq!(
 ///     noscript.bake(),
@@ -75,19 +75,19 @@ pub struct HtmlNoscript<R: NoscriptRecipe = ()> {
 #[macro_export]
 macro_rules! noscript {
     () => {
-        $crate::html::HtmlNoscript::<()>::empty()
+        $crate::html::HtmlNoscript::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlNoscript::<()>::new($content)
+        $crate::html::HtmlNoscript::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlNoscript::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlNoscript::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlNoscript::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlNoscript::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlNoscript::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlNoscript::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let time: HtmlTime = HtmlTime::empty().id("time_date");
+/// let time = HtmlTime::new().id("time_date");
 ///
 /// assert_eq!(time.bake(), r#"<time id="time_date"></time>"#);
 /// ```
@@ -20,7 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let time: HtmlTime = HtmlTime::new("Unix epoch").datetime("1970-01-01T00:00:00Z");
+/// let time = HtmlTime::new()
+///     .content("Unix epoch")
+///     .datetime("1970-01-01T00:00:00Z");
 ///
 /// assert_eq!(
 ///     time.bake(),
@@ -125,19 +127,19 @@ impl<R: TimeRecipe> HasTimeAttrs for HtmlTime<R> {
 #[macro_export]
 macro_rules! time {
     () => {
-        $crate::html::HtmlTime::<()>::empty()
+        $crate::html::HtmlTime::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlTime::<()>::new($content)
+        $crate::html::HtmlTime::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlTime::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTime::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlTime::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlTime::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlTime::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTime::new().content($crate::bake_inline![$($content),+])
     };
 }

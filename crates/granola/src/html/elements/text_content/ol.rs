@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ol: HtmlOl = HtmlOl::empty().id("ordered_list");
+/// let ol = HtmlOl::new().id("ordered_list");
 ///
 /// assert_eq!(ol.bake(), r#"<ol id="ordered_list"></ol>"#);
 /// ```
@@ -21,12 +21,12 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let items = [
-///     HtmlLi::new("Add the sugar"),
-///     HtmlLi::new("Coat with spice"),
-///     HtmlLi::new("Fold in everything nice"),
+///     HtmlLi::new().content("Add the sugar"),
+///     HtmlLi::new().content("Coat with spice"),
+///     HtmlLi::new().content("Fold in everything nice"),
 /// ];
 ///
-/// let instructions: HtmlOl = HtmlOl::new(items);
+/// let instructions = HtmlOl::new().content(items);
 ///
 /// assert_eq!(
 ///     instructions.bake(),
@@ -183,12 +183,12 @@ impl<R: OlRecipe> HasOlAttrs for HtmlOl<R> {
 #[macro_export]
 macro_rules! ol {
     () => {
-        $crate::html::HtmlOl::<()>::empty()
+        $crate::html::HtmlOl::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlOl::<()>::new($content)
+        $crate::html::HtmlOl::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlOl::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlOl::new().content([$first $(, $rest)*])
     };
 }

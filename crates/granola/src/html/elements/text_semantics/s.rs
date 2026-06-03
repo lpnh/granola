@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let s: HtmlS = HtmlS::empty().id("strikethrough");
+/// let s = HtmlS::new().id("strikethrough");
 ///
 /// assert_eq!(s.bake(), r#"<s id="strikethrough"></s>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let nine: HtmlS = HtmlS::new("nine");
+/// let nine = HtmlS::new().content("nine");
 ///
 /// let solar_system = bake_inline!["Our solar system has ", nine, " eight planets"];
 ///
@@ -82,18 +82,18 @@ pub struct HtmlS<R: SRecipe = ()> {
 #[macro_export]
 macro_rules! s {
     () => {
-        $crate::html::HtmlS::<()>::empty()
+        $crate::html::HtmlS::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlS::<()>::new($content)
+        $crate::html::HtmlS::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlS::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlS::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlS::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlS::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlS::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlS::new().content($crate::bake_inline![$($content),+])
     };
 }

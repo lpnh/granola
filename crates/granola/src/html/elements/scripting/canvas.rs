@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let canvas: HtmlCanvas = HtmlCanvas::empty().id("graphics_canvas");
+/// let canvas = HtmlCanvas::new().id("graphics_canvas");
 ///
 /// assert_eq!(canvas.bake(), r#"<canvas id="graphics_canvas"></canvas>"#);
 /// ```
@@ -25,9 +25,10 @@ use crate::{filters, prelude::*};
 /// ctx.font = "64px sans";
 /// ctx.fillText(":-)", 10, 62);"#;
 ///
-/// let script: HtmlScript = HtmlScript::new(content);
+/// let script = HtmlScript::new().content(content);
 ///
-/// let canvas: HtmlCanvas = HtmlCanvas::new("ASCII smiley")
+/// let canvas = HtmlCanvas::new()
+///     .content("ASCII smiley")
 ///     .id("canvas")
 ///     .width(160)
 ///     .height(80);
@@ -166,19 +167,19 @@ impl<R: CanvasRecipe> HasCanvasAttrs for HtmlCanvas<R> {
 #[macro_export]
 macro_rules! canvas {
     () => {
-        $crate::html::HtmlCanvas::<()>::empty()
+        $crate::html::HtmlCanvas::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlCanvas::<()>::new($content)
+        $crate::html::HtmlCanvas::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlCanvas::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlCanvas::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlCanvas::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlCanvas::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlCanvas::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlCanvas::new().content($crate::bake_inline![$($content),+])
     };
 }

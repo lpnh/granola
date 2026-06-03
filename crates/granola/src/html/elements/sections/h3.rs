@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let h3: HtmlH3 = HtmlH3::empty().id("html_section_heading");
+/// let h3 = HtmlH3::new().id("html_section_heading");
 ///
 /// assert_eq!(h3.bake(), r#"<h3 id="html_section_heading"></h3>"#);
 /// ```
@@ -20,11 +20,11 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let panic: HtmlCode = HtmlCode::new("panic!");
+/// let panic = HtmlCode::new().content("panic!");
 ///
 /// let content = bake_inline!["Unrecoverable Errors with ", panic];
 ///
-/// let h3: HtmlH3 = HtmlH3::new(content);
+/// let h3 = HtmlH3::new().content(content);
 ///
 /// assert_eq!(
 ///     h3.bake(),
@@ -82,19 +82,19 @@ pub struct HtmlH3<R: H3Recipe = ()> {
 #[macro_export]
 macro_rules! h3 {
     () => {
-        $crate::html::HtmlH3::<()>::empty()
+        $crate::html::HtmlH3::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlH3::<()>::new($content)
+        $crate::html::HtmlH3::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlH3::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlH3::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlH3::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlH3::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlH3::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlH3::new().content($crate::bake_inline![$($content),+])
     };
 }

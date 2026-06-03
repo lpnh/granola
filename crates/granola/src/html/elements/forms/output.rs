@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let output: HtmlOutput = HtmlOutput::empty().id("output");
+/// let output = HtmlOutput::new().id("output");
 ///
 /// assert_eq!(output.bake(), r#"<output id="output"></output>"#);
 /// ```
@@ -20,7 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let output: HtmlOutput = HtmlOutput::new("42")
+/// let output = HtmlOutput::new()
+///     .content("42")
 ///     .name("answer")
 ///     .for_id("ultimate-question");
 ///
@@ -148,19 +149,19 @@ impl<R: OutputRecipe> HasOutputAttrs for HtmlOutput<R> {
 #[macro_export]
 macro_rules! output {
     () => {
-        $crate::html::HtmlOutput::<()>::empty()
+        $crate::html::HtmlOutput::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlOutput::<()>::new($content)
+        $crate::html::HtmlOutput::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlOutput::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlOutput::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlOutput::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlOutput::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlOutput::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlOutput::new().content($crate::bake_inline![$($content),+])
     };
 }

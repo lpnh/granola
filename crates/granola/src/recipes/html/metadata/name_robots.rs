@@ -5,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let robots: HtmlMeta<NameRobots> = HtmlMeta::new("noindex, nofollow");
+/// let robots: HtmlMeta<NameRobots> = HtmlMeta::from_content("noindex, nofollow");
 ///
 /// assert_eq!(
 ///     robots.bake(),

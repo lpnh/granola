@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `opacity` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_opacity: CssOpacity = CssOpacity::new("1");
+/// let css_opacity = CssOpacity::new().content("1");
 ///
 /// assert_eq!(css_opacity.bake(), "opacity: 1;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// opacity: {{ value }};
+/// opacity: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OpacityRecipe)]
+#[recipe(name = OpacityRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssOpacity<R: OpacityRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: OpacityRecipe> CssOpacity<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: OpacityRecipe> From<CssOpacity<R>> for CssDeclaration {
     fn from(css_opacity: CssOpacity<R>) -> Self {
-        Self::new("opacity", css_opacity.value)
+        Self::new("opacity", css_opacity.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssOpacity<R>> for CssDeclarationsBlock<B>
-where
-    R: OpacityRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: OpacityRecipe> From<CssOpacity<R>> for CssDeclarationsBlock {
     fn from(css_opacity: CssOpacity<R>) -> Self {
         Self::new().push(css_opacity)
     }

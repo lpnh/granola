@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `text-indent` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_text_indent: CssTextIndent = CssTextIndent::new("0");
+/// let css_text_indent = CssTextIndent::new().content("0");
 ///
 /// assert_eq!(css_text_indent.bake(), "text-indent: 0;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// text-indent: {{ value }};
+/// text-indent: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextIndentRecipe)]
+#[recipe(name = TextIndentRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextIndent<R: TextIndentRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TextIndentRecipe> CssTextIndent<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TextIndentRecipe> From<CssTextIndent<R>> for CssDeclaration {
     fn from(css_text_indent: CssTextIndent<R>) -> Self {
-        Self::new("text-indent", css_text_indent.value)
+        Self::new("text-indent", css_text_indent.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTextIndent<R>> for CssDeclarationsBlock<B>
-where
-    R: TextIndentRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TextIndentRecipe> From<CssTextIndent<R>> for CssDeclarationsBlock {
     fn from(css_text_indent: CssTextIndent<R>) -> Self {
         Self::new().push(css_text_indent)
     }

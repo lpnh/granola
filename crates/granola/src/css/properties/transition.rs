@@ -7,7 +7,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `transition` property.
 ///
@@ -18,7 +18,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_transition: CssTransition = CssTransition::new("background-color 150ms ease");
+/// let css_transition = CssTransition::new().content("background-color 150ms ease");
 ///
 /// assert_eq!(
 ///     css_transition.bake(),
@@ -29,36 +29,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// transition: {{ value }};
+/// transition: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TransitionRecipe)]
+#[recipe(name = TransitionRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTransition<R: TransitionRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TransitionRecipe> CssTransition<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclaration {
     fn from(css_transition: CssTransition<R>) -> Self {
-        Self::new("transition", css_transition.value)
+        Self::new("transition", css_transition.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTransition<R>> for CssDeclarationsBlock<B>
-where
-    R: TransitionRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclarationsBlock {
     fn from(css_transition: CssTransition<R>) -> Self {
         Self::new().push(css_transition)
     }

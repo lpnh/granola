@@ -5,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<SmallFontSize> = CssRule::from_cookbook();
 ///
@@ -25,6 +25,6 @@ impl RuleRecipe for SmallFontSize {
     }
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssFontSize::<()>::new("80%").into()];
+        properties_list.declarations = vec![CssFontSize::new().content("80%").into()];
     }
 }

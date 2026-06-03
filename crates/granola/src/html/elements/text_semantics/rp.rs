@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let rp: HtmlRp = HtmlRp::empty().id("ruby_fallback_parenthesis");
+/// let rp = HtmlRp::new().id("ruby_fallback_parenthesis");
 ///
 /// assert_eq!(rp.bake(), r#"<rp id="ruby_fallback_parenthesis"></rp>"#);
 /// ```
@@ -20,9 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let opening_rp: HtmlRp = HtmlRp::new("(");
-/// let rt: HtmlRt = HtmlRt::new("tori");
-/// let closing_rp: HtmlRp = HtmlRp::new(")");
+/// let opening_rp = HtmlRp::new().content("(");
+/// let rt = HtmlRt::new().content("tori");
+/// let closing_rp = HtmlRp::new().content(")");
 ///
 /// let tori = bake_inline![opening_rp, rt, closing_rp];
 ///
@@ -80,18 +80,18 @@ pub struct HtmlRp<R: RpRecipe = ()> {
 #[macro_export]
 macro_rules! rp {
     () => {
-        $crate::html::HtmlRp::<()>::empty()
+        $crate::html::HtmlRp::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlRp::<()>::new($content)
+        $crate::html::HtmlRp::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlRp::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlRp::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlRp::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlRp::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlRp::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlRp::new().content($crate::bake_inline![$($content),+])
     };
 }

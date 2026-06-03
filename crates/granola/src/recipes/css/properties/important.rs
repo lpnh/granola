@@ -8,7 +8,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_display: CssDisplay<(None, Important)> = CssDisplay::from_cookbook();
 ///

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `text-size-adjust` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_text_size_adjust: CssTextSizeAdjust = CssTextSizeAdjust::new("none");
+/// let css_text_size_adjust = CssTextSizeAdjust::new().content("none");
 ///
 /// assert_eq!(css_text_size_adjust.bake(), "text-size-adjust: none;");
 /// ```
@@ -20,36 +20,26 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// text-size-adjust: {{ value }};
+/// text-size-adjust: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextSizeAdjustRecipe)]
+#[recipe(name = TextSizeAdjustRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextSizeAdjust<R: TextSizeAdjustRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TextSizeAdjustRecipe> CssTextSizeAdjust<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TextSizeAdjustRecipe> From<CssTextSizeAdjust<R>> for CssDeclaration {
     fn from(css_text_size_adjust: CssTextSizeAdjust<R>) -> Self {
-        Self::new("text-size-adjust", css_text_size_adjust.value)
+        Self::new(
+            "text-size-adjust",
+            css_text_size_adjust.bake_recipe().content,
+        )
     }
 }
 
-impl<R, B> From<CssTextSizeAdjust<R>> for CssDeclarationsBlock<B>
-where
-    R: TextSizeAdjustRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TextSizeAdjustRecipe> From<CssTextSizeAdjust<R>> for CssDeclarationsBlock {
     fn from(css_text_size_adjust: CssTextSizeAdjust<R>) -> Self {
         Self::new().push(css_text_size_adjust)
     }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let audio: HtmlAudio = HtmlAudio::empty().id("embed_audio");
+/// let audio = HtmlAudio::new().id("embed_audio");
 ///
 /// assert_eq!(audio.bake(), r#"<audio id="embed_audio"></audio>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let audio: HtmlAudio = HtmlAudio::from_src("toms-dinner.mp3").autoplay(true);
+/// let audio = HtmlAudio::new().src("toms-dinner.mp3").autoplay(true);
 ///
 /// assert_eq!(
 ///     audio.bake(),
@@ -224,20 +224,20 @@ impl<R: AudioRecipe> HasAudioAttrs for HtmlAudio<R> {
 #[macro_export]
 macro_rules! audio {
     () => {
-        $crate::html::HtmlAudio::<()>::empty()
+        $crate::html::HtmlAudio::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlAudio::<()>::new($content)
+        $crate::html::HtmlAudio::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlAudio::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlAudio::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlAudio::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlAudio::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlAudio::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlAudio::new().content($crate::bake_inline![$($content),+])
     };
 
     (@from_src $src: expr $(,)?) => {

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `top` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_top: CssTop = CssTop::new("-0.5em");
+/// let css_top = CssTop::new().content("-0.5em");
 ///
 /// assert_eq!(css_top.bake(), "top: -0.5em;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// top: {{ value }};
+/// top: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TopRecipe)]
+#[recipe(name = TopRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTop<R: TopRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TopRecipe> CssTop<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TopRecipe> From<CssTop<R>> for CssDeclaration {
     fn from(css_top: CssTop<R>) -> Self {
-        Self::new("top", css_top.value)
+        Self::new("top", css_top.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTop<R>> for CssDeclarationsBlock<B>
-where
-    R: TopRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TopRecipe> From<CssTop<R>> for CssDeclarationsBlock {
     fn from(css_top: CssTop<R>) -> Self {
         Self::new().push(css_top)
     }

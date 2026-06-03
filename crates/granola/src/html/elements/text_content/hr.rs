@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let hr: HtmlHr = HtmlHr::new().id("thematic_break");
+/// let hr = HtmlHr::new().id("thematic_break");
 ///
 /// assert_eq!(hr.bake(), r#"<hr id="thematic_break" />"#);
 /// ```
@@ -20,11 +20,11 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let p1: HtmlP = HtmlP::new("She blew out the candle. The room went dark.");
-/// let p2: HtmlP =
-///     HtmlP::new("Morning came with birds and the smell of bread from somewhere below.");
+/// let p1 = HtmlP::new().content("She blew out the candle. The room went dark.");
+/// let p2 = HtmlP::new()
+///     .content("Morning came with birds and the smell of bread from somewhere below.");
 ///
-/// let hr: HtmlHr = HtmlHr::new();
+/// let hr = HtmlHr::new();
 ///
 /// let story = bake_block![p1, "", hr, "", p2];
 ///
@@ -61,12 +61,6 @@ pub struct HtmlHr<R: HrRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: HrRecipe> HtmlHr<R> {
-    pub fn new() -> Self {
-        Self::from_cookbook()
-    }
-}
-
 /// Shorthand for `HtmlHr`.
 ///
 /// # Example
@@ -99,6 +93,6 @@ impl<R: HrRecipe> HtmlHr<R> {
 #[macro_export]
 macro_rules! hr {
     () => {
-        $crate::html::HtmlHr::<()>::new()
+        $crate::html::HtmlHr::new()
     };
 }

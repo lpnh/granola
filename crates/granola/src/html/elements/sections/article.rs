@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let article: HtmlArticle = HtmlArticle::empty().id("article_contents");
+/// let article = HtmlArticle::new().id("article_contents");
 ///
 /// assert_eq!(
 ///     article.bake(),
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let h2: HtmlH2 = HtmlH2::new("New Café");
+/// let h2 = HtmlH2::new().content("New Café");
 ///
 /// let content = bake_block![
 ///     "Oats &amp; Ends opened last week on Oak Street,
@@ -32,9 +32,9 @@ use crate::{filters, prelude::*};
 /// a cup or two of good, hot black coffee."
 /// ];
 ///
-/// let p: HtmlP = HtmlP::new(content);
+/// let p = HtmlP::new().content(content);
 ///
-/// let article: HtmlArticle = HtmlArticle::new(bake_block![h2, p]);
+/// let article = HtmlArticle::new().content(bake_block![h2, p]);
 ///
 /// assert_eq!(
 ///     article.bake(),
@@ -120,19 +120,19 @@ pub struct HtmlArticle<R: ArticleRecipe = ()> {
 #[macro_export]
 macro_rules! article {
     () => {
-        $crate::html::HtmlArticle::<()>::empty()
+        $crate::html::HtmlArticle::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlArticle::<()>::new($content)
+        $crate::html::HtmlArticle::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlArticle::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlArticle::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlArticle::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlArticle::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlArticle::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlArticle::new().content($crate::bake_inline![$($content),+])
     };
 }

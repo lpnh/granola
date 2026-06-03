@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let pre: HtmlPre = HtmlPre::empty().id("preformatted_text");
+/// let pre = HtmlPre::new().id("preformatted_text");
 ///
 /// assert_eq!(pre.bake(), r#"<pre id="preformatted_text"></pre>"#);
 /// ```
@@ -31,12 +31,15 @@ use crate::{filters, prelude::*};
 ///           '_   -   _'
 ///           / '-----' \"#;
 ///
-/// let pre: HtmlPre = HtmlPre::new(ferris_ascii)
+/// let pre = HtmlPre::new()
+///     .content(ferris_ascii)
 ///     .role("img")
 ///     .aria_label("ASCII ferris");
 ///
-/// let url: HtmlA = HtmlA::new("ferris-says").href(r#"https://crates.io/crates/ferris-says"#);
-/// let cite: HtmlCite = HtmlCite::new(url);
+/// let url = HtmlA::new()
+///     .content("ferris-says")
+///     .href(r#"https://crates.io/crates/ferris-says"#);
+/// let cite = HtmlCite::new().content(url);
 ///
 /// let ferris_says = bake_block![pre, cite];
 ///
@@ -134,18 +137,18 @@ pub struct HtmlPre<R: PreRecipe = ()> {
 #[macro_export]
 macro_rules! pre {
     () => {
-        $crate::html::HtmlPre::<()>::empty()
+        $crate::html::HtmlPre::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlPre::<()>::new($content)
+        $crate::html::HtmlPre::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlPre::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlPre::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlPre::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlPre::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlPre::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlPre::new().content($crate::bake_inline![$($content),+])
     };
 }

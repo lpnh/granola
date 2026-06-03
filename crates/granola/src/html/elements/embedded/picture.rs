@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let picture: HtmlPicture = HtmlPicture::empty().id("picture");
+/// let picture = HtmlPicture::new().id("picture");
 ///
 /// assert_eq!(picture.bake(), r#"<picture id="picture"></picture>"#);
 /// ```
@@ -20,12 +20,12 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let source: HtmlSource = HtmlSource::empty()
+/// let source = HtmlSource::new()
 ///     .srcset("logo-wide.png")
 ///     .media("(width >= 600px)");
-/// let img: HtmlImg = HtmlImg::new("logo-narrow.png", "logo");
+/// let img = HtmlImg::new().src("logo-narrow.png").alt("logo");
 ///
-/// let picture: HtmlPicture = HtmlPicture::new(bake_block![source, img]);
+/// let picture = HtmlPicture::new().content(bake_block![source, img]);
 ///
 /// assert_eq!(
 ///     picture.bake(),
@@ -74,7 +74,7 @@ pub struct HtmlPicture<R: PictureRecipe = ()> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let source = source!().srcset("logo-wide.png").media("(width >= 600px)");
-/// let img: HtmlImg = HtmlImg::new("logo-narrow.png", "logo");
+/// let img = img!(@from_src_alt "logo-narrow.png", "logo");
 ///
 /// let picture = picture!(source, img);
 ///
@@ -89,19 +89,19 @@ pub struct HtmlPicture<R: PictureRecipe = ()> {
 #[macro_export]
 macro_rules! picture {
     () => {
-        $crate::html::HtmlPicture::<()>::empty()
+        $crate::html::HtmlPicture::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlPicture::<()>::new($content)
+        $crate::html::HtmlPicture::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlPicture::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlPicture::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlPicture::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlPicture::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlPicture::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlPicture::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `break-word` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_overflow_wrap: CssOverflowWrap<BreakWord> = CssOverflowWrap::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct BreakWord;
 
 impl OverflowWrapRecipe for BreakWord {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "break-word".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "break-word".into();
     }
 }

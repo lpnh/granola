@@ -5,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let link: HtmlLink<RelStylesheet> = HtmlLink::from_href("main.css");
+/// let link = HtmlLink::from(RelStylesheet).href("main.css");
 ///
 /// assert_eq!(link.bake(), r#"<link href="main.css" rel="stylesheet" />"#);
 /// ```

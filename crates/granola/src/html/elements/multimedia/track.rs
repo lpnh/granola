@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let track: HtmlTrack = HtmlTrack::empty().id("embed_text_track");
+/// let track = HtmlTrack::new().id("embed_text_track");
 ///
 /// assert_eq!(track.bake(), r#"<track id="embed_text_track" />"#);
 /// ```
@@ -20,7 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let track: HtmlTrack = HtmlTrack::new("der_himmel_uber_berlin.vtt")
+/// let track = HtmlTrack::new()
+///     .src("der_himmel_uber_berlin.vtt")
 ///     .kind("captions")
 ///     .enabled(true);
 ///
@@ -53,7 +54,7 @@ pub struct HtmlTrack<R: TrackRecipe = ()> {
 }
 
 impl<R: TrackRecipe> HtmlTrack<R> {
-    pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
 
@@ -192,9 +193,9 @@ impl<R: TrackRecipe> HasTrackAttrs for HtmlTrack<R> {
 #[macro_export]
 macro_rules! track {
     () => {
-        $crate::html::HtmlTrack::<()>::empty()
+        $crate::html::HtmlTrack::new()
     };
     ($src: expr $(,)?) => {
-        $crate::html::HtmlTrack::<()>::new($src)
+        $crate::html::HtmlTrack::<()>::from_src($src)
     };
 }

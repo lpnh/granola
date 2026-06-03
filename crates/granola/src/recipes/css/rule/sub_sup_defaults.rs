@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `sub, sup` defaults rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<SubSupDefaults> = CssRule::from_cookbook();
 ///
@@ -30,8 +30,8 @@ impl RuleRecipe for SubSupDefaults {
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssFontSize::<()>::new("75%").into(),
-            CssLineHeight::<()>::new("0").into(),
+            CssFontSize::new().content("75%").into(),
+            CssLineHeight::new().content("0").into(),
             CssPosition::<Relative>::from_cookbook().into(),
             CssVerticalAlign::<Baseline>::from_cookbook().into(),
         ];

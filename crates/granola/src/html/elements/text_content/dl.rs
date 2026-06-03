@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dl: HtmlDl = HtmlDl::empty().id("description_list");
+/// let dl = HtmlDl::new().id("description_list");
 ///
 /// assert_eq!(dl.bake(), r#"<dl id="description_list"></dl>"#);
 /// ```
@@ -20,20 +20,20 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dt_1: HtmlDt = HtmlDt::new("Hiraeth");
-/// let dd_1: HtmlDd =
-///     HtmlDd::new("A longing for a home that no longer exists, or perhaps never did.");
+/// let dt_1 = HtmlDt::new().content("Hiraeth");
+/// let dd_1 =
+///     HtmlDd::new().content("A longing for a home that no longer exists, or perhaps never did.");
 ///
 /// let group_1 = bake_block![dt_1, dd_1];
 ///
-/// let dt_2: HtmlDt = HtmlDt::new("Pålegg");
-/// let dd_2: HtmlDd = HtmlDd::new("Anything and everything you might put on a slice of bread.");
+/// let dt_2 = HtmlDt::new().content("Pålegg");
+/// let dd_2 = HtmlDd::new().content("Anything and everything you might put on a slice of bread.");
 ///
 /// let group_2 = bake_block![dt_2, dd_2];
 ///
 /// let list = bake_block![group_1, "", group_2];
 ///
-/// let dl: HtmlDl = HtmlDl::new(list);
+/// let dl = HtmlDl::new().content(list);
 ///
 /// assert_eq!(
 ///     dl.bake(),
@@ -113,19 +113,19 @@ pub struct HtmlDl<R: DlRecipe = ()> {
 #[macro_export]
 macro_rules! dl {
     () => {
-        $crate::html::HtmlDl::<()>::empty()
+        $crate::html::HtmlDl::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDl::<()>::new($content)
+        $crate::html::HtmlDl::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDl::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDl::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDl::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDl::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDl::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDl::new().content($crate::bake_inline![$($content),+])
     };
 }

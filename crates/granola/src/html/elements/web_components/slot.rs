@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let slot: HtmlSlot = HtmlSlot::empty().id("web_component_slot");
+/// let slot = HtmlSlot::new().id("web_component_slot");
 ///
 /// assert_eq!(slot.bake(), r#"<slot id="web_component_slot"></slot>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let slot: HtmlSlot = HtmlSlot::empty().name("who");
+/// let slot = HtmlSlot::new().name("who");
 ///
 /// assert_eq!(slot.bake(), r#"<slot name="who"></slot>"#);
 /// ```
@@ -116,19 +116,19 @@ impl<R: SlotRecipe> HasSlotAttrs for HtmlSlot<R> {
 #[macro_export]
 macro_rules! slot {
     () => {
-        $crate::html::HtmlSlot::<()>::empty()
+        $crate::html::HtmlSlot::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSlot::<()>::new($content)
+        $crate::html::HtmlSlot::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSlot::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSlot::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSlot::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSlot::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSlot::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSlot::new().content($crate::bake_inline![$($content),+])
     };
 }

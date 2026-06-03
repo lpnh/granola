@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let a: HtmlA = HtmlA::empty().id("anchor");
+/// let a = HtmlA::new().id("anchor");
 ///
 /// assert_eq!(a.bake(), r#"<a id="anchor"></a>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let a: HtmlA = HtmlA::new("docs").href("https://askama.rs");
+/// let a = HtmlA::new().content("docs").href("https://askama.rs");
 ///
 /// assert_eq!(a.bake(), r#"<a href="https://askama.rs">docs</a>"#);
 /// ```
@@ -195,19 +195,19 @@ impl<R: ARecipe> HasAAttrs for HtmlA<R> {
 #[macro_export]
 macro_rules! a {
     () => {
-        $crate::html::HtmlA::<()>::empty()
+        $crate::html::HtmlA::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlA::<()>::new($content)
+        $crate::html::HtmlA::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlA::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlA::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlA::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlA::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlA::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlA::new().content($crate::bake_inline![$($content),+])
     };
 }

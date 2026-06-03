@@ -4,16 +4,16 @@ use crate::{Stats, bake_block, bake_block_naive, bake_naive, measure};
 
 pub fn picture_empty() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
-        let source: HtmlSource = HtmlSource::empty();
-        let img: HtmlImg = HtmlImg::empty();
-        let picture: HtmlPicture = HtmlPicture::new(bake_block![source, img]);
+        let source = HtmlSource::new();
+        let img = HtmlImg::new();
+        let picture = HtmlPicture::new().content(bake_block![source, img]);
         picture.bake()
     });
 
     let (naive_out, naive) = measure(|| {
-        let source: HtmlSource = HtmlSource::empty();
-        let img: HtmlImg = HtmlImg::empty();
-        let picture: HtmlPicture = HtmlPicture::new(bake_block_naive![source, img]);
+        let source: HtmlSource = HtmlSource::new();
+        let img: HtmlImg = HtmlImg::new();
+        let picture = HtmlPicture::new().content(bake_block_naive![source, img]);
         bake_naive(&picture)
     });
 
@@ -24,20 +24,20 @@ pub fn picture_empty() -> (Stats, Stats) {
 
 pub fn picture_example() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
-        let source: HtmlSource = HtmlSource::empty()
+        let source = HtmlSource::new()
             .srcset("logo-wide.png")
             .media("(width >= 600px)");
-        let img: HtmlImg = HtmlImg::new("logo-narrow.png", "logo");
-        let picture: HtmlPicture = HtmlPicture::new(bake_block![source, img]);
+        let img = HtmlImg::from_src_alt("logo-narrow.png", "logo");
+        let picture = HtmlPicture::new().content(bake_block![source, img]);
         picture.bake()
     });
 
     let (naive_out, naive) = measure(|| {
-        let source: HtmlSource = HtmlSource::empty()
+        let source = HtmlSource::new()
             .srcset("logo-wide.png")
             .media("(width >= 600px)");
-        let img: HtmlImg = HtmlImg::new("logo-narrow.png", "logo");
-        let picture: HtmlPicture = HtmlPicture::new(bake_block_naive![source, img]);
+        let img = HtmlImg::from_src_alt("logo-narrow.png", "logo");
+        let picture = HtmlPicture::new().content(bake_block_naive![source, img]);
         bake_naive(&picture)
     });
 

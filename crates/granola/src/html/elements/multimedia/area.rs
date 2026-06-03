@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let area: HtmlArea = HtmlArea::empty().id("image_map_area");
+/// let area = HtmlArea::new().id("image_map_area");
 ///
 /// assert_eq!(area.bake(), r#"<area id="image_map_area" />"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let area: HtmlArea = HtmlArea::new("https://w.wiki/LTnF", "Red triangle")
+/// let area = HtmlArea::new().href("https://w.wiki/LTnF").alt("Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
@@ -50,57 +50,16 @@ pub struct HtmlArea<R: AreaRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: AreaRecipe> HtmlArea<R> {
-    pub fn new(href: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = AreaAttrs::default().href(href).alt(alt);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+impl HtmlArea {
+    pub fn from_href_alt(
+        href: impl Into<Cow<'static, str>>,
+        alt: impl Into<Cow<'static, str>>,
+    ) -> Self {
+        Self::new().href(href).alt(alt)
     }
 
     pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = AreaAttrs::default().href(href);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().href(href)
     }
 }
 
@@ -291,12 +250,12 @@ impl From<HtmlArea> for Areas {
 #[macro_export]
 macro_rules! area {
     () => {
-        $crate::html::HtmlArea::<()>::empty()
+        $crate::html::HtmlArea::new()
     };
     ($href: expr, $alt: expr $(,)?) => {
-        $crate::html::HtmlArea::<()>::new($href, $alt)
+        $crate::html::HtmlArea::from_href_alt($href, $alt)
     };
     (@from_href $href: expr $(,)?) => {
-        $crate::html::HtmlArea::<()>::from_href($href)
+        $crate::html::HtmlArea::from_href($href)
     };
 }

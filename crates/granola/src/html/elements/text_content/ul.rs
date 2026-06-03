@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ul: HtmlUl = HtmlUl::empty().id("unordered_list");
+/// let ul = HtmlUl::new().id("unordered_list");
 ///
 /// assert_eq!(ul.bake(), r#"<ul id="unordered_list"></ul>"#);
 /// ```
@@ -21,12 +21,12 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let items = [
-///     HtmlLi::new("sugar"),
-///     HtmlLi::new("spice"),
-///     HtmlLi::new("everything nice"),
+///     HtmlLi::new().content("sugar"),
+///     HtmlLi::new().content("spice"),
+///     HtmlLi::new().content("everything nice"),
 /// ];
 ///
-/// let ingredients: HtmlUl = HtmlUl::new(items);
+/// let ingredients = HtmlUl::new().content(items);
 ///
 /// assert_eq!(
 ///     ingredients.bake(),
@@ -112,12 +112,12 @@ pub struct HtmlUl<R: UlRecipe = ()> {
 #[macro_export]
 macro_rules! ul {
     () => {
-        $crate::html::HtmlUl::<()>::empty()
+        $crate::html::HtmlUl::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlUl::<()>::new($content)
+        $crate::html::HtmlUl::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlUl::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlUl::new().content([$first $(, $rest)*])
     };
 }

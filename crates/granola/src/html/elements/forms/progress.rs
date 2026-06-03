@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let progress: HtmlProgress = HtmlProgress::empty().id("progress_indicator");
+/// let progress = HtmlProgress::new().id("progress_indicator");
 ///
 /// assert_eq!(
 ///     progress.bake(),
@@ -23,7 +23,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let progress: HtmlProgress = HtmlProgress::new("10/300")
+/// let progress = HtmlProgress::new()
+///     .content("10/300")
 ///     .id("experience")
 ///     .max(300.)
 ///     .value(10.);
@@ -63,7 +64,7 @@ impl<R: ProgressRecipe> HtmlProgress<R> {
     /// indicates that an activity is ongoing with no indication of how long
     /// it is expected to take.
     pub fn indeterminate() -> Self {
-        Self::empty()
+        Self::default()
     }
 }
 
@@ -150,19 +151,19 @@ impl<R: ProgressRecipe> HasProgressAttrs for HtmlProgress<R> {
 #[macro_export]
 macro_rules! progress {
     () => {
-        $crate::html::HtmlProgress::<()>::empty()
+        $crate::html::HtmlProgress::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlProgress::<()>::new($content)
+        $crate::html::HtmlProgress::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlProgress::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlProgress::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlProgress::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlProgress::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlProgress::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlProgress::new().content($crate::bake_inline![$($content),+])
     };
 }

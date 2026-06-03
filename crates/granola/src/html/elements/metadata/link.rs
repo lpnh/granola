@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let link: HtmlLink = HtmlLink::empty().id("external_resource_link");
+/// let link = HtmlLink::new().id("external_resource_link");
 ///
 /// assert_eq!(link.bake(), r#"<link id="external_resource_link" />"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let link: HtmlLink = HtmlLink::new("fancy.css", "stylesheet");
+/// let link = HtmlLink::new().href("fancy.css").rel("stylesheet");
 ///
 /// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
@@ -91,7 +91,10 @@ pub struct LinkAttrs {
 }
 
 impl<R: LinkRecipe> HtmlLink<R> {
-    pub fn new(href: impl Into<Cow<'static, str>>, rel: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_href_rel(
+        href: impl Into<Cow<'static, str>>,
+        rel: impl Into<Cow<'static, str>>,
+    ) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
 
@@ -311,10 +314,10 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 #[macro_export]
 macro_rules! link {
     () => {
-        $crate::html::HtmlLink::<()>::empty()
+        $crate::html::HtmlLink::new()
     };
     ($href: expr, $rel: expr $(,)?) => {
-        $crate::html::HtmlLink::<()>::new($href, $rel)
+        $crate::html::HtmlLink::<()>::from_href_rel($href, $rel)
     };
 
     (@from_href $href: expr $(,)?) => {
@@ -325,7 +328,7 @@ macro_rules! link {
         $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $href: expr, $rel: expr $(,)?) => {
-        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::new($href, $rel)
+        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_href_rel($href, $rel)
     };
     (@cookbook $($r:ty),+ ; @from_href $href:expr $(,)?) => {
         $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_href($href)

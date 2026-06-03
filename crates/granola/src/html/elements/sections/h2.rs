@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let h2: HtmlH2 = HtmlH2::empty().id("html_section_heading");
+/// let h2 = HtmlH2::new().id("html_section_heading");
 ///
 /// assert_eq!(h2.bake(), r#"<h2 id="html_section_heading"></h2>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let h2: HtmlH2 = HtmlH2::new("Error Handling");
+/// let h2 = HtmlH2::new().content("Error Handling");
 ///
 /// assert_eq!(h2.bake(), r#"<h2>Error Handling</h2>"#);
 /// ```
@@ -72,19 +72,19 @@ pub struct HtmlH2<R: H2Recipe = ()> {
 #[macro_export]
 macro_rules! h2 {
     () => {
-        $crate::html::HtmlH2::<()>::empty()
+        $crate::html::HtmlH2::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlH2::<()>::new($content)
+        $crate::html::HtmlH2::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlH2::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlH2::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlH2::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlH2::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlH2::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlH2::new().content($crate::bake_inline![$($content),+])
     };
 }

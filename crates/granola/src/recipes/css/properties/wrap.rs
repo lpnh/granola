@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `wrap` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_flex_wrap: CssFlexWrap<Wrap> = CssFlexWrap::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Wrap;
 
 impl FlexWrapRecipe for Wrap {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "wrap".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "wrap".into();
     }
 }

@@ -2,7 +2,7 @@
 // Source: https://piccalil.li/blog/a-more-modern-css-reset/
 // Licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
 
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The "(more) Modern CSS Reset" stylesheet recipe.
 ///
@@ -11,7 +11,7 @@ use crate::{recipes::*, prelude::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let stylesheet: CssStylesheet<AndyBell> = CssStylesheet::from_cookbook();
 ///
@@ -123,11 +123,14 @@ fn text_size_adjust_reset() -> CssStatement {
     let selectors_list: CssSelectorsList = "html".into();
     let declarations_block: [CssDeclaration; 3] = [
         ("-moz-text-size-adjust", "none").into(),
-        CssWebkitTextSizeAdjust::<None>::from_cookbook().into(),
+        CssWebkitTextSizeAdjust::from(None).into(),
         CssTextSizeAdjust::<None>::from_cookbook().into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn default_margin_reset() -> CssStatement {
@@ -146,24 +149,33 @@ fn default_margin_reset() -> CssStatement {
     .into();
     let declarations_block = ("margin-block-end", "0");
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn list_style_reset() -> CssStatement {
     let selectors_list: CssSelectorsList = ["ul[role='list']", "ol[role='list']"].into();
     let declarations_block = CssListStyle::<None>::from_cookbook();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn body_defaults() -> CssStatement {
     let selectors_list: CssSelectorsList = "body".into();
     let declarations_block: [CssDeclaration; 2] = [
         ("min-height", "100vh").into(),
-        CssLineHeight::<()>::new("1.5").into(),
+        CssLineHeight::new().content("1.5").into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn headings_and_forms_line_height() -> CssStatement {
@@ -172,26 +184,35 @@ fn headings_and_forms_line_height() -> CssStatement {
         .push("input")
         .push("label")
         .bake_recipe();
-    let declarations_block = CssLineHeight::<()>::new("1.1");
+    let declarations_block = CssLineHeight::new().content("1.1");
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn headings_text_wrap() -> CssStatement {
     let selectors_list = CssSelectorsList::<Headings>::from_cookbook().bake_recipe();
     let declarations_block = CssTextWrap::<Balance>::from_cookbook();
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn unclassed_anchor_default_style() -> CssStatement {
     let selectors_list: CssSelectorsList = "a:not([class])".into();
     let declarations_block: [CssDeclaration; 2] = [
         CssTextDecorationSkipInk::<Auto>::from_cookbook().into(),
-        CssColor::<Currentcolor>::from_cookbook().into(),
+        CssColor::from(Currentcolor).into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn images_width_and_display() -> CssStatement {
@@ -201,23 +222,35 @@ fn images_width_and_display() -> CssStatement {
         CssDisplay::<Block>::from_cookbook().into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn form_controls_font_inherit() -> CssStatement {
     let selectors_list = CssSelectorsList::<FormControls>::from_cookbook().bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
-        CssFontFamily::<Inherit>::from_cookbook().into(),
-        CssFontSize::<Inherit>::from_cookbook().into(),
+        CssFontFamily::from(Inherit).into(),
+        CssFontSize::from(Inherit).into(),
     ];
 
-    CssRule::<()>::new(selectors_list, declarations_block).into()
+    CssRule::new()
+        .selectors_list(selectors_list)
+        .declarations_block(declarations_block)
+        .into()
 }
 
 fn textarea_min_height() -> CssStatement {
-    CssRule::<()>::new("textarea:not([rows])", ("min-height", "10em")).into()
+    CssRule::new()
+        .selectors_list("textarea:not([rows])")
+        .declarations_block(("min-height", "10em"))
+        .into()
 }
 
 fn target_scroll_margin() -> CssStatement {
-    CssRule::<()>::new(":target", ("scroll-margin-block", "5ex")).into()
+    CssRule::new()
+        .selectors_list(":target")
+        .declarations_block(("scroll-margin-block", "5ex"))
+        .into()
 }

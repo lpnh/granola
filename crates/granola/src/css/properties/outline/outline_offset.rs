@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `outline-offset` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_outline_offset: CssOutlineOffset = CssOutlineOffset::new("2px");
+/// let css_outline_offset = CssOutlineOffset::new().content("2px");
 ///
 /// assert_eq!(css_outline_offset.bake(), "outline-offset: 2px;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// outline-offset: {{ value }};
+/// outline-offset: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OutlineOffsetRecipe)]
+#[recipe(name = OutlineOffsetRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssOutlineOffset<R: OutlineOffsetRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: OutlineOffsetRecipe> CssOutlineOffset<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclaration {
     fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
-        Self::new("outline-offset", css_outline_offset.value)
+        Self::new("outline-offset", css_outline_offset.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssOutlineOffset<R>> for CssDeclarationsBlock<B>
-where
-    R: OutlineOffsetRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclarationsBlock {
     fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
         Self::new().push(css_outline_offset)
     }

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `tab-size` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_tab_size: CssTabSize = CssTabSize::new("4");
+/// let css_tab_size = CssTabSize::new().content("4");
 ///
 /// assert_eq!(css_tab_size.bake(), "tab-size: 4;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// tab-size: {{ value }};
+/// tab-size: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TabSizeRecipe)]
+#[recipe(name = TabSizeRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTabSize<R: TabSizeRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TabSizeRecipe> CssTabSize<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TabSizeRecipe> From<CssTabSize<R>> for CssDeclaration {
     fn from(css_tab_size: CssTabSize<R>) -> Self {
-        Self::new("tab-size", css_tab_size.value)
+        Self::new("tab-size", css_tab_size.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTabSize<R>> for CssDeclarationsBlock<B>
-where
-    R: TabSizeRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TabSizeRecipe> From<CssTabSize<R>> for CssDeclarationsBlock {
     fn from(css_tab_size: CssTabSize<R>) -> Self {
         Self::new().push(css_tab_size)
     }

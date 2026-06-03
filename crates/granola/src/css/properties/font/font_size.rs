@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `font-size` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_font_size: CssFontSize = CssFontSize::new("0.875rem");
+/// let css_font_size = CssFontSize::new().content("0.875rem");
 ///
 /// assert_eq!(css_font_size.bake(), "font-size: 0.875rem;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// font-size: {{ value }};
+/// font-size: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontSizeRecipe)]
+#[recipe(name = FontSizeRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFontSize<R: FontSizeRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FontSizeRecipe> CssFontSize<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclaration {
     fn from(css_font_size: CssFontSize<R>) -> Self {
-        Self::new("font-size", css_font_size.value)
+        Self::new("font-size", css_font_size.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssFontSize<R>> for CssDeclarationsBlock<B>
-where
-    R: FontSizeRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclarationsBlock {
     fn from(css_font_size: CssFontSize<R>) -> Self {
         Self::new().push(css_font_size)
     }

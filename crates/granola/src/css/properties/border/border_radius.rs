@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `border-radius` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_border_radius: CssBorderRadius = CssBorderRadius::new("0.4em");
+/// let css_border_radius = CssBorderRadius::new().content("0.4em");
 ///
 /// assert_eq!(css_border_radius.bake(), "border-radius: 0.4em;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// border-radius: {{ value }};
+/// border-radius: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BorderRadiusRecipe)]
+#[recipe(name = BorderRadiusRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssBorderRadius<R: BorderRadiusRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: BorderRadiusRecipe> CssBorderRadius<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclaration {
     fn from(css_border_radius: CssBorderRadius<R>) -> Self {
-        Self::new("border-radius", css_border_radius.value)
+        Self::new("border-radius", css_border_radius.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssBorderRadius<R>> for CssDeclarationsBlock<B>
-where
-    R: BorderRadiusRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclarationsBlock {
     fn from(css_border_radius: CssBorderRadius<R>) -> Self {
         Self::new().push(css_border_radius)
     }

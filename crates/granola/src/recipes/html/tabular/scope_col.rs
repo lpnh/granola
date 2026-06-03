@@ -5,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let th: HtmlTh<ScopeCol> = HtmlTh::new("Item");
+/// let th = HtmlTh::from(ScopeCol).content("Item");
 ///
 /// assert_eq!(th.bake(), r#"<th scope="col">Item</th>"#);
 /// ```
@@ -25,9 +25,9 @@ impl ThRecipe for ScopeCol {
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let th: HtmlTh<ScopeRow> = HtmlTh::new("Hot chocolate");
+/// let th = HtmlTh::from(ScopeRow).content("Hot chocolate");
 ///
 /// assert_eq!(th.bake(), r#"<th scope="row">Hot chocolate</th>"#);
 /// ```

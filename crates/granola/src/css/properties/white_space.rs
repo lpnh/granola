@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `white-space` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_white_space: CssWhiteSpace = CssWhiteSpace::new("nowrap");
+/// let css_white_space = CssWhiteSpace::new().content("nowrap");
 ///
 /// assert_eq!(css_white_space.bake(), "white-space: nowrap;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// white-space: {{ value }};
+/// white-space: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = WhiteSpaceRecipe)]
+#[recipe(name = WhiteSpaceRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssWhiteSpace<R: WhiteSpaceRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: WhiteSpaceRecipe> CssWhiteSpace<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclaration {
     fn from(css_white_space: CssWhiteSpace<R>) -> Self {
-        Self::new("white-space", css_white_space.value)
+        Self::new("white-space", css_white_space.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssWhiteSpace<R>> for CssDeclarationsBlock<B>
-where
-    R: WhiteSpaceRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclarationsBlock {
     fn from(css_white_space: CssWhiteSpace<R>) -> Self {
         Self::new().push(css_white_space)
     }

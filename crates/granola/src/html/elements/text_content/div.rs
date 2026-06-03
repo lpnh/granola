@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let div: HtmlDiv = HtmlDiv::empty().id("content_division");
+/// let div = HtmlDiv::new().id("content_division");
 ///
 /// assert_eq!(div.bake(), r#"<div id="content_division"></div>"#);
 /// ```
@@ -20,12 +20,14 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let save: HtmlButton = HtmlButton::new("Save");
-/// let cancel: HtmlButton = HtmlButton::new("Cancel").button_type("button");
+/// let save = HtmlButton::new().content("Save");
+/// let cancel = HtmlButton::new().content("Cancel").button_type("button");
 ///
 /// let content = bake_block![save, cancel];
 ///
-/// let div: HtmlDiv = HtmlDiv::new(content).class("flex justify-end gap-2");
+/// let div = HtmlDiv::new()
+///     .content(content)
+///     .class("flex justify-end gap-2");
 ///
 /// assert_eq!(
 ///     div.bake(),
@@ -92,19 +94,19 @@ pub struct HtmlDiv<R: DivRecipe = ()> {
 #[macro_export]
 macro_rules! div {
     () => {
-        $crate::html::HtmlDiv::<()>::empty()
+        $crate::html::HtmlDiv::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDiv::<()>::new($content)
+        $crate::html::HtmlDiv::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDiv::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDiv::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDiv::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDiv::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDiv::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDiv::new().content($crate::bake_inline![$($content),+])
     };
 }

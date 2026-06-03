@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let option: HtmlOption = HtmlOption::empty().id("html_option");
+/// let option = HtmlOption::new().id("html_option");
 ///
 /// assert_eq!(option.bake(), r#"<option id="html_option"></option>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let option: HtmlOption = HtmlOption::new("Chocolate").value("chocolate");
+/// let option = HtmlOption::new().content("Chocolate").value("chocolate");
 ///
 /// assert_eq!(
 ///     option.bake(),
@@ -205,20 +205,20 @@ impl<I: IntoIterator<Item = HtmlOption>> From<I> for Options {
 #[macro_export]
 macro_rules! option {
     () => {
-        $crate::html::HtmlOption::<()>::empty()
+        $crate::html::HtmlOption::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlOption::<()>::new($content)
+        $crate::html::HtmlOption::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlOption::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlOption::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlOption::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlOption::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlOption::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlOption::new().content($crate::bake_inline![$($content),+])
     };
     (@from_value $value: expr $(,)?) => {
         $crate::html::HtmlOption::<()>::from_value($value)

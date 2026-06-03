@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let bdi: HtmlBdi = HtmlBdi::empty().id("bidirectional_isolate");
+/// let bdi = HtmlBdi::new().id("bidirectional_isolate");
 ///
 /// assert_eq!(bdi.bake(), r#"<bdi id="bidirectional_isolate"></bdi>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let gal: HtmlBdi = HtmlBdi::new("גל גדות");
+/// let gal = HtmlBdi::new().content("גל גדות");
 ///
 /// let notification = bake_inline![gal, " liked your post"];
 ///
@@ -76,19 +76,19 @@ pub struct HtmlBdi<R: BdiRecipe = ()> {
 #[macro_export]
 macro_rules! bdi {
     () => {
-        $crate::html::HtmlBdi::<()>::empty()
+        $crate::html::HtmlBdi::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlBdi::<()>::new($content)
+        $crate::html::HtmlBdi::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlBdi::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlBdi::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlBdi::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlBdi::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlBdi::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlBdi::new().content($crate::bake_inline![$($content),+])
     };
 }

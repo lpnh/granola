@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `dotted` property value recipe.
@@ -9,7 +7,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_text_decoration: CssTextDecoration<(Underline, Dotted)> =
 ///     CssTextDecoration::from_cookbook();
@@ -23,21 +21,21 @@ use crate::prelude::*;
 pub struct Dotted;
 
 impl TextDecorationRecipe for Dotted {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        if value.is_empty() {
-            *value = "dotted".into();
+    fn content_recipe(content: &mut Self::Content) {
+        if content.is_empty() {
+            *content = "dotted".into();
         } else {
-            *value = format!("{value} dotted").into();
+            *content = format!("{content} dotted").into();
         }
     }
 }
 
 impl WebkitTextDecorationRecipe for Dotted {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        if value.is_empty() {
-            *value = "dotted".into();
+    fn content_recipe(content: &mut Self::Content) {
+        if content.is_empty() {
+            *content = "dotted".into();
         } else {
-            *value = format!("{value} dotted").into();
+            *content = format!("{content} dotted").into();
         }
     }
 }

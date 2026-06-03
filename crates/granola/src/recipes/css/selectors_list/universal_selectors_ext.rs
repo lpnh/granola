@@ -1,4 +1,4 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The [`UniversalReset`] + `::backdrop, ::file-selector-button` selectors list
 /// recipe.
@@ -6,7 +6,7 @@ use crate::{recipes::*, prelude::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let list: CssSelectorsList<UniversalSelectorsExt> = CssSelectorsList::from_cookbook();
 ///

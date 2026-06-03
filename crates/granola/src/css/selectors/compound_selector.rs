@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let selector: CssCompoundSelector = CssCompoundSelector::new()
+/// let selector = CssCompoundSelector::new()
 ///     .type_selector("col")
 ///     .push(".highlighted");
 ///
@@ -44,10 +44,6 @@ pub struct CssCompoundSelector<R: CompoundSelectorRecipe = ()> {
 }
 
 impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn type_selector(mut self, selector: impl Into<CssSimpleSelector>) -> Self {
         self.type_selector = Some(selector.into());
         self
@@ -69,9 +65,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
-    ///     .push(".box")
-    ///     .descendant("h2");
+    /// let selector = CssCompoundSelector::new().push(".box").descendant("h2");
     ///
     /// assert_eq!(selector.bake(), ".box h2");
     /// ```
@@ -89,7 +83,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
+    /// let selector = CssCompoundSelector::new()
     ///     .type_selector("a")
     ///     .push("#selected")
     ///     .child(".icon");
@@ -111,7 +105,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
+    /// let selector = CssCompoundSelector::new()
     ///     .push(".box")
     ///     .descendant("h2")
     ///     .next_sibling("p");
@@ -133,7 +127,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
+    /// let selector = CssCompoundSelector::new()
     ///     .type_selector("img")
     ///     .subsequent_sibling("p");
     ///
@@ -156,7 +150,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
+    /// let selector = CssCompoundSelector::new()
     ///     .type_selector("col")
     ///     .push(".selected")
     ///     .column("td");
@@ -180,9 +174,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
-    ///     .push(".box")
-    ///     .namespace("svg");
+    /// let selector = CssCompoundSelector::new().push(".box").namespace("svg");
     ///
     /// assert_eq!(selector.bake(), "svg|*.box");
     /// ```
@@ -205,7 +197,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
+    /// let selector = CssCompoundSelector::new()
     ///     .type_selector("a")
     ///     .any_namespace();
     ///
@@ -230,9 +222,7 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector = CssCompoundSelector::<()>::new()
-    ///     .type_selector("a")
-    ///     .no_namespace();
+    /// let selector = CssCompoundSelector::new().type_selector("a").no_namespace();
     ///
     /// assert_eq!(selector.bake(), "|a");
     /// ```
@@ -243,15 +233,12 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
     }
 }
 
-impl<R, B> From<CssSimpleSelector<R>> for CssCompoundSelector<B>
-where
-    R: SimpleSelectorRecipe,
-    B: CompoundSelectorRecipe,
-{
+impl<R: SimpleSelectorRecipe> From<CssSimpleSelector<R>> for CssCompoundSelector {
     fn from(simple_selector: CssSimpleSelector<R>) -> Self {
         if is_type_or_universal(&simple_selector.selector) {
-            let mut type_selector = CssSimpleSelector::new(simple_selector.selector);
-            type_selector.namespace = simple_selector.namespace;
+            let type_selector = CssSimpleSelector::new()
+                .selector(simple_selector.selector)
+                .try_namespace(simple_selector.namespace);
             CssCompoundSelector::new().type_selector(type_selector)
         } else {
             CssCompoundSelector::new().push(simple_selector.selector)

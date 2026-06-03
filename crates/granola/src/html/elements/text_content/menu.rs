@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let menu: HtmlMenu = HtmlMenu::empty().id("menu");
+/// let menu = HtmlMenu::new().id("menu");
 ///
 /// assert_eq!(menu.bake(), r#"<menu id="menu"></menu>"#);
 /// ```
@@ -21,13 +21,13 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let items = [
-///     HtmlLi::new("Buy"),
-///     HtmlLi::new("Use"),
-///     HtmlLi::new("Break"),
-///     HtmlLi::new("Fix"),
+///     HtmlLi::new().content("Buy"),
+///     HtmlLi::new().content("Use"),
+///     HtmlLi::new().content("Break"),
+///     HtmlLi::new().content("Fix"),
 /// ];
 ///
-/// let technologic: HtmlMenu = HtmlMenu::new(items);
+/// let technologic = HtmlMenu::new().content(items);
 ///
 /// assert_eq!(
 ///     technologic.bake(),
@@ -114,12 +114,12 @@ pub struct HtmlMenu<R: MenuRecipe = ()> {
 #[macro_export]
 macro_rules! menu {
     () => {
-        $crate::html::HtmlMenu::<()>::empty()
+        $crate::html::HtmlMenu::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlMenu::<()>::new($content)
+        $crate::html::HtmlMenu::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlMenu::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlMenu::new().content([$first $(, $rest)*])
     };
 }

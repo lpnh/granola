@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let embed: HtmlEmbed = HtmlEmbed::empty().id("embed_external_content");
+/// let embed = HtmlEmbed::new().id("embed_external_content");
 ///
 /// assert_eq!(embed.bake(), r#"<embed id="embed_external_content" />"#);
 /// ```
@@ -20,7 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let embed: HtmlEmbed = HtmlEmbed::new("flower.png")
+/// let embed = HtmlEmbed::new()
+///     .src("flower.png")
 ///     .mime_type("image/png")
 ///     .width(420)
 ///     .height(420);
@@ -56,31 +57,9 @@ pub struct HtmlEmbed<R: EmbedRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: EmbedRecipe> HtmlEmbed<R> {
-    pub fn new(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = EmbedAttrs::default().src(src);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+impl HtmlEmbed {
+    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+        Self::new().src(src)
     }
 }
 
@@ -174,7 +153,7 @@ impl<R: EmbedRecipe> HasEmbedAttrs for HtmlEmbed<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let embed = embed!("flower.png")
+/// let embed = embed!(@from_src "flower.png")
 ///     .mime_type("image/png")
 ///     .width(420)
 ///     .height(420);
@@ -187,16 +166,13 @@ impl<R: EmbedRecipe> HasEmbedAttrs for HtmlEmbed<R> {
 #[macro_export]
 macro_rules! embed {
     () => {
-        $crate::html::HtmlEmbed::<()>::empty()
+        $crate::html::HtmlEmbed::new()
     };
-    ($src: expr $(,)?) => {
-        $crate::html::HtmlEmbed::<()>::new($src)
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlEmbed::from_src($src)
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $src:expr $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::new($src)
     };
 }

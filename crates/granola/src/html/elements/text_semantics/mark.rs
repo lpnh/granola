@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let mark: HtmlMark = HtmlMark::empty().id("mark_text");
+/// let mark = HtmlMark::new().id("mark_text");
 ///
 /// assert_eq!(mark.bake(), r#"<mark id="mark_text"></mark>"#);
 /// ```
@@ -20,9 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let but_the_clouds: HtmlMark = HtmlMark::new("but the clouds");
+/// let but_the_clouds = HtmlMark::new().content("but the clouds");
 ///
-/// let br: HtmlBr = HtmlBr::new();
+/// let br = HtmlBr::new();
 ///
 /// let the_tower = bake_block![
 ///     bake_inline!["Seem ", but_the_clouds, " of the sky"],
@@ -114,18 +114,18 @@ pub struct HtmlMark<R: MarkRecipe = ()> {
 #[macro_export]
 macro_rules! mark {
     () => {
-        $crate::html::HtmlMark::<()>::empty()
+        $crate::html::HtmlMark::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlMark::<()>::new($content)
+        $crate::html::HtmlMark::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlMark::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlMark::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlMark::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlMark::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlMark::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlMark::new().content($crate::bake_inline![$($content),+])
     };
 }

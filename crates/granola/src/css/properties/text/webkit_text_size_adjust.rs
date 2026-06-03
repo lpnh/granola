@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `-webkit-text-size-adjust` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css: CssWebkitTextSizeAdjust = CssWebkitTextSizeAdjust::new("100%");
+/// let css = CssWebkitTextSizeAdjust::new().content("100%");
 ///
 /// assert_eq!(css.bake(), "-webkit-text-size-adjust: 100%;");
 /// ```
@@ -20,37 +20,27 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// -webkit-text-size-adjust: {{ value }};
+/// -webkit-text-size-adjust: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = WebkitTextSizeAdjustRecipe)]
+#[recipe(name = WebkitTextSizeAdjustRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssWebkitTextSizeAdjust<R: WebkitTextSizeAdjustRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: WebkitTextSizeAdjustRecipe> CssWebkitTextSizeAdjust<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: WebkitTextSizeAdjustRecipe> From<CssWebkitTextSizeAdjust<R>> for CssDeclaration {
-    fn from(css: CssWebkitTextSizeAdjust<R>) -> Self {
-        Self::new("-webkit-text-size-adjust", css.value)
+    fn from(css_webkit_text_size_adjust: CssWebkitTextSizeAdjust<R>) -> Self {
+        Self::new(
+            "-webkit-text-size-adjust",
+            css_webkit_text_size_adjust.bake_recipe().content,
+        )
     }
 }
 
-impl<R, B> From<CssWebkitTextSizeAdjust<R>> for CssDeclarationsBlock<B>
-where
-    R: WebkitTextSizeAdjustRecipe,
-    B: DeclarationsBlockRecipe,
-{
-    fn from(css: CssWebkitTextSizeAdjust<R>) -> Self {
-        Self::new().push(css)
+impl<R: WebkitTextSizeAdjustRecipe> From<CssWebkitTextSizeAdjust<R>> for CssDeclarationsBlock {
+    fn from(css_webkit_text_size_adjust: CssWebkitTextSizeAdjust<R>) -> Self {
+        Self::new().push(css_webkit_text_size_adjust)
     }
 }

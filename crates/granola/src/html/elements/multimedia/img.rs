@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::empty().id("image_embed");
+/// let img = HtmlImg::new().id("image_embed");
 ///
 /// assert_eq!(img.bake(), r#"<img id="image_embed" />"#);
 /// ```
@@ -20,10 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::new(
-///     "profile.png",
-///     "A mustachioed in a red cap and blue overalls",
-/// );
+/// let img = HtmlImg::new()
+///     .src("profile.png")
+///     .alt("A mustachioed in a red cap and blue overalls");
 ///
 /// assert_eq!(
 ///     img.bake(),
@@ -60,57 +59,16 @@ pub struct HtmlImg<R: ImgRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: ImgRecipe> HtmlImg<R> {
-    pub fn new(src: impl Into<Cow<'static, str>>, alt: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = ImgAttrs::default().src(src).alt(alt);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+impl HtmlImg {
+    pub fn from_src_alt(
+        src: impl Into<Cow<'static, str>>,
+        alt: impl Into<Cow<'static, str>>,
+    ) -> Self {
+        Self::new().src(src).alt(alt)
     }
 
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = ImgAttrs::default().src(src);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().src(src)
     }
 }
 
@@ -305,7 +263,7 @@ impl<R: ImgRecipe> HasImgAttrs for HtmlImg<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let img = img!(
+/// let img = img!(@from_src_alt
 ///     "profile.png",
 ///     "A mustachioed in a red cap and blue overalls"
 /// );
@@ -318,12 +276,12 @@ impl<R: ImgRecipe> HasImgAttrs for HtmlImg<R> {
 #[macro_export]
 macro_rules! img {
     () => {
-        $crate::html::HtmlImg::<()>::empty()
-    };
-    ($src: expr, $alt: expr $(,)?) => {
-        $crate::html::HtmlImg::<()>::new($src, $alt)
+        $crate::html::HtmlImg::new()
     };
     (@from_src $src: expr $(,)?) => {
-        $crate::html::HtmlImg::<()>::from_src($src)
+        $crate::html::HtmlImg::from_src($src)
+    };
+    (@from_src_alt $src: expr, $alt: expr $(,)?) => {
+        $crate::html::HtmlImg::from_src_alt($src, $alt)
     };
 }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let details: HtmlDetails = HtmlDetails::empty().id("details_disclosure");
+/// let details = HtmlDetails::new().id("details_disclosure");
 ///
 /// assert_eq!(
 ///     details.bake(),
@@ -23,9 +23,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let summary: HtmlSummary = HtmlSummary::new("Pandora's box");
+/// let summary = HtmlSummary::new().content("Pandora's box");
 ///
-/// let details: HtmlDetails = HtmlDetails::new(bake_block![summary, "Hope"]);
+/// let details = HtmlDetails::new().content(bake_block![summary, "Hope"]);
 ///
 /// assert_eq!(
 ///     details.bake(),
@@ -148,19 +148,19 @@ impl<R: DetailsRecipe> HasDetailsAttrs for HtmlDetails<R> {
 #[macro_export]
 macro_rules! details {
     () => {
-        $crate::html::HtmlDetails::<()>::empty()
+        $crate::html::HtmlDetails::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDetails::<()>::new($content)
+        $crate::html::HtmlDetails::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDetails::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDetails::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDetails::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDetails::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDetails::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDetails::new().content($crate::bake_inline![$($content),+])
     };
 }

@@ -12,9 +12,9 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let selector: CssSelector = CssSelector::new("p");
+/// let selector = CssSelector::new("p");
 ///
-/// let selector_list: CssSelectorsList = CssSelectorsList::new().push(selector);
+/// let selector_list = CssSelectorsList::new().push(selector);
 ///
 /// assert_eq!(selector_list.bake(), "p");
 /// ```
@@ -37,10 +37,6 @@ pub struct CssSelectorsList<R: SelectorsListRecipe = ()> {
 }
 
 impl<R: SelectorsListRecipe> CssSelectorsList<R> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn push(mut self, selector: impl Into<CssSelector>) -> Self {
         self.selectors.push(selector.into());
         self
@@ -124,7 +120,7 @@ macro_rules! selectors_list {
         $crate::css::CssSelectorsList::<()>::from($decl)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::css::CssSelectorsList::<()>::new().push($first)$(.push($rest))*
+        $crate::css::CssSelectorsList::new().push($first)$(.push($rest))*
     };
 
     (@cookbook $($r:ty),+) => {

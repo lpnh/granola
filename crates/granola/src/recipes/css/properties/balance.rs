@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `balance` property value recipe.
@@ -7,9 +5,9 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_wrap: CssTextWrap<Balance> = CssTextWrap::from_cookbook();
+/// let css_text_wrap = CssTextWrap::from(Balance);
 ///
 /// assert_eq!(css_text_wrap.bake(), "text-wrap: balance;");
 /// ```
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Balance;
 
 impl TextWrapRecipe for Balance {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "balance".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "balance".into();
     }
 }

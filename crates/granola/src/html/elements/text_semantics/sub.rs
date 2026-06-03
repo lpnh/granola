@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let sub: HtmlSub = HtmlSub::empty().id("subscript");
+/// let sub = HtmlSub::new().id("subscript");
 ///
 /// assert_eq!(sub.bake(), r#"<sub id="subscript"></sub>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let sub: HtmlSub = HtmlSub::new("2");
+/// let sub = HtmlSub::new().content("2");
 ///
 /// let water = bake_inline!["H", sub, "O"];
 ///
@@ -76,19 +76,19 @@ pub struct HtmlSub<R: SubRecipe = ()> {
 #[macro_export]
 macro_rules! sub {
     () => {
-        $crate::html::HtmlSub::<()>::empty()
+        $crate::html::HtmlSub::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSub::<()>::new($content)
+        $crate::html::HtmlSub::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSub::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSub::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSub::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSub::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSub::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSub::new().content($crate::bake_inline![$($content),+])
     };
 }

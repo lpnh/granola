@@ -13,7 +13,8 @@ use crate::filters;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::from_src("ship.png")
+/// let img = HtmlImg::new()
+///     .src("ship.png")
 ///     .id("cruiser")
 ///     .class("spaceship");
 ///
@@ -391,7 +392,7 @@ pub trait HasGlobalAttrs: Sized {
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let img: HtmlImg = HtmlImg::from_src("ship.png")
+/// let img = HtmlImg::from_src("ship.png")
 ///     .custom_data("ship-id", "1337")
 ///     .custom_data("weapons", "laserI laserII")
 ///     .custom_data("shields", "72%")

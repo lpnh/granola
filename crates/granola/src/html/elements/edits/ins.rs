@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ins: HtmlIns = HtmlIns::empty().id("inserted_text");
+/// let ins = HtmlIns::new().id("inserted_text");
 ///
 /// assert_eq!(ins.bake(), r#"<ins id="inserted_text"></ins>"#);
 /// ```
@@ -20,7 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ins: HtmlIns = HtmlIns::new(bake_newline!("?"))
+/// let ins = HtmlIns::new()
+///     .content(bake_newline!("?"))
 ///     .datetime("2016-11-10")
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13");
 ///
@@ -141,35 +142,35 @@ impl<R: InsRecipe> HasInsAttrs for HtmlIns<R> {
 #[macro_export]
 macro_rules! ins {
     () => {
-        $crate::html::HtmlIns::<()>::empty()
+        $crate::html::HtmlIns::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlIns::<()>::new($content)
+        $crate::html::HtmlIns::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlIns::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlIns::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlIns::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlIns::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlIns::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlIns::new().content($crate::bake_inline![$($content),+])
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::new($content)
+        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
     };
     (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

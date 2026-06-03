@@ -15,7 +15,7 @@ pub use padding_inline_start::*;
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `padding` property.
 ///
@@ -26,7 +26,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_padding: CssPadding = CssPadding::new("0.6em 1.2em");
+/// let css_padding = CssPadding::new().content("0.6em 1.2em");
 ///
 /// assert_eq!(css_padding.bake(), "padding: 0.6em 1.2em;");
 /// ```
@@ -34,36 +34,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// padding: {{ value }};
+/// padding: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = PaddingRecipe)]
+#[recipe(name = PaddingRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssPadding<R: PaddingRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: PaddingRecipe> CssPadding<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclaration {
     fn from(css_padding: CssPadding<R>) -> Self {
-        Self::new("padding", css_padding.value)
+        Self::new("padding", css_padding.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssPadding<R>> for CssDeclarationsBlock<B>
-where
-    R: PaddingRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: PaddingRecipe> From<CssPadding<R>> for CssDeclarationsBlock {
     fn from(css_padding: CssPadding<R>) -> Self {
         Self::new().push(css_padding)
     }

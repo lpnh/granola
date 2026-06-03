@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let head: HtmlHead = HtmlHead::from_cookbook().id("document_metadata");
+/// let head = HtmlHead::new().id("document_metadata");
 ///
 /// assert_eq!(head.bake(), r#"<head id="document_metadata"></head>"#);
 /// ```
@@ -20,13 +20,13 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let charset: HtmlMeta = HtmlMeta::empty().charset();
-/// let viewport: HtmlMeta = HtmlMeta::empty()
+/// let charset = HtmlMeta::new().charset();
+/// let viewport = HtmlMeta::new()
 ///     .name("viewport")
 ///     .content("width=device-width");
-/// let title: HtmlTitle = HtmlTitle::new("Document title");
+/// let title = HtmlTitle::new().content("Document title");
 ///
-/// let head: HtmlHead = HtmlHead::new(bake_block![charset, viewport, title]);
+/// let head = HtmlHead::new().content(bake_block![charset, viewport, title]);
 ///
 /// assert_eq!(
 ///     head.bake(),
@@ -93,34 +93,34 @@ pub struct HtmlHead<R: HeadRecipe = ()> {
 #[macro_export]
 macro_rules! head {
     () => {
-        $crate::html::HtmlHead::<()>::empty()
+        $crate::html::HtmlHead::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlHead::<()>::new($content)
+        $crate::html::HtmlHead::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlHead::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlHead::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlHead::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlHead::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlHead::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHead::new().content($crate::bake_inline![$($content),+])
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
     (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::new($content)
+        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::new($crate::bake_newline!($content))
+        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
     };
     (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

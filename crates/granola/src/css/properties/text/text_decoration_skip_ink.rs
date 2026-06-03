@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `text-decoration-skip-ink` property.
 ///
@@ -13,7 +13,7 @@ use crate::prelude::*;
 /// use granola::prelude::*;
 ///
 /// let css_text_decoration_skip_ink: CssTextDecorationSkipInk =
-///     CssTextDecorationSkipInk::new("auto");
+///     CssTextDecorationSkipInk::new().content("auto");
 ///
 /// assert_eq!(
 ///     css_text_decoration_skip_ink.bake(),
@@ -24,39 +24,26 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// text-decoration-skip-ink: {{ value }};
+/// text-decoration-skip-ink: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextDecorationSkipInkRecipe)]
+#[recipe(name = TextDecorationSkipInkRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextDecorationSkipInk<R: TextDecorationSkipInkRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TextDecorationSkipInkRecipe> CssTextDecorationSkipInk<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TextDecorationSkipInkRecipe> From<CssTextDecorationSkipInk<R>> for CssDeclaration {
     fn from(css_text_decoration_skip_ink: CssTextDecorationSkipInk<R>) -> Self {
         Self::new(
             "text-decoration-skip-ink",
-            css_text_decoration_skip_ink.value,
+            css_text_decoration_skip_ink.bake_recipe().content,
         )
     }
 }
 
-impl<R, B> From<CssTextDecorationSkipInk<R>> for CssDeclarationsBlock<B>
-where
-    R: TextDecorationSkipInkRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TextDecorationSkipInkRecipe> From<CssTextDecorationSkipInk<R>> for CssDeclarationsBlock {
     fn from(css_text_decoration_skip_ink: CssTextDecorationSkipInk<R>) -> Self {
         Self::new().push(css_text_decoration_skip_ink)
     }

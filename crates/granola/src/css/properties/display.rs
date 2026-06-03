@@ -12,7 +12,7 @@ use crate::{filters, oven::BakeInto, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_display: CssDisplay = CssDisplay::new("inline flex");
+/// let css_display = CssDisplay::new().content("inline flex");
 ///
 /// assert_eq!(css_display.bake(), "display: inline flex;");
 /// ```
@@ -23,7 +23,7 @@ use crate::{filters, oven::BakeInto, prelude::*};
 /// display: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DisplayRecipe, content = Cow<'static, str>)]
+#[recipe(name = DisplayRecipe, content = Cow<'static, str>, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssDisplay<R: DisplayRecipe = ()> {
     _recipe: PhantomData<R>,
@@ -36,11 +36,7 @@ impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclaration {
     }
 }
 
-impl<R, B> From<CssDisplay<R>> for CssDeclarationsBlock<B>
-where
-    R: DisplayRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclarationsBlock {
     fn from(css_display: CssDisplay<R>) -> Self {
         Self::new().push(css_display)
     }

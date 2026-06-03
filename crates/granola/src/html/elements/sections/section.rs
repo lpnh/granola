@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let section: HtmlSection = HtmlSection::empty().id("generic_section");
+/// let section = HtmlSection::new().id("generic_section");
 ///
 /// assert_eq!(
 ///     section.bake(),
@@ -23,10 +23,10 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let h2: HtmlH2 = HtmlH2::new("Latest news");
-/// let ul: HtmlUl = HtmlUl::new(HtmlLi::new("New café on Oak Street"));
+/// let h2 = HtmlH2::new().content("Latest news");
+/// let ul = HtmlUl::new().content(HtmlLi::new().content("New café on Oak Street"));
 ///
-/// let section: HtmlSection = HtmlSection::new(bake_block![h2, ul]);
+/// let section = HtmlSection::new().content(bake_block![h2, ul]);
 ///
 /// assert_eq!(
 ///     section.bake(),
@@ -102,19 +102,19 @@ pub struct HtmlSection<R: SectionRecipe = ()> {
 #[macro_export]
 macro_rules! section {
     () => {
-        $crate::html::HtmlSection::<()>::empty()
+        $crate::html::HtmlSection::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlSection::<()>::new($content)
+        $crate::html::HtmlSection::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlSection::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSection::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlSection::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlSection::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlSection::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSection::new().content($crate::bake_inline![$($content),+])
     };
 }

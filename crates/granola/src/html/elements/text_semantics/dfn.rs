@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dfn: HtmlDfn = HtmlDfn::empty().id("definition");
+/// let dfn = HtmlDfn::new().id("definition");
 ///
 /// assert_eq!(dfn.bake(), r#"<dfn id="definition"></dfn>"#);
 /// ```
@@ -20,10 +20,10 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let corro: HtmlDfn = HtmlDfn::new("Corro");
+/// let corro = HtmlDfn::new().content("Corro");
 ///
 /// let about = bake_inline![corro, " the Unsafe Rusturchin"];
-/// let paragraph: HtmlP = HtmlP::new(about);
+/// let paragraph = HtmlP::new().content(about);
 ///
 /// assert_eq!(
 ///     paragraph.bake(),
@@ -81,19 +81,19 @@ pub struct HtmlDfn<R: DfnRecipe = ()> {
 #[macro_export]
 macro_rules! dfn {
     () => {
-        $crate::html::HtmlDfn::<()>::empty()
+        $crate::html::HtmlDfn::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDfn::<()>::new($content)
+        $crate::html::HtmlDfn::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDfn::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDfn::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDfn::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDfn::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDfn::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDfn::new().content($crate::bake_inline![$($content),+])
     };
 }

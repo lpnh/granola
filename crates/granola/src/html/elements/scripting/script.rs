@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let script: HtmlScript = HtmlScript::empty().id("script");
+/// let script = HtmlScript::new().id("script");
 ///
 /// assert_eq!(script.bake(), r#"<script id="script"></script>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let script: HtmlScript = HtmlScript::new(bake_newline!(r#"alert("Hello, world!");"#));
+/// let script = HtmlScript::new().content(bake_newline!(r#"alert("Hello, world!");"#));
 ///
 /// assert_eq!(
 ///     script.bake(),
@@ -286,19 +286,19 @@ impl From<ScriptType> for Cow<'static, str> {
 #[macro_export]
 macro_rules! script {
     () => {
-        $crate::html::HtmlScript::<()>::empty()
+        $crate::html::HtmlScript::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlScript::<()>::new($content)
+        $crate::html::HtmlScript::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlScript::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlScript::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlScript::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlScript::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlScript::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlScript::new().content($crate::bake_inline![$($content),+])
     };
 }

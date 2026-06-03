@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `overflow-wrap` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_overflow_wrap: CssOverflowWrap = CssOverflowWrap::new("break-word");
+/// let css_overflow_wrap = CssOverflowWrap::new().content("break-word");
 ///
 /// assert_eq!(css_overflow_wrap.bake(), "overflow-wrap: break-word;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// overflow-wrap: {{ value }};
+/// overflow-wrap: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OverflowWrapRecipe)]
+#[recipe(name = OverflowWrapRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssOverflowWrap<R: OverflowWrapRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: OverflowWrapRecipe> CssOverflowWrap<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: OverflowWrapRecipe> From<CssOverflowWrap<R>> for CssDeclaration {
     fn from(css_overflow_wrap: CssOverflowWrap<R>) -> Self {
-        Self::new("overflow-wrap", css_overflow_wrap.value)
+        Self::new("overflow-wrap", css_overflow_wrap.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssOverflowWrap<R>> for CssDeclarationsBlock<B>
-where
-    R: OverflowWrapRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: OverflowWrapRecipe> From<CssOverflowWrap<R>> for CssDeclarationsBlock {
     fn from(css_overflow_wrap: CssOverflowWrap<R>) -> Self {
         Self::new().push(css_overflow_wrap)
     }

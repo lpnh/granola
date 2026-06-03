@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `flex-wrap` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_flex_wrap: CssFlexWrap = CssFlexWrap::new("nowrap");
+/// let css_flex_wrap = CssFlexWrap::new().content("nowrap");
 ///
 /// assert_eq!(css_flex_wrap.bake(), "flex-wrap: nowrap;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// flex-wrap: {{ value }};
+/// flex-wrap: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FlexWrapRecipe)]
+#[recipe(name = FlexWrapRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFlexWrap<R: FlexWrapRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FlexWrapRecipe> CssFlexWrap<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FlexWrapRecipe> From<CssFlexWrap<R>> for CssDeclaration {
     fn from(css_flex_wrap: CssFlexWrap<R>) -> Self {
-        Self::new("flex-wrap", css_flex_wrap.value)
+        Self::new("flex-wrap", css_flex_wrap.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssFlexWrap<R>> for CssDeclarationsBlock<B>
-where
-    R: FlexWrapRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FlexWrapRecipe> From<CssFlexWrap<R>> for CssDeclarationsBlock {
     fn from(css_flex_wrap: CssFlexWrap<R>) -> Self {
         Self::new().push(css_flex_wrap)
     }

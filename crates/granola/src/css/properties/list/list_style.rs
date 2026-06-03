@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `list-style` shorthand property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_list_style: CssListStyle = CssListStyle::new("none");
+/// let css_list_style = CssListStyle::new().content("none");
 ///
 /// assert_eq!(css_list_style.bake(), "list-style: none;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// list-style: {{ value }};
+/// list-style: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = ListStyleRecipe)]
+#[recipe(name = ListStyleRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssListStyle<R: ListStyleRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: ListStyleRecipe> CssListStyle<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: ListStyleRecipe> From<CssListStyle<R>> for CssDeclaration {
     fn from(css_list_style: CssListStyle<R>) -> Self {
-        Self::new("list-style", css_list_style.value)
+        Self::new("list-style", css_list_style.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssListStyle<R>> for CssDeclarationsBlock<B>
-where
-    R: ListStyleRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: ListStyleRecipe> From<CssListStyle<R>> for CssDeclarationsBlock {
     fn from(css_list_style: CssListStyle<R>) -> Self {
         Self::new().push(css_list_style)
     }

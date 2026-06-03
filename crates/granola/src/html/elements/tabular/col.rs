@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let col: HtmlCol = HtmlCol::new().id("table_column");
+/// let col = HtmlCol::new().id("table_column");
 ///
 /// assert_eq!(col.bake(), r#"<col id="table_column" />"#);
 /// ```
@@ -20,8 +20,8 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let item: HtmlCol = HtmlCol::new().class("item");
-/// let description: HtmlCol = HtmlCol::new().class("description");
+/// let item = HtmlCol::new().class("item");
+/// let description = HtmlCol::new().class("description");
 ///
 /// let cols = bake_block![item, description];
 ///
@@ -52,12 +52,6 @@ pub struct HtmlCol<R: ColRecipe = ()> {
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,
     pub event_handlers: EventHandlers,
-}
-
-impl<R: ColRecipe> HtmlCol<R> {
-    pub fn new() -> Self {
-        Self::from_cookbook()
-    }
 }
 
 /// The HTML `<col>` element specific attributes.
@@ -163,6 +157,6 @@ impl From<HtmlCol> for TableColumns {
 #[macro_export]
 macro_rules! col {
     () => {
-        $crate::html::HtmlCol::<()>::new()
+        $crate::html::HtmlCol::new()
     };
 }

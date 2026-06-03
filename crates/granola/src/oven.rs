@@ -36,7 +36,7 @@ use askama::{FastWritable, NO_VALUES, Template, Values};
 ///     type Content = BakeFrom<u32>;
 /// }
 ///
-/// let output: HtmlOutput<Answer> = HtmlOutput::new(42);
+/// let output = HtmlOutput::from(Answer).content(42);
 ///
 /// assert_eq!(output.bake(), "<output>42</output>");
 /// ```
@@ -205,11 +205,13 @@ where
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let textarea: HtmlTextarea = HtmlTextarea::new("Exegi monumentum aere perennius").id("ode");
+/// let textarea = HtmlTextarea::new()
+///     .content("Exegi monumentum aere perennius")
+///     .id("ode");
 ///
 /// let content = bake_block!["Notes", textarea];
 ///
-/// let label: HtmlLabel = HtmlLabel::new(content).for_id("ode");
+/// let label = HtmlLabel::new().content(content).for_id("ode");
 ///
 /// assert_eq!(
 ///     label.bake(),
@@ -255,11 +257,11 @@ macro_rules! bake_block {
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let docs: HtmlA = HtmlA::new("docs").href("https://askama.rs");
+/// let docs = HtmlA::new().content("docs").href("https://askama.rs");
 ///
 /// let content = bake_inline!["Read the ", docs, "."];
 ///
-/// let span: HtmlSpan = HtmlSpan::new(content);
+/// let span = HtmlSpan::new().content(content);
 ///
 /// assert_eq!(
 ///     span.bake(),
@@ -295,7 +297,7 @@ macro_rules! bake_inline {
 ///
 /// let content = bake_newline!("content");
 ///
-/// let paragraph: HtmlP = HtmlP::new(content);
+/// let paragraph = HtmlP::new().content(content);
 ///
 /// assert_eq!(
 ///     paragraph.bake(),
@@ -447,37 +449,37 @@ mod from_content_type_tests {
 
     #[test]
     fn new_accepts_primitive_directly() {
-        let p: HtmlP<Number> = HtmlP::new(42);
+        let p = HtmlP::from(Number).content(42);
         assert_eq!(p.bake(), "<p>42</p>");
     }
 
     #[test]
     fn new_accepts_explicit_wrapper() {
-        let p: HtmlP<Number> = HtmlP::new(BakeFrom(42u32));
+        let p = HtmlP::from(Number).content(BakeFrom(42u32));
         assert_eq!(p.bake(), "<p>42</p>");
     }
 
     #[test]
     fn bakes_back_into_default_content() {
-        let baked: HtmlP = HtmlP::<Number>::new(42).bake_recipe();
+        let baked = HtmlP::from(Number).content(42);
         assert_eq!(baked.bake(), "<p>42</p>");
     }
 
     #[test]
     fn new_accepts_custom_directly() {
-        let p: HtmlP<Temperature> = HtmlP::new(Celsius(26));
+        let p = HtmlP::from(Temperature).content(Celsius(26));
         assert_eq!(p.bake(), "<p>26°C</p>");
     }
 
     #[test]
     fn new_accepts_custom_explicit_wrapper() {
-        let p: HtmlP<Temperature> = HtmlP::new(BakeFrom(Celsius(26)));
+        let p = HtmlP::from(Temperature).content(BakeFrom(Celsius(26)));
         assert_eq!(p.bake(), "<p>26°C</p>");
     }
 
     #[test]
     fn bakes_back_custom_into_default_content() {
-        let baked: HtmlP = HtmlP::<Temperature>::new(Celsius(26)).bake_recipe();
+        let baked = HtmlP::from(Temperature).content(Celsius(26));
         assert_eq!(baked.bake(), "<p>26°C</p>");
     }
 }
@@ -511,7 +513,7 @@ mod oven_tests {
     fn bake_block_5() {
         use crate::prelude::HtmlSpan;
 
-        let span: HtmlSpan = HtmlSpan::new("bar");
+        let span = HtmlSpan::new().content("bar");
 
         assert_eq!(bake_block!["foo", span, 42], "foo\n<span>bar</span>\n42");
     }
@@ -586,7 +588,7 @@ mod preallocation_tests {
     const P_HINT: usize = <HtmlP as Template>::SIZE_HINT;
 
     fn img_empty() -> HtmlImg {
-        HtmlImg::empty()
+        HtmlImg::new()
     }
 
     fn img_with_src() -> HtmlImg {
@@ -594,23 +596,23 @@ mod preallocation_tests {
     }
 
     fn p_empty() -> HtmlP {
-        HtmlP::empty()
+        HtmlP::new()
     }
 
     fn p_with_span() -> HtmlP {
-        let span: HtmlSpan = HtmlSpan::new("hello, world!");
-        HtmlP::new(span)
+        let span = HtmlSpan::new().content("hello, world!");
+        HtmlP::new().content(span)
     }
 
     #[test]
     fn size_hint_is_tight() {
-        let empty: HtmlP = HtmlP::empty();
+        let empty = HtmlP::new();
         let headroom = P_HINT - empty.bake().len();
 
-        let at_boundary: HtmlP = HtmlP::new("x".repeat(headroom));
+        let at_boundary = HtmlP::new().content("x".repeat(headroom));
         assert_eq!(at_boundary.bake().len(), P_HINT);
 
-        let past_boundary: HtmlP = HtmlP::new("x".repeat(headroom + 1));
+        let past_boundary = HtmlP::new().content("x".repeat(headroom + 1));
         assert_eq!(past_boundary.bake().len(), P_HINT + 1);
     }
 

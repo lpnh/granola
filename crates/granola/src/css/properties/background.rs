@@ -4,7 +4,7 @@ pub use background_color::*;
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `background` shorthand property.
 ///
@@ -15,7 +15,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_background: CssBackground = CssBackground::new("none");
+/// let css_background = CssBackground::new().content("none");
 ///
 /// assert_eq!(css_background.bake(), "background: none;");
 /// ```
@@ -23,36 +23,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// background: {{ value }};
+/// background: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BackgroundRecipe)]
+#[recipe(name = BackgroundRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssBackground<R: BackgroundRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: BackgroundRecipe> CssBackground<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: BackgroundRecipe> From<CssBackground<R>> for CssDeclaration {
     fn from(css_background: CssBackground<R>) -> Self {
-        Self::new("background", css_background.value)
+        Self::new("background", css_background.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssBackground<R>> for CssDeclarationsBlock<B>
-where
-    R: BackgroundRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: BackgroundRecipe> From<CssBackground<R>> for CssDeclarationsBlock {
     fn from(css_background: CssBackground<R>) -> Self {
         Self::new().push(css_background)
     }

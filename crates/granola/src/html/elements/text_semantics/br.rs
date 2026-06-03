@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let br: HtmlBr = HtmlBr::new().id("line_break");
+/// let br = HtmlBr::new().id("line_break");
 ///
 /// assert_eq!(br.bake(), r#"<br id="line_break" />"#);
 /// ```
@@ -20,12 +20,12 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let br: HtmlBr = HtmlBr::new();
+/// let br = HtmlBr::new();
 ///
 /// let roses = bake_inline!["Roses are red,", br];
 /// let violets = "Violets are blue.";
 ///
-/// let poem: HtmlP = HtmlP::new(bake_block![roses, violets]);
+/// let poem = HtmlP::new().content(bake_block![roses, violets]);
 ///
 /// assert_eq!(
 ///     poem.bake(),
@@ -59,12 +59,6 @@ pub struct HtmlBr<R: BrRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: BrRecipe> HtmlBr<R> {
-    pub fn new() -> Self {
-        Self::from_cookbook()
-    }
-}
-
 /// Shorthand for `HtmlBr`.
 ///
 /// # Example
@@ -93,7 +87,7 @@ impl<R: BrRecipe> HtmlBr<R> {
 #[macro_export]
 macro_rules! br {
     () => {
-        $crate::html::HtmlBr::<()>::new()
+        $crate::html::HtmlBr::new()
     };
 
     (@cookbook $($r:ty),+) => {

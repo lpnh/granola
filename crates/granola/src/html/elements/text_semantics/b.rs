@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let b: HtmlB = HtmlB::empty().id("bring_attention_to");
+/// let b = HtmlB::new().id("bring_attention_to");
 ///
 /// assert_eq!(b.bake(), r#"<b id="bring_attention_to"></b>"#);
 /// ```
@@ -20,9 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let flour: HtmlB = HtmlB::new("flour");
-/// let water: HtmlB = HtmlB::new("water");
-/// let salt: HtmlB = HtmlB::new("salt");
+/// let flour = HtmlB::new().content("flour");
+/// let water = HtmlB::new().content("water");
+/// let salt = HtmlB::new().content("salt");
 ///
 /// let recipe = bake_inline!["Mix ", flour, ", ", water, ", and ", salt, "."];
 ///
@@ -86,19 +86,19 @@ pub struct HtmlB<R: BRecipe = ()> {
 #[macro_export]
 macro_rules! b {
     () => {
-        $crate::html::HtmlB::<()>::empty()
+        $crate::html::HtmlB::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlB::<()>::new($content)
+        $crate::html::HtmlB::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlB::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlB::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlB::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlB::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlB::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlB::new().content($crate::bake_inline![$($content),+])
     };
 }

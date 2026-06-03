@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `center` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_align_items: CssAlignItems<Center> = CssAlignItems::from_cookbook();
 ///
@@ -15,7 +13,7 @@ use crate::prelude::*;
 /// ```
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_justify_content: CssJustifyContent<Center> = CssJustifyContent::from_cookbook();
 ///
@@ -25,19 +23,19 @@ use crate::prelude::*;
 pub struct Center;
 
 impl AlignItemsRecipe for Center {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "center".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "center".into();
     }
 }
 
 impl JustifyContentRecipe for Center {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "center".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "center".into();
     }
 }
 
 impl TextAlignRecipe for Center {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "center".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "center".into();
     }
 }

@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let dialog: HtmlDialog = HtmlDialog::empty().id("dialog");
+/// let dialog = HtmlDialog::new().id("dialog");
 ///
 /// assert_eq!(dialog.bake(), r#"<dialog id="dialog"></dialog>"#);
 /// ```
@@ -20,12 +20,16 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let open_button: HtmlButton = HtmlButton::new("open dialog").popovertarget("modal_popover");
-/// let close_button: HtmlButton = HtmlButton::new("Close")
+/// let open_button = HtmlButton::new()
+///     .content("open dialog")
+///     .popovertarget("modal_popover");
+/// let close_button = HtmlButton::new()
+///     .content("Close")
 ///     .popovertarget("modal_popover")
 ///     .popovertargetaction("hide");
 ///
-/// let dialog: HtmlDialog = HtmlDialog::new(bake_block!["Hello, there!", close_button])
+/// let dialog = HtmlDialog::new()
+///     .content(bake_block!["Hello, there!", close_button])
 ///     .id("modal_popover")
 ///     .popover("auto");
 ///
@@ -161,19 +165,19 @@ impl<R: DialogRecipe> HasDialogAttrs for HtmlDialog<R> {
 #[macro_export]
 macro_rules! dialog {
     () => {
-        $crate::html::HtmlDialog::<()>::empty()
+        $crate::html::HtmlDialog::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlDialog::<()>::new($content)
+        $crate::html::HtmlDialog::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlDialog::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDialog::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlDialog::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlDialog::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlDialog::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDialog::new().content($crate::bake_inline![$($content),+])
     };
 }

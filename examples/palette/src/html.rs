@@ -36,7 +36,8 @@ pub fn home_page(
     );
     let style = style!(css_rule);
 
-    TmplBase::<Homemade>::new(body)
+    TmplBase::<Homemade>::from_cookbook()
+        .content(body)
         .lang("en")
         .push_title(title)
         .push_link(stylesheet_link)

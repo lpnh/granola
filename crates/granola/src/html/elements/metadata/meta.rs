@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let meta: HtmlMeta = HtmlMeta::empty().id("metadata");
+/// let meta = HtmlMeta::new().id("metadata");
 ///
 /// assert_eq!(meta.bake(), r#"<meta id="metadata" />"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let meta: HtmlMeta = HtmlMeta::new("noindex, nofollow").name("robots");
+/// let meta = HtmlMeta::new().content("noindex, nofollow").name("robots");
 ///
 /// assert_eq!(
 ///     meta.bake(),
@@ -51,7 +51,7 @@ pub struct HtmlMeta<R: MetaRecipe = ()> {
 }
 
 impl<R: MetaRecipe> HtmlMeta<R> {
-    pub fn new(content: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_content(content: impl Into<Cow<'static, str>>) -> Self {
         let mut global_attrs = GlobalAttrs::default();
         R::global_attrs_recipe(&mut global_attrs);
 
@@ -191,9 +191,9 @@ impl<R: MetaRecipe> HasMetaAttrs for HtmlMeta<R> {
 #[macro_export]
 macro_rules! meta {
     () => {
-        $crate::html::HtmlMeta::<()>::empty()
+        $crate::html::HtmlMeta::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlMeta::<()>::new($content)
+        $crate::html::HtmlMeta::<()>::from_content($content)
     };
 }

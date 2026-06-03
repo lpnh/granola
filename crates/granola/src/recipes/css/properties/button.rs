@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `button` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_appearance: CssAppearance<Button> = CssAppearance::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Button;
 
 impl AppearanceRecipe for Button {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "button".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "button".into();
     }
 }

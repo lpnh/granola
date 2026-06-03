@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let strong: HtmlStrong = HtmlStrong::empty().id("strong_importance");
+/// let strong = HtmlStrong::new().id("strong_importance");
 ///
 /// assert_eq!(strong.bake(), r#"<strong id="strong_importance"></strong>"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let strong: HtmlStrong = HtmlStrong::new("Do not feed the trolls.");
+/// let strong = HtmlStrong::new().content("Do not feed the trolls.");
 ///
 /// assert_eq!(strong.bake(), r#"<strong>Do not feed the trolls.</strong>"#);
 /// ```
@@ -72,19 +72,19 @@ pub struct HtmlStrong<R: StrongRecipe = ()> {
 #[macro_export]
 macro_rules! strong {
     () => {
-        $crate::html::HtmlStrong::<()>::empty()
+        $crate::html::HtmlStrong::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlStrong::<()>::new($content)
+        $crate::html::HtmlStrong::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlStrong::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlStrong::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlStrong::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlStrong::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlStrong::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlStrong::new().content($crate::bake_inline![$($content),+])
     };
 }

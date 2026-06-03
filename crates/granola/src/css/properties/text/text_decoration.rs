@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `text-decoration` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_text_decoration: CssTextDecoration = CssTextDecoration::new("none");
+/// let css_text_decoration = CssTextDecoration::new().content("none");
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: none;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// text-decoration: {{ value }};
+/// text-decoration: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextDecorationRecipe)]
+#[recipe(name = TextDecorationRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextDecoration<R: TextDecorationRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: TextDecorationRecipe> CssTextDecoration<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclaration {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
-        Self::new("text-decoration", css_text_decoration.value)
+        Self::new("text-decoration", css_text_decoration.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssTextDecoration<R>> for CssDeclarationsBlock<B>
-where
-    R: TextDecorationRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclarationsBlock {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
         Self::new().push(css_text_decoration)
     }

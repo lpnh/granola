@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let base: HtmlBase = HtmlBase::empty().id("document_base_url");
+/// let base = HtmlBase::new().id("document_base_url");
 ///
 /// assert_eq!(base.bake(), r#"<base id="document_base_url" />"#);
 /// ```
@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let base: HtmlBase = HtmlBase::new("https://www.example.com");
+/// let base = HtmlBase::new().href("https://www.example.com");
 ///
 /// assert_eq!(base.bake(), r#"<base href="https://www.example.com" />"#);
 /// ```
@@ -47,31 +47,9 @@ pub struct HtmlBase<R: BaseRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: BaseRecipe> HtmlBase<R> {
-    pub fn new(href: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = BaseAttrs::default().href(href);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+impl HtmlBase {
+    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
+        Self::new().href(href)
     }
 }
 
@@ -145,16 +123,16 @@ impl<R: BaseRecipe> HasBaseAttrs for HtmlBase<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let base = base!("https://www.example.com");
+/// let base = base!(@from_href "https://www.example.com");
 ///
 /// assert_eq!(base.bake(), r#"<base href="https://www.example.com" />"#);
 /// ```
 #[macro_export]
 macro_rules! base {
     () => {
-        $crate::html::HtmlBase::<()>::empty()
+        $crate::html::HtmlBase::new()
     };
-    ($href: expr $(,)?) => {
-        $crate::html::HtmlBase::<()>::new($href)
+    (@from_href $href: expr $(,)?) => {
+        $crate::html::HtmlBase::from_href($href)
     };
 }

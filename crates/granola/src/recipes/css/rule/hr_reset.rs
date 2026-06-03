@@ -1,11 +1,11 @@
-use crate::{recipes::*, prelude::*};
+use crate::{prelude::*, recipes::*};
 
 /// The `hr` reset rule recipe.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let rule: CssRule<HrReset> = CssRule::from_cookbook();
 ///
@@ -28,8 +28,8 @@ impl RuleRecipe for HrReset {
 
     fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
         properties_list.declarations = vec![
-            CssHeight::<()>::new("0").into(),
-            CssColor::<Inherit>::from_cookbook().into(),
+            CssHeight::new().content("0").into(),
+            CssColor::from(Inherit).into(),
             ("border-top-width", "1px").into(),
         ];
     }

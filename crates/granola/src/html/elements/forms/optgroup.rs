@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let optgroup: HtmlOptgroup = HtmlOptgroup::empty().id("option_group");
+/// let optgroup = HtmlOptgroup::new().id("option_group");
 ///
 /// assert_eq!(
 ///     optgroup.bake(),
@@ -24,12 +24,12 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let options = [
-///     HtmlOption::new("Grape"),
-///     HtmlOption::new("Mango"),
-///     HtmlOption::new("Strawberry"),
+///     HtmlOption::new().content("Grape"),
+///     HtmlOption::new().content("Mango"),
+///     HtmlOption::new().content("Strawberry"),
 /// ];
 ///
-/// let optgroup: HtmlOptgroup = HtmlOptgroup::new(options).label("Fruits");
+/// let optgroup = HtmlOptgroup::new().content(options).label("Fruits");
 ///
 /// assert_eq!(
 ///     optgroup.bake(),
@@ -171,12 +171,12 @@ impl<R: OptgroupRecipe> HasOptgroupAttrs for HtmlOptgroup<R> {
 #[macro_export]
 macro_rules! optgroup {
     () => {
-        $crate::html::HtmlOptgroup::<()>::empty()
+        $crate::html::HtmlOptgroup::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlOptgroup::<()>::new($content)
+        $crate::html::HtmlOptgroup::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlOptgroup::<()>::new([$first $(, $rest)*])
+        $crate::html::HtmlOptgroup::new().content([$first $(, $rest)*])
     };
 }

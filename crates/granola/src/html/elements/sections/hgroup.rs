@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let hgroup: HtmlHgroup = HtmlHgroup::empty().id("heading_group");
+/// let hgroup = HtmlHgroup::new().id("heading_group");
 ///
 /// assert_eq!(hgroup.bake(), r#"<hgroup id="heading_group"></hgroup>"#);
 /// ```
@@ -20,15 +20,15 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let heading: HtmlH2 = HtmlH2::new("Capítulo VIII.");
+/// let heading = HtmlH2::new().content("Capítulo VIII.");
 ///
 /// let subtitle = "Del buen suceso que el valeroso don Quijote tuvo en la espantable y
 /// jamás imaginada aventura de los molinos de viento, con otros sucesos
 /// dignos de felice recordación";
 ///
-/// let paragraph: HtmlP = HtmlP::new(subtitle);
+/// let paragraph = HtmlP::new().content(subtitle);
 ///
-/// let hgroup: HtmlHgroup = HtmlHgroup::new(bake_block![heading, paragraph]);
+/// let hgroup = HtmlHgroup::new().content(bake_block![heading, paragraph]);
 ///
 /// assert_eq!(
 ///     hgroup.bake(),
@@ -108,19 +108,19 @@ pub struct HtmlHgroup<R: HgroupRecipe = ()> {
 #[macro_export]
 macro_rules! hgroup {
     () => {
-        $crate::html::HtmlHgroup::<()>::empty()
+        $crate::html::HtmlHgroup::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlHgroup::<()>::new($content)
+        $crate::html::HtmlHgroup::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlHgroup::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlHgroup::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlHgroup::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlHgroup::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlHgroup::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHgroup::new().content($crate::bake_inline![$($content),+])
     };
 }

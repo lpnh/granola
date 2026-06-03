@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let figcaption: HtmlFigcaption = HtmlFigcaption::empty().id("figure_caption");
+/// let figcaption = HtmlFigcaption::new().id("figure_caption");
 ///
 /// assert_eq!(
 ///     figcaption.bake(),
@@ -23,9 +23,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let code: HtmlCode = HtmlCode::new(r#"function greet() print("hi!") end"#);
+/// let code = HtmlCode::new().content(r#"function greet() print("hi!") end"#);
 ///
-/// let figcaption: HtmlFigcaption = HtmlFigcaption::new("Defining a function in Lua");
+/// let figcaption = HtmlFigcaption::new().content("Defining a function in Lua");
 ///
 /// let content = bake_block![code, figcaption];
 ///
@@ -94,18 +94,18 @@ pub struct HtmlFigcaption<R: FigcaptionRecipe = ()> {
 #[macro_export]
 macro_rules! figcaption {
     () => {
-        $crate::html::HtmlFigcaption::<()>::empty()
+        $crate::html::HtmlFigcaption::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlFigcaption::<()>::new($content)
+        $crate::html::HtmlFigcaption::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlFigcaption::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlFigcaption::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlFigcaption::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlFigcaption::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlFigcaption::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlFigcaption::new().content($crate::bake_inline![$($content),+])
     };
 }

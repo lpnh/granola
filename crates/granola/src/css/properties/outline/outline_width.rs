@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `outline-width` property.
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_outline_width: CssOutlineWidth = CssOutlineWidth::new("2px");
+/// let css_outline_width = CssOutlineWidth::new().content("2px");
 ///
 /// assert_eq!(css_outline_width.bake(), "outline-width: 2px;");
 /// ```
@@ -20,36 +20,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// outline-width: {{ value }};
+/// outline-width: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = OutlineWidthRecipe)]
+#[recipe(name = OutlineWidthRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssOutlineWidth<R: OutlineWidthRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: OutlineWidthRecipe> CssOutlineWidth<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclaration {
     fn from(css_outline_width: CssOutlineWidth<R>) -> Self {
-        Self::new("outline-width", css_outline_width.value)
+        Self::new("outline-width", css_outline_width.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssOutlineWidth<R>> for CssDeclarationsBlock<B>
-where
-    R: OutlineWidthRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclarationsBlock {
     fn from(css_outline_width: CssOutlineWidth<R>) -> Self {
         Self::new().push(css_outline_width)
     }

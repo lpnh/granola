@@ -12,7 +12,7 @@ pub use font_weight::*;
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS `font` shorthand property.
 ///
@@ -23,7 +23,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_font: CssFont = CssFont::new("inherit");
+/// let css_font = CssFont::new().content("inherit");
 ///
 /// assert_eq!(css_font.bake(), "font: inherit;");
 /// ```
@@ -31,36 +31,23 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// font: {{ value }};
+/// font: {{ content | kirei(0) }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontRecipe)]
+#[recipe(name = FontRecipe, content = Cow<'static, str>)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFont<R: FontRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub value: Cow<'static, str>,
-}
-
-impl<R: FontRecipe> CssFont<R> {
-    pub fn new(value: impl Into<Cow<'static, str>>) -> Self {
-        Self {
-            value: value.into(),
-            ..Default::default()
-        }
-    }
+    pub content: R::Content,
 }
 
 impl<R: FontRecipe> From<CssFont<R>> for CssDeclaration {
     fn from(css_font: CssFont<R>) -> Self {
-        Self::new("font", css_font.value)
+        Self::new("font", css_font.bake_recipe().content)
     }
 }
 
-impl<R, B> From<CssFont<R>> for CssDeclarationsBlock<B>
-where
-    R: FontRecipe,
-    B: DeclarationsBlockRecipe,
-{
+impl<R: FontRecipe> From<CssFont<R>> for CssDeclarationsBlock {
     fn from(css_font: CssFont<R>) -> Self {
         Self::new().push(css_font)
     }

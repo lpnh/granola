@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `vertical` property value recipe.
@@ -7,7 +5,7 @@ use crate::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use granola::{recipes::*, prelude::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let css_resize: CssResize<Vertical> = CssResize::from_cookbook();
 ///
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct Vertical;
 
 impl ResizeRecipe for Vertical {
-    fn value_recipe(value: &mut Cow<'static, str>) {
-        *value = "vertical".into();
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "vertical".into();
     }
 }

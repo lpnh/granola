@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let ruby: HtmlRuby = HtmlRuby::empty().id("ruby_annotation");
+/// let ruby = HtmlRuby::new().id("ruby_annotation");
 ///
 /// assert_eq!(ruby.bake(), r#"<ruby id="ruby_annotation"></ruby>"#);
 /// ```
@@ -20,13 +20,13 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let opening_rp: HtmlRp = HtmlRp::new("(");
-/// let rt: HtmlRt = HtmlRt::new("とり");
-/// let closing_rp: HtmlRp = HtmlRp::new(")");
+/// let opening_rp = HtmlRp::new().content("(");
+/// let rt = HtmlRt::new().content("とり");
+/// let closing_rp = HtmlRp::new().content(")");
 ///
 /// let tori = bake_inline!["鳥", opening_rp, rt, closing_rp];
 ///
-/// let ruby: HtmlRuby = HtmlRuby::new(tori);
+/// let ruby = HtmlRuby::new().content(tori);
 ///
 /// assert_eq!(
 ///     ruby.bake(),
@@ -86,18 +86,18 @@ pub struct HtmlRuby<R: RubyRecipe = ()> {
 #[macro_export]
 macro_rules! ruby {
     () => {
-        $crate::html::HtmlRuby::<()>::empty()
+        $crate::html::HtmlRuby::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlRuby::<()>::new($content)
+        $crate::html::HtmlRuby::new().content($content)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::html::HtmlRuby::<()>::new($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlRuby::new().content($crate::bake_block![$first $(, $rest)*])
     };
     (@newline $content: expr $(,)?) => {
-        $crate::html::HtmlRuby::<()>::new($crate::bake_newline!($content))
+        $crate::html::HtmlRuby::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
-        $crate::html::HtmlRuby::<()>::new($crate::bake_inline![$($content),+])
+        $crate::html::HtmlRuby::new().content($crate::bake_inline![$($content),+])
     };
 }
