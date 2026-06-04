@@ -14,8 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_declaration = CssDeclaration::new("color", "rebeccapurple");
 ///
-/// let css_declarations_block: CssDeclarationsBlock =
-///     CssDeclarationsBlock::new().push(css_declaration);
+/// let css_declarations_block = CssDeclarationsBlock::new().push(css_declaration);
 ///
 /// assert_eq!(css_declarations_block.bake(), "color: rebeccapurple;");
 /// ```

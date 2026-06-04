@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let form: HtmlForm<MethodPost> = HtmlForm::from_cookbook();
+/// let form = HtmlForm::from(MethodPost);
 ///
 /// assert_eq!(form.bake(), r#"<form method="post"></form>"#);
 /// ```

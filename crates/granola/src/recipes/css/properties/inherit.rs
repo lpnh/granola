@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font: CssFont<Inherit> = CssFont::from_cookbook();
+/// let css_font = CssFont::from(Inherit);
 ///
 /// assert_eq!(css_font.bake(), "font: inherit;");
 /// ```
@@ -15,7 +15,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_align: CssTextAlign<Inherit> = CssTextAlign::from_cookbook();
+/// let css_text_align = CssTextAlign::from(Inherit);
 ///
 /// assert_eq!(css_text_align.bake(), "text-align: inherit;");
 /// ```
@@ -23,7 +23,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_family: CssFontFamily<Inherit> = CssFontFamily::from_cookbook();
+/// let css_font_family = CssFontFamily::from(Inherit);
 ///
 /// assert_eq!(css_font_family.bake(), "font-family: inherit;");
 /// ```
@@ -31,7 +31,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_size: CssFontSize<Inherit> = CssFontSize::from_cookbook();
+/// let css_font_size = CssFontSize::from(Inherit);
 ///
 /// assert_eq!(css_font_size.bake(), "font-size: inherit;");
 /// ```
@@ -39,7 +39,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_weight: CssFontWeight<Inherit> = CssFontWeight::from_cookbook();
+/// let css_font_weight = CssFontWeight::from(Inherit);
 ///
 /// assert_eq!(css_font_weight.bake(), "font-weight: inherit;");
 /// ```
@@ -47,7 +47,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_color: CssColor<Inherit> = CssColor::from_cookbook();
+/// let css_color = CssColor::from(Inherit);
 ///
 /// assert_eq!(css_color.bake(), "color: inherit;");
 /// ```
@@ -55,7 +55,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_decoration: CssTextDecoration<Inherit> = CssTextDecoration::from_cookbook();
+/// let css_text_decoration = CssTextDecoration::from(Inherit);
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: inherit;");
 /// ```

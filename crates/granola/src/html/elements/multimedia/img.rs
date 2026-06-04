@@ -278,10 +278,11 @@ macro_rules! img {
     () => {
         $crate::html::HtmlImg::new()
     };
-    (@from_src $src: expr $(,)?) => {
-        $crate::html::HtmlImg::from_src($src)
-    };
+
     (@from_src_alt $src: expr, $alt: expr $(,)?) => {
         $crate::html::HtmlImg::from_src_alt($src, $alt)
+    };
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlImg::from_src($src)
     };
 }

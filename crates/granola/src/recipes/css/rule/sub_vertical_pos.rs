@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<SubVerticalPos> = CssRule::from_cookbook();
+/// let rule = CssRule::from(SubVerticalPos);
 ///
 /// assert_eq!(
 ///     rule.bake(),

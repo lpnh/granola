@@ -8,7 +8,7 @@ use crate::prelude::*;
 /// use granola::{prelude::*, recipes::*};
 ///
 /// let button = HtmlButton::from(TypeButton).content("Enjoy");
-/// let input: HtmlInput<TypeButton> = HtmlInput::from_value("Enjoy");
+/// let input = HtmlInput::from(TypeButton).value("Enjoy");
 ///
 /// assert_eq!(button.bake(), r#"<button type="button">Enjoy</button>"#);
 /// assert_eq!(input.bake(), r#"<input type="button" value="Enjoy" />"#);

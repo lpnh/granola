@@ -191,6 +191,7 @@ macro_rules! source {
     () => {
         $crate::html::HtmlSource::new()
     };
+
     (@from_src $src: expr $(,)?) => {
         $crate::html::HtmlSource::from_src($src)
     };

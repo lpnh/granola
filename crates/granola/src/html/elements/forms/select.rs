@@ -187,7 +187,7 @@ impl<R: SelectRecipe> HasSelectAttrs for HtmlSelect<R> {
 /// let opt_1 = option!("Salmon").value("salmon");
 /// let opt_2 = option!("Turbot").value("turbot");
 ///
-/// let select: HtmlSelect = select![opt_1, opt_2].name("fishes");
+/// let select = select![opt_1, opt_2].name("fishes");
 ///
 /// assert_eq!(
 ///     select.bake(),

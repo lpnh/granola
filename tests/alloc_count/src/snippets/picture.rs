@@ -11,8 +11,8 @@ pub fn picture_empty() -> (Stats, Stats) {
     });
 
     let (naive_out, naive) = measure(|| {
-        let source: HtmlSource = HtmlSource::new();
-        let img: HtmlImg = HtmlImg::new();
+        let source = HtmlSource::new();
+        let img = HtmlImg::new();
         let picture = HtmlPicture::new().content(bake_block_naive![source, img]);
         bake_naive(&picture)
     });

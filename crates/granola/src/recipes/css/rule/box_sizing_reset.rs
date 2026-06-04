@@ -7,7 +7,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<BoxSizingReset> = CssRule::from_cookbook();
+/// let rule = CssRule::from(BoxSizingReset);
 ///
 /// assert_eq!(
 ///     rule.bake(),

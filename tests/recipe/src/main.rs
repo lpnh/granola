@@ -164,9 +164,9 @@ mod recipe_tests {
 
     #[test]
     fn from_cookbook() {
-        let button: HtmlButton<FooRecipe> = HtmlButton::from_cookbook();
+        let button = HtmlButton::from(FooRecipe);
 
-        let p: HtmlP<FooRecipe> = HtmlP::from_cookbook();
+        let p = HtmlP::from(FooRecipe);
 
         let html_root = HtmlRoot::from(Homemade);
 
@@ -225,7 +225,7 @@ mod recipe_tests {
 
     #[test]
     fn composition_from_cookbook() {
-        let button: HtmlButton<(FooRecipe, BarRecipe)> = HtmlButton::from_cookbook();
+        let button = HtmlButton::from((FooRecipe, BarRecipe));
         let p = HtmlP::from((FooRecipe, BarRecipe));
         let html_root = HtmlRoot::from((Homemade, FooRecipe));
 
@@ -350,8 +350,9 @@ mod recipe_tests {
 
     #[test]
     fn template() {
-        type TmplRecipe = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
-        let tmpl: TmplBase<TmplRecipe> = TmplBase::from_cookbook();
+        type TmplCookbook = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
+
+        let tmpl: TmplBase<TmplCookbook> = TmplBase::from_cookbook();
 
         assert_eq!(
             tmpl.bake(),

@@ -48,7 +48,7 @@ pub struct TmplBase<R: HtmlRecipe = ()> {
     pub html_root: HtmlRoot<R>,
 }
 
-impl TmplBase<()> {
+impl TmplBase {
     pub fn new() -> Self {
         Self::default()
     }

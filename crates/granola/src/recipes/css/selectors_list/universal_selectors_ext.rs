@@ -8,7 +8,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let list: CssSelectorsList<UniversalSelectorsExt> = CssSelectorsList::from_cookbook();
+/// let list = CssSelectorsList::from(UniversalSelectorsExt);
 ///
 /// assert_eq!(
 ///     list.bake(),

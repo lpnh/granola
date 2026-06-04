@@ -13,7 +13,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let stylesheet: CssStylesheet<ModernNormalize> = CssStylesheet::from_cookbook();
+/// let stylesheet = CssStylesheet::from(ModernNormalize);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -127,25 +127,25 @@ pub struct ModernNormalize;
 impl StylesheetRecipe for ModernNormalize {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
-            CssRule::<BoxSizingReset>::from_cookbook().into(),
+            CssRule::from(BoxSizingReset).into(),
             html_defaults(),
             body_defaults(),
-            CssRule::<BStrongFontWeight>::from_cookbook().into(),
+            CssRule::from(BStrongFontWeight).into(),
             monospace_defaults(),
-            CssRule::<SmallFontSize>::from_cookbook().into(),
-            CssRule::<SubSupDefaults>::from_cookbook().into(),
-            CssRule::<SubVerticalPos>::from_cookbook().into(),
-            CssRule::<SupVerticalPos>::from_cookbook().into(),
+            CssRule::from(SmallFontSize).into(),
+            CssRule::from(SubSupDefaults).into(),
+            CssRule::from(SubVerticalPos).into(),
+            CssRule::from(SupVerticalPos).into(),
             table_border_color(),
             forms_defaults(),
             button_appearance(),
             legend_padding(),
-            CssRule::<ProgressVerticalAlignment>::from_cookbook().into(),
-            CssRule::<SpinButtonHeight>::from_cookbook().into(),
+            CssRule::from(ProgressVerticalAlignment).into(),
+            CssRule::from(SpinButtonHeight).into(),
             search_appearance(),
-            CssRule::<SearchDecorationAppearance>::from_cookbook().into(),
+            CssRule::from(SearchDecorationAppearance).into(),
             file_upload_button(),
-            CssRule::<SummaryDisplay>::from_cookbook().into(),
+            CssRule::from(SummaryDisplay).into(),
         ]);
     }
 }
@@ -153,7 +153,7 @@ impl StylesheetRecipe for ModernNormalize {
 fn html_defaults() -> CssStatement {
     let default_fonts = "system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
 
-    let selectors_list: CssSelectorsList = "html".into();
+    let selectors_list = "html";
     let declarations_block: [CssDeclaration; 4] = [
         CssFontFamily::new().content(default_fonts).into(),
         CssLineHeight::new().content("1.15").into(),
@@ -178,7 +178,7 @@ fn monospace_defaults() -> CssStatement {
     let default_fonts =
         "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace";
 
-    let selectors_list = CssSelectorsList::<MonospaceSelectors>::from_cookbook().bake_recipe();
+    let selectors_list = CssSelectorsList::from(MonospaceSelectors).bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
         CssFontFamily::new().content(default_fonts).into(),
         CssFontSize::new().content("1em").into(),
@@ -191,17 +191,14 @@ fn monospace_defaults() -> CssStatement {
 }
 
 fn table_border_color() -> CssStatement {
-    let selectors_list: CssSelectorsList = "table".into();
-    let declarations_block: CssDeclaration = CssBorderColor::<Currentcolor>::from_cookbook().into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("table")
+        .declarations_block(CssBorderColor::from(Currentcolor))
         .into()
 }
 
 fn forms_defaults() -> CssStatement {
-    let selectors_list = CssSelectorsList::<FormControlsExt>::from_cookbook().bake_recipe();
+    let selectors_list = CssSelectorsList::from(FormControlsExt).bake_recipe();
     let declarations_block: [CssDeclaration; 4] = [
         CssFontFamily::from(Inherit).into(),
         CssFontSize::new().content("100%").into(),
@@ -216,14 +213,13 @@ fn forms_defaults() -> CssStatement {
 }
 
 fn button_appearance() -> CssStatement {
-    let selectors_list: CssSelectorsList = [
+    let selectors_list = [
         "button",
         "[type=\"button\"]",
         "[type=\"reset\"]",
         "[type=\"submit\"]",
-    ]
-    .into();
-    let declarations_block: CssDeclaration = ("-webkit-appearance", "button").into();
+    ];
+    let declarations_block = ("-webkit-appearance", "button");
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -232,17 +228,14 @@ fn button_appearance() -> CssStatement {
 }
 
 fn legend_padding() -> CssStatement {
-    let selectors_list: CssSelectorsList = "legend".into();
-    let declarations_block: CssDeclaration = CssPadding::new().content("0").into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("legend")
+        .declarations_block(CssPadding::new().content("0"))
         .into()
 }
 
 fn search_appearance() -> CssStatement {
-    let selectors_list: CssSelectorsList = r#"[type="search"]"#.into();
+    let selectors_list = r#"[type="search"]"#;
     let declarations_block: [CssDeclaration; 2] = [
         ("-webkit-appearance", "textfield").into(),
         CssOutlineOffset::new().content("-2px").into(),
@@ -255,10 +248,10 @@ fn search_appearance() -> CssStatement {
 }
 
 fn file_upload_button() -> CssStatement {
-    let selectors_list: CssSelectorsList = "::-webkit-file-upload-button".into();
+    let selectors_list = "::-webkit-file-upload-button";
     let declarations_block: [CssDeclaration; 2] = [
         ("-webkit-appearance", "button").into(),
-        CssFont::<Inherit>::from_cookbook().into(),
+        CssFont::from(Inherit).into(),
     ];
 
     CssRule::new()

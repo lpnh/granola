@@ -42,7 +42,7 @@ const BTN_BG_DARKENED: &str =
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let stylesheet: CssStylesheet<Btn> = CssStylesheet::from_cookbook();
+/// let stylesheet = CssStylesheet::from(Btn);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -218,7 +218,7 @@ impl RuleRecipe for BtnFocusVisible {
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let rule: CssRule<BtnPrimary> = CssRule::from_cookbook();
+/// let rule = CssRule::from(BtnPrimary);
 ///
 /// assert_eq!(
 ///     rule.bake(),

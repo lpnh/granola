@@ -336,7 +336,7 @@ macro_rules! bake_newline {
 ///
 /// type SubmitPost = cookbook_type!(TypeSubmit, FormmethodPost);
 ///
-/// let input: HtmlInput<SubmitPost> = HtmlInput::from_value("Send");
+/// let input: HtmlInput<SubmitPost> = HtmlInput::from_cookbook().value("Send");
 ///
 /// assert_eq!(
 ///     input.bake(),

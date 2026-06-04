@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_wrap: CssTextWrap<Pretty> = CssTextWrap::from_cookbook();
+/// let css_text_wrap = CssTextWrap::from(Pretty);
 ///
 /// assert_eq!(css_text_wrap.bake(), "text-wrap: pretty;");
 /// ```

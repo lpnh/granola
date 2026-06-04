@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_appearance: CssAppearance<Button> = CssAppearance::from_cookbook();
+/// let css_appearance = CssAppearance::from(Button);
 ///
 /// assert_eq!(css_appearance.bake(), "appearance: button;");
 /// ```

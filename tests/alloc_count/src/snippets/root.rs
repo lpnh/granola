@@ -44,8 +44,8 @@ pub fn root_empty() -> (Stats, Stats) {
 
 pub fn root_example() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
-        let charset: HtmlMeta = HtmlMeta::new().charset();
-        let viewport: HtmlMeta = HtmlMeta::new()
+        let charset = HtmlMeta::new().charset();
+        let viewport = HtmlMeta::new()
             .name("viewport")
             .content("width=device-width");
         let title = HtmlTitle::new().content("Document title");
@@ -63,8 +63,8 @@ pub fn root_example() -> (Stats, Stats) {
     });
 
     let (naive_out, naive) = measure(|| {
-        let charset: HtmlMeta = HtmlMeta::new().charset();
-        let viewport: HtmlMeta = HtmlMeta::new()
+        let charset = HtmlMeta::new().charset();
+        let viewport = HtmlMeta::new()
             .name("viewport")
             .content("width=device-width");
         let title = HtmlTitle::new().content("Document title");

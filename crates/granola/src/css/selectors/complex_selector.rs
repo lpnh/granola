@@ -140,7 +140,7 @@ impl<R: ComplexSelectorRecipe> CssComplexSelector<R> {
     /// ```rust
     /// use granola::prelude::*;
     ///
-    /// let selector: CssComplexSelector = CssComplexSelector::new()
+    /// let selector = CssComplexSelector::new()
     ///     .first("column-selector")
     ///     .column("cell-selector");
     ///

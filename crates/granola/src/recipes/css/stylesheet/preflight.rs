@@ -13,7 +13,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let stylesheet: CssStylesheet<Preflight> = CssStylesheet::from_cookbook();
+/// let stylesheet = CssStylesheet::from(Preflight);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -264,22 +264,22 @@ pub struct Preflight;
 impl StylesheetRecipe for Preflight {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
-            CssRule::<UniversalReset>::from_cookbook().into(),
+            CssRule::from(UniversalReset).into(),
             html_host_defaults(),
-            CssRule::<HrReset>::from_cookbook().into(),
+            CssRule::from(HrReset).into(),
             abbr_text_decoration(),
-            CssRule::<AllHeadingsFontReset>::from_cookbook().into(),
-            CssRule::<AnchorInherit>::from_cookbook().into(),
-            CssRule::<BStrongFontWeight>::from_cookbook().into(),
+            CssRule::from(AllHeadingsFontReset).into(),
+            CssRule::from(AnchorInherit).into(),
+            CssRule::from(BStrongFontWeight).into(),
             monospace_defaults(),
-            CssRule::<SmallFontSize>::from_cookbook().into(),
-            CssRule::<SubSupDefaults>::from_cookbook().into(),
-            CssRule::<SubVerticalPos>::from_cookbook().into(),
-            CssRule::<SupVerticalPos>::from_cookbook().into(),
+            CssRule::from(SmallFontSize).into(),
+            CssRule::from(SubSupDefaults).into(),
+            CssRule::from(SubVerticalPos).into(),
+            CssRule::from(SupVerticalPos).into(),
             table_reset(),
             moz_focusring_outline(),
-            CssRule::<ProgressVerticalAlignment>::from_cookbook().into(),
-            CssRule::<SummaryDisplay>::from_cookbook().into(),
+            CssRule::from(ProgressVerticalAlignment).into(),
+            CssRule::from(SummaryDisplay).into(),
             list_reset(),
             replaced_element_display(),
             replaced_element_sizing(),
@@ -290,7 +290,7 @@ impl StylesheetRecipe for Preflight {
             placeholder_opacity(),
             placeholder_color_supports(),
             textarea_resize(),
-            CssRule::<SearchDecorationAppearance>::from_cookbook().into(),
+            CssRule::from(SearchDecorationAppearance).into(),
             date_and_time_value(),
             datetime_edit_display(),
             datetime_edit_fields_wrapper(),
@@ -298,7 +298,7 @@ impl StylesheetRecipe for Preflight {
             calendar_picker_indicator(),
             moz_ui_invalid_box_shadow(),
             button_appearance(),
-            CssRule::<SpinButtonHeight>::from_cookbook().into(),
+            CssRule::from(SpinButtonHeight).into(),
             hidden_display(),
         ]);
     }
@@ -316,7 +316,7 @@ fn html_host_defaults() -> CssStatement {
   'Noto Color Emoji'
 )";
 
-    let selectors_list: CssSelectorsList = ["html", ":host"].into();
+    let selectors_list = ["html", ":host"];
     let declarations_block: [CssDeclaration; 7] = [
         CssLineHeight::new().content("1.5").into(),
         CssWebkitTextSizeAdjust::new().content("100%").into(),
@@ -338,9 +338,9 @@ fn html_host_defaults() -> CssStatement {
 }
 
 fn abbr_text_decoration() -> CssStatement {
-    let selectors_list: CssSelectorsList = "abbr:where([title])".into();
+    let selectors_list = "abbr:where([title])";
     let declarations_block: [CssDeclaration; 2] = [
-        CssWebkitTextDecoration::<(Underline, Dotted)>::from_cookbook().into(),
+        CssWebkitTextDecoration::from((Underline, Dotted)).into(),
         CssTextDecoration::from((Underline, Dotted))
             .bake_recipe()
             .into(),
@@ -365,7 +365,7 @@ fn monospace_defaults() -> CssStatement {
   monospace
 )";
 
-    let selectors_list = CssSelectorsList::<MonospaceSelectors>::from_cookbook().bake_recipe();
+    let selectors_list = CssSelectorsList::from(MonospaceSelectors).bake_recipe();
     let declarations_block: [CssDeclaration; 4] = [
         CssFontFamily::new().content(mono_font_family).into(),
         CssFontFeatureSettings::new()
@@ -384,11 +384,11 @@ fn monospace_defaults() -> CssStatement {
 }
 
 fn table_reset() -> CssStatement {
-    let selectors_list: CssSelectorsList = "table".into();
+    let selectors_list = "table";
     let declarations_block: [CssDeclaration; 3] = [
         CssTextIndent::new().content("0").into(),
-        CssBorderColor::<Inherit>::from_cookbook().into(),
-        CssBorderCollapse::<Collapse>::from_cookbook().into(),
+        CssBorderColor::from(Inherit).into(),
+        CssBorderCollapse::from(Collapse).into(),
     ];
 
     CssRule::new()
@@ -398,18 +398,15 @@ fn table_reset() -> CssStatement {
 }
 
 fn moz_focusring_outline() -> CssStatement {
-    let selectors_list: CssSelectorsList = ":-moz-focusring".into();
-    let declarations_block: CssDeclaration = CssOutline::<Auto>::from_cookbook().into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list(":-moz-focusring")
+        .declarations_block(CssOutline::from(Auto))
         .into()
 }
 
 fn list_reset() -> CssStatement {
-    let selectors_list: CssSelectorsList = ["ol", "ul", "menu"].into();
-    let declarations_block: CssDeclaration = CssListStyle::<None>::from_cookbook().into();
+    let selectors_list = ["ol", "ul", "menu"];
+    let declarations_block = CssListStyle::from(None);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -418,13 +415,12 @@ fn list_reset() -> CssStatement {
 }
 
 fn replaced_element_display() -> CssStatement {
-    let selectors_list: CssSelectorsList = [
+    let selectors_list = [
         "img", "svg", "video", "canvas", "audio", "iframe", "embed", "object",
-    ]
-    .into();
+    ];
     let declarations_block: [CssDeclaration; 2] = [
-        CssDisplay::<Block>::from_cookbook().into(),
-        CssVerticalAlign::<Middle>::from_cookbook().into(),
+        CssDisplay::from(Block).into(),
+        CssVerticalAlign::from(Middle).into(),
     ];
 
     CssRule::new()
@@ -434,7 +430,7 @@ fn replaced_element_display() -> CssStatement {
 }
 
 fn replaced_element_sizing() -> CssStatement {
-    let selectors_list: CssSelectorsList = ["img", "video"].into();
+    let selectors_list = ["img", "video"];
     let declarations_block: [CssDeclaration; 2] = [
         CssMaxWidth::new().content("100%").into(),
         CssHeight::from(Auto).into(),
@@ -447,8 +443,8 @@ fn replaced_element_sizing() -> CssStatement {
 }
 
 fn form_controls_reset() -> CssStatement {
-    let selectors_list = CssSelectorsList::<FormControlsExt>::from_cookbook()
-        .push(CssSimpleSelector::<UniversalFileSelectorButton>::from_cookbook())
+    let selectors_list = CssSelectorsList::from(FormControlsExt)
+        .push(CssSimpleSelector::from(UniversalFileSelectorButton))
         .bake_recipe();
     let declarations_block: [CssDeclaration; 8] = [
         CssFont::from(Inherit).into(),
@@ -493,22 +489,16 @@ fn optgroup_option_indent() -> CssStatement {
 }
 
 fn file_selector_button_spacing() -> CssStatement {
-    let selectors_list = CssSimpleSelector::<UniversalFileSelectorButton>::from_cookbook();
-    let declarations_block = CssMarginInlineEnd::new().content("4px");
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list(CssSimpleSelector::from(UniversalFileSelectorButton))
+        .declarations_block(CssMarginInlineEnd::new().content("4px"))
         .into()
 }
 
 fn placeholder_opacity() -> CssStatement {
-    let selectors_list = CssSimpleSelector::<UniversalPlaceholder>::from_cookbook();
-    let declarations_block: CssDeclaration = CssOpacity::new().content("1").into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list(CssSimpleSelector::from(UniversalPlaceholder))
+        .declarations_block(CssOpacity::new().content("1"))
         .into()
 }
 
@@ -516,8 +506,8 @@ fn placeholder_color_supports() -> CssStatement {
     let condition = "(not (-webkit-appearance: -apple-pay-button)) or
   (contain-intrinsic-size: 1px)";
 
-    let placeholder: CssRule = CssRule::new()
-        .selectors_list(CssSimpleSelector::<UniversalPlaceholder>::from_cookbook())
+    let placeholder = CssRule::new()
+        .selectors_list(CssSimpleSelector::from(UniversalPlaceholder))
         .declarations_block(
             CssColor::new().content("color-mix(in oklab, currentcolor 50%, transparent)"),
         );
@@ -530,17 +520,14 @@ fn placeholder_color_supports() -> CssStatement {
 }
 
 fn textarea_resize() -> CssStatement {
-    let selectors_list: CssSelectorsList = "textarea".into();
-    let declarations_block: CssDeclaration = CssResize::<Vertical>::from_cookbook().into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("textarea")
+        .declarations_block(CssResize::from(Vertical))
         .into()
 }
 
 fn date_and_time_value() -> CssStatement {
-    let selectors_list: CssSelectorsList = "::-webkit-date-and-time-value".into();
+    let selectors_list = "::-webkit-date-and-time-value";
     let declarations_block: [CssDeclaration; 2] = [
         CssMinHeight::new().content("1lh").into(),
         CssTextAlign::from(Inherit).into(),
@@ -553,27 +540,21 @@ fn date_and_time_value() -> CssStatement {
 }
 
 fn datetime_edit_display() -> CssStatement {
-    let selectors_list: CssSelectorsList = "::-webkit-datetime-edit".into();
-    let declarations_block: CssDeclaration = CssDisplay::<InlineFlex>::from_cookbook().into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("::-webkit-datetime-edit")
+        .declarations_block(CssDisplay::from((Inline, Flex)))
         .into()
 }
 
 fn datetime_edit_fields_wrapper() -> CssStatement {
-    let selectors_list: CssSelectorsList = "::-webkit-datetime-edit-fields-wrapper".into();
-    let declarations_block: CssDeclaration = CssPadding::new().content("0").into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("::-webkit-datetime-edit-fields-wrapper")
+        .declarations_block(CssPadding::new().content("0"))
         .into()
 }
 
 fn datetime_edit_padding_block() -> CssStatement {
-    let selectors_list: CssSelectorsList = [
+    let selectors_list = [
         "::-webkit-datetime-edit",
         "::-webkit-datetime-edit-year-field",
         "::-webkit-datetime-edit-month-field",
@@ -583,8 +564,7 @@ fn datetime_edit_padding_block() -> CssStatement {
         "::-webkit-datetime-edit-second-field",
         "::-webkit-datetime-edit-millisecond-field",
         "::-webkit-datetime-edit-meridiem-field",
-    ]
-    .into();
+    ];
     let declarations_block = CssPaddingBlock::new().content("0");
 
     CssRule::new()
@@ -594,33 +574,26 @@ fn datetime_edit_padding_block() -> CssStatement {
 }
 
 fn calendar_picker_indicator() -> CssStatement {
-    let selectors_list: CssSelectorsList = "::-webkit-calendar-picker-indicator".into();
-    let declarations_block: CssDeclaration = CssLineHeight::new().content("1").into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("::-webkit-calendar-picker-indicator")
+        .declarations_block(CssLineHeight::new().content("1"))
         .into()
 }
 
 fn moz_ui_invalid_box_shadow() -> CssStatement {
-    let selectors_list: CssSelectorsList = ":-moz-ui-invalid".into();
-    let declarations_block: CssDeclaration = CssBoxShadow::<None>::from_cookbook().into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list(":-moz-ui-invalid")
+        .declarations_block(CssBoxShadow::from(None))
         .into()
 }
 
 fn button_appearance() -> CssStatement {
-    let selectors_list: CssSelectorsList = [
+    let selectors_list = [
         "button",
         "input:where([type='button'], [type='reset'], [type='submit'])",
         "::file-selector-button",
-    ]
-    .into();
-    let declarations_block: CssDeclaration = CssAppearance::<Button>::from_cookbook().into();
+    ];
+    let declarations_block = CssAppearance::from(Button);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -629,12 +602,8 @@ fn button_appearance() -> CssStatement {
 }
 
 fn hidden_display() -> CssStatement {
-    let selectors_list: CssSelectorsList = "[hidden]:where(:not([hidden='until-found']))".into();
-    let declarations_block: CssDeclaration =
-        CssDisplay::<(None, Important)>::from_cookbook().into();
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list("[hidden]:where(:not([hidden='until-found']))")
+        .declarations_block(CssDisplay::from((None, Important)))
         .into()
 }

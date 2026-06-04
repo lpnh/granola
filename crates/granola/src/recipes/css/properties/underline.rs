@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_decoration: CssTextDecoration<Underline> = CssTextDecoration::from_cookbook();
+/// let css_text_decoration = CssTextDecoration::from(Underline);
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: underline;");
 /// ```

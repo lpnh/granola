@@ -53,31 +53,9 @@ pub struct HtmlTrack<R: TrackRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: TrackRecipe> HtmlTrack<R> {
+impl HtmlTrack {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = TrackAttrs::default().src(src);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().src(src)
     }
 }
 
@@ -181,7 +159,7 @@ impl<R: TrackRecipe> HasTrackAttrs for HtmlTrack<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let track = track!("der_himmel_uber_berlin.vtt")
+/// let track = track!(@from_src "der_himmel_uber_berlin.vtt")
 ///     .kind("captions")
 ///     .enabled(true);
 ///
@@ -195,7 +173,8 @@ macro_rules! track {
     () => {
         $crate::html::HtmlTrack::new()
     };
-    ($src: expr $(,)?) => {
-        $crate::html::HtmlTrack::<()>::from_src($src)
+
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlTrack::from_src($src)
     };
 }

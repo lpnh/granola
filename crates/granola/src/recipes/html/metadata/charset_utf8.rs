@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let charset: HtmlMeta<CharsetUtf8> = HtmlMeta::from_cookbook();
+/// let charset = HtmlMeta::from(CharsetUtf8);
 ///
 /// assert_eq!(charset.bake(), r#"<meta charset="utf-8" />"#);
 /// ```

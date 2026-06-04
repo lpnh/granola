@@ -168,6 +168,7 @@ macro_rules! embed {
     () => {
         $crate::html::HtmlEmbed::new()
     };
+
     (@from_src $src: expr $(,)?) => {
         $crate::html::HtmlEmbed::from_src($src)
     };

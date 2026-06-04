@@ -269,7 +269,6 @@ macro_rules! form {
         $crate::html::HtmlForm::new().content($crate::bake_inline![$($content),+])
     };
 
-
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

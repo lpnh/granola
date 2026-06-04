@@ -7,7 +7,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list: CssSelectorsList<AllHeadingsExt> = CssSelectorsList::from_cookbook();
+/// let selectors_list = CssSelectorsList::from(AllHeadingsExt);
 ///
 /// assert_eq!(
 ///     selectors_list.bake(),

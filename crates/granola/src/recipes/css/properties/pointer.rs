@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_cursor: CssCursor<Pointer> = CssCursor::from_cookbook();
+/// let css_cursor = CssCursor::from(Pointer);
 ///
 /// assert_eq!(css_cursor.bake(), "cursor: pointer;");
 /// ```

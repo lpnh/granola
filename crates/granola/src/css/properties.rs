@@ -54,6 +54,8 @@ mod position;
 pub use position::*;
 mod resize;
 pub use resize::*;
+mod scroll;
+pub use scroll::*;
 mod tab_size;
 pub use tab_size::*;
 mod text;

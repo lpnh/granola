@@ -9,8 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selector: CssSimpleSelector<UniversalFileSelectorButton> =
-///     CssSimpleSelector::from_cookbook();
+/// let selector = CssSimpleSelector::from(UniversalFileSelectorButton);
 ///
 /// assert_eq!(selector.bake(), "::file-selector-button");
 /// ```

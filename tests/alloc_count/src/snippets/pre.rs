@@ -6,7 +6,7 @@ pub fn pre_empty() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
         let ferris_ascii = bake_newline!("");
         let pre = HtmlPre::new().content(ferris_ascii);
-        let url: HtmlA = HtmlA::new();
+        let url = HtmlA::new();
         let cite = HtmlCite::new().content(url);
         bake_block![pre, cite]
     });
@@ -14,7 +14,7 @@ pub fn pre_empty() -> (Stats, Stats) {
     let (naive_out, naive) = measure(|| {
         let ferris_ascii = bake_newline_naive!("");
         let pre = HtmlPre::new().content(ferris_ascii);
-        let url: HtmlA = HtmlA::new();
+        let url = HtmlA::new();
         let cite = HtmlCite::new().content(url);
         bake_block_naive![pre, cite]
     });

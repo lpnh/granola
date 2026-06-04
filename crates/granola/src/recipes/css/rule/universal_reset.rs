@@ -7,7 +7,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<UniversalReset> = CssRule::from_cookbook();
+/// let rule = CssRule::from(UniversalReset);
 ///
 /// assert_eq!(
 ///     rule.bake(),

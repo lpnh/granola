@@ -90,60 +90,16 @@ pub struct LinkAttrs {
     pub disabled: bool,
 }
 
-impl<R: LinkRecipe> HtmlLink<R> {
+impl HtmlLink {
     pub fn from_href_rel(
         href: impl Into<Cow<'static, str>>,
         rel: impl Into<Cow<'static, str>>,
     ) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = LinkAttrs::default().href(href).rel(rel);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::from_href(href).rel(rel)
     }
 
     pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = LinkAttrs::default().href(href);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().href(href)
     }
 }
 
@@ -307,7 +263,7 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let link = link!("fancy.css", "stylesheet");
+/// let link = link!(@from_href_rel "fancy.css", "stylesheet");
 ///
 /// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
@@ -316,21 +272,15 @@ macro_rules! link {
     () => {
         $crate::html::HtmlLink::new()
     };
-    ($href: expr, $rel: expr $(,)?) => {
-        $crate::html::HtmlLink::<()>::from_href_rel($href, $rel)
-    };
 
+    (@from_href_rel $href: expr, $rel: expr $(,)?) => {
+        $crate::html::HtmlLink::from_href_rel($href, $rel)
+    };
     (@from_href $href: expr $(,)?) => {
-        $crate::html::HtmlLink::<()>::from_href($href)
+        $crate::html::HtmlLink::from_href($href)
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $href: expr, $rel: expr $(,)?) => {
-        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_href_rel($href, $rel)
-    };
-    (@cookbook $($r:ty),+ ; @from_href $href:expr $(,)?) => {
-        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_href($href)
     };
 }

@@ -253,14 +253,14 @@ macro_rules! video {
         $crate::html::HtmlVideo::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlVideo::from_src($src)
+    };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlVideo::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlVideo::new().content($crate::bake_inline![$($content),+])
-    };
-
-    (@from_src $src: expr $(,)?) => {
-        $crate::html::HtmlVideo::from_src($src)
     };
 }

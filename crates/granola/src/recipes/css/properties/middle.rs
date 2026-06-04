@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_vertical_align: CssVerticalAlign<Middle> = CssVerticalAlign::from_cookbook();
+/// let css_vertical_align = CssVerticalAlign::from(Middle);
 ///
 /// assert_eq!(css_vertical_align.bake(), "vertical-align: middle;");
 /// ```

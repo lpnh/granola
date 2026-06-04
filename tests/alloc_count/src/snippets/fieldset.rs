@@ -4,17 +4,17 @@ use crate::{Stats, bake_block_naive, bake_naive, measure};
 
 pub fn fieldset_empty() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
-        let legend: HtmlLegend = HtmlLegend::new();
-        let input: HtmlInput = HtmlInput::new();
-        let label: HtmlLabel = HtmlLabel::new();
+        let legend = HtmlLegend::new();
+        let input = HtmlInput::new();
+        let label = HtmlLabel::new();
         let fieldset = HtmlFieldset::new().content(bake_block![legend, input, label]);
         fieldset.bake()
     });
 
     let (naive_out, naive) = measure(|| {
-        let legend: HtmlLegend = HtmlLegend::new();
-        let input: HtmlInput = HtmlInput::new();
-        let label: HtmlLabel = HtmlLabel::new();
+        let legend = HtmlLegend::new();
+        let input = HtmlInput::new();
+        let label = HtmlLabel::new();
         let fieldset = HtmlFieldset::new().content(bake_block_naive![legend, input, label]);
         bake_naive(&fieldset)
     });

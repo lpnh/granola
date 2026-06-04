@@ -132,6 +132,7 @@ macro_rules! base {
     () => {
         $crate::html::HtmlBase::new()
     };
+
     (@from_href $href: expr $(,)?) => {
         $crate::html::HtmlBase::from_href($href)
     };

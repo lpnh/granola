@@ -26,7 +26,7 @@ pub fn home_page(
     let body = body!(body_content);
 
     let title = title!("palette example");
-    let stylesheet_link = link!(@cookbook RelStylesheet; @from_href STYLESHEET_URL.as_str());
+    let stylesheet_link = link!(@cookbook RelStylesheet).href(STYLESHEET_URL.as_str());
     let css_rule = rule!(
         ":root";
         ("--base-100", base_100),

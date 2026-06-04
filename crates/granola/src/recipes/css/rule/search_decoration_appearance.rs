@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<SearchDecorationAppearance> = CssRule::from_cookbook();
+/// let rule = CssRule::from(SearchDecorationAppearance);
 ///
 /// assert_eq!(
 ///     rule.bake(),

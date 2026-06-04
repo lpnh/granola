@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let robots: HtmlMeta<NameRobots> = HtmlMeta::from_content("noindex, nofollow");
+/// let robots = HtmlMeta::from(NameRobots).content("noindex, nofollow");
 ///
 /// assert_eq!(
 ///     robots.bake(),

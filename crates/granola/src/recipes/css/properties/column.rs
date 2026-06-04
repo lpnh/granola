@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_flex_direction: CssFlexDirection<Column> = CssFlexDirection::from_cookbook();
+/// let css_flex_direction = CssFlexDirection::from(Column);
 ///
 /// assert_eq!(css_flex_direction.bake(), "flex-direction: column;");
 /// ```

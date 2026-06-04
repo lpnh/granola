@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<SmallFontSize> = CssRule::from_cookbook();
+/// let rule = CssRule::from(SmallFontSize);
 ///
 /// assert_eq!(
 ///     rule.bake(),

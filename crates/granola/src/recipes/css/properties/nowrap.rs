@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_white_space: CssWhiteSpace<Nowrap> = CssWhiteSpace::from_cookbook();
+/// let css_white_space = CssWhiteSpace::from(Nowrap);
 ///
 /// assert_eq!(css_white_space.bake(), "white-space: nowrap;");
 /// ```

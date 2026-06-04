@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list: CssSelectorsList<FormControlsExt> = CssSelectorsList::from_cookbook();
+/// let selectors_list = CssSelectorsList::from(FormControlsExt);
 ///
 /// assert_eq!(
 ///     selectors_list.bake(),

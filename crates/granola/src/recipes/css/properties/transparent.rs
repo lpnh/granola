@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_background_color: CssBackgroundColor<Transparent> = CssBackgroundColor::from_cookbook();
+/// let css_background_color = CssBackgroundColor::from(Transparent);
 ///
 /// assert_eq!(
 ///     css_background_color.bake(),

@@ -13,7 +13,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let stylesheet: CssStylesheet<AndyBell> = CssStylesheet::from_cookbook();
+/// let stylesheet = CssStylesheet::from(AndyBell);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -103,7 +103,7 @@ pub struct AndyBell;
 impl StylesheetRecipe for AndyBell {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
-            CssRule::<BoxSizingReset>::from_cookbook().into(),
+            CssRule::from(BoxSizingReset).into(),
             text_size_adjust_reset(),
             default_margin_reset(),
             list_style_reset(),
@@ -120,11 +120,11 @@ impl StylesheetRecipe for AndyBell {
 }
 
 fn text_size_adjust_reset() -> CssStatement {
-    let selectors_list: CssSelectorsList = "html".into();
+    let selectors_list = "html";
     let declarations_block: [CssDeclaration; 3] = [
         ("-moz-text-size-adjust", "none").into(),
         CssWebkitTextSizeAdjust::from(None).into(),
-        CssTextSizeAdjust::<None>::from_cookbook().into(),
+        CssTextSizeAdjust::from(None).into(),
     ];
 
     CssRule::new()
@@ -134,7 +134,7 @@ fn text_size_adjust_reset() -> CssStatement {
 }
 
 fn default_margin_reset() -> CssStatement {
-    let selectors_list: CssSelectorsList = [
+    let selectors_list = [
         "body",
         "h1",
         "h2",
@@ -145,9 +145,8 @@ fn default_margin_reset() -> CssStatement {
         "blockquote",
         "dl",
         "dd",
-    ]
-    .into();
-    let declarations_block = ("margin-block-end", "0");
+    ];
+    let declarations_block = CssMarginBlockEnd::new().content("0");
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -156,8 +155,8 @@ fn default_margin_reset() -> CssStatement {
 }
 
 fn list_style_reset() -> CssStatement {
-    let selectors_list: CssSelectorsList = ["ul[role='list']", "ol[role='list']"].into();
-    let declarations_block = CssListStyle::<None>::from_cookbook();
+    let selectors_list = ["ul[role='list']", "ol[role='list']"];
+    let declarations_block = CssListStyle::from(None);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -166,9 +165,9 @@ fn list_style_reset() -> CssStatement {
 }
 
 fn body_defaults() -> CssStatement {
-    let selectors_list: CssSelectorsList = "body".into();
+    let selectors_list = "body";
     let declarations_block: [CssDeclaration; 2] = [
-        ("min-height", "100vh").into(),
+        CssMinHeight::new().content("100vh").into(),
         CssLineHeight::new().content("1.5").into(),
     ];
 
@@ -179,7 +178,7 @@ fn body_defaults() -> CssStatement {
 }
 
 fn headings_and_forms_line_height() -> CssStatement {
-    let selectors_list = CssSelectorsList::<Headings>::from_cookbook()
+    let selectors_list = CssSelectorsList::from(Headings)
         .push("button")
         .push("input")
         .push("label")
@@ -193,8 +192,8 @@ fn headings_and_forms_line_height() -> CssStatement {
 }
 
 fn headings_text_wrap() -> CssStatement {
-    let selectors_list = CssSelectorsList::<Headings>::from_cookbook().bake_recipe();
-    let declarations_block = CssTextWrap::<Balance>::from_cookbook();
+    let selectors_list = CssSelectorsList::from(Headings).bake_recipe();
+    let declarations_block = CssTextWrap::from(Balance);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -203,9 +202,9 @@ fn headings_text_wrap() -> CssStatement {
 }
 
 fn unclassed_anchor_default_style() -> CssStatement {
-    let selectors_list: CssSelectorsList = "a:not([class])".into();
+    let selectors_list = "a:not([class])";
     let declarations_block: [CssDeclaration; 2] = [
-        CssTextDecorationSkipInk::<Auto>::from_cookbook().into(),
+        CssTextDecorationSkipInk::from(Auto).into(),
         CssColor::from(Currentcolor).into(),
     ];
 
@@ -216,10 +215,10 @@ fn unclassed_anchor_default_style() -> CssStatement {
 }
 
 fn images_width_and_display() -> CssStatement {
-    let selectors_list: CssSelectorsList = ["img", "picture"].into();
+    let selectors_list = ["img", "picture"];
     let declarations_block: [CssDeclaration; 2] = [
-        ("max-width", "100%").into(),
-        CssDisplay::<Block>::from_cookbook().into(),
+        CssMaxWidth::new().content("100%").into(),
+        CssDisplay::from(Block).into(),
     ];
 
     CssRule::new()
@@ -229,7 +228,7 @@ fn images_width_and_display() -> CssStatement {
 }
 
 fn form_controls_font_inherit() -> CssStatement {
-    let selectors_list = CssSelectorsList::<FormControls>::from_cookbook().bake_recipe();
+    let selectors_list = CssSelectorsList::from(FormControls).bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
         CssFontFamily::from(Inherit).into(),
         CssFontSize::from(Inherit).into(),
@@ -244,13 +243,13 @@ fn form_controls_font_inherit() -> CssStatement {
 fn textarea_min_height() -> CssStatement {
     CssRule::new()
         .selectors_list("textarea:not([rows])")
-        .declarations_block(("min-height", "10em"))
+        .declarations_block(CssMinHeight::new().content("10em"))
         .into()
 }
 
 fn target_scroll_margin() -> CssStatement {
     CssRule::new()
         .selectors_list(":target")
-        .declarations_block(("scroll-margin-block", "5ex"))
+        .declarations_block(CssScrollMarginBlock::new().content("5ex"))
         .into()
 }

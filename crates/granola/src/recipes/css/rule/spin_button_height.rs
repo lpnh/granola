@@ -8,7 +8,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<SpinButtonHeight> = CssRule::from_cookbook();
+/// let rule = CssRule::from(SpinButtonHeight);
 ///
 /// assert_eq!(
 ///     rule.bake(),

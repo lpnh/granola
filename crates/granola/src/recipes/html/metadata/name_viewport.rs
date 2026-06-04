@@ -7,8 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let viewport: HtmlMeta<NameViewport> =
-///     HtmlMeta::from_content("width=device-width, initial-scale=1");
+/// let viewport = HtmlMeta::from(NameViewport).content("width=device-width, initial-scale=1");
 ///
 /// assert_eq!(
 ///     viewport.bake(),

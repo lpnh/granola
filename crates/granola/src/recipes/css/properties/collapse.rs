@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border_collapse: CssBorderCollapse<Collapse> = CssBorderCollapse::from_cookbook();
+/// let css_border_collapse = CssBorderCollapse::from(Collapse);
 ///
 /// assert_eq!(css_border_collapse.bake(), "border-collapse: collapse;");
 /// ```

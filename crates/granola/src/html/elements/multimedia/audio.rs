@@ -55,31 +55,9 @@ pub struct HtmlAudio<R: AudioRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: AudioRecipe> HtmlAudio<R> {
+impl HtmlAudio {
     pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = AudioAttrs::default().src(src);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().src(src)
     }
 }
 
@@ -233,14 +211,14 @@ macro_rules! audio {
         $crate::html::HtmlAudio::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
+    (@from_src $src: expr $(,)?) => {
+        $crate::html::HtmlAudio::from_src($src)
+    };
+
     (@newline $content: expr $(,)?) => {
         $crate::html::HtmlAudio::new().content($crate::bake_newline!($content))
     };
     (@inline $($content: expr),+ $(,)?) => {
         $crate::html::HtmlAudio::new().content($crate::bake_inline![$($content),+])
-    };
-
-    (@from_src $src: expr $(,)?) => {
-        $crate::html::HtmlAudio::<()>::from_src($src)
     };
 }

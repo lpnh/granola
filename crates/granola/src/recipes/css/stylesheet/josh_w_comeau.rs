@@ -13,7 +13,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let stylesheet: CssStylesheet<JoshWComeau> = CssStylesheet::from_cookbook();
+/// let stylesheet = CssStylesheet::from(JoshWComeau);
 ///
 /// assert_eq!(
 ///     stylesheet.bake(),
@@ -89,7 +89,7 @@ pub struct JoshWComeau;
 impl StylesheetRecipe for JoshWComeau {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
         statements.extend([
-            CssRule::<BoxSizingReset>::from_cookbook().into(),
+            CssRule::from(BoxSizingReset).into(),
             default_margin_reset(),
             keyword_animations(),
             body_defaults(),
@@ -137,7 +137,7 @@ fn body_defaults() -> CssStatement {
 fn media_defaults() -> CssStatement {
     let selectors_list = CssSelectorsList::from(MediaSelectors).bake_recipe();
     let declarations_block: [CssDeclaration; 2] = [
-        CssDisplay::<Block>::from_cookbook().into(),
+        CssDisplay::from(Block).into(),
         CssMaxWidth::new().content("100%").into(),
     ];
 
@@ -148,8 +148,8 @@ fn media_defaults() -> CssStatement {
 }
 
 fn form_controls_font_inherit() -> CssStatement {
-    let selectors_list = CssSelectorsList::<FormControls>::from_cookbook().bake_recipe();
-    let declarations_block = CssFont::<Inherit>::from_cookbook();
+    let selectors_list = CssSelectorsList::from(FormControls).bake_recipe();
+    let declarations_block = CssFont::from(Inherit);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -158,8 +158,8 @@ fn form_controls_font_inherit() -> CssStatement {
 }
 
 fn text_overflow_reset() -> CssStatement {
-    let selectors_list = CssSelectorsList::<AllHeadingsExt>::from_cookbook().bake_recipe();
-    let declarations_block = CssOverflowWrap::<BreakWord>::from_cookbook();
+    let selectors_list = CssSelectorsList::from(AllHeadingsExt).bake_recipe();
+    let declarations_block = CssOverflowWrap::from(BreakWord);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -175,8 +175,8 @@ fn paragraph_text_wrap() -> CssStatement {
 }
 
 fn headings_text_wrap() -> CssStatement {
-    let selectors_list = CssSelectorsList::<AllHeadings>::from_cookbook().bake_recipe();
-    let declarations_block = CssTextWrap::<Balance>::from_cookbook();
+    let selectors_list = CssSelectorsList::from(AllHeadings).bake_recipe();
+    let declarations_block = CssTextWrap::from(Balance);
 
     CssRule::new()
         .selectors_list(selectors_list)
@@ -185,8 +185,8 @@ fn headings_text_wrap() -> CssStatement {
 }
 
 fn root_stacking_context() -> CssStatement {
-    let selectors_list: CssSelectorsList = ["#root", "#__next"].into();
-    let declarations_block = CssIsolation::<Isolate>::from_cookbook();
+    let selectors_list = ["#root", "#__next"];
+    let declarations_block = CssIsolation::from(Isolate);
 
     CssRule::new()
         .selectors_list(selectors_list)

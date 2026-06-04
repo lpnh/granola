@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list: CssSelectorsList<MediaSelectors> = CssSelectorsList::from_cookbook();
+/// let selectors_list = CssSelectorsList::from(MediaSelectors);
 ///
 /// assert_eq!(
 ///     selectors_list.bake(),

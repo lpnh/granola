@@ -50,31 +50,9 @@ pub struct HtmlMeta<R: MetaRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: MetaRecipe> HtmlMeta<R> {
+impl HtmlMeta {
     pub fn from_content(content: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = MetaAttrs::default().content(content.into());
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().content(content)
     }
 }
 
@@ -181,7 +159,7 @@ impl<R: MetaRecipe> HasMetaAttrs for HtmlMeta<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let meta = meta!("noindex, nofollow").name("robots");
+/// let meta = meta!(@from_content "noindex, nofollow").name("robots");
 ///
 /// assert_eq!(
 ///     meta.bake(),
@@ -193,7 +171,8 @@ macro_rules! meta {
     () => {
         $crate::html::HtmlMeta::new()
     };
-    ($content: expr $(,)?) => {
-        $crate::html::HtmlMeta::<()>::from_content($content)
+
+    (@from_content $content: expr $(,)?) => {
+        $crate::html::HtmlMeta::from_content($content)
     };
 }

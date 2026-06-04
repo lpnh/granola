@@ -28,7 +28,7 @@ use crate::{prelude::*, recipes::*, template::*};
 /// ```rust
 /// use granola::{homemade::*, prelude::*, recipes::*, template::*};
 ///
-/// let meta: HtmlMeta<NameRobots> = HtmlMeta::from_content("noindex, nofollow");
+/// let meta = HtmlMeta::from(NameRobots).content("noindex, nofollow");
 /// let title = HtmlTitle::new().content("Home");
 ///
 /// let css_rule = CssRule::new()
@@ -74,7 +74,7 @@ impl HtmlRecipe for Homemade {
     type Content = HomemadeRootContent;
 
     fn content_recipe(content: &mut Self::Content) {
-        content.head = HtmlHead::<Homemade>::from_cookbook();
+        content.head = HtmlHead::from(Homemade);
         content.body.get_or_insert_with(HtmlBody::from_cookbook);
     }
 }
@@ -108,7 +108,7 @@ impl From<HomemadeRootContent> for HtmlRootContent {
 impl From<HtmlBody> for HomemadeRootContent {
     fn from(body: HtmlBody) -> Self {
         Self {
-            head: HtmlHead::<Homemade>::from_cookbook(),
+            head: HtmlHead::from(Homemade),
             body: Some(body),
         }
     }
@@ -118,11 +118,10 @@ impl HeadRecipe for Homemade {
     type Content = HomemadeHeadContent;
 
     fn content_recipe(content: &mut Self::Content) {
-        content
-            .meta
-            .push(HtmlMeta::<CharsetUtf8>::from_cookbook().bake_recipe());
+        content.meta.push(HtmlMeta::from(CharsetUtf8).bake_recipe());
         content.meta.push(
-            HtmlMeta::<NameViewport>::from_content("width=device-width, initial-scale=1")
+            HtmlMeta::from(NameViewport)
+                .content("width=device-width, initial-scale=1")
                 .bake_recipe(),
         );
     }

@@ -7,7 +7,7 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let rule: CssRule<BStrongFontWeight> = CssRule::from_cookbook();
+/// let rule = CssRule::from(BStrongFontWeight);
 ///
 /// assert_eq!(
 ///     rule.bake(),

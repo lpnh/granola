@@ -7,7 +7,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_isolation: CssIsolation<Isolate> = CssIsolation::from_cookbook();
+/// let css_isolation = CssIsolation::from(Isolate);
 ///
 /// assert_eq!(css_isolation.bake(), "isolation: isolate;");
 /// ```

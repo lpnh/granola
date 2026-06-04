@@ -69,83 +69,17 @@ pub struct HtmlInput<R: InputRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: InputRecipe> HtmlInput<R> {
+impl HtmlInput {
     pub fn from_name(name: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = InputAttrs::default().name(name);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().name(name)
     }
 
     pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = InputAttrs::default().value(value);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().value(value)
     }
 
     pub fn from_type(input_type: impl Into<InputType>) -> Self {
-        let mut global_attrs = GlobalAttrs::default();
-        R::global_attrs_recipe(&mut global_attrs);
-
-        let mut specific_attrs = InputAttrs::default().input_type(input_type);
-        R::specific_attrs_recipe(&mut specific_attrs);
-
-        let mut global_aria_attrs = GlobalAriaAttrs::default();
-        R::global_aria_attrs_recipe(&mut global_aria_attrs);
-
-        let mut custom_data_attrs = CustomDataAttrs::default();
-        R::custom_data_attrs_recipe(&mut custom_data_attrs);
-
-        let mut event_handlers = EventHandlers::default();
-        R::event_handlers_recipe(&mut event_handlers);
-
-        Self {
-            global_attrs,
-            specific_attrs,
-            global_aria_attrs,
-            custom_data_attrs,
-            event_handlers,
-            ..Default::default()
-        }
+        Self::new().input_type(input_type)
     }
 }
 
@@ -653,26 +587,20 @@ macro_rules! input {
         $crate::html::HtmlInput::new()
     };
     ($content: expr $(,)?) => {
-        $crate::html::HtmlInput::<()>::from_name($content)
+        $crate::html::HtmlInput::from_name($content)
     };
 
+    (@from_name $name: expr $(,)?) => {
+        $crate::html::HtmlInput::from_name($name)
+    };
     (@from_value $value: expr $(,)?) => {
-        $crate::html::HtmlInput::<()>::from_value($value)
+        $crate::html::HtmlInput::from_value($value)
     };
     (@from_type $type: expr $(,)?) => {
-        $crate::html::HtmlInput::<()>::from_type($type)
+        $crate::html::HtmlInput::from_type($type)
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $name:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_name($name)
-    };
-    (@cookbook $($r:ty),+ ; @from_value $value:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_value($value)
-    };
-    (@cookbook $($r:ty),+ ; @from_type $type:expr $(,)?) => {
-        $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_type($type)
     };
 }

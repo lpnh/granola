@@ -135,7 +135,7 @@ impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
 ///     .height(420)
 ///     .usemap("#minas-gerais");
 ///
-/// let area = area!("https://w.wiki/LTnF", "Red triangle")
+/// let area = area!(@from_href_alt "https://w.wiki/LTnF", "Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///

@@ -284,16 +284,13 @@ impl From<String> for CssCompoundSelector {
 #[macro_export]
 macro_rules! compound_selector {
     ($selector: expr $(,)?) => {
-        $crate::css::CssCompoundSelector::<()>::from($selector)
+        $crate::css::CssCompoundSelector::from($selector)
     };
     ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::css::CssCompoundSelector::<()>::from($first)$(.push($rest))*
+        $crate::css::CssCompoundSelector::from($first)$(.push($rest))*
     };
 
     (@cookbook $($r:ty),+) => {
         $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
     };
 }
