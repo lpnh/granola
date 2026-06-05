@@ -150,7 +150,9 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_declarations_block = declarations_block!(("color", "rebeccapurple"));
+/// let css_declaration = declaration!("color", "rebeccapurple");
+///
+/// let css_declarations_block = declarations_block!(css_declaration);
 ///
 /// assert_eq!(css_declarations_block.bake(), "color: rebeccapurple;");
 /// ```

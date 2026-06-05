@@ -25,7 +25,7 @@ pub mod macros {
     // css
     pub use crate::{
         at_rule, complex_selector, compound_selector, declaration, declarations_block, rule,
-        selectors_list, simple_selector, stylesheet,
+        selectors_list, simple_selector, stylesheet, type_selector,
     };
     // html
     pub use crate::{

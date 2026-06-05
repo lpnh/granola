@@ -21,7 +21,7 @@ use crate::prelude::*;
 pub struct MonospaceSelectors;
 
 impl SelectorsListRecipe for MonospaceSelectors {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         selectors.extend(["code".into(), "kbd".into(), "samp".into(), "pre".into()]);
     }
 }

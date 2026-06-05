@@ -22,7 +22,7 @@ use crate::prelude::*;
 pub struct MediaSelectors;
 
 impl SelectorsListRecipe for MediaSelectors {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         selectors.extend([
             "canvas".into(),
             "img".into(),

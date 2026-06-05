@@ -20,9 +20,9 @@ use crate::{prelude::*, recipes::*};
 pub struct UniversalSelectors;
 
 impl SelectorsListRecipe for UniversalSelectors {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         selectors.extend([
-            CssSimpleSelector::<Universal>::from_cookbook().into(),
+            CssTypeSelector::<Universal>::from_cookbook().into(),
             CssSimpleSelector::<UniversalAfter>::from_cookbook().into(),
             CssSimpleSelector::<UniversalBefore>::from_cookbook().into(),
         ]);

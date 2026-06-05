@@ -24,7 +24,8 @@ impl RuleRecipe for ProgressVerticalAlignment {
         *selectors_list = "progress".into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssVerticalAlign::<Baseline>::from_cookbook().into()];
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations =
+            vec![CssVerticalAlign::<Baseline>::from_cookbook().into()];
     }
 }

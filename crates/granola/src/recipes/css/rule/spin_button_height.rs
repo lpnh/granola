@@ -26,7 +26,7 @@ impl RuleRecipe for SpinButtonHeight {
         *selectors_list = ["::-webkit-inner-spin-button", "::-webkit-outer-spin-button"].into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssHeight::from(Auto).into()];
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![CssHeight::from(Auto).into()];
     }
 }

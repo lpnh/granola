@@ -26,7 +26,7 @@ impl RuleRecipe for BoxSizingReset {
         UniversalSelectors::selectors_recipe(&mut selectors_list.selectors);
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.push_mut(CssBoxSizing::from(BorderBox));
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.push_mut(CssBoxSizing::from(BorderBox));
     }
 }

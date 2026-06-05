@@ -39,12 +39,12 @@ pub struct CssCompoundSelector<R: CompoundSelectorRecipe = ()> {
     /// The CSS type selector or universal selector value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Type_selectors)
-    pub type_selector: Option<CssSimpleSelector>,
+    pub type_selector: Option<CssTypeSelector>,
     pub selectors: Vec<CssSimpleSelector>,
 }
 
 impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
-    pub fn type_selector(mut self, selector: impl Into<CssSimpleSelector>) -> Self {
+    pub fn type_selector(mut self, selector: impl Into<CssTypeSelector>) -> Self {
         self.type_selector = Some(selector.into());
         self
     }
@@ -235,14 +235,13 @@ impl<R: CompoundSelectorRecipe> CssCompoundSelector<R> {
 
 impl<R: SimpleSelectorRecipe> From<CssSimpleSelector<R>> for CssCompoundSelector {
     fn from(simple_selector: CssSimpleSelector<R>) -> Self {
-        if is_type_or_universal(&simple_selector.selector) {
-            let type_selector = CssSimpleSelector::new()
-                .selector(simple_selector.selector)
-                .try_namespace(simple_selector.namespace);
-            CssCompoundSelector::new().type_selector(type_selector)
-        } else {
-            CssCompoundSelector::new().push(simple_selector.selector)
-        }
+        CssCompoundSelector::new().push(simple_selector.bake_recipe())
+    }
+}
+
+impl<R: TypeSelectorRecipe> From<CssTypeSelector<R>> for CssCompoundSelector {
+    fn from(type_selector: CssTypeSelector<R>) -> Self {
+        CssCompoundSelector::new().type_selector(type_selector.bake_recipe())
     }
 }
 

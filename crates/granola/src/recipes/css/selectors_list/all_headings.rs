@@ -23,7 +23,7 @@ use crate::{prelude::*, recipes::*};
 pub struct AllHeadings;
 
 impl SelectorsListRecipe for AllHeadings {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         Headings::selectors_recipe(selectors);
         selectors.extend(["h5".into(), "h6".into()]);
     }

@@ -1,5 +1,5 @@
 use askama::Template;
-use std::marker::PhantomData;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
@@ -161,6 +161,30 @@ impl<R: CompoundSelectorRecipe> From<CssCompoundSelector<R>> for CssComplexSelec
 impl<R: SimpleSelectorRecipe> From<CssSimpleSelector<R>> for CssComplexSelector {
     fn from(simple_selector: CssSimpleSelector<R>) -> Self {
         Self::new().first(simple_selector)
+    }
+}
+
+impl<R: TypeSelectorRecipe> From<CssTypeSelector<R>> for CssComplexSelector {
+    fn from(type_selector: CssTypeSelector<R>) -> Self {
+        Self::new().first(type_selector)
+    }
+}
+
+impl From<Cow<'static, str>> for CssComplexSelector {
+    fn from(s: Cow<'static, str>) -> Self {
+        Self::new().first(s)
+    }
+}
+
+impl From<&'static str> for CssComplexSelector {
+    fn from(s: &'static str) -> Self {
+        Self::new().first(s)
+    }
+}
+
+impl From<String> for CssComplexSelector {
+    fn from(s: String) -> Self {
+        Self::new().first(s)
     }
 }
 

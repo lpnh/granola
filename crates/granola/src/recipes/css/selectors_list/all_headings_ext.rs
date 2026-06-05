@@ -24,7 +24,7 @@ use crate::{prelude::*, recipes::*};
 pub struct AllHeadingsExt;
 
 impl SelectorsListRecipe for AllHeadingsExt {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         selectors.push("p".into());
         AllHeadings::selectors_recipe(selectors);
     }

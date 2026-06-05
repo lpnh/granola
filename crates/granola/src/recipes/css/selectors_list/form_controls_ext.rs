@@ -22,7 +22,7 @@ use crate::prelude::*;
 pub struct FormControlsExt;
 
 impl SelectorsListRecipe for FormControlsExt {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         selectors.extend([
             "button".into(),
             "input".into(),

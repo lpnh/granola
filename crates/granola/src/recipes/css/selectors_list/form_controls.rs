@@ -21,7 +21,7 @@ use crate::prelude::*;
 pub struct FormControls;
 
 impl SelectorsListRecipe for FormControls {
-    fn selectors_recipe(selectors: &mut Vec<CssSelector>) {
+    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         selectors.extend([
             "button".into(),
             "input".into(),

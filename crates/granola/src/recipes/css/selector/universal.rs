@@ -9,14 +9,14 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selector = CssSimpleSelector::from(Universal);
+/// let selector = CssTypeSelector::from(Universal);
 ///
 /// assert_eq!(selector.bake(), "*");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Universal;
 
-impl SimpleSelectorRecipe for Universal {
+impl TypeSelectorRecipe for Universal {
     fn selector_recipe(selector: &mut Cow<'static, str>) {
         *selector = "*".into();
     }

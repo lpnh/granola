@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::{filters, prelude::*};
+use crate::prelude::*;
 
 /// The CSS simple selector.
 ///
@@ -20,20 +20,13 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// {%- if let Some(ns) = namespace -%}
-/// {{ ns }}|
-/// {%- endif -%}
-/// {{ selector | kirei(0) }}
+/// {{ selector }}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = SimpleSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSimpleSelector<R: SimpleSelectorRecipe = ()> {
     _recipe: PhantomData<R>,
-    /// The CSS namespace prefix.
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator)
-    pub namespace: Option<Cow<'static, str>>,
     pub selector: Cow<'static, str>,
 }
 
@@ -43,89 +36,8 @@ impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
         self
     }
 
-    /// Qualifies this [`CssSimpleSelector`] with a namespace prefix, joined by
-    /// the namespace separator (`|`).
-    ///
-    /// The [`selector`](CssSimpleSelector::selector), if empty, defaults to the
-    /// universal selector (`*`).
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::new().selector("a").namespace("svg");
-    ///
-    /// assert_eq!(selector.bake(), "svg|a");
-    /// ```
-    pub fn namespace(self, prefix: impl Into<Cow<'static, str>>) -> Self {
-        self.add_namespace(prefix.into())
-    }
-
-    /// Qualifies this [`CssSimpleSelector`] with the any-namespace prefix
-    /// (`*|`).
-    ///
-    /// The [`selector`](CssSimpleSelector::selector), if empty, defaults to the
-    /// universal selector (`*`).
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::new().selector("a").any_namespace();
-    ///
-    /// assert_eq!(selector.bake(), "*|a");
-    /// ```
-    pub fn any_namespace(self) -> Self {
-        self.add_namespace("*")
-    }
-
-    /// Qualifies this [`CssSimpleSelector`] with the empty-namespace prefix
-    /// (`|`).
-    ///
-    /// The [`selector`](CssSimpleSelector::selector), if empty, defaults to the
-    /// universal selector (`*`).
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Namespace_separator)
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use granola::prelude::*;
-    ///
-    /// let selector = CssSimpleSelector::new().selector("a").no_namespace();
-    ///
-    /// assert_eq!(selector.bake(), "|a");
-    /// ```
-    pub fn no_namespace(self) -> Self {
-        self.add_namespace("")
-    }
-
-    pub fn try_namespace(mut self, option_namespace: Option<impl Into<Cow<'static, str>>>) -> Self {
-        if let Some(namespace) = option_namespace {
-            if self.selector.is_empty() {
-                self.selector = "*".into();
-            }
-            self.namespace = Some(namespace.into());
-        }
-        self
-    }
-
-    fn add_namespace(mut self, namespace: impl Into<Cow<'static, str>>) -> Self {
-        if self.selector.is_empty() {
-            self.selector = "*".into();
-        }
-        self.namespace = Some(namespace.into());
-        self
-    }
-
     /// Returns a [`CssCompoundSelector`] that appends a selector to the end of
-    /// this [`CssSelector`].
+    /// this [`CssSimpleSelector`].
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Selectors/Selector_structure#compound_selector)
     ///
@@ -249,6 +161,12 @@ impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
     }
 }
 
+impl<R: TypeSelectorRecipe> From<CssTypeSelector<R>> for CssSimpleSelector {
+    fn from(type_selector: CssTypeSelector<R>) -> Self {
+        Self::new().selector(type_selector)
+    }
+}
+
 impl From<Cow<'static, str>> for CssSimpleSelector {
     fn from(s: Cow<'static, str>) -> Self {
         Self::new().selector(s)
@@ -268,6 +186,8 @@ impl From<String> for CssSimpleSelector {
 }
 
 /// Shorthand for `CssSimpleSelector`.
+///
+/// # Example
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};

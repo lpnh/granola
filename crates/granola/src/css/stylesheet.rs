@@ -17,6 +17,7 @@ use crate::prelude::*;
 /// let at_rule = CssAtRule::new()
 ///     .identifier("import")
 ///     .rule(r#"url("layout.css")"#);
+///
 /// let rule = CssRule::new()
 ///     .selectors_list("p")
 ///     .declarations_block(("color", "rebeccapurple"));
@@ -30,31 +31,6 @@ use crate::prelude::*;
 /// p {
 ///   color: rebeccapurple;
 /// }"#
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let at_rule: CssAtRule = ("import", r#"url("layout.css")"#).into();
-///
-/// let css_stylesheet: CssStylesheet = at_rule.into();
-///
-/// assert_eq!(css_stylesheet.bake(), r#"@import url("layout.css");"#);
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let rule: CssRule = ("p", ("color", "rebeccapurple")).into();
-///
-/// let css_stylesheet: CssStylesheet = rule.into();
-///
-/// assert_eq!(
-///     css_stylesheet.bake(),
-///     "p {
-///   color: rebeccapurple;
-/// }"
 /// );
 /// ```
 ///
@@ -116,19 +92,12 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStylesheet {
 /// The [`CssRule`] and [`CssAtRule`] CSS statements.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/Introduction#css_statements)
-///
-/// # Askama template
-///
-/// ```askama
-/// {%- match self -%}
-/// {%- when Self::Rule(r) %}{{ r }}
-/// {%- when Self::AtRule(ar) %}{{ ar }}
-/// {%- endmatch -%}
-/// ```
 #[derive(Debug, Clone, Template, Granola)]
-#[template(ext = "html", in_doc = true, escape = "none")]
+#[template(ext = "html", escape = "none")]
 pub enum CssStatement {
+    #[template(source = "{{ self.0 }}")]
     Rule(CssRule),
+    #[template(source = "{{ self.0 }}")]
     AtRule(CssAtRule),
 }
 
@@ -152,6 +121,7 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let at_rule = at_rule!("import", r#"url("layout.css")"#);
+///
 /// let rule = rule!("p", ("color", "rebeccapurple"));
 ///
 /// let css_stylesheet = stylesheet!(at_rule, rule);
@@ -163,31 +133,6 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 /// p {
 ///   color: rebeccapurple;
 /// }"#
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::{macros::*, prelude::*};
-///
-/// let at_rule = at_rule!("import", r#"url("layout.css")"#);
-///
-/// let css_stylesheet = stylesheet!(at_rule);
-///
-/// assert_eq!(css_stylesheet.bake(), r#"@import url("layout.css");"#);
-/// ```
-///
-/// ```rust
-/// use granola::{macros::*, prelude::*};
-///
-/// let rule = rule!("p", ("color", "rebeccapurple"));
-///
-/// let css_stylesheet = stylesheet!(rule);
-///
-/// assert_eq!(
-///     css_stylesheet.bake(),
-///     "p {
-///   color: rebeccapurple;
-/// }"
 /// );
 /// ```
 ///

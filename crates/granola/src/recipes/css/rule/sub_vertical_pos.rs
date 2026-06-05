@@ -24,7 +24,7 @@ impl RuleRecipe for SubVerticalPos {
         *selectors_list = "sub".into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![CssBottom::new().content("-0.25em").into()];
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![CssBottom::new().content("-0.25em").into()];
     }
 }

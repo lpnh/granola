@@ -27,15 +27,15 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_properties_list = CssDeclarationsBlock::new().push(css_declaration);
-///
-/// let css_selector = CssSelector::new("p");
+/// let css_selector = CssSimpleSelector::new().selector("p");
 /// let css_selector_list = CssSelectorsList::new().push(css_selector);
+///
+/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_declarations_block = CssDeclarationsBlock::new().push(css_declaration);
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list(css_selector_list)
-///     .declarations_block(css_properties_list);
+///     .declarations_block(css_declarations_block);
 ///
 /// assert_eq!(
 ///     css_rule.bake(),
@@ -48,46 +48,16 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_selector: CssSelector = "p".into();
-/// let css_declaration: CssDeclaration = ("color", "rebeccapurple").into();
-///
-/// let css_rule: CssRule = (css_selector, css_declaration).into();
-///
-/// assert_eq!(
-///     css_rule.bake(),
-///     "p {
-///   color: rebeccapurple;
-/// }"
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let css_rule = CssRule::new().selectors_list(":root").declarations_block([
-///     ("--base-100", "oklch(93% 0.076 100.4)"),
-///     ("--base-200", "oklch(90% 0.086 100.4)"),
-/// ]);
-///
-/// assert_eq!(
-///     css_rule.bake(),
-///     ":root {
-///   --base-100: oklch(93% 0.076 100.4);
-///   --base-200: oklch(90% 0.086 100.4);
-/// }"
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::prelude::*;
-///
 /// let css_selector = ":root";
-/// let css_properties_list = [
+///
+/// let css_declarations_block = [
 ///     ("--base-100", "oklch(93% 0.076 100.4)"),
 ///     ("--base-200", "oklch(90% 0.086 100.4)"),
 /// ];
 ///
-/// let css_rule: CssRule = (css_selector, css_properties_list).into();
+/// let css_rule = CssRule::new()
+///     .selectors_list(css_selector)
+///     .declarations_block(css_declarations_block);
 ///
 /// assert_eq!(
 ///     css_rule.bake(),
@@ -128,7 +98,7 @@ impl<R: RuleRecipe> CssRule<R> {
         self
     }
 
-    pub fn push_selector(mut self, selector: impl Into<CssSelector>) -> Self {
+    pub fn push_selector(mut self, selector: impl Into<CssComplexSelector>) -> Self {
         self.selectors_list = self.selectors_list.push(selector.into());
         self
     }
@@ -140,10 +110,10 @@ impl<R: RuleRecipe> CssRule<R> {
 }
 
 impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for CssRule {
-    fn from((css_selectors_list, css_properties_list): (S, D)) -> Self {
+    fn from((css_selectors_list, css_declarations_block): (S, D)) -> Self {
         Self {
             selectors_list: css_selectors_list.into(),
-            declarations_block: css_properties_list.into(),
+            declarations_block: css_declarations_block.into(),
             ..Default::default()
         }
     }
@@ -169,34 +139,14 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_properties_list = CssDeclarationsBlock::new().push(css_declaration);
-///
-/// let css_selector = CssSelector::new("p");
-/// let css_selector_list = CssSelectorsList::new().push(css_selector);
-///
-/// let css_rule = rule!(css_selector_list, css_properties_list);
+/// let css_rule = rule!()
+///     .selectors_list("p")
+///     .declarations_block(("color", "rgb(102, 51, 153)"));
 ///
 /// assert_eq!(
 ///     css_rule.bake(),
 ///     "p {
 ///   color: rgb(102, 51, 153);
-/// }"
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::{macros::*, prelude::*};
-///
-/// let css_selector: CssSelector = "p".into();
-/// let css_declaration: CssDeclaration = ("color", "rebeccapurple").into();
-///
-/// let css_rule = rule!(css_selector, css_declaration);
-///
-/// assert_eq!(
-///     css_rule.bake(),
-///     "p {
-///   color: rebeccapurple;
 /// }"
 /// );
 /// ```
@@ -210,26 +160,6 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 ///     ("--base-100", "oklch(93% 0.076 100.4)"),
 ///     ("--base-200", "oklch(90% 0.086 100.4)"),
 /// );
-///
-/// assert_eq!(
-///     css_rule.bake(),
-///     ":root {
-///   --base-100: oklch(93% 0.076 100.4);
-///   --base-200: oklch(90% 0.086 100.4);
-/// }"
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::{macros::*, prelude::*};
-///
-/// let css_selector = ":root";
-/// let css_properties_list = [
-///     ("--base-100", "oklch(93% 0.076 100.4)"),
-///     ("--base-200", "oklch(90% 0.086 100.4)"),
-/// ];
-///
-/// let css_rule = rule!(css_selector, css_properties_list);
 ///
 /// assert_eq!(
 ///     css_rule.bake(),

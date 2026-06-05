@@ -26,8 +26,8 @@ impl RuleRecipe for HrReset {
         *selectors_list = "hr".into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![
             CssHeight::new().content("0").into(),
             CssColor::from(Inherit).into(),
             ("border-top-width", "1px").into(),

@@ -30,8 +30,8 @@ impl RuleRecipe for AllHeadingsFontReset {
         *selectors_list = CssSelectorsList::from(AllHeadings).bake_recipe();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![
             CssFontSize::from(Inherit).into(),
             CssFontWeight::from(Inherit).into(),
         ];

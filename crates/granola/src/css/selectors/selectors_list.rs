@@ -3,7 +3,7 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
 
-/// A collection of [`CssSelector`].
+/// A collection of [`CssComplexSelector`].
 ///
 /// The selectors-list of [`CssRule`].
 ///
@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let selector = CssSelector::new("p");
+/// let selector = CssSimpleSelector::new().selector("p");
 ///
 /// let selector_list = CssSelectorsList::new().push(selector);
 ///
@@ -33,17 +33,17 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSelectorsList<R: SelectorsListRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub selectors: Vec<CssSelector>,
+    pub selectors: Vec<CssComplexSelector>,
 }
 
 impl<R: SelectorsListRecipe> CssSelectorsList<R> {
-    pub fn push(mut self, selector: impl Into<CssSelector>) -> Self {
+    pub fn push(mut self, selector: impl Into<CssComplexSelector>) -> Self {
         self.selectors.push(selector.into());
         self
     }
 }
 
-impl<S: Into<CssSelector>, const N: usize> From<[S; N]> for CssSelectorsList {
+impl<S: Into<CssComplexSelector>, const N: usize> From<[S; N]> for CssSelectorsList {
     fn from(items: [S; N]) -> Self {
         Self {
             selectors: items.into_iter().map(Into::into).collect(),
@@ -52,7 +52,7 @@ impl<S: Into<CssSelector>, const N: usize> From<[S; N]> for CssSelectorsList {
     }
 }
 
-impl<S: Into<CssSelector>> From<Vec<S>> for CssSelectorsList {
+impl<S: Into<CssComplexSelector>> From<Vec<S>> for CssSelectorsList {
     fn from(items: Vec<S>) -> Self {
         Self {
             selectors: items.into_iter().map(Into::into).collect(),
@@ -61,15 +61,9 @@ impl<S: Into<CssSelector>> From<Vec<S>> for CssSelectorsList {
     }
 }
 
-impl From<CssSelector> for CssSelectorsList {
-    fn from(selector: CssSelector) -> Self {
-        Self::new().push(selector)
-    }
-}
-
 impl<R: ComplexSelectorRecipe> From<CssComplexSelector<R>> for CssSelectorsList {
     fn from(complex_selector: CssComplexSelector<R>) -> Self {
-        Self::new().push(complex_selector)
+        Self::new().push(complex_selector.bake_recipe())
     }
 }
 

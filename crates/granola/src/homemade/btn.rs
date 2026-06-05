@@ -115,8 +115,8 @@ impl RuleRecipe for Btn {
         *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![
             CssDisplay::from((Inline, Flex)).into(),
             CssAlignItems::from(Center).into(),
             CssJustifyContent::<Center>::from_cookbook().into(),
@@ -156,8 +156,8 @@ impl RuleRecipe for BtnHover {
         *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![("--btn-bg", BTN_BG_DARKENED).into()];
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![("--btn-bg", BTN_BG_DARKENED).into()];
     }
 }
 
@@ -176,8 +176,8 @@ impl RuleRecipe for BtnActive {
         *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![
             ("--btn-bg", BTN_BG_DARKENED).into(),
             CssTransform::new().content("scale(0.97)").into(),
         ];
@@ -199,8 +199,8 @@ impl RuleRecipe for BtnFocusVisible {
         *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![
             CssOutlineWidth::new().content("2px").into(),
             CssOutlineStyle::<Solid>::from_cookbook().into(),
             CssOutlineColor::new()
@@ -236,8 +236,8 @@ impl RuleRecipe for BtnPrimary {
         *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
     }
 
-    fn declarations_block_recipe(properties_list: &mut CssDeclarationsBlock) {
-        properties_list.declarations = vec![
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.declarations = vec![
             ("--btn-color", "var(--color-primary)").into(),
             ("--btn-fg", "var(--color-primary-content)").into(),
         ];
