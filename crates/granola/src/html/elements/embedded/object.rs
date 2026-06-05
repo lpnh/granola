@@ -1,4 +1,5 @@
 use askama::Template;
+use mime::Mime;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -66,7 +67,7 @@ pub struct HtmlObject<R: ObjectRecipe = ()> {
 /// # Askama template
 ///
 /// ```askama
-/// {{- mime_type | bake_attr("type") -}}
+/// {{- mime_type | bake_mime -}}
 /// {{- data | bake_attr("data") -}}
 /// {{- width | bake_attr("width") -}}
 /// {{- height | bake_attr("height") -}}
@@ -76,7 +77,7 @@ pub struct HtmlObject<R: ObjectRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ObjectAttrs {
-    pub mime_type: Option<Cow<'static, str>>,
+    pub mime_type: Option<Mime>,
     pub data: Option<Cow<'static, str>>,
     pub width: Option<u32>,
     pub height: Option<u32>,
@@ -122,8 +123,8 @@ pub trait HasObjectAttrs: Sized {
     /// Type of embedded resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#type)
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.object_attrs_mut().mime_type = Some(value.into());
+    fn mime_type(mut self, value: impl AsRef<str>) -> Self {
+        self.object_attrs_mut().mime_type = value.as_ref().parse::<Mime>().ok();
         self
     }
 

@@ -81,7 +81,6 @@ impl HtmlArea {
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
 /// {{- rel | bake_attr("rel") -}}
 /// {{- target | bake_attr("target") -}}
-/// {{- mime_type | bake_attr("type") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -97,7 +96,6 @@ pub struct AreaAttrs {
     pub referrerpolicy: Option<Cow<'static, str>>,
     pub rel: Option<Cow<'static, str>>,
     pub target: Option<Cow<'static, str>>,
-    pub mime_type: Option<Cow<'static, str>>,
 }
 
 pub trait HasAreaAttrs: Sized {

@@ -1,4 +1,5 @@
 use askama::Template;
+use mime::Mime;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -70,7 +71,7 @@ impl HtmlEmbed {
 /// # Askama template
 ///
 /// ```askama
-/// {{- mime_type | bake_attr("type") -}}
+/// {{- mime_type | bake_mime -}}
 /// {{- src | bake_attr("src") -}}
 /// {{- width | bake_attr("width") -}}
 /// {{- height | bake_attr("height") -}}
@@ -78,7 +79,12 @@ impl HtmlEmbed {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct EmbedAttrs {
-    pub mime_type: Option<Cow<'static, str>>,
+    /// The HTTP media type.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types)
+    ///
+    /// See [`mime`].
+    pub mime_type: Option<Mime>,
     pub src: Option<Cow<'static, str>>,
     pub width: Option<u32>,
     pub height: Option<u32>,
@@ -106,8 +112,10 @@ pub trait HasEmbedAttrs: Sized {
     /// Type of embedded resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#type)
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        self.embed_attrs_mut().mime_type = Some(value.into());
+    ///
+    /// See [`mime`].
+    fn mime_type(mut self, value: impl AsRef<str>) -> Self {
+        self.embed_attrs_mut().mime_type = value.as_ref().parse::<Mime>().ok();
         self
     }
 
