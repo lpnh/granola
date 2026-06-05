@@ -25,15 +25,15 @@ pub struct SubSupDefaults;
 
 impl RuleRecipe for SubSupDefaults {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = ["sub", "sup"].into();
+        selectors_list.extend_mut(["sub".into(), "sup".into()]);
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![
+        declarations_block.extend_mut([
             CssFontSize::new().content("75%").into(),
             CssLineHeight::new().content("0").into(),
-            CssPosition::<Relative>::from_cookbook().into(),
-            CssVerticalAlign::<Baseline>::from_cookbook().into(),
-        ];
+            CssPosition::from(Relative).into(),
+            CssVerticalAlign::from(Baseline).into(),
+        ]);
     }
 }

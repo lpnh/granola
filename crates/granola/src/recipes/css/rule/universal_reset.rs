@@ -32,11 +32,11 @@ impl RuleRecipe for UniversalReset {
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations.extend([
+        declarations_block.extend_mut([
             CssBoxSizing::from(BorderBox).into(),
             CssMargin::new().content("0").into(),
             CssPadding::new().content("0").into(),
             CssBorder::from(Solid).content("0").into(),
-        ])
+        ]);
     }
 }

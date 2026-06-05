@@ -62,6 +62,14 @@ impl CssDeclarationsBlock {
         self.declarations.push(css_declaration.into());
         self
     }
+
+    pub fn extend_mut(
+        &mut self,
+        css_declarations: impl IntoIterator<Item = CssDeclaration>,
+    ) -> &mut Self {
+        self.declarations.extend(css_declarations);
+        self
+    }
 }
 
 impl<D: Into<CssDeclaration>, const N: usize> From<[D; N]> for CssDeclarationsBlock {

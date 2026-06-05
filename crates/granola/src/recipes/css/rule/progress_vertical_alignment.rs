@@ -21,11 +21,10 @@ pub struct ProgressVerticalAlignment;
 
 impl RuleRecipe for ProgressVerticalAlignment {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "progress".into();
+        selectors_list.push_mut("progress");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations =
-            vec![CssVerticalAlign::<Baseline>::from_cookbook().into()];
+        declarations_block.push_mut(CssVerticalAlign::from(Baseline));
     }
 }

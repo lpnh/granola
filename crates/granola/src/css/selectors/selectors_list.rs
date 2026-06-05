@@ -41,6 +41,19 @@ impl<R: SelectorsListRecipe> CssSelectorsList<R> {
         self.selectors.push(selector.into());
         self
     }
+
+    pub fn push_mut(&mut self, selector: impl Into<CssComplexSelector>) -> &mut Self {
+        self.selectors.push(selector.into());
+        self
+    }
+
+    pub fn extend_mut(
+        &mut self,
+        selectors: impl IntoIterator<Item = CssComplexSelector>,
+    ) -> &mut Self {
+        self.selectors.extend(selectors);
+        self
+    }
 }
 
 impl<S: Into<CssComplexSelector>, const N: usize> From<[S; N]> for CssSelectorsList {

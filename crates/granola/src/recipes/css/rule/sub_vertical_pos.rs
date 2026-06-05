@@ -21,10 +21,10 @@ pub struct SubVerticalPos;
 
 impl RuleRecipe for SubVerticalPos {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "sub".into();
+        selectors_list.push_mut("sub");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![CssBottom::new().content("-0.25em").into()];
+        declarations_block.push_mut(CssBottom::new().content("-0.25em"));
     }
 }

@@ -22,10 +22,10 @@ pub struct BStrongFontWeight;
 
 impl RuleRecipe for BStrongFontWeight {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = ["b", "strong"].into();
+        selectors_list.extend_mut(["b".into(), "strong".into()]);
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![CssFontWeight::from(Bolder).into()];
+        declarations_block.push_mut(CssFontWeight::from(Bolder));
     }
 }

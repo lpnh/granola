@@ -21,10 +21,10 @@ pub struct SmallFontSize;
 
 impl RuleRecipe for SmallFontSize {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "small".into();
+        selectors_list.push_mut("small");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![CssFontSize::new().content("80%").into()];
+        declarations_block.push_mut(CssFontSize::new().content("80%"));
     }
 }

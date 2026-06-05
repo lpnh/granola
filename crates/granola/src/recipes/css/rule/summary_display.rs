@@ -21,10 +21,10 @@ pub struct SummaryDisplay;
 
 impl RuleRecipe for SummaryDisplay {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "summary".into();
+        selectors_list.push_mut("summary");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![CssDisplay::<ListItem>::from_cookbook().into()];
+        declarations_block.push_mut(CssDisplay::from(ListItem));
     }
 }

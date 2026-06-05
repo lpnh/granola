@@ -23,14 +23,14 @@ pub struct AnchorInherit;
 
 impl RuleRecipe for AnchorInherit {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "a".into();
+        selectors_list.push_mut("a");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![
+        declarations_block.extend_mut([
             CssColor::from(Inherit).into(),
-            CssWebkitTextDecoration::<Inherit>::from_cookbook().into(),
+            CssWebkitTextDecoration::from(Inherit).into(),
             CssTextDecoration::from(Inherit).into(),
-        ];
+        ]);
     }
 }

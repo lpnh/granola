@@ -21,10 +21,10 @@ pub struct SearchDecorationAppearance;
 
 impl RuleRecipe for SearchDecorationAppearance {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "::-webkit-search-decoration".into();
+        selectors_list.push_mut("::-webkit-search-decoration");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![("-webkit-appearance", "none").into()];
+        declarations_block.push_mut(("-webkit-appearance", "none"));
     }
 }

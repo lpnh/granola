@@ -23,10 +23,13 @@ pub struct SpinButtonHeight;
 
 impl RuleRecipe for SpinButtonHeight {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = ["::-webkit-inner-spin-button", "::-webkit-outer-spin-button"].into();
+        selectors_list.extend_mut([
+            "::-webkit-inner-spin-button".into(),
+            "::-webkit-outer-spin-button".into(),
+        ]);
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![CssHeight::from(Auto).into()];
+        declarations_block.push_mut(CssHeight::from(Auto));
     }
 }

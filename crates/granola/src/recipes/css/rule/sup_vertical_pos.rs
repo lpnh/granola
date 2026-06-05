@@ -21,7 +21,7 @@ pub struct SupVerticalPos;
 
 impl RuleRecipe for SupVerticalPos {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = "sup".into();
+        selectors_list.push_mut("sup");
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {

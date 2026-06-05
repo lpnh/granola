@@ -26,8 +26,8 @@ impl SelectorsListRecipe for UniversalSelectorsExt {
     fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
         UniversalSelectors::selectors_recipe(selectors);
         selectors.extend([
-            CssSimpleSelector::<UniversalBackdrop>::from_cookbook().into(),
-            CssSimpleSelector::<UniversalFileSelectorButton>::from_cookbook().into(),
+            CssSimpleSelector::from(UniversalBackdrop).into(),
+            CssSimpleSelector::from(UniversalFileSelectorButton).into(),
         ])
     }
 }

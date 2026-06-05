@@ -27,13 +27,13 @@ pub struct AllHeadingsFontReset;
 
 impl RuleRecipe for AllHeadingsFontReset {
     fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSelectorsList::from(AllHeadings).bake_recipe();
+        AllHeadings::selectors_recipe(&mut selectors_list.selectors);
     }
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![
+        declarations_block.extend_mut([
             CssFontSize::from(Inherit).into(),
             CssFontWeight::from(Inherit).into(),
-        ];
+        ]);
     }
 }
