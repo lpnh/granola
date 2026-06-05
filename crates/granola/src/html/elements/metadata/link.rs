@@ -263,7 +263,7 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let link = link!(@from_href_rel "fancy.css", "stylesheet");
+/// let link = link!(@href_rel "fancy.css", "stylesheet");
 ///
 /// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
@@ -273,13 +273,12 @@ macro_rules! link {
         $crate::html::HtmlLink::new()
     };
 
-    (@from_href_rel $href: expr, $rel: expr $(,)?) => {
+    (@href_rel $href:expr, $rel:expr $(,)?) => {
         $crate::html::HtmlLink::from_href_rel($href, $rel)
     };
-    (@from_href $href: expr $(,)?) => {
+    (@href $href:expr $(,)?) => {
         $crate::html::HtmlLink::from_href($href)
     };
-
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

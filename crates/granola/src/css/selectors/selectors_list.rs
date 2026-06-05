@@ -116,14 +116,22 @@ impl From<String> for CssSelectorsList {
 /// ```
 #[macro_export]
 macro_rules! selectors_list {
-    ($decl: expr $(,)?) => {
-        $crate::css::CssSelectorsList::from($decl)
+    () => {
+        $crate::css::CssSelectorsList::new()
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
-        $crate::css::CssSelectorsList::from($first)$(.push($rest))*
+    ($sel:expr $(,)?) => {
+        $crate::css::CssSelectorsList::from($sel)
     };
-
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::css::CssSelectorsList::new().push($first)$(.push($rest))*
+    };
     (@cookbook $($r:ty),+) => {
         $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; @push $sel:expr $(,)?) => {
+        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($sel)
+    };
+    (@cookbook $($r:ty),+ ; @push $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::css::CssSelectorsList::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
     };
 }

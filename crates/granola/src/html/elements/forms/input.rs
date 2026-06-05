@@ -574,7 +574,7 @@ impl From<InputType> for Cow<'static, str> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let input = input!("nickname").minlength(4).required(true);
+/// let input = input!(@name "nickname").minlength(4).required(true);
 ///
 /// assert_eq!(
 ///     input.bake(),
@@ -586,20 +586,16 @@ macro_rules! input {
     () => {
         $crate::html::HtmlInput::new()
     };
-    ($content: expr $(,)?) => {
-        $crate::html::HtmlInput::from_name($content)
-    };
 
-    (@from_name $name: expr $(,)?) => {
+    (@name $name:expr $(,)?) => {
         $crate::html::HtmlInput::from_name($name)
     };
-    (@from_value $value: expr $(,)?) => {
+    (@value $value:expr $(,)?) => {
         $crate::html::HtmlInput::from_value($value)
     };
-    (@from_type $type: expr $(,)?) => {
-        $crate::html::HtmlInput::from_type($type)
+    (@type $input_type:expr $(,)?) => {
+        $crate::html::HtmlInput::from_type($input_type)
     };
-
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlInput::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

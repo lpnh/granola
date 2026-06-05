@@ -74,7 +74,7 @@ pub struct HtmlPicture<R: PictureRecipe = ()> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let source = source!().srcset("logo-wide.png").media("(width >= 600px)");
-/// let img = img!(@from_src_alt "logo-narrow.png", "logo");
+/// let img = img!(@src_alt "logo-narrow.png", "logo");
 ///
 /// let picture = picture!(source, img);
 ///
@@ -91,17 +91,32 @@ macro_rules! picture {
     () => {
         $crate::html::HtmlPicture::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlPicture::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlPicture::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlPicture::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlPicture::new().content($crate::bake_inline![$($content),+])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
+    };
+    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

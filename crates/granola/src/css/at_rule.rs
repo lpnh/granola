@@ -120,14 +120,13 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
 /// ```
 #[macro_export]
 macro_rules! at_rule {
-    ($identifier: expr, $rule: expr $(,)?) => {
+    () => {
+        $crate::css::CssAtRule::new()
+    };
+    ($identifier:expr, $rule:expr $(,)?) => {
         $crate::css::CssAtRule::from(($identifier, $rule))
     };
-
     (@cookbook $($r:ty),+) => {
         $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $identifier: expr, $rule: expr $(,)?) => {
-        $crate::css::CssAtRule::<$crate::cookbook_type!($($r),+)>::from_cookbook().identifier($identifier).rule($rule)
     };
 }

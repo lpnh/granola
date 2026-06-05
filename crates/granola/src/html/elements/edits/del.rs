@@ -144,20 +144,19 @@ macro_rules! del {
     () => {
         $crate::html::HtmlDel::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlDel::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlDel::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlDel::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlDel::new().content($crate::bake_inline![$($content),+])
     };
-
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

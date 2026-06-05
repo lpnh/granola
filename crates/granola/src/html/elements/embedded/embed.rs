@@ -153,7 +153,7 @@ impl<R: EmbedRecipe> HasEmbedAttrs for HtmlEmbed<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let embed = embed!(@from_src "flower.png")
+/// let embed = embed!(@src "flower.png")
 ///     .mime_type("image/png")
 ///     .width(420)
 ///     .height(420);
@@ -169,11 +169,10 @@ macro_rules! embed {
         $crate::html::HtmlEmbed::new()
     };
 
-    (@from_src $src: expr $(,)?) => {
+    (@src $src:expr $(,)?) => {
         $crate::html::HtmlEmbed::from_src($src)
     };
-
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+        $crate::html::HtmlEmbed::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

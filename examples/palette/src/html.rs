@@ -28,7 +28,8 @@ pub fn home_page(
     let title = title!("palette example");
     let stylesheet_link = link!(@cookbook RelStylesheet).href(STYLESHEET_URL.as_str());
     let css_rule = rule!(
-        ":root";
+        @selectors ":root";
+        @declarations
         ("--base-100", base_100),
         ("--base-200", base_200),
         ("--base-300", base_300),
@@ -61,7 +62,7 @@ fn palette_div(
     )
     .class("swatches");
 
-    let input = input!(@from_type InputType::Color)
+    let input = input!(@type InputType::Color)
         .name("bg_color")
         .value(palette_source);
     let button = button!("Update");

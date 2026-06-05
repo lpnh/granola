@@ -142,10 +142,19 @@ macro_rules! colgroup {
     () => {
         $crate::html::HtmlColgroup::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlColgroup::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlColgroup::new().content([$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlColgroup::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlColgroup::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlColgroup::<$crate::cookbook_type!($($r),+)>::from_cookbook().content([$first $(, $rest)*])
     };
 }

@@ -22,9 +22,9 @@ pub static STATIC_STYLESHEET: LazyLock<String> = LazyLock::new(|| stylesheet().b
 
 fn stylesheet() -> CssStylesheet {
     stylesheet!(
-        rule!(":root"; ("--border", "1px")),
+        rule!(":root", ("--border", "1px")),
         rule!(
-            "body";
+            "body",
             declarations_block![
                 CssBackgroundColor::new().content("var(--base-100)"),
                 CssColor::new().content("var(--base-content)"),
@@ -37,19 +37,18 @@ fn stylesheet() -> CssStylesheet {
             ]
         ),
         rule!(
-            ".palette";
+            ".palette",
             declarations_block![
                 CssBackground::new().content("var(--base-200)"),
                 CssPadding::new().content("2rem"),
                 CssBorderRadius::new().content("8px"),
-                CssBoxShadow::new().content(
-                    "0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",
-                ),
+                CssBoxShadow::new()
+                    .content("0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",),
                 CssTextAlign::<Center>::from_cookbook(),
             ]
         ),
         rule!(
-            ".swatches";
+            ".swatches",
             declarations_block![
                 CssDisplay::<Flex>::from_cookbook(),
                 CssFlexDirection::<Column>::from_cookbook(),
@@ -60,7 +59,7 @@ fn stylesheet() -> CssStylesheet {
             ]
         ),
         rule!(
-            ".swatch";
+            ".swatch",
             declarations_block![
                 CssDisplay::<Flex>::from_cookbook(),
                 CssFlexDirection::<Column>::from_cookbook(),
@@ -69,7 +68,7 @@ fn stylesheet() -> CssStylesheet {
             ]
         ),
         rule!(
-            ".square";
+            ".square",
             declarations_block![
                 CssWidth::new().content("64px"),
                 CssHeight::new().content("64px"),
@@ -83,18 +82,20 @@ fn stylesheet() -> CssStylesheet {
             ]
         ),
         rule!(
-            simple_selector!(".swatch").descendant("p");
+            simple_selector!(".swatch").descendant("p"),
             declarations_block![
                 CssFontSize::new().content("0.75rem"),
                 CssMargin::new().content("0"),
             ]
         ),
         rule!(
-            simple_selector!(".swatch").descendant("p").descendant("code");
+            simple_selector!(".swatch")
+                .descendant("p")
+                .descendant("code"),
             CssFontSize::new().content("0.7rem")
         ),
         rule!(
-            simple_selector!(".palette").descendant("form");
+            simple_selector!(".palette").descendant("form"),
             declarations_block![
                 CssDisplay::<Flex>::from_cookbook(),
                 CssGap::new().content("0.5rem"),

@@ -120,7 +120,7 @@ pub trait HasLabelAttrs: Sized {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let input = input!(@from_type "checkbox").name("reality-check").disabled(true);
+/// let input = input!(@type "checkbox").name("reality-check").disabled(true);
 ///
 /// let label = label!["We're so back", input];
 ///
@@ -135,17 +135,32 @@ macro_rules! label {
     () => {
         $crate::html::HtmlLabel::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlLabel::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlLabel::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlLabel::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlLabel::new().content($crate::bake_inline![$($content),+])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
+    };
+    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

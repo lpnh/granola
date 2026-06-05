@@ -179,7 +179,7 @@ impl<R: SourceRecipe> HasSourceAttrs for HtmlSource<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let source = source!(@from_src "/videos/flower.mp4").mime_type("video/mp4");
+/// let source = source!(@src "/videos/flower.mp4").mime_type("video/mp4");
 ///
 /// assert_eq!(
 ///     source.bake(),
@@ -192,14 +192,10 @@ macro_rules! source {
         $crate::html::HtmlSource::new()
     };
 
-    (@from_src $src: expr $(,)?) => {
+    (@src $src:expr $(,)?) => {
         $crate::html::HtmlSource::from_src($src)
     };
-
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook()
-    };
-    (@cookbook $($r:ty),+ ; $src:expr $(,)?) => {
-        $crate::html::HtmlObject::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($src)
+        $crate::html::HtmlSource::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

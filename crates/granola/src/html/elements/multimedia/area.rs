@@ -240,7 +240,7 @@ impl From<HtmlArea> for Areas {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let area = area!(@from_href_alt "https://w.wiki/LTnF", "Red triangle")
+/// let area = area!(@href_alt "https://w.wiki/LTnF", "Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
@@ -253,10 +253,13 @@ macro_rules! area {
         $crate::html::HtmlArea::new()
     };
 
-    (@from_href_alt $href: expr, $alt: expr $(,)?) => {
+    (@href_alt $href:expr, $alt:expr $(,)?) => {
         $crate::html::HtmlArea::from_href_alt($href, $alt)
     };
-    (@from_href $href: expr $(,)?) => {
+    (@href $href:expr $(,)?) => {
         $crate::html::HtmlArea::from_href($href)
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlArea::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

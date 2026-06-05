@@ -177,11 +177,13 @@ impl<R: SimpleSelectorRecipe> From<CssSimpleSelector<R>> for CssComplexSelector 
 /// ```
 #[macro_export]
 macro_rules! complex_selector {
-    ($decl: expr $(,)?) => {
-        $crate::css::CssComplexSelector::new().first($decl)
+    () => {
+        $crate::css::CssComplexSelector::new()
     };
-
-    (@recipe $($r:ty),+) => {
+    ($sel:expr $(,)?) => {
+        $crate::css::CssComplexSelector::new().first($sel)
+    };
+    (@cookbook $($r:ty),+) => {
         $crate::css::CssComplexSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

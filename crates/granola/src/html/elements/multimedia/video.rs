@@ -233,7 +233,7 @@ impl<R: VideoRecipe> HasVideoAttrs for HtmlVideo<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let video = video!(@from_src "Never_Gonna_Give_You_Up.mp4")
+/// let video = video!(@src "Never_Gonna_Give_You_Up.mp4")
 ///     .width(800)
 ///     .height(600)
 ///     .autoplay(true);
@@ -246,21 +246,36 @@ macro_rules! video {
     () => {
         $crate::html::HtmlVideo::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlVideo::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlVideo::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@from_src $src: expr $(,)?) => {
+    (@src $src:expr $(,)?) => {
         $crate::html::HtmlVideo::from_src($src)
     };
 
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlVideo::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlVideo::new().content($crate::bake_inline![$($content),+])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
+    };
+    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

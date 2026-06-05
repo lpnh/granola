@@ -169,10 +169,13 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 /// ```
 #[macro_export]
 macro_rules! declarations_block {
-    ($decl: expr $(,)?) => {
+    () => {
+        $crate::css::CssDeclarationsBlock::new()
+    };
+    ($decl:expr $(,)?) => {
         $crate::css::CssDeclarationsBlock::from($decl)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::css::CssDeclarationsBlock::new().push($first)$(.push($rest))*
     };
 }
@@ -190,7 +193,7 @@ macro_rules! declarations_block {
 /// ```
 #[macro_export]
 macro_rules! declaration {
-    ($prop: expr, $value: expr $(,)?) => {
+    ($prop:expr, $value:expr $(,)?) => {
         $crate::css::CssDeclaration::new($prop, $value)
     };
 }

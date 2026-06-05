@@ -278,10 +278,12 @@ impl From<String> for CssSimpleSelector {
 /// ```
 #[macro_export]
 macro_rules! simple_selector {
-    ($selector: expr $(,)?) => {
-        $crate::css::CssSimpleSelector::new().selector($selector)
+    () => {
+        $crate::css::CssSimpleSelector::new()
     };
-
+    ($sel:expr $(,)?) => {
+        $crate::css::CssSimpleSelector::new().selector($sel)
+    };
     (@cookbook $($r:ty),+) => {
         $crate::css::CssSimpleSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

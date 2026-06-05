@@ -130,12 +130,12 @@ impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let img = img!(@from_src_alt "mg_flag.png", "MG flag")
+/// let img = img!(@src_alt "mg_flag.png", "MG flag")
 ///     .width(600)
 ///     .height(420)
 ///     .usemap("#minas-gerais");
 ///
-/// let area = area!(@from_href_alt "https://w.wiki/LTnF", "Red triangle")
+/// let area = area!(@href_alt "https://w.wiki/LTnF", "Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
@@ -156,17 +156,32 @@ macro_rules! map {
     () => {
         $crate::html::HtmlMap::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlMap::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlMap::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlMap::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlMap::new().content($crate::bake_inline![$($content),+])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
+    };
+    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

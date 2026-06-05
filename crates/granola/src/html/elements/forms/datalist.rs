@@ -81,8 +81,8 @@ pub struct HtmlDatalist<R: DatalistRecipe = ()> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let yes = option!(@from_value "Yes");
-/// let no = option!(@from_value "No");
+/// let yes = option!(@value "Yes");
+/// let no = option!(@value "No");
 ///
 /// let datalist = datalist![yes, no].id("binary");
 ///
@@ -97,9 +97,9 @@ pub struct HtmlDatalist<R: DatalistRecipe = ()> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let options = [
-///     option!(@from_value "Chocolate"),
-///     option!(@from_value "Strawberry"),
-///     option!(@from_value "Vanilla"),
+///     option!(@value "Chocolate"),
+///     option!(@value "Strawberry"),
+///     option!(@value "Vanilla"),
 /// ];
 ///
 /// let datalist = datalist!(options).id("ice-cream-flavors");
@@ -116,10 +116,19 @@ macro_rules! datalist {
     () => {
         $crate::html::HtmlDatalist::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlDatalist::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlDatalist::new().content([$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlDatalist::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlDatalist::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlDatalist::<$crate::cookbook_type!($($r),+)>::from_cookbook().content([$first $(, $rest)*])
     };
 }

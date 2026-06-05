@@ -159,4 +159,7 @@ macro_rules! col {
     () => {
         $crate::html::HtmlCol::new()
     };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlCol::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
 }

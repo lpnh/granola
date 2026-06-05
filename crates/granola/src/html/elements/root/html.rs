@@ -179,13 +179,12 @@ macro_rules! root {
     () => {
         $crate::html::HtmlRoot::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlRoot::new().content($content)
     };
-    ($head: expr, $body: expr $(,)?) => {
+    ($head:expr, $body:expr $(,)?) => {
         $crate::html::HtmlRoot::new().content(($head, $body))
     };
-
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlRoot::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

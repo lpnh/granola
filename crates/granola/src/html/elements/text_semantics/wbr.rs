@@ -56,8 +56,7 @@ macro_rules! wbr {
     () => {
         $crate::html::HtmlWbr::new()
     };
-
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+        $crate::html::HtmlWbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }

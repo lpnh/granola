@@ -132,36 +132,52 @@ impl<R: StyleRecipe> HasStyleAttrs for HtmlStyle<R> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let css_rule = rule!(
-///     "p";
-///     ("color", "violet"),
-///     ("font-weight", "lighter"),
+///     @selectors "p";
+///     @declarations ("color", "violet"), ("font-weight", "lighter")
 /// );
 ///
 /// let style = style!(css_rule);
 ///
-/// assert_eq!(style.bake(),
-/// r#"<style>
+/// assert_eq!(
+///     style.bake(),
+///     r#"<style>
 ///   p {
 ///     color: violet;
 ///     font-weight: lighter;
 ///   }
-/// </style>"#);
+/// </style>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! style {
     () => {
         $crate::html::HtmlStyle::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlStyle::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlStyle::new().content($crate::bake_block![$first $(, $rest)*])
     };
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlStyle::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlStyle::new().content($crate::bake_inline![$($content),+])
+    };
+    (@cookbook $($r:ty),+) => {
+        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    };
+    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    };
+    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
+    };
+    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
+        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
+    };
+    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
+        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

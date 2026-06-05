@@ -233,7 +233,7 @@ impl From<FormMethod> for Cow<'static, str> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let input = input!("cast-wish");
+/// let input = input!(@name "cast-wish");
 /// let label = label!["Wish:", input];
 /// let button = button!("Cast");
 ///
@@ -255,20 +255,19 @@ macro_rules! form {
     () => {
         $crate::html::HtmlForm::new()
     };
-    ($content: expr $(,)?) => {
+    ($content:expr $(,)?) => {
         $crate::html::HtmlForm::new().content($content)
     };
-    ($first: expr $(, $rest: expr)+ $(,)?) => {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlForm::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content: expr $(,)?) => {
+    (@newline $content:expr $(,)?) => {
         $crate::html::HtmlForm::new().content($crate::bake_newline!($content))
     };
-    (@inline $($content: expr),+ $(,)?) => {
+    (@inline $($content:expr),+ $(,)?) => {
         $crate::html::HtmlForm::new().content($crate::bake_inline![$($content),+])
     };
-
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlForm::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

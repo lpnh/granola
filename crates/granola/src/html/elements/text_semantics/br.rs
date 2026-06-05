@@ -74,7 +74,7 @@ pub struct HtmlBr<R: BrRecipe = ()> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let poem = p![bake_inline!["Roses are red,", br!()], "Violets are blue.",];
+/// let poem = p!(bake_inline!["Roses are red,", br!()], "Violets are blue.");
 ///
 /// assert_eq!(
 ///     poem.bake(),
@@ -89,8 +89,7 @@ macro_rules! br {
     () => {
         $crate::html::HtmlBr::new()
     };
-
     (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlAbbr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+        $crate::html::HtmlBr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
 }
