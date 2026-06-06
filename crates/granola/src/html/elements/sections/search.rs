@@ -24,7 +24,7 @@ use crate::{filters, prelude::*};
 ///     .content("Search the haystack")
 ///     .for_id("query");
 /// let input = HtmlInput::new()
-///     .input_type("search")
+///     .input_type(InputType::Search)
 ///     .id("query")
 ///     .name("q")
 ///     .placeholder("needle");
@@ -90,7 +90,7 @@ pub struct HtmlSearch<R: SearchRecipe = ()> {
 ///
 /// let label = label!("Search the haystack").for_id("query");
 /// let input = input!()
-///     .input_type("search")
+///     .input_type(InputType::Search)
 ///     .id("query")
 ///     .name("q")
 ///     .placeholder("needle");

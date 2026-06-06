@@ -27,7 +27,7 @@ pub fn fieldset_empty() -> (Stats, Stats) {
 pub fn fieldset_example() -> (Stats, Stats) {
     let (opt_out, opt) = measure(|| {
         let legend = HtmlLegend::new().content("To be, or not to be?");
-        let input: HtmlInput = HtmlInput::from_type("checkbox")
+        let input: HtmlInput = HtmlInput::from_type(InputType::Checkbox)
             .id("chbx")
             .name("to-be")
             .value("dunno");
@@ -40,7 +40,7 @@ pub fn fieldset_example() -> (Stats, Stats) {
 
     let (naive_out, naive) = measure(|| {
         let legend = HtmlLegend::new().content("To be, or not to be?");
-        let input: HtmlInput = HtmlInput::from_type("checkbox")
+        let input: HtmlInput = HtmlInput::from_type(InputType::Checkbox)
             .id("chbx")
             .name("to-be")
             .value("dunno");

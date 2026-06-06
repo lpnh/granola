@@ -1,5 +1,4 @@
 use askama::Template;
-use mime::Mime;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -23,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let source = HtmlSource::new()
 ///     .src("/videos/flower.mp4")
-///     .mime_type("video/mp4");
+///     .mime_type(MimeType::Mp4);
 ///
 /// assert_eq!(
 ///     source.bake(),
@@ -72,7 +71,7 @@ impl HtmlSource {
 /// {{- width | bake_attr("width") -}}
 /// {{- height | bake_attr("height") -}}
 /// {{- sizes | bake_attr("sizes") -}}
-/// {{- mime_type | bake_mime -}}
+/// {{- mime_type | bake_attr("type") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -83,7 +82,7 @@ pub struct SourceAttrs {
     pub width: Option<u32>,
     pub height: Option<u32>,
     pub sizes: Option<Cow<'static, str>>,
-    pub mime_type: Option<Mime>,
+    pub mime_type: Option<Cow<'static, str>>,
 }
 
 pub trait HasSourceAttrs: Sized {
@@ -133,8 +132,10 @@ pub trait HasSourceAttrs: Sized {
     /// Type of embedded resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#type)
-    fn mime_type(mut self, value: impl AsRef<str>) -> Self {
-        self.source_attrs_mut().mime_type = value.as_ref().parse::<Mime>().ok();
+    ///
+    /// See [`MimeType`]
+    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.source_attrs_mut().mime_type = Some(value.into());
         self
     }
 
@@ -180,7 +181,7 @@ impl<R: SourceRecipe> HasSourceAttrs for HtmlSource<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let source = source!(@src "/videos/flower.mp4").mime_type("video/mp4");
+/// let source = source!(@src "/videos/flower.mp4").mime_type(MimeType::Mp4);
 ///
 /// assert_eq!(
 ///     source.bake(),

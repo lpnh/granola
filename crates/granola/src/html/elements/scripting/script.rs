@@ -171,8 +171,10 @@ pub trait HasScriptAttrs: Sized {
     /// Type of script.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type)
-    fn script_type(mut self, value: impl Into<ScriptType>) -> Self {
-        self.script_attrs_mut().script_type = Some(value.into().into());
+    ///
+    /// See [`ScriptType`] and [`MimeType`]
+    fn script_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.script_attrs_mut().script_type = Some(value.into());
         self
     }
 }
@@ -220,22 +222,9 @@ pub enum ScriptType {
     Speculationrules,
 }
 
-impl<T: AsRef<str>> From<T> for ScriptType {
-    fn from(s: T) -> Self {
-        let str = s.as_ref();
-        match str {
-            "text/javascript" => Self::JavaScriptMimeType,
-            "importmap" => Self::Importmap,
-            "module" => Self::Module,
-            "speculationrules" => Self::Speculationrules,
-            _ => Self::JavaScriptMimeType,
-        }
-    }
-}
-
 impl From<ScriptType> for Cow<'static, str> {
-    fn from(s: ScriptType) -> Self {
-        <&'static str>::from(s).into()
+    fn from(script_type: ScriptType) -> Self {
+        <&'static str>::from(script_type).into()
     }
 }
 

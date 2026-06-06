@@ -21,7 +21,7 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let input = HtmlInput::new()
-///     .input_type("checkbox")
+///     .input_type(InputType::Checkbox)
 ///     .name("reality-check")
 ///     .disabled(true);
 ///

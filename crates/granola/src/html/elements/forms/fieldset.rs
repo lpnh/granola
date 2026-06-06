@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let legend = HtmlLegend::new().content("To be, or not to be?");
 /// let input = HtmlInput::new()
-///     .input_type("checkbox")
+///     .input_type(InputType::Checkbox)
 ///     .id("chbx")
 ///     .name("to-be")
 ///     .value("dunno");

@@ -12,7 +12,6 @@ categories.workspace = true
 askama = { workspace = true }
 granola-derive = { path = "../granola-derive" }
 indexmap = { workspace = true }
-mime = "0.3.17"
 strum = { workspace = true }
 
 [lints]

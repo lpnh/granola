@@ -344,7 +344,6 @@ dependencies = [
  "askama",
  "granola-derive",
  "indexmap",
- "mime",
  "strum",
 ]
 

@@ -8,7 +8,7 @@ use crate::prelude::*;
 /// let button = HtmlButton::from(FormmethodDialog).content("Ok");
 ///
 /// let input = HtmlInput::from(FormmethodDialog)
-///     .input_type("submit")
+///     .input_type(InputType::Submit)
 ///     .value("Ok");
 ///
 /// assert_eq!(button.bake(), r#"<button formmethod="dialog">Ok</button>"#);

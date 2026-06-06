@@ -8,7 +8,7 @@ use crate::prelude::*;
 /// let button = HtmlButton::from(FormmethodGet).content("Search");
 ///
 /// let input = HtmlInput::from(FormmethodGet)
-///     .input_type("submit")
+///     .input_type(InputType::Submit)
 ///     .value("Search");
 ///
 /// assert_eq!(button.bake(), r#"<button formmethod="get">Search</button>"#);

@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let button = HtmlButton::new()
 ///     .content(bake_newline!("Add to favorites"))
-///     .button_type("button")
+///     .button_type(ButtonType::Button)
 ///     .name("favorite");
 ///
 /// assert_eq!(
@@ -209,8 +209,10 @@ pub trait HasButtonAttrs: Sized {
     /// Type of button.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type)
-    fn button_type(mut self, value: impl Into<ButtonType>) -> Self {
-        self.button_attrs_mut().button_type = Some(value.into().into());
+    ///
+    /// See [`ButtonType`]
+    fn button_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.button_attrs_mut().button_type = Some(value.into());
         self
     }
 
@@ -244,26 +246,14 @@ impl<R: ButtonRecipe> HasButtonAttrs for HtmlButton<R> {
 #[derive(strum::Display, strum::IntoStaticStr, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[strum(serialize_all = "lowercase")]
 pub enum ButtonType {
-    Submit, // default
+    Submit,
     Reset,
     Button,
 }
 
-impl<T: AsRef<str>> From<T> for ButtonType {
-    fn from(s: T) -> Self {
-        let button_type = s.as_ref().trim().to_lowercase();
-        match button_type.as_str() {
-            "submit" => Self::Submit,
-            "reset" => Self::Reset,
-            "button" => Self::Button,
-            _ => Self::Submit,
-        }
-    }
-}
-
 impl From<ButtonType> for Cow<'static, str> {
-    fn from(s: ButtonType) -> Self {
-        <&'static str>::from(s).into()
+    fn from(button_type: ButtonType) -> Self {
+        <&'static str>::from(button_type).into()
     }
 }
 
@@ -283,7 +273,7 @@ impl From<ButtonType> for Cow<'static, str> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let button = button!(@newline "Add to favorites")
-///     .button_type("button")
+///     .button_type(ButtonType::Button)
 ///     .name("favorite");
 ///
 /// assert_eq!(button.bake(),

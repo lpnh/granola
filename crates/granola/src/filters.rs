@@ -1,5 +1,4 @@
 use askama::{FastWritable, NO_VALUES, Values};
-use mime::Mime;
 use std::fmt::{self, Display, Formatter, Write};
 
 /// Handles inline and block rendering.
@@ -41,15 +40,6 @@ pub fn bake_bool_attr<'a>(
         name,
         value: *value,
     })
-}
-
-/// Renders an optional mime type value as an HTML attribute. See [`MimeAttr`].
-#[askama::filter_fn]
-pub fn bake_mime<'a>(
-    mime_type: &'a Option<Mime>,
-    _env: &dyn Values,
-) -> askama::Result<MimeAttr<'a>> {
-    Ok(MimeAttr { mime_type })
 }
 
 /// The content type after being piped into [`kirei`] filter.
@@ -230,32 +220,6 @@ impl FastWritable for BoolAttr<'_> {
     }
 }
 
-/// Renders ` type="mime_type"` when `Some(mime_type)`, nothing when `None`.
-pub struct MimeAttr<'a> {
-    mime_type: &'a Option<Mime>,
-}
-
-/// Forwards to [`write_into`].
-///
-/// [`write_into`]: FastWritable::write_into
-impl Display for MimeAttr<'_> {
-    #[inline]
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.write_into(f, NO_VALUES).map_err(Into::into)
-    }
-}
-
-impl FastWritable for MimeAttr<'_> {
-    fn write_into(&self, dest: &mut dyn Write, values: &dyn Values) -> askama::Result<()> {
-        if let Some(v) = self.mime_type {
-            dest.write_str(" type=\"")?;
-            v.as_ref().write_into(dest, values)?;
-            dest.write_char('"')?;
-        }
-        Ok(())
-    }
-}
-
 #[cfg(test)]
 mod opt_attr_tests {
     use askama::FastWritable;
@@ -287,39 +251,6 @@ mod opt_attr_tests {
             name: "foo",
             value: &value,
         };
-
-        let mut buf = String::new();
-
-        attr.write_into(&mut buf, &()).unwrap();
-
-        assert_eq!(buf, "");
-    }
-}
-
-#[cfg(test)]
-mod mime_attr_tests {
-    use askama::FastWritable;
-
-    use super::MimeAttr;
-
-    #[test]
-    fn value_is_some() {
-        let value = Some(mime::TEXT_PLAIN);
-
-        let attr = MimeAttr { mime_type: &value };
-
-        let mut buf = String::new();
-
-        attr.write_into(&mut buf, &()).unwrap();
-
-        assert_eq!(buf, r#" type="text/plain""#);
-    }
-
-    #[test]
-    fn value_is_none() {
-        let value = None;
-
-        let attr = MimeAttr { mime_type: &value };
 
         let mut buf = String::new();
 

@@ -10,7 +10,7 @@ use crate::prelude::*;
 /// let button = HtmlButton::from(FormmethodPost).content("Send");
 ///
 /// let input = HtmlInput::from(FormmethodPost)
-///     .input_type("submit")
+///     .input_type(InputType::Submit)
 ///     .value("Send");
 ///
 /// assert_eq!(button.bake(), r#"<button formmethod="post">Send</button>"#);

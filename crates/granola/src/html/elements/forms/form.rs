@@ -26,7 +26,7 @@ use crate::{filters, prelude::*};
 ///
 /// let form = HtmlForm::new()
 ///     .content(bake_block![label, button])
-///     .method("get");
+///     .method(FormMethod::Get);
 ///
 /// assert_eq!(
 ///     form.bake(),
@@ -136,8 +136,10 @@ pub trait HasFormAttrs: Sized {
     /// Variant to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#method)
-    fn method(mut self, value: impl Into<FormMethod>) -> Self {
-        self.form_attrs_mut().method = Some(value.into().into());
+    ///
+    /// See [`FormMethod`]
+    fn method(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.form_attrs_mut().method = Some(value.into());
         self
     }
 
@@ -192,29 +194,29 @@ impl<R: FormRecipe> HasFormAttrs for HtmlForm<R> {
     }
 }
 
+/// The HTTP method to submit the form with.
+///
+/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#method)
 #[derive(strum::Display, strum::IntoStaticStr, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[strum(serialize_all = "lowercase")]
 pub enum FormMethod {
+    /// The POST request method.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/POST)
     Post,
-    Get, // default
+    /// The GET request method.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/GET)
+    Get,
+    /// The dialog method.
+    ///
+    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog#closing_dialogs)
     Dialog,
 }
 
-impl<T: AsRef<str>> From<T> for FormMethod {
-    fn from(s: T) -> Self {
-        let form_method = s.as_ref().trim().to_lowercase();
-        match form_method.as_str() {
-            "post" => Self::Post,
-            "get" => Self::Get,
-            "dialog" => Self::Dialog,
-            _ => Self::Get,
-        }
-    }
-}
-
 impl From<FormMethod> for Cow<'static, str> {
-    fn from(m: FormMethod) -> Self {
-        <&'static str>::from(m).into()
+    fn from(form_method: FormMethod) -> Self {
+        <&'static str>::from(form_method).into()
     }
 }
 
@@ -237,7 +239,7 @@ impl From<FormMethod> for Cow<'static, str> {
 /// let label = label!["Wish:", input];
 /// let button = button!("Cast");
 ///
-/// let form = form![label, button].method("get");
+/// let form = form![label, button].method(FormMethod::Get);
 ///
 /// assert_eq!(
 ///     form.bake(),

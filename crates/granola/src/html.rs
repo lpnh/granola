@@ -4,3 +4,5 @@ pub mod attributes;
 pub use attributes::*;
 pub mod elements;
 pub use elements::*;
+pub mod types;
+pub use types::*;

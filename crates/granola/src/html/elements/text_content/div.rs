@@ -21,7 +21,9 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let save = HtmlButton::new().content("Save");
-/// let cancel = HtmlButton::new().content("Cancel").button_type("button");
+/// let cancel = HtmlButton::new()
+///     .content("Cancel")
+///     .button_type(ButtonType::Button);
 ///
 /// let content = bake_block![save, cancel];
 ///
@@ -79,7 +81,7 @@ pub struct HtmlDiv<R: DivRecipe = ()> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let save = button!("Save");
-/// let cancel = button!("Cancel").button_type("button");
+/// let cancel = button!("Cancel").button_type(ButtonType::Button);
 ///
 /// let div = div!(save, cancel).class("flex justify-end gap-2");
 ///

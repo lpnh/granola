@@ -1,5 +1,4 @@
 use askama::Template;
-use mime::Mime;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -70,7 +69,7 @@ pub struct HtmlA<R: ARecipe = ()> {
 /// {{- ping | bake_attr("ping") -}}
 /// {{- referrerpolicy | bake_attr("referrerpolicy") -}}
 /// {{- rel | bake_attr("rel") -}}
-/// {{- mime_type | bake_mime -}}
+/// {{- mime_type | bake_attr("type") -}}
 /// ```
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -83,7 +82,7 @@ pub struct AAttrs {
     pub ping: Option<Cow<'static, str>>,
     pub referrerpolicy: Option<Cow<'static, str>>,
     pub rel: Option<Cow<'static, str>>,
-    pub mime_type: Option<Mime>,
+    pub mime_type: Option<Cow<'static, str>>,
 }
 
 pub trait HasAAttrs: Sized {
@@ -150,8 +149,10 @@ pub trait HasAAttrs: Sized {
     /// Hint for the type of the referenced resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#type)
-    fn mime_type(mut self, value: impl AsRef<str>) -> Self {
-        self.a_attrs_mut().mime_type = value.as_ref().parse::<Mime>().ok();
+    ///
+    /// See [`MimeType`]
+    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.a_attrs_mut().mime_type = Some(value.into());
         self
     }
 }

@@ -78,7 +78,7 @@ impl HtmlInput {
         Self::new().value(value)
     }
 
-    pub fn from_type(input_type: impl Into<InputType>) -> Self {
+    pub fn from_type(input_type: impl Into<Cow<'static, str>>) -> Self {
         Self::new().input_type(input_type)
     }
 }
@@ -454,8 +454,10 @@ pub trait HasInputAttrs: Sized {
     /// Type of form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#input_types)
-    fn input_type(mut self, value: impl Into<InputType>) -> Self {
-        self.input_attrs_mut().input_type = Some(value.into().into());
+    ///
+    /// See [`InputType`]
+    fn input_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        self.input_attrs_mut().input_type = Some(value.into());
         self
     }
 
@@ -516,46 +518,15 @@ pub enum InputType {
     Search,
     Submit,
     Tel,
-    Text, // default
+    Text,
     Time,
     Url,
     Week,
 }
 
-impl<T: AsRef<str>> From<T> for InputType {
-    fn from(s: T) -> Self {
-        let input_type = s.as_ref().trim().to_lowercase();
-        match input_type.as_str() {
-            "button" => Self::Button,
-            "checkbox" => Self::Checkbox,
-            "color" => Self::Color,
-            "date" => Self::Date,
-            "datetime" => Self::Datetime,
-            "email" => Self::Email,
-            "file" => Self::File,
-            "hidden" => Self::Hidden,
-            "image" => Self::Image,
-            "month" => Self::Month,
-            "number" => Self::Number,
-            "password" => Self::Password,
-            "radio" => Self::Radio,
-            "range" => Self::Range,
-            "reset" => Self::Reset,
-            "search" => Self::Search,
-            "submit" => Self::Submit,
-            "tel" => Self::Tel,
-            "text" => Self::Text,
-            "time" => Self::Time,
-            "url" => Self::Url,
-            "week" => Self::Week,
-            _ => Self::Text,
-        }
-    }
-}
-
 impl From<InputType> for Cow<'static, str> {
-    fn from(s: InputType) -> Self {
-        <&'static str>::from(s).into()
+    fn from(input_type: InputType) -> Self {
+        <&'static str>::from(input_type).into()
     }
 }
 

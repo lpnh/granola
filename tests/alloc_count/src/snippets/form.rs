@@ -9,7 +9,7 @@ pub fn form_empty() -> (Stats, Stats) {
         let button = HtmlButton::new();
         let form = HtmlForm::new()
             .content(bake_block![label, button])
-            .method("get");
+            .method(FormMethod::Get);
         form.bake()
     });
 
@@ -19,7 +19,7 @@ pub fn form_empty() -> (Stats, Stats) {
         let button = HtmlButton::new();
         let form = HtmlForm::new()
             .content(bake_block_naive![label, button])
-            .method("get");
+            .method(FormMethod::Get);
         bake_naive(&form)
     });
 
@@ -35,7 +35,7 @@ pub fn form_example() -> (Stats, Stats) {
         let button = HtmlButton::new().content("Cast");
         let form = HtmlForm::new()
             .content(bake_block![label, button])
-            .method("get");
+            .method(FormMethod::Get);
         form.bake()
     });
 
@@ -45,7 +45,7 @@ pub fn form_example() -> (Stats, Stats) {
         let button = HtmlButton::new().content("Cast");
         let form = HtmlForm::new()
             .content(bake_block_naive![label, button])
-            .method("get");
+            .method(FormMethod::Get);
         bake_naive(&form)
     });
 
