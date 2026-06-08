@@ -34,8 +34,6 @@ mod inherit;
 pub use inherit::*;
 mod inline;
 pub use inline::*;
-mod inline_flex;
-pub use inline_flex::*;
 mod isolate;
 pub use isolate::*;
 mod list_item;

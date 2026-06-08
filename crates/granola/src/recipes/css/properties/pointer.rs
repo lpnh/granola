@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Pointer;
 
 impl CursorRecipe for Pointer {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "pointer".into();
     }

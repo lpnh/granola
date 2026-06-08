@@ -85,14 +85,14 @@ impl Parse for RecipeArgs {
 ///
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
 ///   and impls for `()` and `(A, B)` so recipes compose as tuples;
-/// - the `new()` constructor and `From<Bar>` constructors
+/// - the `new()` and `from_cookbook()` constructors, plus a `From<R>` impl
 ///   (`Foo::from(recipe)`);
-/// - the `from_cookbook()` and `From<Bar>` constructors (`Foo::from(recipe)`);
-/// - a `BakeRecipe` impl lowering `Foo<Bar>` to `Foo<()>`.
+/// - a `BakeRecipe` impl lowering `Foo<R>` to `Foo<()>`.
 ///
 /// Some field names add more:
-/// - `content` (with `#[recipe(content = T)]`): a `Content` associated type and
-///   a `content(content)` constructor;
+/// - `content` (with `#[recipe(content = T)]`): a `Content` associated type, a
+///   `content(content)` constructor, and a required `bake_content` method
+///   mapping `Content` back into the default content type `T`.
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
 ///   `event_handlers`: the matching `Has*` impl.
 #[proc_macro_derive(Recipe, attributes(recipe))]
@@ -105,7 +105,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         .iter()
         .find(|a| a.path().is_ident("recipe"))
         .expect("missing #[recipe(...)] attribute");
-
     let args: RecipeArgs = recipe_attr
         .parse_args()
         .expect("failed to parse #[recipe(...)]");
@@ -121,7 +120,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         .expect("Recipe requires a type parameter")
         .ident
         .clone();
-
     let (_, ty_generics, where_clause) = input.generics.split_for_impl();
 
     let named_fields = match &input.data {
@@ -137,7 +135,8 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         panic!("first field must be `_recipe: PhantomData<...>`");
     }
 
-    // All fields except `_recipe` and `content`
+    // Every field except the leading `_recipe` marker and `content` (threaded
+    // separately below). These drive the per-field recipe hooks.
     let other_fields: Vec<_> = named_fields
         .iter()
         .skip(1)
@@ -154,10 +153,16 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         .map(|i| format_ident!("{i}_recipe"))
         .collect();
     let param_names: Vec<Ident> = field_idents.iter().map(|i| format_ident!("_{i}")).collect();
+    let has_field = |name: &str| field_idents.iter().any(|i| i == name);
 
-    let has_global_attrs = field_idents.iter().any(|i| i == "global_attrs");
-
-    // Trait: optional Content associated type + content_recipe
+    // When the recipe carries a `content` field (`#[recipe(content = T)]`), the
+    // trait gains a `Content` associated type plus `bake_content` /
+    // `content_recipe`, and the constructors thread content through. All such
+    // content-gated fragments are grouped here.
+    //
+    // `bake_content` is emitted required (no default body) so a recipe that
+    // overrides `type Content` must supply the map-back itself, surfacing the
+    // gap on the author's own impl rather than downstream at `bake_recipe`.
     let trait_content = if let Some(ref content_type) = default_content_type {
         quote! {
             type Content:
@@ -165,24 +170,33 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 + ::std::default::Default
                 + ::std::clone::Clone
                 + ::std::fmt::Debug
-                + crate::oven::BakeInto<#content_type>
                 = #content_type;
+
+            /// Bakes this recipe's content back into the element's default
+            /// content type, called when the recipe is lowered via
+            /// [`BakeRecipe`](crate::oven::BakeRecipe).
+            ///
+            /// See [`recipe_boilerplate!`](crate::recipe_boilerplate).
+            fn bake_content(content: Self::Content) -> #content_type;
+
             fn content_recipe(_content: &mut Self::Content) {}
         }
     } else {
         quote! {}
     };
 
-    // (A, B) impl: where clause and optional Content type + content_recipe
+    // `(A, B)` impl: where clause plus the composed Content type + hooks.
     let tuple_where = if has_content {
         quote! { where A: #trait_name, B: #trait_name<Content = A::Content>, }
     } else {
         quote! { where A: #trait_name, B: #trait_name, }
     };
-
-    let tuple_content = if has_content {
+    let tuple_content = if let Some(ref content_type) = default_content_type {
         quote! {
             type Content = A::Content;
+            fn bake_content(content: Self::Content) -> #content_type {
+                A::bake_content(content)
+            }
             fn content_recipe(content: &mut Self::Content) {
                 A::content_recipe(content);
                 B::content_recipe(content);
@@ -192,60 +206,19 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // Has* impls for HTML-specific fields
-    let global_attrs_impl = if has_global_attrs {
+    // `()` impl: identity bake-back for the default content type.
+    let unit_content = if let Some(ref content_type) = default_content_type {
         quote! {
-            impl<#type_param: #trait_name> crate::html::HasGlobalAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
-                    &mut self.global_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let global_aria_attrs_impl = if field_idents.iter().any(|i| i == "global_aria_attrs") {
-        quote! {
-            impl<#type_param: #trait_name> crate::html::HasGlobalAriaAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
-                    &mut self.global_aria_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let custom_data_attrs_impl = if field_idents.iter().any(|i| i == "custom_data_attrs") {
-        quote! {
-            impl<#type_param: #trait_name> crate::html::HasCustomDataAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
-                    &mut self.custom_data_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let event_handlers_impl = if field_idents.iter().any(|i| i == "event_handlers") {
-        quote! {
-            impl<#type_param: #trait_name> crate::html::HasEventHandlers
-                for #struct_name #ty_generics #where_clause
-            {
-                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
-                    &mut self.event_handlers
-                }
+            fn bake_content(content: #content_type) -> #content_type {
+                content
             }
         }
     } else {
         quote! {}
     };
 
+    // Constructor pieces that thread content through `from_cookbook`,
+    // `content(...)`, and the `bake_recipe` lowering.
     let content_init = if has_content {
         quote! {
             let mut content = <#type_param::Content as ::std::default::Default>::default();
@@ -259,16 +232,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     } else {
         quote! {}
     };
-
-    // `new()`: empty constructor, only on `#struct_name<()>`.
-    let new_method = quote! {
-        pub fn new() -> Self {
-            Self {
-                ..::std::default::Default::default()
-            }
-        }
-    };
-
     // `content(content)`: sets the content on `#struct_name<R>`, keeping the
     // recipe `R`. Returns `Self`, so the recipe is fixed at construction and
     // flows through unchanged.
@@ -287,16 +250,77 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     } else {
         quote! {}
     };
-
     let bake_content_field = if has_content {
-        quote! { content: crate::oven::BakeInto::bake_into(self.content), }
+        quote! { content: #type_param::bake_content(self.content), }
     } else {
         quote! {}
     };
 
-    let trait_doc = format!("Recipe trait for [`{struct_name}`].");
+    // `Has*` impls for HTML-specific fields.
+    let global_attrs_impl = if has_field("global_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::html::HasGlobalAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
+                    &mut self.global_attrs
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+    let global_aria_attrs_impl = if has_field("global_aria_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::html::HasGlobalAriaAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
+                    &mut self.global_aria_attrs
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+    let custom_data_attrs_impl = if has_field("custom_data_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::html::HasCustomDataAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
+                    &mut self.custom_data_attrs
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+    let event_handlers_impl = if has_field("event_handlers") {
+        quote! {
+            impl<#type_param: #trait_name> crate::html::HasEventHandlers
+                for #struct_name #ty_generics #where_clause
+            {
+                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
+                    &mut self.event_handlers
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
 
-    // on_unimplemented messages for the recipe trait
+    // `new()`: empty constructor, only on `#struct_name<()>`.
+    let new_method = quote! {
+        pub fn new() -> Self {
+            Self {
+                ..::std::default::Default::default()
+            }
+        }
+    };
+
+    // Trait docs + `on_unimplemented` diagnostics.
+    let trait_doc = format!("Recipe trait for [`{struct_name}`].");
     let trait_str = trait_name.to_string();
     let msg = format!("`{{Self}}` is not a recipe of `{trait_str}`");
     let label = format!("all recipes must implement `{trait_str}`");
@@ -317,7 +341,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             #(fn #method_names(#param_names: &mut #field_types) {})*
         }
 
-        impl #trait_name for () {}
+        impl #trait_name for () {
+            #unit_content
+        }
 
         #[doc(hidden)]
         impl<A, B> #trait_name for (A, B)

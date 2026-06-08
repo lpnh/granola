@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Nowrap;
 
 impl WhiteSpaceRecipe for Nowrap {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "nowrap".into();
     }

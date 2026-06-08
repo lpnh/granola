@@ -23,6 +23,8 @@ use crate::prelude::*;
 pub struct FormmethodPost;
 
 impl ButtonRecipe for FormmethodPost {
+    recipe_boilerplate!();
+
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.formmethod(FormMethod::Post);
     }

@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::{filters, oven::BakeInto, prelude::*};
+use crate::{filters, prelude::*};
 
 /// The `display` CSS property.
 ///
@@ -32,7 +32,7 @@ pub struct CssDisplay<R: DisplayRecipe = ()> {
 
 impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclaration {
     fn from(css_display: CssDisplay<R>) -> Self {
-        Self::new("display", css_display.content.bake_into())
+        Self::new("display", R::bake_content(css_display.content))
     }
 }
 

@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Baseline;
 
 impl VerticalAlignRecipe for Baseline {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "baseline".into();
     }

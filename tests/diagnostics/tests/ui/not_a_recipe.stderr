@@ -1,13 +1,13 @@
 error[E0277]: `NotARecipe` is not a recipe of `ButtonRecipe`
-  --> tests/ui/not_a_recipe.rs:16:18
+  --> tests/ui/not_a_recipe.rs:18:18
    |
-16 |     let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_cookbook();
+18 |     let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_cookbook();
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonRecipe`
    |
 help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe`
-  --> tests/ui/not_a_recipe.rs:13:1
+  --> tests/ui/not_a_recipe.rs:15:1
    |
-13 | struct NotARecipe;
+15 | struct NotARecipe;
    | ^^^^^^^^^^^^^^^^^
    = help: the following other types implement trait `granola::html::ButtonRecipe`:
              ()
@@ -27,15 +27,15 @@ note: required by a bound in `granola::html::HtmlButton`
    |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton`
 
 error[E0277]: `NotARecipe` is not a recipe of `ButtonRecipe`
-  --> tests/ui/not_a_recipe.rs:16:57
+  --> tests/ui/not_a_recipe.rs:18:57
    |
-16 |     let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_cookbook();
+18 |     let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_cookbook();
    |                                                         ^^^^^^^^^^ all recipes must implement `ButtonRecipe`
    |
 help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe`
-  --> tests/ui/not_a_recipe.rs:13:1
+  --> tests/ui/not_a_recipe.rs:15:1
    |
-13 | struct NotARecipe;
+15 | struct NotARecipe;
    | ^^^^^^^^^^^^^^^^^
    = help: the following other types implement trait `granola::html::ButtonRecipe`:
              ()

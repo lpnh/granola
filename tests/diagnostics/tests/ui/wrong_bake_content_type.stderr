@@ -1,0 +1,15 @@
+error[E0053]: method `bake_content` has an incompatible type for trait
+  --> tests/ui/wrong_bake_content_type.rs:12:5
+   |
+12 |     recipe_boilerplate!();
+   |     ^^^^^^^^^^^^^^^^^^^^^ expected `Cow<'static, str>`, found `u32`
+   |
+   = note: expected signature `fn(u32) -> Cow<'static, str>`
+              found signature `fn(u32) -> u32`
+   = note: this error originates in the macro `recipe_boilerplate` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: change the output type to match the trait
+  --> $WORKSPACE/crates/granola/src/oven.rs
+   |
+   -         fn bake_content(content: Self::Content) -> Self::Content {
+   +         fn bake_content(content: Self::Content) -> Cow<'static, str> {
+   |

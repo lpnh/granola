@@ -18,6 +18,8 @@ use crate::prelude::*;
 pub struct Transparent;
 
 impl BackgroundColorRecipe for Transparent {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "transparent".into();
     }

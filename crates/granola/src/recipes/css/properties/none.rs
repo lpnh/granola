@@ -47,48 +47,64 @@ use crate::prelude::*;
 pub struct None;
 
 impl BorderRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl DisplayRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl BoxShadowRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl ListStyleRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl TextDecorationRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl TextSizeAdjustRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl WebkitTextSizeAdjustRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }
 }
 
 impl WebkitTextDecorationRecipe for None {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
     }

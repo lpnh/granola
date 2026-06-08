@@ -4,6 +4,8 @@ use granola::{prelude::*, recipes::*};
 struct SomeRecipe;
 
 impl ButtonRecipe for SomeRecipe {
+    recipe_boilerplate!();
+
     fn global_aria_attrs_recipe(global_aria_attrs: &mut GlobalAriaAttrs) {
         global_aria_attrs.aria_label("Search");
     }
@@ -12,8 +14,8 @@ impl ButtonRecipe for SomeRecipe {
 #[derive(Default, Debug, Clone, PartialEq)]
 struct NotARecipe;
 
-type Cookbook = cookbook_type![FormmethodGet, SomeRecipe, NotARecipe, Center];
-
 fn main() {
-    let _button = HtmlButton::<Cookbook>::from_cookbook();
+    let cookbook = cookbook![FormmethodGet, SomeRecipe, NotARecipe, Center];
+
+    let _button = HtmlButton::from(cookbook);
 }

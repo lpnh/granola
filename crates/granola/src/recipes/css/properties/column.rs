@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Column;
 
 impl FlexDirectionRecipe for Column {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "column".into();
     }

@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Isolate;
 
 impl IsolationRecipe for Isolate {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "isolate".into();
     }

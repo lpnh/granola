@@ -78,11 +78,6 @@ impl HtmlEmbed {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct EmbedAttrs {
-    /// The HTTP media type.
-    ///
-    /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types)
-    ///
-    /// See [`mime`].
     pub mime_type: Option<Cow<'static, str>>,
     pub src: Option<Cow<'static, str>>,
     pub width: Option<u32>,

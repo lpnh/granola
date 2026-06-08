@@ -1,10 +1,12 @@
 use granola::{homemade::*, prelude::*, template::*};
 
+type DefaultContent = std::borrow::Cow<'static, str>;
+
 #[derive(Default, Debug, Clone)]
 struct FooRecipe;
 
 impl HtmlRecipe for FooRecipe {
-    type Content = HomemadeRootContent;
+    recipe_boilerplate!(@from HomemadeRootContent; @into HtmlRootContent);
 
     fn content_recipe(content: &mut Self::Content) {
         let paragraph = HtmlP::new().content("Hello, world!");
@@ -29,7 +31,7 @@ impl HtmlRecipe for FooRecipe {
 }
 
 impl PRecipe for FooRecipe {
-    type Content = String;
+    recipe_boilerplate!(@from String; @into DefaultContent);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = bake_block![content, "Content from FooRecipe"];
@@ -41,6 +43,8 @@ impl PRecipe for FooRecipe {
 }
 
 impl ButtonRecipe for FooRecipe {
+    recipe_boilerplate!();
+
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("rounded-full").id("foo-button");
     }
@@ -50,7 +54,7 @@ impl ButtonRecipe for FooRecipe {
 struct BarRecipe;
 
 impl HtmlRecipe for BarRecipe {
-    type Content = HomemadeRootContent;
+    recipe_boilerplate!(@from HomemadeRootContent; @into HtmlRootContent);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.id("bar-html");
@@ -62,7 +66,7 @@ impl HtmlRecipe for BarRecipe {
 }
 
 impl PRecipe for BarRecipe {
-    type Content = String;
+    recipe_boilerplate!(@from String; @into DefaultContent);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.id("bar-p");
@@ -74,6 +78,8 @@ impl PRecipe for BarRecipe {
 }
 
 impl ButtonRecipe for BarRecipe {
+    recipe_boilerplate!();
+
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.id("bar-button");
     }
@@ -87,7 +93,7 @@ impl ButtonRecipe for BarRecipe {
 struct OneLastRecipe;
 
 impl HtmlRecipe for OneLastRecipe {
-    type Content = HomemadeRootContent;
+    recipe_boilerplate!(@from HomemadeRootContent; @into HtmlRootContent);
 
     fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
         custom_data_attrs.custom_data("recipe", "last");
@@ -95,7 +101,7 @@ impl HtmlRecipe for OneLastRecipe {
 }
 
 impl PRecipe for OneLastRecipe {
-    type Content = String;
+    recipe_boilerplate!(@from String; @into DefaultContent);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = bake_newline!("Content from OneLastRecipe");
@@ -107,6 +113,8 @@ impl PRecipe for OneLastRecipe {
 }
 
 impl ButtonRecipe for OneLastRecipe {
+    recipe_boilerplate!();
+
     fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
         custom_data_attrs.custom_data("recipe", "last");
     }

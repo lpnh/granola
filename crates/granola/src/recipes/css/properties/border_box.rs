@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct BorderBox;
 
 impl BoxSizingRecipe for BorderBox {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "border-box".into();
     }

@@ -18,6 +18,8 @@ use crate::prelude::*;
 pub struct Important;
 
 impl DisplayRecipe for Important {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         if content.is_empty() {
             *content = "!important".into();

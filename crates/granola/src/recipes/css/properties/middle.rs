@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Middle;
 
 impl VerticalAlignRecipe for Middle {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "middle".into();
     }

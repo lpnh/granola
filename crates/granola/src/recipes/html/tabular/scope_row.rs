@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Col;
 
 impl ThRecipe for Col {
+    recipe_boilerplate!();
+
     fn specific_attrs_recipe(th_attrs: &mut ThAttrs) {
         th_attrs.scope("col");
     }
@@ -35,6 +37,8 @@ impl ThRecipe for Col {
 pub struct Row;
 
 impl ThRecipe for Row {
+    recipe_boilerplate!();
+
     fn specific_attrs_recipe(th_attrs: &mut ThAttrs) {
         th_attrs.scope("row");
     }

@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Pretty;
 
 impl TextWrapRecipe for Pretty {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "pretty".into();
     }

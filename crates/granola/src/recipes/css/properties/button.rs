@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Button;
 
 impl AppearanceRecipe for Button {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "button".into();
     }

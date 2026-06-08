@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct MethodDialog;
 
 impl FormRecipe for MethodDialog {
+    recipe_boilerplate!();
+
     fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
         form_attrs.method(FormMethod::Dialog);
     }

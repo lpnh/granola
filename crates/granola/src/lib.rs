@@ -11,14 +11,10 @@ pub mod recipes;
 pub mod template;
 
 pub mod prelude {
-    pub use super::{
-        Granola, Recipe,
-        css::*,
-        html::*,
-        oven::{BakeFrom, BakeRecipe},
-        recipes,
+    pub use super::{Granola, Recipe, css::*, html::*, oven::BakeRecipe, recipes};
+    pub use crate::{
+        bake_block, bake_inline, bake_newline, cookbook, cookbook_type, recipe_boilerplate,
     };
-    pub use crate::{bake_block, bake_inline, bake_newline, cookbook, cookbook_type};
 }
 
 pub mod macros {

@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Flex;
 
 impl DisplayRecipe for Flex {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         if content.is_empty() {
             *content = "flex".into();

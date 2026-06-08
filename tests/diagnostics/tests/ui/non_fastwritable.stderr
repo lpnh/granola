@@ -1,13 +1,13 @@
 error[E0277]: the trait bound `Foo: askama::FastWritable` is not satisfied
-  --> tests/ui/non_fastwritable.rs:13:20
+  --> tests/ui/non_fastwritable.rs:14:20
    |
-13 |     type Content = Foo;
+14 |     type Content = Foo;
    |                    ^^^ unsatisfied trait bound
    |
 help: the trait `askama::FastWritable` is not implemented for `Foo`
-  --> tests/ui/non_fastwritable.rs:7:1
+  --> tests/ui/non_fastwritable.rs:8:1
    |
- 7 | struct Foo;
+ 8 | struct Foo;
    | ^^^^^^^^^^
    = help: the following other types implement trait `askama::FastWritable`:
              &T
@@ -17,30 +17,11 @@ help: the trait `askama::FastWritable` is not implemented for `Foo`
              Areas
              Arguments<'_>
              AudioAttrs
-             BakeFrom<T>
+             BaseAttrs
            and $N others
-note: required by a bound in `granola::html::PRecipe::Content`
-  --> $WORKSPACE/crates/granola/src/html/elements/text_content/p.rs
+note: required by a bound in `granola::html::SpanRecipe::Content`
+  --> $WORKSPACE/crates/granola/src/html/elements/text_semantics/span.rs
    |
    | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-   |                                                    ^^^^^^ required by this bound in `PRecipe::Content`
-   = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: recipe content `Foo` can't bake back into `Cow<'static, str>`
-  --> tests/ui/non_fastwritable.rs:13:20
-   |
-13 |     type Content = Foo;
-   |                    ^^^ try using `BakeFrom<Foo>`
-   |
-help: the trait `BakeInto<Cow<'static, str>>` is not implemented for `Foo`
-  --> tests/ui/non_fastwritable.rs:7:1
-   |
- 7 | struct Foo;
-   | ^^^^^^^^^^
-   = note: for non-foreign types, consider providing a conversion by implementing `From<Foo>` for `Cow<'static, str>`
-note: required by a bound in `granola::html::PRecipe::Content`
-  --> $WORKSPACE/crates/granola/src/html/elements/text_content/p.rs
-   |
-   | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-   |                                                    ^^^^^^ required by this bound in `PRecipe::Content`
+   |                                                    ^^^^^^ required by this bound in `SpanRecipe::Content`
    = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)

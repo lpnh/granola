@@ -21,6 +21,8 @@ use crate::prelude::*;
 pub struct FormmethodGet;
 
 impl ButtonRecipe for FormmethodGet {
+    recipe_boilerplate!();
+
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.formmethod(FormMethod::Get);
     }

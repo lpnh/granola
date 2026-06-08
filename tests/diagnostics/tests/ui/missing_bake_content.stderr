@@ -1,0 +1,7 @@
+error[E0046]: not all trait items implemented, missing: `bake_content`
+ --> tests/ui/missing_bake_content.rs:8:1
+  |
+8 | impl SpanRecipe for BrokenRecipe {}
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `bake_content` in implementation
+  |
+  = help: implement the missing item: `fn bake_content(_: <Self as granola::html::SpanRecipe>::Content) -> Cow<'static, str> { todo!() }`

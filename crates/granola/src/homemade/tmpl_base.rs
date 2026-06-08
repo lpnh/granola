@@ -73,6 +73,10 @@ pub struct Homemade;
 impl HtmlRecipe for Homemade {
     type Content = HomemadeRootContent;
 
+    fn bake_content(content: Self::Content) -> HtmlRootContent {
+        content.into()
+    }
+
     fn content_recipe(content: &mut Self::Content) {
         content.head = HtmlHead::from(Homemade);
         content.body.get_or_insert_with(HtmlBody::from_cookbook);
@@ -116,6 +120,10 @@ impl From<HtmlBody> for HomemadeRootContent {
 
 impl HeadRecipe for Homemade {
     type Content = HomemadeHeadContent;
+
+    fn bake_content(content: Self::Content) -> Cow<'static, str> {
+        content.into()
+    }
 
     fn content_recipe(content: &mut Self::Content) {
         content.meta.push(HtmlMeta::from(CharsetUtf8).bake_recipe());

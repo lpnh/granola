@@ -15,88 +15,82 @@
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
 
-use std::{borrow::Cow, fmt};
+use askama::{FastWritable, NO_VALUES, Template};
 
-use askama::{FastWritable, NO_VALUES, Template, Values};
-
-/// Wraps a [`FastWritable`] value so it can be used as a recipe's `type
-/// Content`.
+/// Implements `bake_content` for a recipe's content map-back.
 ///
-/// An element's default content type is [`Cow<'static, str>`], and overriding
-/// `type Content` requires the override to bake back into it. A foreign type
-/// like `u32` can't satisfy that directly, but `BakeFrom` can.
+/// `recipe_boilerplate!()` keeps `type Content` at its default, so mapping back
+/// into the default content type is a no-op.
 ///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// #[derive(Default, Debug, Clone)]
-/// struct Answer;
+/// struct Yell;
 ///
-/// impl OutputRecipe for Answer {
-///     type Content = BakeFrom<u32>;
+/// impl SpanRecipe for Yell {
+///     recipe_boilerplate!();
+///
+///     fn content_recipe(content: &mut Self::Content) {
+///         *content = content.to_uppercase().into();
+///     }
 /// }
 ///
-/// let output = HtmlOutput::from(Answer).content(42);
+/// let span = HtmlSpan::from(Yell).content("oh, hi!");
 ///
-/// assert_eq!(output.bake(), "<output>42</output>");
+/// assert_eq!(span.bake(), "<span>OH, HI!</span>");
 /// ```
-pub struct BakeFrom<T>(pub T);
-
-impl<T: FastWritable> FastWritable for BakeFrom<T> {
-    fn write_into(&self, dest: &mut dyn fmt::Write, values: &dyn Values) -> askama::Result<()> {
-        self.0.write_into(dest, values)
-    }
-}
-
-impl<T: Default> Default for BakeFrom<T> {
-    fn default() -> Self {
-        BakeFrom(T::default())
-    }
-}
-
-impl<T: Clone> Clone for BakeFrom<T> {
-    fn clone(&self) -> Self {
-        BakeFrom(self.0.clone())
-    }
-}
-
-impl<T: fmt::Debug> fmt::Debug for BakeFrom<T> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("BakeFrom").field(&self.0).finish()
-    }
-}
-
-/// Lets the element's `new(value)` build a `BakeFrom<T>` content directly,
-/// without the caller writing `BakeFrom(value)`.
-impl<T: FastWritable> From<T> for BakeFrom<T> {
-    fn from(value: T) -> Self {
-        BakeFrom(value)
-    }
-}
-
-/// Bakes any [`FastWritable`] content back into the default [`Cow<'static,
-/// str>`] content type.
 ///
-/// # Panics
+/// `recipe_boilerplate!(@from T; @into U)` sets `type Content = T` and maps
+/// back via `T: Into<U>`, where `U` is the default content type.
 ///
-/// Panics if [`FastWritable::write_into`] returns an error. See
-/// [`askama::Error`].
-impl<T: FastWritable> From<BakeFrom<T>> for Cow<'static, str> {
-    fn from(wrapped: BakeFrom<T>) -> Self {
-        let mut buf = String::new();
-        wrapped.0.write_into(&mut buf, NO_VALUES).unwrap();
-        Cow::Owned(buf)
-    }
+/// ```rust
+/// use askama::Template;
+/// use granola::prelude::*;
+/// use std::borrow::Cow;
+///
+/// #[derive(Default, Debug, Clone, Template)]
+/// #[template(ext = "html", source = "hi!")]
+/// struct Hi;
+///
+/// impl From<Hi> for Cow<'static, str> {
+///     fn from(hi: Hi) -> Self {
+///         Cow::Owned(hi.render().unwrap())
+///     }
+/// }
+///
+/// impl SpanRecipe for Hi {
+///     recipe_boilerplate!(@from Hi; @into Cow<'static, str>);
+/// }
+///
+/// let span = HtmlSpan::from(Hi);
+///
+/// assert_eq!(span.bake(), "<span>hi!</span>");
+/// ```
+#[macro_export]
+macro_rules! recipe_boilerplate {
+    () => {
+        fn bake_content(content: Self::Content) -> Self::Content {
+            content
+        }
+    };
+    (@from $new_content_type:ty ; @into $default_content_type:ty) => {
+        type Content = $new_content_type;
+
+        fn bake_content(content: $new_content_type) -> $default_content_type {
+            content.into()
+        }
+    };
 }
 
-/// Wrapper type carrying the autoref-based content dispatch for the `bake_*!`
-/// macros.
+/// Wrapper type carrying the autoref-based content dispatch.
 ///
-/// See [`Roast`] for the tiered dispatch it drives.
+/// See [`Roast`].
 pub struct Bake<T>(pub T);
 
-/// Tiered content dispatch for the `bake_*!` macros, resolved at compile time
-/// by [autoref-based specialization], in priority order:
+/// Tiered content dispatch.
+///
+/// The priority order:
 ///
 /// 1. `T: Template` — rendered via [`Template::render_into`] with an exact
 ///    [`Template::SIZE_HINT`].
@@ -107,16 +101,13 @@ pub struct Bake<T>(pub T);
 ///    `0`.
 ///
 /// A type matching several bounds (e.g. `String`, which is both `AsRef<str>`
-/// and `FastWritable`) resolves to the highest applicable tier, so strings keep
-/// their exact size hint.
+/// and `FastWritable`) resolves to the highest applicable tier. `String` takes
+/// the `AsRef<str>` tier, with its `len` size hint.
 ///
 /// # Panics
 ///
 /// Panics if [`Template::render_into`] or [`FastWritable::write_into`] returns
 /// an error. See [`askama::Error`].
-///
-/// [autoref-based specialization]:
-/// https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
 pub trait Roast {
     fn bake_content(&self, buf: &mut String);
 
@@ -156,8 +147,8 @@ impl<T: FastWritable> Roast for Bake<&T> {
 /// Converts `Foo<R>` into `Foo`.
 ///
 /// `PhantomData<R>` selects which recipe runs during construction.
-/// `bake_recipe` moves all fields into `Foo<()>`, applying [`BakeInto`] for any
-/// content field.
+/// `bake_recipe` moves all fields into `Foo<()>`, calling the recipe's
+/// `bake_content` to map any content field back into the default content type.
 ///
 /// This is the canonical way to land a `Foo<R>` into a collection that stores
 /// `Foo<()>`. It exists as its own trait because `From<Foo<R>> for Foo<()>`
@@ -167,31 +158,6 @@ pub trait BakeRecipe {
     type Baked;
 
     fn bake_recipe(self) -> Self::Baked;
-}
-
-/// Marks that a recipe's custom content type can be baked back into the
-/// element's default content type.
-///
-/// You never implement this directly: it has a blanket impl for every `T:
-/// Into<D>`. Its only job is to give a guided compiler error when a recipe
-/// overrides `type Content` but is missing the matching `From` impl.
-#[diagnostic::on_unimplemented(
-    message = "recipe content `{Self}` can't bake back into `{D}`",
-    label = "try using `BakeFrom<{Self}>`",
-    note = "for non-foreign types, consider providing a conversion by implementing `From<{Self}>` for `{D}`"
-)]
-pub trait BakeInto<D> {
-    fn bake_into(self) -> D;
-}
-
-#[diagnostic::do_not_recommend]
-impl<T, D> BakeInto<D> for T
-where
-    T: Into<D>,
-{
-    fn bake_into(self) -> D {
-        self.into()
-    }
 }
 
 /// Renders any number of items into a single [`String`], placing each on a new
@@ -418,8 +384,8 @@ macro_rules! cookbook {
 
 #[cfg(test)]
 mod from_content_type_tests {
-    use askama::{FastWritable, Values};
-    use std::fmt;
+    use askama::{FastWritable, NO_VALUES, Values};
+    use std::{borrow::Cow, fmt};
 
     use crate::prelude::*;
 
@@ -427,10 +393,14 @@ mod from_content_type_tests {
     struct Number;
 
     impl PRecipe for Number {
-        type Content = BakeFrom<u32>;
+        type Content = u8;
+
+        fn bake_content(content: Self::Content) -> Cow<'static, str> {
+            content.to_string().into()
+        }
     }
 
-    #[derive(Default, Debug, Clone)]
+    #[derive(Default, Debug, Clone, PartialEq)]
     struct Celsius(i32);
 
     impl FastWritable for Celsius {
@@ -444,43 +414,49 @@ mod from_content_type_tests {
     struct Temperature;
 
     impl PRecipe for Temperature {
-        type Content = BakeFrom<Celsius>;
+        type Content = Celsius;
+
+        fn bake_content(content: Self::Content) -> Cow<'static, str> {
+            let mut buf = String::new();
+            content.write_into(&mut buf, NO_VALUES).unwrap();
+            Cow::Owned(buf)
+        }
     }
 
     #[test]
-    fn new_accepts_primitive_directly() {
+    fn primitive() {
         let p = HtmlP::from(Number).content(42);
         assert_eq!(p.bake(), "<p>42</p>");
+
+        let content: u8 = p.content;
+        assert_eq!(content, 42);
     }
 
     #[test]
-    fn new_accepts_explicit_wrapper() {
-        let p = HtmlP::from(Number).content(BakeFrom(42u32));
-        assert_eq!(p.bake(), "<p>42</p>");
-    }
-
-    #[test]
-    fn bakes_back_into_default_content() {
-        let baked = HtmlP::from(Number).content(42);
+    fn primitive_baked() {
+        let baked = HtmlP::from(Number).content(42).bake_recipe();
         assert_eq!(baked.bake(), "<p>42</p>");
+
+        let content: Cow<_> = baked.content;
+        assert_eq!(content, "42");
     }
 
     #[test]
-    fn new_accepts_custom_directly() {
+    fn custom() {
         let p = HtmlP::from(Temperature).content(Celsius(26));
         assert_eq!(p.bake(), "<p>26°C</p>");
+
+        let content: Celsius = p.content;
+        assert_eq!(content, Celsius(26));
     }
 
     #[test]
-    fn new_accepts_custom_explicit_wrapper() {
-        let p = HtmlP::from(Temperature).content(BakeFrom(Celsius(26)));
-        assert_eq!(p.bake(), "<p>26°C</p>");
-    }
-
-    #[test]
-    fn bakes_back_custom_into_default_content() {
-        let baked = HtmlP::from(Temperature).content(Celsius(26));
+    fn custom_baked() {
+        let baked = HtmlP::from(Temperature).content(Celsius(26)).bake_recipe();
         assert_eq!(baked.bake(), "<p>26°C</p>");
+
+        let content: Cow<_> = baked.content;
+        assert_eq!(content, "26°C");
     }
 }
 

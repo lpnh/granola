@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct Block;
 
 impl DisplayRecipe for Block {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "block".into();
     }

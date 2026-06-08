@@ -23,12 +23,16 @@ use crate::prelude::*;
 pub struct Currentcolor;
 
 impl BorderColorRecipe for Currentcolor {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "currentcolor".into();
     }
 }
 
 impl ColorRecipe for Currentcolor {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "currentcolor".into();
     }

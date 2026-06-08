@@ -1,5 +1,6 @@
-// A recipe whose `type Content` is a plain struct that is neither
-// `FastWritable` nor convertible into the default content type.
+// A recipe whose `type Content` is a plain struct that is not `FastWritable`.
+
+use std::borrow::Cow;
 
 use granola::prelude::*;
 
@@ -9,8 +10,12 @@ struct Foo;
 #[derive(Default, Debug, Clone)]
 struct BrokenRecipe;
 
-impl PRecipe for BrokenRecipe {
+impl SpanRecipe for BrokenRecipe {
     type Content = Foo;
+
+    fn bake_content(content: Foo) -> Cow<'static, str> {
+        Cow::from(format!("{:?} Bar", content))
+    }
 }
 
 fn main() {}

@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct SansSerif;
 
 impl FontFamilyRecipe for SansSerif {
+    recipe_boilerplate!();
+
     fn content_recipe(content: &mut Self::Content) {
         *content = "sans-serif".into();
     }

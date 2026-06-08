@@ -1,13 +1,13 @@
 error[E0277]: `NotARecipe` is not a recipe of `ButtonRecipe`
-  --> tests/ui/not_a_recipe_cookbook.rs:18:19
+  --> tests/ui/not_a_recipe_cookbook.rs:20:19
    |
-18 |     let _button = HtmlButton::<Cookbook>::from_cookbook();
-   |                   ^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonRecipe`
+20 |     let _button = HtmlButton::from(cookbook);
+   |                   ^^^^^^^^^^ all recipes must implement `ButtonRecipe`
    |
 help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe`
-  --> tests/ui/not_a_recipe_cookbook.rs:13:1
+  --> tests/ui/not_a_recipe_cookbook.rs:15:1
    |
-13 | struct NotARecipe;
+15 | struct NotARecipe;
    | ^^^^^^^^^^^^^^^^^
    = help: the following other types implement trait `granola::html::ButtonRecipe`:
              ()
@@ -22,17 +22,13 @@ help: the trait `granola::html::ButtonRecipe` is not implemented for `NotARecipe
    = note: required for `(NotARecipe, granola::recipes::Center)` to implement `granola::html::ButtonRecipe`
    = note: 2 redundant requirements hidden
    = note: required for `(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))` to implement `granola::html::ButtonRecipe`
-note: required by a bound in `granola::html::HtmlButton`
-  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
-   |
-   | pub struct HtmlButton<R: ButtonRecipe = ()> {
-   |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton`
+   = note: required for `granola::html::HtmlButton<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>` to implement `From<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>`
 
 error[E0277]: `granola::recipes::Center` is not a recipe of `ButtonRecipe`
-  --> tests/ui/not_a_recipe_cookbook.rs:18:19
+  --> tests/ui/not_a_recipe_cookbook.rs:20:19
    |
-18 |     let _button = HtmlButton::<Cookbook>::from_cookbook();
-   |                   ^^^^^^^^^^^^^^^^^^^^^^ all recipes must implement `ButtonRecipe`
+20 |     let _button = HtmlButton::from(cookbook);
+   |                   ^^^^^^^^^^ all recipes must implement `ButtonRecipe`
    |
    = help: the trait `granola::html::ButtonRecipe` is not implemented for `granola::recipes::Center`
    = help: the following other types implement trait `granola::html::ButtonRecipe`:
@@ -48,34 +44,4 @@ error[E0277]: `granola::recipes::Center` is not a recipe of `ButtonRecipe`
    = note: required for `(NotARecipe, granola::recipes::Center)` to implement `granola::html::ButtonRecipe`
    = note: 2 redundant requirements hidden
    = note: required for `(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))` to implement `granola::html::ButtonRecipe`
-note: required by a bound in `granola::html::HtmlButton`
-  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
-   |
-   | pub struct HtmlButton<R: ButtonRecipe = ()> {
-   |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton`
-
-error[E0599]: the associated function or constant `from_cookbook` exists for struct `granola::html::HtmlButton<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>`, but its trait bounds were not satisfied
-  --> tests/ui/not_a_recipe_cookbook.rs:18:43
-   |
-13 | struct NotARecipe;
-   | ----------------- doesn't satisfy `NotARecipe: granola::html::ButtonRecipe`
-...
-18 |     let _button = HtmlButton::<Cookbook>::from_cookbook();
-   |                                           ^^^^^^^^^^^^^ associated function or constant cannot be called due to unsatisfied trait bounds
-   |
-  ::: $WORKSPACE/crates/granola/src/recipes/css/properties/center.rs
-   |
-   | pub struct Center;
-   | ----------------- doesn't satisfy `_: ButtonRecipe`
-   |
-   = note: the following trait bounds were not satisfied:
-           `NotARecipe: granola::html::ButtonRecipe`
-           which is required by `(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center))): granola::html::ButtonRecipe`
-           `granola::recipes::Center: granola::html::ButtonRecipe`
-           which is required by `(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center))): granola::html::ButtonRecipe`
-note: the trait `granola::html::ButtonRecipe` must be implemented
-  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
-   |
-   | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-   |                                                    ^^^^^^
-   = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: required for `granola::html::HtmlButton<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>` to implement `From<(granola::recipes::FormmethodGet, (SomeRecipe, (NotARecipe, granola::recipes::Center)))>`
