@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 #[derive(Clone)]
 pub struct Palette {
     pub source: String,
@@ -8,8 +10,8 @@ pub struct Palette {
 }
 
 impl Palette {
-    pub fn from_hex(hex: &str) -> Self {
-        let base_srgb = sRGB::from(hex);
+    pub fn from_hex(hex: &str) -> Option<Self> {
+        let base_srgb: sRGB = hex.parse().ok()?;
         let base_linear_rgb = LinearRGB::from(base_srgb);
         let base_oklab = Oklab::from(&base_linear_rgb);
         let base_oklch = Oklch::from(base_oklab);
@@ -22,7 +24,7 @@ impl Palette {
 
         let step = if is_dark { 0.03 } else { -0.03 };
 
-        Self {
+        Some(Self {
             source: hex.to_string(),
             base_100: base_oklch.to_css(),
             base_200: Oklch {
@@ -43,7 +45,7 @@ impl Palette {
                 h: base_oklch.h,
             }
             .to_css(),
-        }
+        })
     }
 }
 
@@ -157,20 +159,25 @@ struct sRGB {
 }
 
 // #RRGGBB hex -> 0-255 u8 -> 0-1 f64
-impl From<&str> for sRGB {
-    fn from(hex: &str) -> Self {
-        let hex = hex.strip_prefix('#').unwrap();
-        let r = u8::from_str_radix(&hex[0..2], 16).unwrap() as f64 / 255.0;
-        let g = u8::from_str_radix(&hex[2..4], 16).unwrap() as f64 / 255.0;
-        let b = u8::from_str_radix(&hex[4..6], 16).unwrap() as f64 / 255.0;
+impl FromStr for sRGB {
+    type Err = &'static str;
 
-        Self { r, g, b }
+    fn from_str(hex: &str) -> Result<Self, Self::Err> {
+        let hex = hex.strip_prefix('#').ok_or("missing '#' prefix")?;
+        if hex.len() != 6 || !hex.is_ascii() {
+            return Err("expected 6 hex digits");
+        }
+
+        let channel = |i: usize| {
+            u8::from_str_radix(&hex[i..i + 2], 16)
+                .map(|c| c as f64 / 255.0)
+                .map_err(|_| "invalid hex digit")
+        };
+
+        Ok(Self {
+            r: channel(0)?,
+            g: channel(2)?,
+            b: channel(4)?,
+        })
     }
-}
-
-pub fn is_valid_hex(s: &str) -> bool {
-    let Some(s) = s.trim().strip_prefix('#') else {
-        return false;
-    };
-    s.len() == 6 && s.chars().all(|c| c.is_ascii_hexdigit())
 }

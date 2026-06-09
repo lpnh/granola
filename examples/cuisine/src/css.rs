@@ -1,8 +1,9 @@
 use std::sync::LazyLock;
+use strum::IntoEnumIterator;
 
 use granola::{macros::*, prelude::*, recipes::*};
 
-/// The stylesheet url.
+/// A stylesheet paired with its content-hashed URL.
 ///
 /// The URL embeds a hash of the content, so it changes if and only if the CSS
 /// changes. Combined with a long-lived `immutable` policy, a returning visitor
@@ -10,17 +11,74 @@ use granola::{macros::*, prelude::*, recipes::*};
 /// brand-new URL that misses the cache and is fetched fresh.
 ///
 /// See: [Cache Busting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#cache_busting)
-pub static STYLESHEET_URL: LazyLock<String> = LazyLock::new(|| {
-    format!(
-        "/static/style.{:016x}.css",
-        seahash::hash(STATIC_STYLESHEET.as_bytes())
-    )
+struct BakedStylesheet {
+    body: String,
+    url: String,
+}
+
+impl BakedStylesheet {
+    fn new<R: StylesheetRecipe>(name: &str, baked_stylesheet: CssStylesheet<R>) -> Self {
+        let body = baked_stylesheet.bake();
+
+        let url = format!("/static/{name}.{:016x}.css", seahash::hash(body.as_bytes()));
+
+        Self { body, url }
+    }
+}
+
+#[derive(strum::EnumIter, Clone, Copy)]
+pub enum Stylesheet {
+    Cuisine,
+    // resets
+    AndyBell,
+    JoshWComeau,
+    ModernNormalize,
+    Preflight,
+}
+
+impl Stylesheet {
+    pub fn preload() {
+        Self::iter().for_each(|s| {
+            s.baked();
+        });
+    }
+
+    pub fn body(self) -> &'static str {
+        &self.baked().body
+    }
+
+    pub fn url(self) -> &'static str {
+        &self.baked().url
+    }
+
+    pub fn link(self) -> HtmlLink<RelStylesheet> {
+        HtmlLink::from(RelStylesheet).href(self.url())
+    }
+
+    fn baked(self) -> &'static BakedStylesheet {
+        match self {
+            Self::Cuisine => &CUISINE,
+            Self::AndyBell => &ANDY_BELL,
+            Self::JoshWComeau => &JOSH_W_COMEAU,
+            Self::ModernNormalize => &MODERN_NORMALIZE,
+            Self::Preflight => &PREFLIGHT,
+        }
+    }
+}
+
+static CUISINE: LazyLock<BakedStylesheet> =
+    LazyLock::new(|| BakedStylesheet::new("cuisine", cuisine_stylesheet()));
+static ANDY_BELL: LazyLock<BakedStylesheet> =
+    LazyLock::new(|| BakedStylesheet::new("andy_bell", CssStylesheet::from(AndyBell)));
+static JOSH_W_COMEAU: LazyLock<BakedStylesheet> =
+    LazyLock::new(|| BakedStylesheet::new("josh_w_comeau", CssStylesheet::from(JoshWComeau)));
+static MODERN_NORMALIZE: LazyLock<BakedStylesheet> = LazyLock::new(|| {
+    BakedStylesheet::new("modern_normalize", CssStylesheet::from(ModernNormalize))
 });
+static PREFLIGHT: LazyLock<BakedStylesheet> =
+    LazyLock::new(|| BakedStylesheet::new("preflight", CssStylesheet::from(Preflight)));
 
-/// The static stylesheet with the layout CSS content.
-pub static STATIC_STYLESHEET: LazyLock<String> = LazyLock::new(|| stylesheet().bake());
-
-fn stylesheet() -> CssStylesheet {
+fn cuisine_stylesheet() -> CssStylesheet {
     stylesheet!(
         rule!(":root", ("--border", "1px")),
         rule!(
@@ -28,42 +86,41 @@ fn stylesheet() -> CssStylesheet {
             declarations_block![
                 CssBackgroundColor::new().content("var(--base-100)"),
                 CssColor::new().content("var(--base-content)"),
-                CssFontFamily::<SansSerif>::from_cookbook().bake_recipe(),
-                CssDisplay::<Flex>::from_cookbook(),
-                CssJustifyContent::<Center>::from_cookbook(),
-                CssAlignItems::<Center>::from_cookbook().bake_recipe(),
-                CssMinHeight::new().content("100vh"),
-                CssMargin::new().content("0"),
+                CssDisplay::from(Flex),
+                CssFlexDirection::from(Column),
+                CssAlignItems::from(Center),
+                CssGap::new().content("2rem"),
             ]
         ),
         rule!(
             ".palette",
             declarations_block![
                 CssBackground::new().content("var(--base-200)"),
+                CssDisplay::from(Flex),
+                CssFlexDirection::from(Column),
+                CssAlignItems::from(Center),
+                CssGap::new().content("1.5rem"),
                 CssPadding::new().content("2rem"),
-                CssBorderRadius::new().content("8px"),
                 CssBoxShadow::new()
                     .content("0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",),
-                CssTextAlign::<Center>::from_cookbook(),
+                CssTextAlign::from(Center),
             ]
         ),
         rule!(
             ".swatches",
             declarations_block![
-                CssDisplay::<Flex>::from_cookbook(),
-                CssFlexDirection::<Column>::from_cookbook(),
+                CssDisplay::from(Flex),
                 CssGap::new().content("1rem"),
-                CssJustifyContent::<Center>::from_cookbook(),
-                CssMargin::new().content("1.5rem 0"),
-                CssFlexWrap::<Wrap>::from_cookbook(),
+                CssJustifyContent::from(Center),
+                CssFlexWrap::from(Wrap),
             ]
         ),
         rule!(
             ".swatch",
             declarations_block![
-                CssDisplay::<Flex>::from_cookbook(),
-                CssFlexDirection::<Column>::from_cookbook(),
-                CssAlignItems::<Center>::from_cookbook().bake_recipe(),
+                CssDisplay::from(Flex),
+                CssFlexDirection::from(Column),
+                CssAlignItems::from(Center),
                 CssGap::new().content("0.25rem"),
             ]
         ),
@@ -72,7 +129,6 @@ fn stylesheet() -> CssStylesheet {
             declarations_block![
                 CssWidth::new().content("64px"),
                 CssHeight::new().content("64px"),
-                CssBorderRadius::new().content("8px"),
                 CssBoxShadow::new().content(
                     r#"/* TODO: fix formatting */
   0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000),
@@ -83,38 +139,28 @@ fn stylesheet() -> CssStylesheet {
         ),
         rule!(
             simple_selector!(".swatch").descendant("p"),
-            declarations_block![
-                CssFontSize::new().content("0.75rem"),
-                CssMargin::new().content("0"),
-            ]
-        ),
-        rule!(
-            simple_selector!(".swatch")
-                .descendant("p")
-                .descendant("code"),
-            CssFontSize::new().content("0.7rem")
+            CssFontSize::new().content("0.75rem"),
         ),
         rule!(
             simple_selector!(".palette").descendant("form"),
             declarations_block![
-                CssDisplay::<Flex>::from_cookbook(),
+                CssDisplay::from(Flex),
                 CssGap::new().content("0.5rem"),
-                CssJustifyContent::<Center>::from_cookbook(),
-                CssAlignItems::from(Center).bake_recipe(),
-                CssMarginTop::new().content("1rem"),
+                CssJustifyContent::from(Center),
+                CssAlignItems::from(Center),
             ]
         ),
     )
 }
 
 #[cfg(test)]
-mod palette_tests {
-    use super::stylesheet;
+mod cuisine_tests {
+    use super::cuisine_stylesheet;
 
     #[test]
     fn stylesheet_test() {
         assert_eq!(
-            stylesheet().bake(),
+            cuisine_stylesheet().bake(),
             r#":root {
   --border: 1px;
 }
@@ -122,28 +168,27 @@ mod palette_tests {
 body {
   background-color: var(--base-100);
   color: var(--base-content);
-  font-family: sans-serif;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  margin: 0;
+  gap: 2rem;
 }
 
 .palette {
   background: var(--base-200);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
   padding: 2rem;
-  border-radius: 8px;
   box-shadow: 0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000);
   text-align: center;
 }
 
 .swatches {
   display: flex;
-  flex-direction: column;
   gap: 1rem;
   justify-content: center;
-  margin: 1.5rem 0;
   flex-wrap: wrap;
 }
 
@@ -157,7 +202,6 @@ body {
 .square {
   width: 64px;
   height: 64px;
-  border-radius: 8px;
   box-shadow: /* TODO: fix formatting */
     0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000),
     0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset,
@@ -166,11 +210,6 @@ body {
 
 .swatch p {
   font-size: 0.75rem;
-  margin: 0;
-}
-
-.swatch p code {
-  font-size: 0.7rem;
 }
 
 .palette form {
@@ -178,7 +217,6 @@ body {
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
 }"#
         );
     }
