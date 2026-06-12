@@ -94,7 +94,8 @@ impl Parse for RecipeArgs {
 ///   `content(content)` constructor, and a required `bake_content` method
 ///   mapping `Content` back into the default content type `T`.
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
-///   `event_handlers`: the matching `Has*` impl.
+///   `event_handlers`, `global_svg_attrs`, `paint_attrs`, `shape_attrs`,
+///   `text_content_attrs`: the matching `Has*` impl.
 #[proc_macro_derive(Recipe, attributes(recipe))]
 pub fn recipe_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -256,7 +257,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // `Has*` impls for HTML-specific fields.
+    // HTML
     let global_attrs_impl = if has_field("global_attrs") {
         quote! {
             impl<#type_param: #trait_name> crate::html::HasGlobalAttrs
@@ -303,6 +304,60 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             {
                 fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
                     &mut self.event_handlers
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+
+    // SVG
+    let global_svg_attrs_impl = if has_field("global_svg_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::svg::HasGlobalSvgAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn global_svg_attrs_mut(&mut self) -> &mut crate::svg::GlobalSvgAttrs {
+                    &mut self.global_svg_attrs
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+    let paint_attrs_impl = if has_field("paint_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::svg::HasPaintAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn paint_attrs_mut(&mut self) -> &mut crate::svg::PaintAttrs {
+                    &mut self.paint_attrs
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+    let shape_attrs_impl = if has_field("shape_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::svg::HasShapeAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn shape_attrs_mut(&mut self) -> &mut crate::svg::ShapeAttrs {
+                    &mut self.shape_attrs
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+    let text_content_attrs_impl = if has_field("text_content_attrs") {
+        quote! {
+            impl<#type_param: #trait_name> crate::svg::HasTextContentAttrs
+                for #struct_name #ty_generics #where_clause
+            {
+                fn text_content_attrs_mut(&mut self) -> &mut crate::svg::TextContentAttrs {
+                    &mut self.text_content_attrs
                 }
             }
         }
@@ -362,6 +417,11 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         #global_aria_attrs_impl
         #custom_data_attrs_impl
         #event_handlers_impl
+
+        #global_svg_attrs_impl
+        #paint_attrs_impl
+        #shape_attrs_impl
+        #text_content_attrs_impl
 
         impl #struct_name<()> {
             #new_method

@@ -8,10 +8,11 @@ pub mod homemade;
 pub mod html;
 pub mod oven;
 pub mod recipes;
+pub mod svg;
 pub mod template;
 
 pub mod prelude {
-    pub use super::{Granola, Recipe, css::*, html::*, oven::BakeRecipe, recipes};
+    pub use super::{Granola, Recipe, css::*, html::*, oven::BakeRecipe, recipes, svg::*};
     pub use crate::{
         bake_block, bake_inline, bake_newline, cookbook, cookbook_type, recipe_boilerplate,
     };
@@ -34,4 +35,6 @@ pub mod macros {
         select, slot, small, source, span, strong, style, sub, summary, sup, table, tbody, td,
         template, textarea, tfoot, th, thead, time, title, tr, track, u, ul, var, video, wbr,
     };
+    // svg
+    pub use crate::{path, rect, svg, text};
 }
