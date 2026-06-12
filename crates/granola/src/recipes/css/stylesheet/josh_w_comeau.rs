@@ -1,6 +1,6 @@
-// Based on "A Modern CSS Reset" by Josh W. Comeau
-// Source: https://www.joshwcomeau.com/css/custom-css-reset/
-// Released to the public domain by the author
+//! Based on "A Modern CSS Reset" by Josh W. Comeau
+//! Source: https://www.joshwcomeau.com/css/custom-css-reset/
+//! Released to the public domain by the author
 
 use crate::{prelude::*, recipes::*};
 

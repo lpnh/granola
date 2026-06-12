@@ -1,6 +1,6 @@
-// Based on `preflight.css` by Tailwind Labs, Inc.
-// Source: https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/preflight.css
-// Licensed under MIT License (https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
+//! Based on `preflight.css` by Tailwind Labs, Inc.
+//! Source: https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/preflight.css
+//! Licensed under MIT License (https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
 
 use crate::{prelude::*, recipes::*};
 

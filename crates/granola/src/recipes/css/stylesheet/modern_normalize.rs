@@ -1,6 +1,6 @@
-// Based on modern-normalize v3.0.1 by Sindre Sorhus
-// Source: https://github.com/sindresorhus/modern-normalize
-// Licensed under MIT License (https://github.com/sindresorhus/modern-normalize/blob/main/license)
+//! Based on modern-normalize v3.0.1 by Sindre Sorhus
+//! Source: https://github.com/sindresorhus/modern-normalize
+//! Licensed under MIT License (https://github.com/sindresorhus/modern-normalize/blob/main/license)
 
 use crate::{prelude::*, recipes::*};
 
