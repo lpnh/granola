@@ -99,6 +99,24 @@ pub struct HtmlRootContent {
     pub body: Option<HtmlBody>,
 }
 
+impl<H: HeadRecipe, B: BodyRecipe> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRoot {
+    fn from(html_root_content: (HtmlHead<H>, HtmlBody<B>)) -> Self {
+        Self::new().content(HtmlRootContent::from(html_root_content))
+    }
+}
+
+impl<H: HeadRecipe> From<HtmlHead<H>> for HtmlRoot {
+    fn from(head: HtmlHead<H>) -> Self {
+        Self::new().content(HtmlRootContent::from(head))
+    }
+}
+
+impl<B: BodyRecipe> From<HtmlBody<B>> for HtmlRoot {
+    fn from(body: HtmlBody<B>) -> Self {
+        Self::new().content(HtmlRootContent::from(body))
+    }
+}
+
 impl<H: HeadRecipe, B: BodyRecipe> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRootContent {
     fn from((head, body): (HtmlHead<H>, HtmlBody<B>)) -> Self {
         Self {

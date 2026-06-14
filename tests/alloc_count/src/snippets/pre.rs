@@ -56,7 +56,8 @@ pub fn pre_example() -> (Stats, Stats) {
     (opt, naive)
 }
 
-const FERRIS: &str = r#" __________________________
+const FERRIS: &str = r#"
+ __________________________
 &lt; Hello fellow Rustaceans! &gt;
  --------------------------
         \
@@ -64,4 +65,5 @@ const FERRIS: &str = r#" __________________________
             _~^~^~_
         \) /  o o  \ (/
           '_   -   _'
-          / '-----' \"#;
+          / '-----' \
+"#;

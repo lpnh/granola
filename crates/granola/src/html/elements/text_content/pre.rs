@@ -29,7 +29,8 @@ use crate::{filters, prelude::*};
 ///             _~^~^~_
 ///         \) /  o o  \ (/
 ///           '_   -   _'
-///           / '-----' \"#;
+///           / '-----' \
+/// "#;
 ///
 /// let pre = HtmlPre::new()
 ///     .content(ferris_ascii)
@@ -109,7 +110,8 @@ pub struct HtmlPre<R: PreRecipe = ()> {
 ///             _~^~^~_
 ///         \) /  o o  \ (/
 ///           '_   -   _'
-///           / '-----' \"#;
+///           / '-----' \
+/// "#;
 ///
 /// let pre = pre!(ferris_ascii).role("img").aria_label("ASCII ferris");
 ///

@@ -12,7 +12,7 @@ use crate::{prelude::*, recipes::*};
 /// # Example
 ///
 /// ```rust
-/// use granola::{prelude::*, recipes::*, template::*};
+/// use granola::{prelude::*, recipes::*};
 ///
 /// let image_icon = Svg::from(MaterialSymbols);
 ///

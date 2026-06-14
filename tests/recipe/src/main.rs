@@ -1,6 +1,23 @@
-use granola::{homemade::*, prelude::*, template::*};
+use granola::{homemade::*, prelude::*};
 
 type DefaultContent = std::borrow::Cow<'static, str>;
+
+type Cookbook = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
+
+#[derive(Default, Debug, Clone)]
+struct PageRecipe;
+
+impl HtmlDocumentRecipe for PageRecipe {
+    type Content = HtmlRoot<Cookbook>;
+
+    fn bake_content(content: Self::Content) -> HtmlRoot {
+        content.bake_recipe()
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = HtmlRoot::<Cookbook>::from_cookbook();
+    }
+}
 
 #[derive(Default, Debug, Clone)]
 struct FooRecipe;
@@ -121,11 +138,9 @@ impl ButtonRecipe for OneLastRecipe {
 }
 
 fn main() {
-    type TmplCookbook = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
+    let page = HtmlDocument::from(PageRecipe);
 
-    let tmpl: TmplBase<TmplCookbook> = TmplBase::from_cookbook();
-
-    println!("{tmpl}");
+    println!("{page}");
 }
 
 #[cfg(test)]
@@ -358,12 +373,10 @@ mod recipe_tests {
 
     #[test]
     fn template() {
-        type TmplCookbook = cookbook_type![Homemade, FooRecipe, BarRecipe, OneLastRecipe];
-
-        let tmpl: TmplBase<TmplCookbook> = TmplBase::from_cookbook();
+        let page = HtmlDocument::from(PageRecipe);
 
         assert_eq!(
-            tmpl.bake(),
+            page.bake(),
             r#"<!doctype html>
 <html class="dark" id="bar-html" data-foo="bar" data-recipe="last">
   <head>

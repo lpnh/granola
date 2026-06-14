@@ -1,19 +1,19 @@
 use askama::Template;
 use std::borrow::Cow;
 
-use crate::{prelude::*, recipes::*, template::*};
+use crate::{prelude::*, recipes::*};
 
-/// The homemade recipe for the [`TmplBase`] template.
+/// The homemade recipe for the [`HtmlDocument`] template.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*, template::*};
+/// use granola::{homemade::*, prelude::*};
 ///
-/// let tmpl: TmplBase<Homemade> = TmplBase::from_cookbook();
+/// let page = HtmlDocument::from(Homemade);
 ///
 /// assert_eq!(
-///     tmpl.bake(),
+///     page.bake(),
 ///     r#"<!doctype html>
 /// <html>
 ///   <head>
@@ -26,7 +26,7 @@ use crate::{prelude::*, recipes::*, template::*};
 /// ```
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*, recipes::*, template::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let meta = HtmlMeta::from(NameRobots).content("noindex, nofollow");
 /// let title = HtmlTitle::new().content("Home");
@@ -38,15 +38,15 @@ use crate::{prelude::*, recipes::*, template::*};
 ///
 /// let body = HtmlBody::new().content(bake_newline!("Hello, world!"));
 ///
-/// let tmpl = TmplBase::<Homemade>::from_cookbook()
-///     .content(body)
+/// let page = HtmlDocument::from(Homemade)
 ///     .lang("en")
 ///     .push_meta(meta)
 ///     .push_title(title)
-///     .push_style(style);
+///     .push_style(style)
+///     .body(body);
 ///
 /// assert_eq!(
-///     tmpl.bake(),
+///     page.bake(),
 ///     r#"<!doctype html>
 /// <html lang="en">
 ///   <head>
@@ -69,6 +69,18 @@ use crate::{prelude::*, recipes::*, template::*};
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Homemade;
+
+impl HtmlDocumentRecipe for Homemade {
+    type Content = HtmlRoot<Homemade>;
+
+    fn bake_content(content: Self::Content) -> HtmlRoot {
+        content.bake_recipe()
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = HtmlRoot::from(Homemade);
+    }
+}
 
 impl HtmlRecipe for Homemade {
     type Content = HomemadeRootContent;
@@ -112,8 +124,8 @@ impl From<HomemadeRootContent> for HtmlRootContent {
 impl From<HtmlBody> for HomemadeRootContent {
     fn from(body: HtmlBody) -> Self {
         Self {
-            head: HtmlHead::from(Homemade),
             body: Some(body),
+            ..Default::default()
         }
     }
 }
@@ -132,6 +144,33 @@ impl HeadRecipe for Homemade {
                 .content("width=device-width, initial-scale=1")
                 .bake_recipe(),
         );
+    }
+}
+
+impl HtmlRoot<Homemade> {
+    pub fn push_meta<R: MetaRecipe>(&mut self, meta: HtmlMeta<R>) -> &mut Self {
+        self.content.head.content.meta.push(meta.bake_recipe());
+        self
+    }
+
+    pub fn push_title<R: TitleRecipe>(&mut self, title: HtmlTitle<R>) -> &mut Self {
+        self.content.head.content.title = Some(title.bake_recipe());
+        self
+    }
+
+    pub fn push_link<R: LinkRecipe>(&mut self, link: HtmlLink<R>) -> &mut Self {
+        self.content.head.content.link.push(link.bake_recipe());
+        self
+    }
+
+    pub fn push_style<R: StyleRecipe>(&mut self, style: HtmlStyle<R>) -> &mut Self {
+        self.content.head.content.style.push(style.bake_recipe());
+        self
+    }
+
+    pub fn body<R: BodyRecipe>(&mut self, body: HtmlBody<R>) -> &mut Self {
+        self.content.body = Some(body.bake_recipe());
+        self
     }
 }
 
@@ -162,44 +201,34 @@ pub struct HomemadeHeadContent {
     pub style: Vec<HtmlStyle>,
 }
 
-impl TmplBase<Homemade> {
+impl HtmlDocument<Homemade> {
     pub fn lang(mut self, lang: impl Into<Cow<'static, str>>) -> Self {
-        self.html_root = self.html_root.lang(lang);
+        self.content = self.content.lang(lang);
         self
     }
 
     pub fn push_meta<R: MetaRecipe>(mut self, meta: HtmlMeta<R>) -> Self {
-        self.html_root
-            .content
-            .head
-            .content
-            .meta
-            .push(meta.bake_recipe());
+        self.content.push_meta(meta);
         self
     }
 
     pub fn push_title<R: TitleRecipe>(mut self, title: HtmlTitle<R>) -> Self {
-        self.html_root.content.head.content.title = Some(title.bake_recipe());
+        self.content.push_title(title);
         self
     }
 
     pub fn push_link<R: LinkRecipe>(mut self, link: HtmlLink<R>) -> Self {
-        self.html_root
-            .content
-            .head
-            .content
-            .link
-            .push(link.bake_recipe());
+        self.content.push_link(link);
         self
     }
 
     pub fn push_style<R: StyleRecipe>(mut self, style: HtmlStyle<R>) -> Self {
-        self.html_root
-            .content
-            .head
-            .content
-            .style
-            .push(style.bake_recipe());
+        self.content.push_style(style);
+        self
+    }
+
+    pub fn body<R: BodyRecipe>(mut self, body: HtmlBody<R>) -> Self {
+        self.content.body(body);
         self
     }
 }

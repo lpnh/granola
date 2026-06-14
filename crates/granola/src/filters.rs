@@ -7,6 +7,9 @@ use std::fmt::{self, Display, Formatter, Write};
 /// - Has newline: indent the content, ensuring it's enclosed by newlines
 ///     - Blank lines, i.e. `\n` or `\r\n`, pass through without indentation
 ///     - The indentation is capped at 16
+///
+/// If `indent_width == 0`, i.e. `kire(0)`, the content is rendered as-is,
+/// skipping the block decision entirely.
 #[askama::filter_fn]
 pub fn kirei<S: FastWritable>(
     source: S,
@@ -60,6 +63,10 @@ impl<S: FastWritable> Display for Kirei<S> {
 
 impl<S: FastWritable> FastWritable for Kirei<S> {
     fn write_into(&self, dest: &mut dyn Write, values: &dyn Values) -> askama::Result<()> {
+        if self.indent_width == 0 {
+            return self.source.write_into(dest, values);
+        }
+
         let mut writer = KireiWriter::new(dest, self.indent_width);
 
         self.source.write_into(&mut writer, values)?;
@@ -458,33 +465,49 @@ mod kirei_block_tests {
 }
 
 #[cfg(test)]
-mod kirei_indent_tests {
+mod kirei_zero_tests {
     use super::test_util::kirei;
 
     #[test]
-    fn no_indent_zero_arg() {
-        assert_eq!(kirei("hello\nworld", 0), "\nhello\nworld\n");
+    fn inline() {
+        let hello_world = "hello world";
+        assert_eq!(kirei(hello_world, 0), hello_world);
     }
 
     #[test]
-    fn leading_indent_zero_arg() {
-        assert_eq!(kirei("    hello\nworld", 0), "\n    hello\nworld\n");
+    fn newline() {
+        let hello_world = "hello\nworld";
+        assert_eq!(kirei(hello_world, 0), hello_world);
     }
 
     #[test]
-    fn leading_indent_zero_arg_2() {
-        assert_eq!(kirei("hello\n    world", 0), "\nhello\n    world\n");
+    fn leading_indent() {
+        let hello_world = "    hello\nworld";
+        assert_eq!(kirei(hello_world, 0), hello_world);
     }
 
     #[test]
-    fn trailing_indent_zero_arg() {
-        assert_eq!(kirei("hello    \nworld", 0), "\nhello    \nworld\n");
+    fn leading_indent_2() {
+        let hello_world = "hello\n    world";
+        assert_eq!(kirei(hello_world, 0), hello_world);
     }
 
     #[test]
-    fn trailing_indent_zero_arg_2() {
-        assert_eq!(kirei("hello\nworld    ", 0), "\nhello\nworld    \n");
+    fn trailing_indent() {
+        let hello_world = "hello    \nworld";
+        assert_eq!(kirei(hello_world, 0), hello_world);
     }
+
+    #[test]
+    fn trailing_indent_2() {
+        let hello_world = "hello\nworld    ";
+        assert_eq!(kirei(hello_world, 0), hello_world);
+    }
+}
+
+#[cfg(test)]
+mod kirei_indent_tests {
+    use super::test_util::kirei;
 
     #[test]
     fn leading_indent() {

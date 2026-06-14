@@ -212,8 +212,8 @@ mod alloc_tests {
     #[test]
     fn pre_example() {
         let (opt, naive) = super::pre_example();
-        assert_eq!((opt.allocs, opt.bytes), (12, 1454));
-        assert_eq!((naive.allocs, naive.bytes), (15, 1672));
+        assert_eq!((opt.allocs, opt.bytes), (10, 1260));
+        assert_eq!((naive.allocs, naive.bytes), (13, 1310));
     }
 
     #[test]
@@ -278,8 +278,8 @@ mod alloc_tests_empty {
     #[test]
     fn pre_empty() {
         let (opt, naive) = super::pre_empty();
-        assert_eq!((opt.allocs, opt.bytes), (6, 120));
-        assert_eq!((naive.allocs, naive.bytes), (8, 169));
+        assert_eq!((opt.allocs, opt.bytes), (5, 112));
+        assert_eq!((naive.allocs, naive.bytes), (7, 161));
     }
 
     #[test]

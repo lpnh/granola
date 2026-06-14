@@ -1,16 +1,16 @@
-use granola::{homemade::Homemade, macros::*, prelude::*, recipes::MethodPost, template::TmplBase};
+use granola::{homemade::Homemade, macros::*, prelude::*, recipes::MethodPost};
 
 use crate::{css::Stylesheet, handlers::Reset, utils::Palette};
 
-pub fn home_page(palette: Palette, reset: Reset) -> TmplBase<Homemade> {
+pub fn home_page(palette: Palette, reset: Reset) -> HtmlDocument<Homemade> {
     let body = body!(reset_div(reset), palette_div(&palette));
 
     let title = title!("cuisine example");
 
-    let mut page = TmplBase::<Homemade>::from_cookbook()
-        .content(body)
+    let mut page = HtmlDocument::from(Homemade)
         .lang("en")
-        .push_title(title);
+        .push_title(title)
+        .body(body);
 
     if let Some(stylesheet) = reset.stylesheet() {
         page = page.push_link(stylesheet.link());

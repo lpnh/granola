@@ -9,7 +9,6 @@ pub mod html;
 pub mod oven;
 pub mod recipes;
 pub mod svg;
-pub mod template;
 
 pub mod prelude {
     pub use super::{Granola, Recipe, css::*, html::*, oven::BakeRecipe, recipes, svg::*};
