@@ -1,0 +1,15 @@
+---
+source: tests/alloc/src/main.rs
+---
+             snippet  allocs     churn      peak
+             -------  ------     -----      ----
+          stylesheet       7       903       870
+                rule       6       775       762
+             at_rule       6       391       299
+  declarations_block       5       312       288
+      selectors_list       3       488       488
+         declaration       3        69        60
+       type_selector       1         8         8
+     simple_selector       1         8         8
+   compound_selector       3       120       120
+    complex_selector       2       332       332

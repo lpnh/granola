@@ -25,3 +25,8 @@ unused_qualifications = "warn"
 # https://doc.rust-lang.org/cargo/reference/profiles.html?highlight=share-generics#overrides
 [profile.dev.package."*"]
 opt-level = 3
+
+# cachegrind (Axis 3, tests/cpu) needs symbols to attribute instructions;
+# profiles only live at the workspace root.
+[profile.bench]
+debug = true

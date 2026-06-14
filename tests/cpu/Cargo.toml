@@ -1,0 +1,21 @@
+[package]
+name = "cpu"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+corpus = { path = "../corpus" }
+granola = { path = "../../crates/granola" }
+
+[dev-dependencies]
+gungraun = { version = "0.19.2", features = ["cachegrind"] }
+
+[lints]
+workspace = true
+
+[[bench]]
+name = "cpu"
+harness = false

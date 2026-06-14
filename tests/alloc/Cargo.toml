@@ -1,5 +1,5 @@
 [package]
-name = "alloc_count"
+name = "alloc"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -7,8 +7,11 @@ repository.workspace = true
 publish = false
 
 [dependencies]
-askama = { workspace = true }
+corpus = { path = "../corpus" }
 granola = { path = "../../crates/granola" }
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+insta = "1.48.0"
