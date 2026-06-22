@@ -31,9 +31,8 @@ use crate::{filters, prelude::*};
 /// assert_eq!(
 ///     colgroup.bake(),
 ///     r#"<colgroup>
-///   <col class="item" />
-///   <col class="description" />
-/// </colgroup>"#
+///     <col class="item" />
+///     <col class="description" /></colgroup>"#
 /// );
 /// ```
 ///
@@ -46,7 +45,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</colgroup>
+/// >{{ content | kirei }}</colgroup>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -132,9 +131,8 @@ impl<R: ColgroupRecipe> HasColgroupAttrs for HtmlColgroup<R> {
 /// assert_eq!(
 ///     colgroup.bake(),
 ///     r#"<colgroup>
-///   <col class="item" />
-///   <col class="description" />
-/// </colgroup>"#
+///     <col class="item" />
+///     <col class="description" /></colgroup>"#
 /// );
 /// ```
 #[macro_export]

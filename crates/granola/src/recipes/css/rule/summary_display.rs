@@ -10,10 +10,11 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(SummaryDisplay);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "summary {
 ///   display: list-item;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

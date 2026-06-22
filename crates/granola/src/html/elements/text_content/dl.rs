@@ -24,26 +24,26 @@ use crate::{filters, prelude::*};
 /// let dd_1 =
 ///     HtmlDd::new().content("A longing for a home that no longer exists, or perhaps never did.");
 ///
-/// let group_1 = bake_block![dt_1, dd_1];
+/// let group_1 = bake![dt_1, dd_1];
 ///
 /// let dt_2 = HtmlDt::new().content("Pålegg");
 /// let dd_2 = HtmlDd::new().content("Anything and everything you might put on a slice of bread.");
 ///
-/// let group_2 = bake_block![dt_2, dd_2];
+/// let group_2 = bake![dt_2, dd_2];
 ///
-/// let list = bake_block![group_1, "", group_2];
+/// let list = bake![group_1, "", group_2];
 ///
 /// let dl = HtmlDl::new().content(list);
 ///
 /// assert_eq!(
-///     dl.bake(),
+///     dl.bake_pretty(),
 ///     r#"<dl>
 ///   <dt>Hiraeth</dt>
 ///   <dd>A longing for a home that no longer exists, or perhaps never did.</dd>
-///
 ///   <dt>Pålegg</dt>
 ///   <dd>Anything and everything you might put on a slice of bread.</dd>
-/// </dl>"#
+/// </dl>
+/// "#
 /// );
 /// ```
 ///
@@ -55,7 +55,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</dl>
+/// >{{ content | kirei }}</dl>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -90,24 +90,24 @@ pub struct HtmlDl<R: DlRecipe = ()> {
 /// let dt_1 = dt!("Hiraeth");
 /// let dd_1 = dd!("A longing for a home that no longer exists, or perhaps never did.");
 ///
-/// let group_1 = bake_block![dt_1, dd_1];
+/// let group_1 = bake![dt_1, dd_1];
 ///
 /// let dt_2 = dt!("Pålegg");
 /// let dd_2 = dd!("Anything and everything you might put on a slice of bread.");
 ///
-/// let group_2 = bake_block![dt_2, dd_2];
+/// let group_2 = bake![dt_2, dd_2];
 ///
 /// let dl = dl!(group_1, "", group_2);
 ///
 /// assert_eq!(
-///     dl.bake(),
+///     dl.bake_pretty(),
 ///     r#"<dl>
 ///   <dt>Hiraeth</dt>
 ///   <dd>A longing for a home that no longer exists, or perhaps never did.</dd>
-///
 ///   <dt>Pålegg</dt>
 ///   <dd>Anything and everything you might put on a slice of bread.</dd>
-/// </dl>"#
+/// </dl>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -119,15 +119,9 @@ macro_rules! dl {
         $crate::html::HtmlDl::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDl::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDl::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlDl::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDl::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDl::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -135,12 +129,6 @@ macro_rules! dl {
         $crate::html::HtmlDl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlDl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

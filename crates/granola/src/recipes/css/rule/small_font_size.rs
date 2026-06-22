@@ -10,10 +10,11 @@ use crate::prelude::*;
 /// let rule = CssRule::from(SmallFontSize);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "small {
 ///   font-size: 80%;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

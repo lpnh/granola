@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// letter-spacing: {{ content | kirei(0) }};
+/// letter-spacing: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = LetterSpacingRecipe, content = Cow<'static, str>)]

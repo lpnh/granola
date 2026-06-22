@@ -34,7 +34,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// padding: {{ content | kirei(0) }};
+/// padding: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = PaddingRecipe, content = Cow<'static, str>)]

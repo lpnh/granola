@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// flex-wrap: {{ content | kirei(0) }};
+/// flex-wrap: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = FlexWrapRecipe, content = Cow<'static, str>)]

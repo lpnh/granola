@@ -16,12 +16,7 @@ use crate::prelude::*;
 ///     .selectors_list("p")
 ///     .declarations_block(("color", "rebeccapurple"));
 ///
-/// assert_eq!(
-///     css_rule.bake(),
-///     "p {
-///   color: rebeccapurple;
-/// }"
-/// );
+/// assert_eq!(css_rule.bake(), "p { color: rebeccapurple; }");
 /// ```
 ///
 /// ```rust
@@ -37,12 +32,7 @@ use crate::prelude::*;
 ///     .selectors_list(css_selector_list)
 ///     .declarations_block(css_declarations_block);
 ///
-/// assert_eq!(
-///     css_rule.bake(),
-///     "p {
-///   color: rgb(102, 51, 153);
-/// }"
-/// );
+/// assert_eq!(css_rule.bake(), "p { color: rgb(102, 51, 153); }");
 /// ```
 ///
 /// ```rust
@@ -60,22 +50,22 @@ use crate::prelude::*;
 ///     .declarations_block(css_declarations_block);
 ///
 /// assert_eq!(
-///     css_rule.bake(),
+///     css_rule.bake_pretty(),
 ///     ":root {
 ///   --base-100: oklch(93% 0.076 100.4);
 ///   --base-200: oklch(90% 0.086 100.4);
-/// }"
+/// }
+/// "
 /// );
 /// ```
 ///
 /// # Askama template
 ///
 /// ```askama
-/// {{ selectors_list }} {
-///   {{ declarations_block | indent(2) }}
-/// }
+/// {{ selectors_list }} { {{ declarations_block }} }
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[granola(format = css)]
 #[recipe(name = RuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssRule<R: RuleRecipe = ()> {
@@ -128,12 +118,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 ///
 /// let css_rule = rule!("p", ("color", "rebeccapurple"));
 ///
-/// assert_eq!(
-///     css_rule.bake(),
-///     "p {
-///   color: rebeccapurple;
-/// }"
-/// );
+/// assert_eq!(css_rule.bake(), "p { color: rebeccapurple; }");
 /// ```
 ///
 /// ```rust
@@ -143,12 +128,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 ///     .selectors_list("p")
 ///     .declarations_block(("color", "rgb(102, 51, 153)"));
 ///
-/// assert_eq!(
-///     css_rule.bake(),
-///     "p {
-///   color: rgb(102, 51, 153);
-/// }"
-/// );
+/// assert_eq!(css_rule.bake(), "p { color: rgb(102, 51, 153); }");
 /// ```
 ///
 /// ```rust
@@ -162,26 +142,12 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 /// );
 ///
 /// assert_eq!(
-///     css_rule.bake(),
+///     css_rule.bake_pretty(),
 ///     ":root {
 ///   --base-100: oklch(93% 0.076 100.4);
 ///   --base-200: oklch(90% 0.086 100.4);
-/// }"
-/// );
-/// ```
-///
-/// ```rust
-/// use granola::{recipes::*, macros::*, prelude::*};
-///
-/// let rule = rule!(@cookbook BoxSizingReset);
-///
-/// assert_eq!(
-///     rule.bake(),
-///     "*,
-/// ::after,
-/// ::before {
-///   box-sizing: border-box;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[macro_export]
@@ -192,6 +158,7 @@ macro_rules! rule {
     ($sel:expr, $decl:expr $(,)?) => {
         $crate::css::CssRule::new().selectors_list($sel).declarations_block($decl)
     };
+
     (@selectors $sel:expr ; @declarations $first_decl:expr $(, $rest_decl:expr)+ $(,)?) => {
         $crate::css::CssRule::new().selectors_list($sel).declarations_block([$first_decl $(, $rest_decl)*])
     };
@@ -201,6 +168,7 @@ macro_rules! rule {
     (@selectors $first_sel:expr $(, $rest_sel:expr)+ ; @declarations $first_decl:expr $(, $rest_decl:expr)+ $(,)?) => {
         $crate::css::CssRule::new().selectors_list([$first_sel $(, $rest_sel)*]).declarations_block([$first_decl $(, $rest_decl)*])
     };
+
     (@cookbook $($r:ty),+) => {
         $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

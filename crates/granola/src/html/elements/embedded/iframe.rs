@@ -20,11 +20,14 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let iframe = HtmlIframe::new().src("https://w.wiki/LJK7")
+/// let iframe = HtmlIframe::new()
+///     .src("https://w.wiki/LJK7")
 ///     .title("Pedestrians crossing an intersection.");
 ///
-/// assert_eq!(iframe.bake(),
-/// r#"<iframe title="Pedestrians crossing an intersection." src="https://w.wiki/LJK7"></iframe>"#);
+/// assert_eq!(
+///     iframe.bake(),
+///     r#"<iframe title="Pedestrians crossing an intersection." src="https://w.wiki/LJK7"></iframe>"#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -36,7 +39,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</iframe>
+/// >{{ content | kirei }}</iframe>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -237,19 +240,13 @@ macro_rules! iframe {
         $crate::html::HtmlIframe::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlIframe::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlIframe::new().content($crate::bake![$first $(, $rest)*])
     };
 
     (@src $src:expr $(,)?) => {
         $crate::html::HtmlIframe::from_src($src)
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlIframe::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlIframe::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlIframe::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -257,12 +254,6 @@ macro_rules! iframe {
         $crate::html::HtmlIframe::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlIframe::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlIframe::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlIframe::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlIframe::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

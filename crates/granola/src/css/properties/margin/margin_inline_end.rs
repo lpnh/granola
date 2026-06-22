@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// margin-inline-end: {{ content | kirei(0) }};
+/// margin-inline-end: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = MarginInlineEndRecipe, content = Cow<'static, str>)]

@@ -30,11 +30,7 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     ingredients.bake(),
-///     r#"<ul>
-///   <li>sugar</li>
-///   <li>spice</li>
-///   <li>everything nice</li>
-/// </ul>"#
+///     r#"<ul><li>sugar</li><li>spice</li><li>everything nice</li></ul>"#
 /// );
 /// ```
 ///
@@ -46,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</ul>
+/// >{{ content | kirei }}</ul>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -85,11 +81,7 @@ pub struct HtmlUl<R: UlRecipe = ()> {
 ///
 /// assert_eq!(
 ///     ingredients.bake(),
-///     r#"<ul>
-///   <li>sugar</li>
-///   <li>spice</li>
-///   <li>everything nice</li>
-/// </ul>"#
+///     r#"<ul><li>sugar</li><li>spice</li><li>everything nice</li></ul>"#
 /// );
 /// ```
 ///
@@ -103,10 +95,7 @@ pub struct HtmlUl<R: UlRecipe = ()> {
 ///
 /// assert_eq!(
 ///     ingredients.bake(),
-///     r#"<ul>
-///   <li>sugar</li>
-///   <li>spice</li>
-/// </ul>"#
+///     r#"<ul><li>sugar</li><li>spice</li></ul>"#
 /// );
 /// ```
 #[macro_export]

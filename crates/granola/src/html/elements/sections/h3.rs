@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let panic = HtmlCode::new().content("panic!");
 ///
-/// let content = bake_inline!["Unrecoverable Errors with ", panic];
+/// let content = bake!["Unrecoverable Errors with ", panic];
 ///
 /// let h3 = HtmlH3::new().content(content);
 ///
@@ -40,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</h3>
+/// >{{ content | kirei }}</h3>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -74,10 +74,12 @@ pub struct HtmlH3<R: H3Recipe = ()> {
 ///
 /// let panic = code!("panic!");
 ///
-/// let h3 = h3!(@inline "Unrecoverable Errors with ", panic);
+/// let h3 = h3!("Unrecoverable Errors with ", panic);
 ///
-/// assert_eq!(h3.bake(),
-/// r#"<h3>Unrecoverable Errors with <code>panic!</code></h3>"#);
+/// assert_eq!(
+///     h3.bake(),
+///     r#"<h3>Unrecoverable Errors with <code>panic!</code></h3>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! h3 {
@@ -88,15 +90,9 @@ macro_rules! h3 {
         $crate::html::HtmlH3::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlH3::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlH3::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlH3::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlH3::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlH3::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -104,12 +100,6 @@ macro_rules! h3 {
         $crate::html::HtmlH3::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlH3::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlH3::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlH3::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlH3::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

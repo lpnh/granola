@@ -31,12 +31,7 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     technologic.bake(),
-///     r#"<menu>
-///   <li>Buy</li>
-///   <li>Use</li>
-///   <li>Break</li>
-///   <li>Fix</li>
-/// </menu>"#
+///     r#"<menu><li>Buy</li><li>Use</li><li>Break</li><li>Fix</li></menu>"#
 /// );
 /// ```
 ///
@@ -48,7 +43,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</menu>
+/// >{{ content | kirei }}</menu>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -87,12 +82,7 @@ pub struct HtmlMenu<R: MenuRecipe = ()> {
 ///
 /// assert_eq!(
 ///     technologic.bake(),
-///     r#"<menu>
-///   <li>Buy</li>
-///   <li>Use</li>
-///   <li>Break</li>
-///   <li>Fix</li>
-/// </menu>"#
+///     r#"<menu><li>Buy</li><li>Use</li><li>Break</li><li>Fix</li></menu>"#
 /// );
 /// ```
 ///
@@ -103,12 +93,7 @@ pub struct HtmlMenu<R: MenuRecipe = ()> {
 ///
 /// assert_eq!(
 ///     technologic.bake(),
-///     r#"<menu>
-///   <li>Write</li>
-///   <li>Cut</li>
-///   <li>Paste</li>
-///   <li>Save</li>
-/// </menu>"#
+///     r#"<menu><li>Write</li><li>Cut</li><li>Paste</li><li>Save</li></menu>"#
 /// );
 /// ```
 #[macro_export]

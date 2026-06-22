@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// font-family: {{ content | kirei(0) }};
+/// font-family: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = FontFamilyRecipe, content = Cow<'static, str>)]

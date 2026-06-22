@@ -25,14 +25,17 @@ use crate::{filters, prelude::*};
 ///     .media("(width >= 600px)");
 /// let img = HtmlImg::new().src("logo-narrow.png").alt("logo");
 ///
-/// let picture = HtmlPicture::new().content(bake_block![source, img]);
+/// let picture = HtmlPicture::new().fold_in(source).fold_in(img);
 ///
 /// assert_eq!(
-///     picture.bake(),
+///     picture.bake_pretty(),
 ///     r#"<picture>
-///   <source srcset="logo-wide.png" media="(width >= 600px)" />
-///   <img src="logo-narrow.png" alt="logo" />
-/// </picture>"#
+///   <source srcset="logo-wide.png" media="(width >= 600px)" /><img
+///     src="logo-narrow.png"
+///     alt="logo"
+///   />
+/// </picture>
+/// "#
 /// );
 /// ```
 ///
@@ -44,7 +47,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</picture>
+/// >{{ content | kirei }}</picture>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -79,11 +82,14 @@ pub struct HtmlPicture<R: PictureRecipe = ()> {
 /// let picture = picture!(source, img);
 ///
 /// assert_eq!(
-///     picture.bake(),
+///     picture.bake_pretty(),
 ///     r#"<picture>
-///   <source srcset="logo-wide.png" media="(width >= 600px)" />
-///   <img src="logo-narrow.png" alt="logo" />
-/// </picture>"#
+///   <source srcset="logo-wide.png" media="(width >= 600px)" /><img
+///     src="logo-narrow.png"
+///     alt="logo"
+///   />
+/// </picture>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -95,15 +101,9 @@ macro_rules! picture {
         $crate::html::HtmlPicture::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlPicture::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlPicture::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlPicture::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlPicture::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -111,12 +111,6 @@ macro_rules! picture {
         $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlPicture::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

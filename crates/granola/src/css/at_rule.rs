@@ -33,11 +33,16 @@ use crate::prelude::*;
 ///     .block(block);
 ///
 /// assert_eq!(
-///     at_rule.bake(),
+///     at_rule.bake_pretty(),
 ///     "@keyframes slide-in {
-///   from { transform: translateX(0%); }
-///   to { transform: translateX(100%); }
-/// }"
+///   from {
+///     transform: translateX(0%);
+///   }
+///   to {
+///     transform: translateX(100%);
+///   }
+/// }
+/// "
 /// );
 /// ```
 ///
@@ -45,13 +50,12 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// @{{ identifier }} {{ rule }}
-/// {%- if let Some(b) = block %} {
-///   {{ b | indent(2) }}
-/// }
+/// {%- if let Some(b) = block %} { {{ b }} }
 /// {%- else %};
-/// {%- endif %}
+/// {%- endif -%}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[granola(format = css)]
 #[recipe(name = AtRuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssAtRule<R: AtRuleRecipe = ()> {
@@ -111,11 +115,16 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
 /// let at_rule = at_rule!("keyframes", "slide-in").block(block);
 ///
 /// assert_eq!(
-///     at_rule.bake(),
+///     at_rule.bake_pretty(),
 ///     "@keyframes slide-in {
-///   from { transform: translateX(0%); }
-///   to { transform: translateX(100%); }
-/// }"
+///   from {
+///     transform: translateX(0%);
+///   }
+///   to {
+///     transform: translateX(100%);
+///   }
+/// }
+/// "
 /// );
 /// ```
 #[macro_export]

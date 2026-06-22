@@ -31,7 +31,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// font: {{ content | kirei(0) }};
+/// font: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = FontRecipe, content = Cow<'static, str>)]

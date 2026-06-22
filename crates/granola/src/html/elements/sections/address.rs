@@ -27,16 +27,17 @@ use crate::{filters, prelude::*};
 ///     .content("contact@holmes.co.uk")
 ///     .href("mailto:contact@holmes.co.uk");
 ///
-/// let content = bake_block!["221B Baker St, London NW1 6XE ·", mail];
+/// let content = bake!["221B Baker St, London NW1 6XE ·", mail];
 ///
 /// let address = HtmlAddress::new().content(content);
 ///
 /// assert_eq!(
-///     address.bake(),
+///     address.bake_pretty(),
 ///     r#"<address>
-///   221B Baker St, London NW1 6XE ·
-///   <a href="mailto:contact@holmes.co.uk">contact@holmes.co.uk</a>
-/// </address>"#
+///   221B Baker St, London NW1 6XE ·<a href="mailto:contact@holmes.co.uk"
+///   >contact@holmes.co.uk</a>
+/// </address>
+/// "#
 /// );
 /// ```
 ///
@@ -48,7 +49,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</address>
+/// >{{ content | kirei }}</address>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -88,11 +89,12 @@ pub struct HtmlAddress<R: AddressRecipe = ()> {
 /// let address = address!("221B Baker St, London NW1 6XE ·", mail);
 ///
 /// assert_eq!(
-///     address.bake(),
+///     address.bake_pretty(),
 ///     r#"<address>
-///   221B Baker St, London NW1 6XE ·
-///   <a href="mailto:contact@holmes.co.uk">contact@holmes.co.uk</a>
-/// </address>"#
+///   221B Baker St, London NW1 6XE ·<a href="mailto:contact@holmes.co.uk"
+///   >contact@holmes.co.uk</a>
+/// </address>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -104,15 +106,9 @@ macro_rules! address {
         $crate::html::HtmlAddress::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlAddress::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlAddress::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlAddress::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlAddress::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlAddress::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -120,12 +116,6 @@ macro_rules! address {
         $crate::html::HtmlAddress::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlAddress::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlAddress::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlAddress::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlAddress::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

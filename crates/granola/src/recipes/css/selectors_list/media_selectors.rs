@@ -9,14 +9,7 @@ use crate::prelude::*;
 ///
 /// let selectors_list = CssSelectorsList::from(MediaSelectors);
 ///
-/// assert_eq!(
-///     selectors_list.bake(),
-///     "canvas,
-/// img,
-/// picture,
-/// svg,
-/// video"
-/// );
+/// assert_eq!(selectors_list.bake(), "canvas, img, picture, svg, video");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct MediaSelectors;

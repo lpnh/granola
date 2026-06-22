@@ -26,15 +26,16 @@ use crate::{filters, prelude::*};
 ///     .content("width=device-width");
 /// let title = HtmlTitle::new().content("Document title");
 ///
-/// let head = HtmlHead::new().content(bake_block![charset, viewport, title]);
+/// let head = HtmlHead::new().fold_in(charset).fold_in(viewport).fold_in(title);
 ///
 /// assert_eq!(
-///     head.bake(),
+///     head.bake_pretty(),
 ///     r#"<head>
 ///   <meta charset="utf-8" />
 ///   <meta name="viewport" content="width=device-width" />
 ///   <title>Document title</title>
-/// </head>"#
+/// </head>
+/// "#
 /// );
 /// ```
 ///
@@ -46,7 +47,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</head>
+/// >{{ content | kirei }}</head>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -82,12 +83,13 @@ pub struct HtmlHead<R: HeadRecipe = ()> {
 /// let head = head![charset, viewport, title];
 ///
 /// assert_eq!(
-///     head.bake(),
+///     head.bake_pretty(),
 ///     r#"<head>
 ///   <meta charset="utf-8" />
 ///   <meta name="viewport" content="width=device-width" />
 ///   <title>Document title</title>
-/// </head>"#
+/// </head>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -99,13 +101,7 @@ macro_rules! head {
         $crate::html::HtmlHead::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlHead::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlHead::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlHead::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHead::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -114,12 +110,6 @@ macro_rules! head {
         $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

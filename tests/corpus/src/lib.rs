@@ -45,12 +45,9 @@ pub fn article() -> HtmlArticle {
 
 pub fn aside() -> HtmlAside {
     let tip = HtmlStrong::new().content("Tip:");
-    let content =
-        HtmlP::new().content(bake_inline![tip, " trust your senses more than the timer."]);
+    let content = HtmlP::new().content(bake![tip, " trust your senses more than the timer."]);
 
-    HtmlAside::new()
-        .content(bake_newline!(content))
-        .role("note")
+    HtmlAside::new().content(content).role("note")
 }
 
 pub fn audio() -> HtmlAudio {
@@ -62,7 +59,7 @@ pub fn b() -> String {
     let water = HtmlB::new().content("water");
     let salt = HtmlB::new().content("salt");
 
-    bake_inline!["Mix ", flour, ", ", water, ", and ", salt, "."]
+    bake!["Mix ", flour, ", ", water, ", and ", salt, "."]
 }
 
 pub fn base() -> HtmlBase {
@@ -72,7 +69,7 @@ pub fn base() -> HtmlBase {
 pub fn bdi() -> String {
     let gal = HtmlBdi::new().content("גל גדות");
 
-    bake_inline![gal, " liked your post"]
+    bake![gal, " liked your post"]
 }
 
 pub fn bdo() -> HtmlBdo {
@@ -95,13 +92,13 @@ pub fn blockquote() -> HtmlBlockquote {
 }
 
 pub fn body() -> HtmlBody {
-    HtmlBody::new().content(bake_newline!("flow content"))
+    HtmlBody::new().content("flow content")
 }
 
 pub fn br() -> HtmlP {
     let br = HtmlBr::new();
 
-    let roses = bake_inline!["Roses are red,", br];
+    let roses = bake!["Roses are red,", br];
     let violets = "Violets are blue.";
 
     HtmlP::new().content(bake_block![roses, violets])
@@ -109,7 +106,7 @@ pub fn br() -> HtmlP {
 
 pub fn button() -> HtmlButton {
     HtmlButton::new()
-        .content(bake_newline!("Add to favorites"))
+        .content("Add to favorites")
         .button_type(ButtonType::Button)
         .name("favorite")
 }
@@ -181,7 +178,7 @@ pub fn dd() -> String {
 
 pub fn del() -> HtmlDel {
     HtmlDel::new()
-        .content(bake_newline!("try!"))
+        .content("try!")
         .datetime("2019-11-07")
         .cite("https://github.com/rust-lang/rust/pull/62672")
 }
@@ -195,7 +192,7 @@ pub fn details() -> HtmlDetails {
 pub fn dfn() -> HtmlP {
     let corro = HtmlDfn::new().content("Corro");
 
-    let about = bake_inline![corro, " the Unsafe Rusturchin"];
+    let about = bake![corro, " the Unsafe Rusturchin"];
 
     HtmlP::new().content(about)
 }
@@ -261,7 +258,7 @@ pub fn dt() -> String {
 pub fn em() -> String {
     let owned = HtmlEm::new().content("owned");
 
-    bake_inline!["I never said he ", owned, " it."]
+    bake!["I never said he ", owned, " it."]
 }
 
 pub fn embed() -> HtmlEmbed {
@@ -308,7 +305,7 @@ pub fn footer() -> HtmlFooter {
     let content = HtmlSmall::new().content("&copy; 2026 Oats &amp; Ends Café");
     let paragraph = HtmlP::new().content(content);
 
-    HtmlFooter::new().content(bake_newline!(paragraph))
+    HtmlFooter::new().content(paragraph)
 }
 
 pub fn form() -> HtmlForm {
@@ -332,7 +329,7 @@ pub fn h2() -> HtmlH2 {
 pub fn h3() -> HtmlH3 {
     let panic = HtmlCode::new().content("panic!");
 
-    let content = bake_inline!["Unrecoverable Errors with ", panic];
+    let content = bake!["Unrecoverable Errors with ", panic];
 
     HtmlH3::new().content(content)
 }
@@ -354,7 +351,7 @@ pub fn head() -> HtmlHead {
 pub fn header() -> HtmlHeader {
     let logo = HtmlA::new().content("Oats &amp; Ends").href("/");
 
-    HtmlHeader::new().content(bake_newline!(logo))
+    HtmlHeader::new().content(logo)
 }
 
 pub fn hgroup() -> HtmlHgroup {
@@ -382,7 +379,7 @@ pub fn hr() -> String {
 pub fn i() -> String {
     let voila = HtmlI::new().content("voilà");
 
-    bake_inline!["and ", voila, "!"]
+    bake!["and ", voila, "!"]
 }
 
 pub fn iframe() -> HtmlIframe {
@@ -406,7 +403,7 @@ pub fn input() -> HtmlInput {
 
 pub fn ins() -> HtmlIns {
     HtmlIns::new()
-        .content(bake_newline!("?"))
+        .content("?")
         .datetime("2016-11-10")
         .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13")
 }
@@ -468,7 +465,7 @@ pub fn mark() -> String {
     let br = HtmlBr::new();
 
     bake_block![
-        bake_inline!["Seem ", but_the_clouds, " of the sky"],
+        bake!["Seem ", but_the_clouds, " of the sky"],
         br,
         "When the horizon fades;",
         br,
@@ -495,7 +492,7 @@ pub fn meta() -> HtmlMeta {
 
 pub fn meter() -> HtmlMeter {
     HtmlMeter::new()
-        .content(bake_newline!("12%"))
+        .content("12%")
         .value(12.)
         .min(0.)
         .max(100.)
@@ -512,9 +509,9 @@ pub fn nav() -> HtmlNav {
     let note = HtmlA::new().content("note").href("/contact");
 
     let content = bake_block![
-        bake_inline!["You can find us at ", location, "."],
-        bake_inline!["Everything we make and love is on ", menu, "."],
-        bake_inline!["Have a thought? Send us a ", note, "."],
+        bake!["You can find us at ", location, "."],
+        bake!["Everything we make and love is on ", menu, "."],
+        bake!["Have a thought? Send us a ", note, "."],
     ];
 
     let p = HtmlP::new().content(content);
@@ -614,14 +611,12 @@ pub fn progress() -> HtmlProgress {
 
 pub fn q() -> HtmlQ {
     HtmlQ::new()
-        .content(bake_newline!(
-            "This element is intended for short quotations"
-        ))
+        .content("This element is intended for short quotations")
         .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q")
 }
 
 pub fn root() -> HtmlRoot {
-    let body = HtmlBody::new().content(bake_newline!("flow content"));
+    let body = HtmlBody::new().content("flow content");
 
     HtmlRoot::new().content(body).lang("en")
 }
@@ -631,7 +626,7 @@ pub fn rp() -> String {
     let rt = HtmlRt::new().content("tori");
     let closing_rp = HtmlRp::new().content(")");
 
-    bake_inline![opening_rp, rt, closing_rp]
+    bake![opening_rp, rt, closing_rp]
 }
 
 pub fn rt() -> HtmlRt {
@@ -643,7 +638,7 @@ pub fn ruby() -> HtmlRuby {
     let rt = HtmlRt::new().content("とり");
     let closing_rp = HtmlRp::new().content(")");
 
-    let tori = bake_inline!["鳥", opening_rp, rt, closing_rp];
+    let tori = bake!["鳥", opening_rp, rt, closing_rp];
 
     HtmlRuby::new().content(tori)
 }
@@ -651,7 +646,7 @@ pub fn ruby() -> HtmlRuby {
 pub fn s() -> String {
     let nine = HtmlS::new().content("nine");
 
-    bake_inline!["Our solar system has ", nine, " eight planets"]
+    bake!["Our solar system has ", nine, " eight planets"]
 }
 
 pub fn samp() -> HtmlSamp {
@@ -659,7 +654,7 @@ pub fn samp() -> HtmlSamp {
 }
 
 pub fn script() -> HtmlScript {
-    HtmlScript::new().content(bake_newline!(r#"alert("Hello, world!");"#))
+    HtmlScript::new().content(r#"alert("Hello, world!");"#)
 }
 
 pub fn search() -> HtmlSearch {
@@ -733,7 +728,7 @@ pub fn style() -> HtmlStyle {
 pub fn sub() -> String {
     let sub = HtmlSub::new().content("2");
 
-    bake_inline!["H", sub, "O"]
+    bake!["H", sub, "O"]
 }
 
 pub fn summary() -> HtmlSummary {
@@ -743,7 +738,7 @@ pub fn summary() -> HtmlSummary {
 pub fn sup() -> String {
     let sup = HtmlSup::new().content("e");
 
-    bake_inline!["100", sup, " anniversaire"]
+    bake!["100", sup, " anniversaire"]
 }
 
 pub fn table() -> HtmlTable {
@@ -776,7 +771,7 @@ pub fn table() -> HtmlTable {
     let td_foot = HtmlTd::new()
         .content("Don't see what you're after? We'll do our best.")
         .colspan(2);
-    let tr_foot = HtmlTr::new().content(bake_newline!(td_foot));
+    let tr_foot = HtmlTr::new().content(td_foot);
 
     let tfoot = HtmlTfoot::new().content(tr_foot);
 
@@ -808,8 +803,8 @@ pub fn template() -> HtmlTemplate {
     let who_s_there = HtmlP::new().content("Who's there?");
 
     let name_slot = HtmlSlot::new().name("setup");
-    let name_p1 = HtmlP::new().content(bake_inline![name_slot, "."]);
-    let name_p2 = HtmlP::new().content(bake_inline![name_slot, " who?"]);
+    let name_p1 = HtmlP::new().content(bake![name_slot, "."]);
+    let name_p2 = HtmlP::new().content(bake![name_slot, " who?"]);
 
     let punchline_slot = HtmlSlot::new().name("punchline");
     let punchline = HtmlP::new().content(punchline_slot);
@@ -830,7 +825,7 @@ pub fn tfoot() -> HtmlTfoot {
     let td = HtmlTd::new()
         .content("Don't see what you're after? We'll do our best.")
         .colspan(2);
-    let tr = HtmlTr::new().content(bake_newline!(td));
+    let tr = HtmlTr::new().content(td);
 
     HtmlTfoot::new().content(tr)
 }
@@ -875,7 +870,7 @@ pub fn track() -> HtmlTrack {
 pub fn u() -> String {
     let wowwd = HtmlU::new().content("world");
 
-    bake_inline!["hewwo, ", wowwd, "!"]
+    bake!["hewwo, ", wowwd, "!"]
 }
 
 pub fn ul() -> HtmlUl {
@@ -891,7 +886,7 @@ pub fn ul() -> HtmlUl {
 pub fn var() -> String {
     let var = HtmlVar::new().content("a");
 
-    bake_inline!["An equilateral triangle with side ", var]
+    bake!["An equilateral triangle with side ", var]
 }
 
 pub fn video() -> HtmlVideo {
@@ -989,7 +984,7 @@ pub fn document_homemade() -> HtmlDocument<Homemade> {
         .declarations_block([("height", "100vh"), ("margin", "0")]);
     let style = HtmlStyle::new().content(css_rule);
 
-    let body = HtmlBody::new().content(bake_newline!("Hello, world!"));
+    let body = HtmlBody::new().content("Hello, world!");
 
     HtmlDocument::from(Homemade)
         .lang("en")

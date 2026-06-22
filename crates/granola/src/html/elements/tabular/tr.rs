@@ -23,14 +23,11 @@ use crate::{filters, prelude::*};
 /// let th = HtmlTh::new().content("Hot chocolate").scope("row");
 /// let td = HtmlTd::new().content("Melted dark chocolate with milk");
 ///
-/// let tr = HtmlTr::new().content(bake_block![th, td]);
+/// let tr = HtmlTr::new().fold_in(th).fold_in(td);
 ///
 /// assert_eq!(
 ///     tr.bake(),
-///     r#"<tr>
-///   <th scope="row">Hot chocolate</th>
-///   <td>Melted dark chocolate with milk</td>
-/// </tr>"#
+///     r#"<tr><th scope="row">Hot chocolate</th><td>Melted dark chocolate with milk</td></tr>"#
 /// );
 /// ```
 ///
@@ -42,7 +39,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</tr>
+/// >{{ content | kirei }}</tr>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -64,8 +61,8 @@ pub struct HtmlTr<R: TrRecipe = ()> {
 /// The content of [`HtmlTbody`], [`HtmlTfoot`], or [`HtmlThead`].
 ///
 /// ```askama
-/// {%- for tr in items %}
-/// {{ tr -}}
+/// {%- for tr in items -%}
+///     {{ tr }}
 /// {%- endfor -%}
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
@@ -110,10 +107,7 @@ impl From<HtmlTr> for TableRows {
 ///
 /// assert_eq!(
 ///     tr.bake(),
-///     r#"<tr>
-///   <th scope="row">Hot chocolate</th>
-///   <td>Melted dark chocolate with milk</td>
-/// </tr>"#
+///     r#"<tr><th scope="row">Hot chocolate</th><td>Melted dark chocolate with milk</td></tr>"#
 /// );
 /// ```
 #[macro_export]
@@ -125,15 +119,9 @@ macro_rules! tr {
         $crate::html::HtmlTr::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTr::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTr::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlTr::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlTr::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlTr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -141,12 +129,6 @@ macro_rules! tr {
         $crate::html::HtmlTr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlTr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlTr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTr::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

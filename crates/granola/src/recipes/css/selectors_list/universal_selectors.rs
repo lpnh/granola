@@ -9,12 +9,7 @@ use crate::{prelude::*, recipes::*};
 ///
 /// let list = CssSelectorsList::from(UniversalSelectors);
 ///
-/// assert_eq!(
-///     list.bake(),
-///     "*,
-/// ::after,
-/// ::before"
-/// );
+/// assert_eq!(list.bake(), "*, ::after, ::before");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct UniversalSelectors;

@@ -24,12 +24,11 @@ use crate::{filters, prelude::*};
 /// let dd =
 ///     HtmlDd::new().content("A longing for a home that no longer exists, or perhaps never did.");
 ///
-/// let term = bake_block![dt, dd];
+/// let term = bake![dt, dd];
 ///
 /// assert_eq!(
 ///     term,
-///     r#"<dt>Hiraeth</dt>
-/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#
+///     r#"<dt>Hiraeth</dt><dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#
 /// );
 /// ```
 ///
@@ -41,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</dd>
+/// >{{ content | kirei }}</dd>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -73,12 +72,11 @@ pub struct HtmlDd<R: DdRecipe = ()> {
 /// let dt = dt!("Hiraeth");
 /// let dd = dd!("A longing for a home that no longer exists, or perhaps never did.");
 ///
-/// let term = bake_block![dt, dd];
+/// let term = bake![dt, dd];
 ///
 /// assert_eq!(
 ///     term,
-///     r#"<dt>Hiraeth</dt>
-/// <dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#
+///     r#"<dt>Hiraeth</dt><dd>A longing for a home that no longer exists, or perhaps never did.</dd>"#
 /// );
 /// ```
 #[macro_export]
@@ -90,13 +88,7 @@ macro_rules! dd {
         $crate::html::HtmlDd::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDd::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlDd::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDd::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDd::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDd::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -105,12 +97,6 @@ macro_rules! dd {
         $crate::html::HtmlDd::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDd::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlDd::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDd::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDd::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

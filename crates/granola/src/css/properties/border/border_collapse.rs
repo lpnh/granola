@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// border-collapse: {{ content | kirei(0) }};
+/// border-collapse: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = BorderCollapseRecipe, content = Cow<'static, str>)]

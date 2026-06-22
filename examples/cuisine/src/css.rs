@@ -129,12 +129,7 @@ fn cuisine_stylesheet() -> CssStylesheet {
             declarations_block![
                 CssWidth::new().content("64px"),
                 CssHeight::new().content("64px"),
-                CssBoxShadow::new().content(
-                    r#"/* TODO: fix formatting */
-  0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000),
-  0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset,
-  0 -1px oklch(100% 0 0 / 0.1) inset"#,
-                ),
+                CssBoxShadow::new().content("0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000), 0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
             ]
         ),
         rule!(
@@ -161,63 +156,7 @@ mod cuisine_tests {
     fn stylesheet_test() {
         assert_eq!(
             cuisine_stylesheet().bake(),
-            r#":root {
-  --border: 1px;
-}
-
-body {
-  background-color: var(--base-100);
-  color: var(--base-content);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-
-.palette {
-  background: var(--base-200);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000);
-  text-align: center;
-}
-
-.swatches {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.swatch {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.square {
-  width: 64px;
-  height: 64px;
-  box-shadow: /* TODO: fix formatting */
-    0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000),
-    0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset,
-    0 -1px oklch(100% 0 0 / 0.1) inset;
-}
-
-.swatch p {
-  font-size: 0.75rem;
-}
-
-.palette form {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
-}"#
+            r#":root { --border: 1px; } body { background-color: var(--base-100); color: var(--base-content); display: flex; flex-direction: column; align-items: center; gap: 2rem; } .palette { background: var(--base-200); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 2rem; box-shadow: 0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000); text-align: center; } .swatches { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; } .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; } .square { width: 64px; height: 64px; box-shadow: 0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000), 0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset; } .swatch p { font-size: 0.75rem; } .palette form { display: flex; gap: 0.5rem; justify-content: center; align-items: center; }"#
         );
     }
 }

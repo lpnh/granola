@@ -10,17 +10,14 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(UniversalReset);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     "*,
-/// ::after,
-/// ::before,
-/// ::backdrop,
-/// ::file-selector-button {
+///     rule.bake_pretty(),
+///     "*, ::after, ::before, ::backdrop, ::file-selector-button {
 ///   box-sizing: border-box;
 ///   margin: 0;
 ///   padding: 0;
 ///   border: 0 solid;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

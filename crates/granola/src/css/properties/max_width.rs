@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// max-width: {{ content | kirei(0) }};
+/// max-width: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = MaxWidthRecipe, content = Cow<'static, str>)]

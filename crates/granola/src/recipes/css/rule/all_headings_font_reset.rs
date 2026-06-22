@@ -10,16 +10,12 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(AllHeadingsFontReset);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     "h1,
-/// h2,
-/// h3,
-/// h4,
-/// h5,
-/// h6 {
+///     rule.bake_pretty(),
+///     "h1, h2, h3, h4, h5, h6 {
 ///   font-size: inherit;
 ///   font-weight: inherit;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

@@ -16,71 +16,42 @@ use crate::{prelude::*, recipes::*};
 /// let stylesheet = CssStylesheet::from(JoshWComeau);
 ///
 /// assert_eq!(
-///     stylesheet.bake(),
-///     "*,
-/// ::after,
-/// ::before {
+///     stylesheet.bake_pretty(),
+///     r##"*, ::after, ::before {
 ///   box-sizing: border-box;
 /// }
-///
 /// *:not(dialog) {
 ///   margin: 0;
 /// }
-///
 /// @media (prefers-reduced-motion: no-preference) {
 ///   html {
 ///     interpolate-size: allow-keywords;
 ///   }
 /// }
-///
 /// body {
 ///   line-height: 1.5;
 ///   -webkit-font-smoothing: antialiased;
 /// }
-///
-/// canvas,
-/// img,
-/// picture,
-/// svg,
-/// video {
+/// canvas, img, picture, svg, video {
 ///   display: block;
 ///   max-width: 100%;
 /// }
-///
-/// button,
-/// input,
-/// select,
-/// textarea {
+/// button, input, select, textarea {
 ///   font: inherit;
 /// }
-///
-/// p,
-/// h1,
-/// h2,
-/// h3,
-/// h4,
-/// h5,
-/// h6 {
+/// p, h1, h2, h3, h4, h5, h6 {
 ///   overflow-wrap: break-word;
 /// }
-///
 /// p {
 ///   text-wrap: pretty;
 /// }
-///
-/// h1,
-/// h2,
-/// h3,
-/// h4,
-/// h5,
-/// h6 {
+/// h1, h2, h3, h4, h5, h6 {
 ///   text-wrap: balance;
 /// }
-///
-/// #root,
-/// #__next {
+/// #root, #__next {
 ///   isolation: isolate;
-/// }"
+/// }
+/// "##
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -185,11 +156,8 @@ fn headings_text_wrap() -> CssStatement {
 }
 
 fn root_stacking_context() -> CssStatement {
-    let selectors_list = ["#root", "#__next"];
-    let declarations_block = CssIsolation::from(Isolate);
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list(["#root", "#__next"])
+        .declarations_block(CssIsolation::from(Isolate))
         .into()
 }

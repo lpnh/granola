@@ -21,16 +21,14 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let q = HtmlQ::new()
-///     .content(bake_newline!(
-///         "This element is intended for short quotations"
-///     ))
+///     .content("This element is intended for short quotations")
 ///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
 ///
 /// assert_eq!(
-///     q.bake(),
-///     r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q">
-///   This element is intended for short quotations
-/// </q>"#
+///     q.bake_pretty(),
+///     r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q"
+/// >This element is intended for short quotations</q>
+/// "#
 /// );
 /// ```
 ///
@@ -43,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</q>
+/// >{{ content | kirei }}</q>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -121,13 +119,15 @@ impl<R: QRecipe> HasQAttrs for HtmlQ<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let q = q!(@newline "This element is intended for short quotations")
+/// let q = q!("This element is intended for short quotations")
 ///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q");
 ///
-/// assert_eq!(q.bake(),
-/// r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q">
-///   This element is intended for short quotations
-/// </q>"#);
+/// assert_eq!(
+///     q.bake_pretty(),
+///     r#"<q cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q"
+/// >This element is intended for short quotations</q>
+/// "#
+/// );
 /// ```
 #[macro_export]
 macro_rules! q {
@@ -138,15 +138,9 @@ macro_rules! q {
         $crate::html::HtmlQ::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlQ::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlQ::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlQ::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlQ::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlQ::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -154,12 +148,6 @@ macro_rules! q {
         $crate::html::HtmlQ::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlQ::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlQ::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlQ::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlQ::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

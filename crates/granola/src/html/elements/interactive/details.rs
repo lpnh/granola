@@ -25,14 +25,11 @@ use crate::{filters, prelude::*};
 ///
 /// let summary = HtmlSummary::new().content("Pandora's box");
 ///
-/// let details = HtmlDetails::new().content(bake_block![summary, "Hope"]);
+/// let details = HtmlDetails::new().fold_in(summary).fold_in("Hope");
 ///
 /// assert_eq!(
 ///     details.bake(),
-///     r#"<details>
-///   <summary>Pandora's box</summary>
-///   Hope
-/// </details>"#
+///     r#"<details><summary>Pandora's box</summary>Hope</details>"#
 /// );
 /// ```
 ///
@@ -45,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</details>
+/// >{{ content | kirei }}</details>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -139,10 +136,7 @@ impl<R: DetailsRecipe> HasDetailsAttrs for HtmlDetails<R> {
 ///
 /// assert_eq!(
 ///     details.bake(),
-///     r#"<details>
-///   <summary>Pandora's box</summary>
-///   Hope
-/// </details>"#
+///     r#"<details><summary>Pandora's box</summary>Hope</details>"#
 /// );
 /// ```
 #[macro_export]
@@ -154,15 +148,9 @@ macro_rules! details {
         $crate::html::HtmlDetails::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDetails::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDetails::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlDetails::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDetails::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDetails::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -170,12 +158,6 @@ macro_rules! details {
         $crate::html::HtmlDetails::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDetails::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlDetails::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDetails::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDetails::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

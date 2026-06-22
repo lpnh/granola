@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let sub = HtmlSub::new().content("2");
 ///
-/// let water = bake_inline!["H", sub, "O"];
+/// let water = bake!["H", sub, "O"];
 ///
 /// assert_eq!(water, r#"H<sub>2</sub>O"#);
 /// ```
@@ -35,7 +35,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</sub>
+/// >{{ content | kirei }}</sub>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -69,7 +69,7 @@ pub struct HtmlSub<R: SubRecipe = ()> {
 ///
 /// let sub = sub!("2");
 ///
-/// let water = bake_inline!["H", sub, "O"];
+/// let water = bake!["H", sub, "O"];
 ///
 /// assert_eq!(water, r#"H<sub>2</sub>O"#);
 /// ```
@@ -82,15 +82,9 @@ macro_rules! sub {
         $crate::html::HtmlSub::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSub::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSub::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlSub::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSub::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlSub::<($($r,)+)>::from_cookbook()
     };
@@ -98,12 +92,6 @@ macro_rules! sub {
         $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

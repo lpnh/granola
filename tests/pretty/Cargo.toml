@@ -1,0 +1,17 @@
+[package]
+name = "pretty"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+corpus = { path = "../corpus" }
+granola = { path = "../../crates/granola", features = ["pretty"] }
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+insta = "1.48.0"

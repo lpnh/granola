@@ -30,15 +30,19 @@ use crate::{filters, prelude::*};
 ///     .content("That is the question")
 ///     .for_id("chbx");
 ///
-/// let fieldset = HtmlFieldset::new().content(bake_block![legend, input, label]);
+/// let fieldset = HtmlFieldset::new().content(bake![legend, input, label]);
 ///
 /// assert_eq!(
-///     fieldset.bake(),
+///     fieldset.bake_pretty(),
 ///     r#"<fieldset>
-///   <legend>To be, or not to be?</legend>
-///   <input id="chbx" type="checkbox" name="to-be" value="dunno" />
-///   <label for="chbx">That is the question</label>
-/// </fieldset>"#
+///   <legend>To be, or not to be?</legend><input
+///     id="chbx"
+///     type="checkbox"
+///     name="to-be"
+///     value="dunno"
+///   /><label for="chbx">That is the question</label>
+/// </fieldset>
+/// "#
 /// );
 /// ```
 ///
@@ -51,7 +55,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</fieldset>
+/// >{{ content | kirei }}</fieldset>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -152,7 +156,8 @@ impl<R: FieldsetRecipe> HasFieldsetAttrs for HtmlFieldset<R> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let legend = legend!("To be, or not to be?");
-/// let input = input!(@type "checkbox")
+/// let input = input!()
+///     .input_type("checkbox")
 ///     .id("chbx")
 ///     .name("to-be")
 ///     .value("dunno");
@@ -160,12 +165,18 @@ impl<R: FieldsetRecipe> HasFieldsetAttrs for HtmlFieldset<R> {
 ///
 /// let fieldset = fieldset![legend, input, label];
 ///
-/// assert_eq!(fieldset.bake(),
-/// r#"<fieldset>
-///   <legend>To be, or not to be?</legend>
-///   <input id="chbx" type="checkbox" name="to-be" value="dunno" />
-///   <label for="chbx">That is the question</label>
-/// </fieldset>"#);
+/// assert_eq!(
+///     fieldset.bake_pretty(),
+///     r#"<fieldset>
+///   <legend>To be, or not to be?</legend><input
+///     id="chbx"
+///     type="checkbox"
+///     name="to-be"
+///     value="dunno"
+///   /><label for="chbx">That is the question</label>
+/// </fieldset>
+/// "#
+/// );
 /// ```
 #[macro_export]
 macro_rules! fieldset {
@@ -176,15 +187,9 @@ macro_rules! fieldset {
         $crate::html::HtmlFieldset::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlFieldset::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlFieldset::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlFieldset::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlFieldset::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlFieldset::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -192,12 +197,6 @@ macro_rules! fieldset {
         $crate::html::HtmlFieldset::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlFieldset::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlFieldset::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlFieldset::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlFieldset::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

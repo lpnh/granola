@@ -21,15 +21,13 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let ins = HtmlIns::new()
-///     .content(bake_newline!("?"))
+///     .content("?")
 ///     .datetime("2016-11-10")
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13");
 ///
 /// assert_eq!(
 ///     ins.bake(),
-///     r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">
-///   ?
-/// </ins>"#
+///     r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">?</ins>"#
 /// );
 /// ```
 ///
@@ -42,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</ins>
+/// >{{ content | kirei }}</ins>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -130,14 +128,14 @@ impl<R: InsRecipe> HasInsAttrs for HtmlIns<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let ins = ins!(@newline "?")
+/// let ins = ins!("?")
 ///     .datetime("2016-11-10")
 ///     .cite("https://blog.rust-lang.org/2016/11/10/Rust-1.13");
 ///
-/// assert_eq!(ins.bake(),
-/// r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">
-///   ?
-/// </ins>"#);
+/// assert_eq!(
+///     ins.bake(),
+///     r#"<ins datetime="2016-11-10" cite="https://blog.rust-lang.org/2016/11/10/Rust-1.13">?</ins>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! ins {
@@ -148,13 +146,7 @@ macro_rules! ins {
         $crate::html::HtmlIns::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlIns::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlIns::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlIns::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlIns::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -163,12 +155,6 @@ macro_rules! ins {
         $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlIns::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

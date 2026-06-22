@@ -24,8 +24,8 @@ use crate::{filters, prelude::*};
 ///
 /// let br = HtmlBr::new();
 ///
-/// let the_tower = bake_block![
-///     bake_inline!["Seem ", but_the_clouds, " of the sky"],
+/// let the_tower = bake![
+///     bake_block!["Seem", but_the_clouds, "of the sky"],
 ///     br,
 ///     "When the horizon fades;",
 ///     br,
@@ -36,13 +36,12 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     the_tower,
-///     r#"Seem <mark>but the clouds</mark> of the sky
-/// <br />
-/// When the horizon fades;
-/// <br />
-/// Or a bird's sleepy cry
-/// <br />
-/// Among the deepening shades."#
+///     "\
+/// Seem <mark>but the clouds</mark> of the sky<br />\
+/// When the horizon fades;<br />\
+/// Or a bird's sleepy cry<br />\
+/// Among the deepening shades.\
+/// "
 /// );
 /// ```
 ///
@@ -54,7 +53,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</mark>
+/// >{{ content | kirei }}</mark>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -90,8 +89,8 @@ pub struct HtmlMark<R: MarkRecipe = ()> {
 ///
 /// let br = br!();
 ///
-/// let the_tower = bake_block![
-///     bake_inline!["Seem ", but_the_clouds, " of the sky"],
+/// let the_tower = bake![
+///     bake_block!["Seem", but_the_clouds, "of the sky"],
 ///     br,
 ///     "When the horizon fades;",
 ///     br,
@@ -102,13 +101,12 @@ pub struct HtmlMark<R: MarkRecipe = ()> {
 ///
 /// assert_eq!(
 ///     the_tower,
-///     r#"Seem <mark>but the clouds</mark> of the sky
-/// <br />
-/// When the horizon fades;
-/// <br />
-/// Or a bird's sleepy cry
-/// <br />
-/// Among the deepening shades."#
+///     "\
+/// Seem <mark>but the clouds</mark> of the sky<br />\
+/// When the horizon fades;<br />\
+/// Or a bird's sleepy cry<br />\
+/// Among the deepening shades.\
+/// "
 /// );
 /// ```
 #[macro_export]
@@ -120,14 +118,9 @@ macro_rules! mark {
         $crate::html::HtmlMark::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlMark::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlMark::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlMark::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlMark::new().content($crate::bake_inline![$($content),+])
-    };
+
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlMark::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -135,12 +128,6 @@ macro_rules! mark {
         $crate::html::HtmlMark::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlMark::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlMark::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlMark::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlMark::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

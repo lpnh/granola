@@ -23,9 +23,7 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// {%- for s in selectors -%}
-/// {{- s -}}
-/// {%- if !loop.last %},
-/// {% endif -%}
+///     {{ s }}{% if !loop.last %}, {% endif %}
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]

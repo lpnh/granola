@@ -20,12 +20,22 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let area = HtmlArea::new().href("https://w.wiki/LTnF").alt("Red triangle")
+/// let area = HtmlArea::new()
+///     .href("https://w.wiki/LTnF")
+///     .alt("Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
-/// assert_eq!(area.bake(),
-/// r#"<area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />"#);
+/// assert_eq!(
+///     area.bake_pretty(),
+///     r#"<area
+///   shape="poly"
+///   coords="300,63,470,357,130,357"
+///   href="https://w.wiki/LTnF"
+///   alt="Red triangle"
+/// />
+/// "#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -238,12 +248,22 @@ impl From<HtmlArea> for Areas {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let area = area!(@href_alt "https://w.wiki/LTnF", "Red triangle")
+/// let area = area!()
+///     .href("https://w.wiki/LTnF")
+///     .alt("Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
-/// assert_eq!(area.bake(),
-/// r#"<area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />"#);
+/// assert_eq!(
+///     area.bake_pretty(),
+///     r#"<area
+///   shape="poly"
+///   coords="300,63,470,357,130,357"
+///   href="https://w.wiki/LTnF"
+///   alt="Red triangle"
+/// />
+/// "#
+/// );
 /// ```
 #[macro_export]
 macro_rules! area {

@@ -31,20 +31,24 @@ use crate::{filters, prelude::*};
 /// let button = HtmlButton::new().content("Search");
 ///
 /// let form = HtmlForm::new()
-///     .content(bake_block![label, input, button])
+///     .content(bake![label, input, button])
 ///     .action("/search");
 ///
 /// let search = HtmlSearch::new().content(form);
 ///
 /// assert_eq!(
-///     search.bake(),
+///     search.bake_pretty(),
 ///     r#"<search>
 ///   <form action="/search">
-///     <label for="query">Search the haystack</label>
-///     <input id="query" type="search" name="q" placeholder="needle" />
-///     <button>Search</button>
+///     <label for="query">Search the haystack</label><input
+///       id="query"
+///       type="search"
+///       name="q"
+///       placeholder="needle"
+///     /><button>Search</button>
 ///   </form>
-/// </search>"#
+/// </search>
+/// "#
 /// );
 /// ```
 ///
@@ -56,7 +60,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</search>
+/// >{{ content | kirei }}</search>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -101,14 +105,18 @@ pub struct HtmlSearch<R: SearchRecipe = ()> {
 /// let search = search!(form);
 ///
 /// assert_eq!(
-///     search.bake(),
+///     search.bake_pretty(),
 ///     r#"<search>
 ///   <form action="/search">
-///     <label for="query">Search the haystack</label>
-///     <input id="query" type="search" name="q" placeholder="needle" />
-///     <button>Search</button>
+///     <label for="query">Search the haystack</label><input
+///       id="query"
+///       type="search"
+///       name="q"
+///       placeholder="needle"
+///     /><button>Search</button>
 ///   </form>
-/// </search>"#
+/// </search>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -120,15 +128,9 @@ macro_rules! search {
         $crate::html::HtmlSearch::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSearch::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSearch::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlSearch::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSearch::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlSearch::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -136,12 +138,6 @@ macro_rules! search {
         $crate::html::HtmlSearch::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSearch::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlSearch::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSearch::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSearch::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

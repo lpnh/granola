@@ -21,7 +21,7 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// {%- if let Some(ns) = namespace -%}
-/// {{ ns }}|
+///     {{ ns }}|
 /// {%- endif -%}
 /// {{ selector }}
 /// ```

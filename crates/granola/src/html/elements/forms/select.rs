@@ -23,16 +23,15 @@ use crate::{filters, prelude::*};
 /// let opt_1 = HtmlOption::new().content("Salmon").value("salmon");
 /// let opt_2 = HtmlOption::new().content("Turbot").value("turbot");
 ///
-/// let select = HtmlSelect::new()
-///     .content(bake_block![opt_1, opt_2])
-///     .name("fishes");
+/// let select = HtmlSelect::new().name("fishes").fold_in(opt_1).fold_in(opt_2);
 ///
 /// assert_eq!(
-///     select.bake(),
+///     select.bake_pretty(),
 ///     r#"<select name="fishes">
 ///   <option value="salmon">Salmon</option>
 ///   <option value="turbot">Turbot</option>
-/// </select>"#
+/// </select>
+/// "#
 /// );
 /// ```
 ///
@@ -45,7 +44,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</select>
+/// >{{ content | kirei }}</select>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -190,11 +189,12 @@ impl<R: SelectRecipe> HasSelectAttrs for HtmlSelect<R> {
 /// let select = select![opt_1, opt_2].name("fishes");
 ///
 /// assert_eq!(
-///     select.bake(),
+///     select.bake_pretty(),
 ///     r#"<select name="fishes">
 ///   <option value="salmon">Salmon</option>
 ///   <option value="turbot">Turbot</option>
-/// </select>"#
+/// </select>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -206,14 +206,9 @@ macro_rules! select {
         $crate::html::HtmlSelect::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSelect::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSelect::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlSelect::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSelect::new().content($crate::bake_inline![$($content),+])
-    };
+
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlSelect::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -221,12 +216,6 @@ macro_rules! select {
         $crate::html::HtmlSelect::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSelect::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlSelect::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSelect::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSelect::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

@@ -21,7 +21,7 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let owned = HtmlEm::new().content("owned");
-/// let borrow_checker = bake_inline!("I never said he ", owned, " it.");
+/// let borrow_checker = bake!("I never said he ", owned, " it.");
 ///
 /// assert_eq!(borrow_checker, r#"I never said he <em>owned</em> it."#);
 /// ```
@@ -34,7 +34,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</em>
+/// >{{ content | kirei }}</em>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -67,7 +67,7 @@ pub struct HtmlEm<R: EmRecipe = ()> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let owned = em!("owned");
-/// let borrow_checker = bake_inline!("I never said he ", owned, " it.");
+/// let borrow_checker = bake!("I never said he ", owned, " it.");
 ///
 /// assert_eq!(borrow_checker, r#"I never said he <em>owned</em> it."#);
 /// ```
@@ -80,13 +80,7 @@ macro_rules! em {
         $crate::html::HtmlEm::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlEm::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlEm::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlEm::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlEm::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlEm::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -95,12 +89,6 @@ macro_rules! em {
         $crate::html::HtmlEm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlEm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlEm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlEm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlEm::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

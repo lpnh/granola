@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// font-variation-settings: {{ content | kirei(0) }};
+/// font-variation-settings: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = FontVariationSettingsRecipe, content = Cow<'static, str>)]

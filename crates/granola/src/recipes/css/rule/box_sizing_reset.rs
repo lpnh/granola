@@ -10,12 +10,11 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(BoxSizingReset);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     "*,
-/// ::after,
-/// ::before {
+///     rule.bake_pretty(),
+///     "*, ::after, ::before {
 ///   box-sizing: border-box;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

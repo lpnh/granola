@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let nine = HtmlS::new().content("nine");
 ///
-/// let solar_system = bake_inline!["Our solar system has ", nine, " eight planets"];
+/// let solar_system = bake!["Our solar system has ", nine, " eight planets"];
 ///
 /// assert_eq!(
 ///     solar_system,
@@ -38,7 +38,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</s>
+/// >{{ content | kirei }}</s>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -72,7 +72,7 @@ pub struct HtmlS<R: SRecipe = ()> {
 ///
 /// let nine = s!("nine");
 ///
-/// let solar_system = bake_inline!["Our solar system has ", nine, " eight planets"];
+/// let solar_system = bake!["Our solar system has ", nine, " eight planets"];
 ///
 /// assert_eq!(
 ///     solar_system,
@@ -88,13 +88,7 @@ macro_rules! s {
         $crate::html::HtmlS::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlS::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlS::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlS::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlS::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlS::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -103,12 +97,6 @@ macro_rules! s {
         $crate::html::HtmlS::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlS::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlS::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlS::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlS::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

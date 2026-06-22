@@ -24,7 +24,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// color: {{ content | kirei(0) }};
+/// color: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = ColorRecipe, content = Cow<'static, str>)]

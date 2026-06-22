@@ -28,8 +28,7 @@ use crate::prelude::*;
 ///
 /// assert_eq!(
 ///     css_declarations_block.bake(),
-///     "color: violet;
-/// font-weight: lighter;"
+///     "color: violet; font-weight: lighter;"
 /// );
 /// ```
 ///
@@ -37,9 +36,7 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// {%- for d in declarations -%}
-/// {{- d -}}
-/// {%- if !loop.last %}
-/// {% endif -%}
+///     {{ d }}{% if !loop.last %} {% endif %}
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola)]
@@ -173,8 +170,7 @@ impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for Cs
 ///
 /// assert_eq!(
 ///     css_declarations_block.bake(),
-///     "color: violet;
-/// font-weight: lighter;"
+///     "color: violet; font-weight: lighter;"
 /// );
 /// ```
 #[macro_export]

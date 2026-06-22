@@ -26,11 +26,7 @@ use crate::prelude::*;
 ///
 /// assert_eq!(
 ///     css_stylesheet.bake(),
-///     r#"@import url("layout.css");
-///
-/// p {
-///   color: rebeccapurple;
-/// }"#
+///     r#"@import url("layout.css"); p { color: rebeccapurple; }"#
 /// );
 /// ```
 ///
@@ -38,13 +34,11 @@ use crate::prelude::*;
 ///
 /// ```askama
 /// {%- for s in statements -%}
-/// {{- s -}}
-/// {%- if !loop.last %}
-///
-/// {% endif -%}
+///     {{ s }}{% if !loop.last %} {% endif %}
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[granola(format = css)]
 #[recipe(name = StylesheetRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssStylesheet<R: StylesheetRecipe = ()> {
@@ -128,101 +122,8 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 ///
 /// assert_eq!(
 ///     css_stylesheet.bake(),
-///     r#"@import url("layout.css");
-///
-/// p {
-///   color: rebeccapurple;
-/// }"#
+///     r#"@import url("layout.css"); p { color: rebeccapurple; }"#
 /// );
-/// ```
-///
-/// ```rust
-/// use granola::{macros::*, recipes::*, prelude::*};
-///
-/// let stylesheet = stylesheet!(@cookbook AndyBell);
-///
-/// assert_eq!(
-///     stylesheet.bake(),
-///     "*,
-/// ::after,
-/// ::before {
-///   box-sizing: border-box;
-/// }
-///
-/// html {
-///   -moz-text-size-adjust: none;
-///   -webkit-text-size-adjust: none;
-///   text-size-adjust: none;
-/// }
-///
-/// body,
-/// h1,
-/// h2,
-/// h3,
-/// h4,
-/// p,
-/// figure,
-/// blockquote,
-/// dl,
-/// dd {
-///   margin-block-end: 0;
-/// }
-///
-/// ul[role='list'],
-/// ol[role='list'] {
-///   list-style: none;
-/// }
-///
-/// body {
-///   min-height: 100vh;
-///   line-height: 1.5;
-/// }
-///
-/// h1,
-/// h2,
-/// h3,
-/// h4,
-/// button,
-/// input,
-/// label {
-///   line-height: 1.1;
-/// }
-///
-/// h1,
-/// h2,
-/// h3,
-/// h4 {
-///   text-wrap: balance;
-/// }
-///
-/// a:not([class]) {
-///   text-decoration-skip-ink: auto;
-///   color: currentcolor;
-/// }
-///
-/// img,
-/// picture {
-///   max-width: 100%;
-///   display: block;
-/// }
-///
-/// button,
-/// input,
-/// select,
-/// textarea {
-///   font-family: inherit;
-///   font-size: inherit;
-/// }
-///
-/// textarea:not([rows]) {
-///   min-height: 10em;
-/// }
-///
-/// :target {
-///   scroll-margin-block: 5ex;
-/// }"
-/// );
-/// ```
 #[macro_export]
 macro_rules! stylesheet {
     () => {
@@ -237,6 +138,7 @@ macro_rules! stylesheet {
             $(, $crate::css::CssStatement::from($rest))*
         ])
     };
+
     (@cookbook $($r:ty),+) => {
         $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

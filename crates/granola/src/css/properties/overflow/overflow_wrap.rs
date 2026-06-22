@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// overflow-wrap: {{ content | kirei(0) }};
+/// overflow-wrap: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = OverflowWrapRecipe, content = Cow<'static, str>)]

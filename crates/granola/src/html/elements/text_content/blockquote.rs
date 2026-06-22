@@ -35,15 +35,19 @@ use crate::{filters, prelude::*};
 /// let blockquote = HtmlBlockquote::new().content(paragraph)
 ///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote");
 ///
-/// assert_eq!(blockquote.bake(),
-/// r#"<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote">
+/// assert_eq!(
+///     blockquote.bake_pretty(),
+///     r#"<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote">
 ///   <p>
-///     The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.
-///     Usually, this is rendered visually by indentation.
-///     A URL for the source of the quotation may be given using the cite attribute,
-///     while a text representation of the source can be given using the &lt;cite&gt; element.
+///     The &lt;blockquote&gt; element indicates that the enclosed text is an
+///     extended quotation. Usually, this is rendered visually by indentation. A URL
+///     for the source of the quotation may be given using the cite attribute, while
+///     a text representation of the source can be given using the &lt;cite&gt;
+///     element.
 ///   </p>
-/// </blockquote>"#);
+/// </blockquote>
+/// "#
+/// );
 /// ```
 ///
 /// # Askama template
@@ -55,7 +59,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</blockquote>
+/// >{{ content | kirei }}</blockquote>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -136,25 +140,31 @@ impl<R: BlockquoteRecipe> HasBlockquoteAttrs for HtmlBlockquote<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let paragraph = p![
+/// let content = bake_block![
 ///   "The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.",
 ///   "Usually, this is rendered visually by indentation.",
 ///   "A URL for the source of the quotation may be given using the cite attribute,",
 ///   "while a text representation of the source can be given using the &lt;cite&gt; element.",
 /// ];
 ///
+/// let paragraph = p!(content);
+///
 /// let blockquote = blockquote!(paragraph)
 ///     .cite("https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote");
 ///
-/// assert_eq!(blockquote.bake(),
-/// r#"<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote">
+/// assert_eq!(
+///     blockquote.bake_pretty(),
+///     r#"<blockquote cite="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/blockquote">
 ///   <p>
-///     The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.
-///     Usually, this is rendered visually by indentation.
-///     A URL for the source of the quotation may be given using the cite attribute,
-///     while a text representation of the source can be given using the &lt;cite&gt; element.
+///     The &lt;blockquote&gt; element indicates that the enclosed text is an
+///     extended quotation. Usually, this is rendered visually by indentation. A URL
+///     for the source of the quotation may be given using the cite attribute, while
+///     a text representation of the source can be given using the &lt;cite&gt;
+///     element.
 ///   </p>
-/// </blockquote>"#);
+/// </blockquote>
+/// "#
+/// );
 /// ```
 #[macro_export]
 macro_rules! blockquote {
@@ -165,13 +175,7 @@ macro_rules! blockquote {
         $crate::html::HtmlBlockquote::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlBlockquote::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlBlockquote::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlBlockquote::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlBlockquote::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlBlockquote::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -180,12 +184,6 @@ macro_rules! blockquote {
         $crate::html::HtmlBlockquote::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlBlockquote::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlBlockquote::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlBlockquote::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlBlockquote::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

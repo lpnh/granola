@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// text-indent: {{ content | kirei(0) }};
+/// text-indent: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = TextIndentRecipe, content = Cow<'static, str>)]

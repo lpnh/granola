@@ -10,10 +10,11 @@ use crate::prelude::*;
 /// let rule = CssRule::from(SupVerticalPos);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "sup {
 ///   top: -0.5em;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

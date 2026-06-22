@@ -20,14 +20,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let script = HtmlScript::new().content(bake_newline!(r#"alert("Hello, world!");"#));
+/// let script = HtmlScript::new().content(r#"alert("Hello, world!");"#);
 ///
-/// assert_eq!(
-///     script.bake(),
-///     r#"<script>
-///   alert("Hello, world!");
-/// </script>"#
-/// );
+/// assert_eq!(script.bake(), r#"<script>alert("Hello, world!");</script>"#);
 /// ```
 ///
 /// # Askama template
@@ -39,7 +34,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</script>
+/// >{{ content | kirei }}</script>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -243,12 +238,9 @@ impl From<ScriptType> for Cow<'static, str> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let script = script!(@newline r#"alert("Hello, world!");"#);
+/// let script = script!(r#"alert("Hello, world!");"#);
 ///
-/// assert_eq!(script.bake(),
-/// r#"<script>
-///   alert("Hello, world!");
-/// </script>"#);
+/// assert_eq!(script.bake(), r#"<script>alert("Hello, world!");</script>"#);
 /// ```
 #[macro_export]
 macro_rules! script {
@@ -259,19 +251,13 @@ macro_rules! script {
         $crate::html::HtmlScript::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlScript::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlScript::new().content($crate::bake![$first $(, $rest)*])
     };
 
     (@src $src:expr $(,)?) => {
         $crate::html::HtmlScript::from_src($src)
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlScript::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlScript::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlScript::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -279,12 +265,6 @@ macro_rules! script {
         $crate::html::HtmlScript::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlScript::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlScript::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlScript::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlScript::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

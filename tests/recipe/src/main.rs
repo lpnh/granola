@@ -30,13 +30,13 @@ impl HtmlRecipe for FooRecipe {
 
         if let Some(body) = content.body.take() {
             let old_content = body.content;
-            let new_content = bake_block![paragraph, old_content];
+            let new_content = bake![paragraph, old_content];
 
             let body = HtmlBody::new().content(new_content);
 
             content.body = Some(body);
         } else {
-            let body = HtmlBody::new().content(bake_newline!(paragraph));
+            let body = HtmlBody::new().content(paragraph);
 
             content.body = Some(body);
         }
@@ -51,7 +51,7 @@ impl PRecipe for FooRecipe {
     recipe_boilerplate!(@from String; @into DefaultContent);
 
     fn content_recipe(content: &mut Self::Content) {
-        *content = bake_block![content, "Content from FooRecipe"];
+        *content = bake![content, "Content from FooRecipe"];
     }
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
@@ -121,7 +121,7 @@ impl PRecipe for OneLastRecipe {
     recipe_boilerplate!(@from String; @into DefaultContent);
 
     fn content_recipe(content: &mut Self::Content) {
-        *content = bake_newline!("Content from OneLastRecipe");
+        *content = bake!("Content from OneLastRecipe");
     }
 
     fn custom_data_attrs_recipe(custom_data_attrs: &mut CustomDataAttrs) {
@@ -157,18 +157,14 @@ mod recipe_tests {
 
         let p = HtmlP::new().content("Oh, hi!");
 
-        let body = HtmlBody::new().content(bake_newline!(p));
+        let body = HtmlBody::new().content(p);
 
         let html_root = HtmlRoot::new().content(body);
 
         assert_eq!(button.bake(), "<button>Ok</button>");
         assert_eq!(
             html_root.bake(),
-            r#"<html>
-  <body>
-    <p>Oh, hi!</p>
-  </body>
-</html>"#
+            r#"<html><body><p>Oh, hi!</p></body></html>"#
         );
     }
 
@@ -199,19 +195,11 @@ mod recipe_tests {
         );
         assert_eq!(
             p.bake(),
-            r#"<p class="text-lg" id="foo-p">
-  Content from FooRecipe
-</p>"#
+            r#"<p class="text-lg" id="foo-p">Content from FooRecipe</p>"#
         );
         assert_eq!(
             html_root.bake(),
-            r#"<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body></body>
-</html>"#
+            r#"<html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body></body></html>"#
         );
     }
 
@@ -221,7 +209,7 @@ mod recipe_tests {
 
         let p = HtmlP::from(FooRecipe).content("Oh, hi!");
 
-        let body = HtmlBody::new().content(bake_newline!(p));
+        let body = HtmlBody::new().content(p);
 
         let html_root = HtmlRoot::from(Homemade).content(body);
 
@@ -231,18 +219,7 @@ mod recipe_tests {
         );
         assert_eq!(
             html_root.bake(),
-            r#"<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <p class="text-lg" id="foo-p">
-      Oh, hi!
-      Content from FooRecipe
-    </p>
-  </body>
-</html>"#
+            r#"<html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body><p class="text-lg" id="foo-p">Oh, hi!Content from FooRecipe</p></body></html>"#
         );
     }
 
@@ -258,21 +235,11 @@ mod recipe_tests {
         );
         assert_eq!(
             p.bake(),
-            r#"<p class="text-lg" id="bar-p" data-foo="bar">
-  Content from FooRecipe
-</p>"#
+            r#"<p class="text-lg" id="bar-p" data-foo="bar">Content from FooRecipe</p>"#
         );
         assert_eq!(
             html_root.bake(),
-            r#"<html class="dark" id="foo-html">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <p>Hello, world!</p>
-  </body>
-</html>"#
+            r#"<html class="dark" id="foo-html"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body><p>Hello, world!</p></body></html>"#
         );
     }
 
@@ -290,21 +257,11 @@ mod recipe_tests {
         );
         assert_eq!(
             p.bake(),
-            r#"<p class="text-lg" id="bar-p" data-foo="bar" data-recipe="last">
-  Content from OneLastRecipe
-</p>"#
+            r#"<p class="text-lg" id="bar-p" data-foo="bar" data-recipe="last">Content from OneLastRecipe</p>"#
         );
         assert_eq!(
             html_root.bake(),
-            r#"<html class="dark" id="bar-html" data-foo="bar" data-recipe="last">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <p>Hello, world!</p>
-  </body>
-</html>"#
+            r#"<html class="dark" id="bar-html" data-foo="bar" data-recipe="last"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body><p>Hello, world!</p></body></html>"#
         );
     }
 
@@ -313,7 +270,7 @@ mod recipe_tests {
         let button = HtmlButton::from((FooRecipe, BarRecipe)).content("Ok");
         let p = HtmlP::from((FooRecipe, BarRecipe)).content("Oh, hi!");
 
-        let body = HtmlBody::new().content(bake_newline!(p));
+        let body = HtmlBody::new().content(p);
         let html_root = HtmlRoot::from((Homemade, FooRecipe)).content(body);
 
         assert_eq!(
@@ -322,20 +279,7 @@ mod recipe_tests {
         );
         assert_eq!(
             html_root.bake(),
-            r#"<html class="dark" id="foo-html">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <p>Hello, world!</p>
-
-    <p class="text-lg" id="bar-p" data-foo="bar">
-      Oh, hi!
-      Content from FooRecipe
-    </p>
-  </body>
-</html>"#
+            r#"<html class="dark" id="foo-html"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body><p>Hello, world!</p><p class="text-lg" id="bar-p" data-foo="bar">Oh, hi!Content from FooRecipe</p></body></html>"#
         );
     }
 
@@ -346,7 +290,7 @@ mod recipe_tests {
 
         let p = HtmlP::<FooBarLastCookbook>::from_cookbook().content("Oh, hi!");
 
-        let body = HtmlBody::new().content(bake_newline!(p));
+        let body = HtmlBody::new().content(p);
         let html_root = HtmlRoot::<(Homemade, FooBarLastCookbook)>::from_cookbook().content(body);
 
         assert_eq!(
@@ -355,19 +299,7 @@ mod recipe_tests {
         );
         assert_eq!(
             html_root.bake(),
-            r#"<html class="dark" id="bar-html" data-foo="bar" data-recipe="last">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <p>Hello, world!</p>
-
-    <p class="text-lg" id="bar-p" data-foo="bar" data-recipe="last">
-      Content from OneLastRecipe
-    </p>
-  </body>
-</html>"#
+            r#"<html class="dark" id="bar-html" data-foo="bar" data-recipe="last"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body><p>Hello, world!</p><p class="text-lg" id="bar-p" data-foo="bar" data-recipe="last">Content from OneLastRecipe</p></body></html>"#
         );
     }
 
@@ -377,16 +309,7 @@ mod recipe_tests {
 
         assert_eq!(
             page.bake(),
-            r#"<!doctype html>
-<html class="dark" id="bar-html" data-foo="bar" data-recipe="last">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>
-    <p>Hello, world!</p>
-  </body>
-</html>"#
+            r#"<!doctype html><html class="dark" id="bar-html" data-foo="bar" data-recipe="last"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head><body><p>Hello, world!</p></body></html>"#
         );
     }
 }

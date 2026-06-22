@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// border-radius: {{ content | kirei(0) }};
+/// border-radius: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = BorderRadiusRecipe, content = Cow<'static, str>)]

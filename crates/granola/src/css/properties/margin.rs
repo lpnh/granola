@@ -35,7 +35,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// margin: {{ content | kirei(0) }};
+/// margin: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = MarginRecipe, content = Cow<'static, str>)]

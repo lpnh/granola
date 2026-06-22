@@ -3,114 +3,114 @@ source: tests/alloc/src/main.rs
 ---
              snippet  allocs     churn      peak
              -------  ------     -----      ----
-                   a       3        83        75
-                abbr       3        92        84
-             address       8       577       427
+                   a       2        75        75
+                abbr       2        84        84
+             address       6       570       440
                 area       4       345       276
-             article      15      2641      1464
-               aside      11       744       395
+             article       9      1987      1289
+               aside       8       595       384
                audio       2        99        99
-                   b       7       214       156
+                   b       4       190       156
                 base       2        69        69
-                 bdi       3        91        78
-                 bdo       3        91        91
-          blockquote      14      3440      1869
-                body       4       110        97
-                  br       8       298       210
-              button       4       139       122
-              canvas       6       729       474
-             caption       3       130       130
-                cite       3       103        84
-                code       2        36        36
+                 bdi       2        78        78
+                 bdo       2        78        78
+          blockquote      11      3130      1844
+                body       1        28        28
+                  br       7       260       172
+              button       2       105       105
+              canvas       3       446       411
+             caption       2       102       102
+                cite       2        84        84
+                code       1        28        28
                  col       3       154       132
-            colgroup       4      2605      2597
-                data       3       101        93
-            datalist       9      4596      4368
-                  dd       5       241       209
-                 del       5       216       179
-             details       6       263       216
-                 dfn       7       278       184
-              dialog      10       797       611
-                 div       9       570       382
-                  dl      17      1300       662
+            colgroup       3      2597      2597
+                data       2        93        93
+            datalist       5      4476      4368
+                  dd       3       168       144
+                 del       3       203       174
+             details       4       213       179
+                 dfn       5       232       184
+              dialog       7       685       518
+                 div       5       287       226
+                  dl      11      1176       725
              doctype       1        15        15
-                  dt       5       234       202
-                  em       3        64        56
+                  dt       3       168       144
+                  em       2        56        56
                embed       3       168       144
-            fieldset      11      1252       871
-          figcaption       5       255       168
-              figure       9       577       402
-              footer      11       636       302
-                form      12       661       393
-                  h1       3       101       101
-                  h2       2        38        38
-                  h3       7       304       201
-                  h4       3        95        95
-                head      10       887       628
-              header       6       221       180
-              hgroup      12      1650       995
-                  hr       6       463       350
-                   i       3        42        34
+            fieldset       7       990       727
+          figcaption       3       196       168
+              figure       6       546       430
+              footer       8       489       294
+                form       9       624       396
+                  h1       2        72        72
+                  h2       1        24        24
+                  h3       5       251       201
+                  h4       2        72        72
+                head       7       715       526
+              header       4       171       146
+              hgroup       7      1358      1051
+                  hr       4       351       282
+                   i       2        34        34
               iframe       3       245       210
                  img       3       154       132
                input       2        72        72
-                 ins       5       213       176
-                 kbd       2        34        34
-               label       7       472       319
-              legend       3       122       122
-                  li       4        97        81
+                 ins       3       203       174
+                 kbd       1        26        26
+               label       6       388       304
+              legend       2        96        96
+                  li       2        81        81
                 link       2        69        69
-                main       2        41        41
-                 map       7      2186      2024
-                mark       7       422       258
-                menu       9      5292      5224
+                main       1        28        28
+                 map       6      2178      2024
+                mark       6       408       258
+                menu       4      5252      5224
                 meta       3       161       138
-               meter      11       291       250
-                 nav      25      2955      1274
-            noscript       3       140       140
+               meter       9       279       246
+                 nav      18      2369      1104
+            noscript       2       108       108
               object       3       245       210
-                  ol       8      4040      3954
-            optgroup      10      4291      4170
-              option       3       114       105
-              output       3       113       105
-                   p       3        99        99
-             picture       7       521       412
-                 pre       9      1055       829
-            progress       5       141       133
-                   q       5       354       283
-                root       6       230       181
-                  rp       5        96        72
-                  rt       2        32        32
-                ruby       9       235       176
-                   s       4       158       129
-                samp       3       109       109
-              script       4       153       129
-              search      16      1852       849
-             section      11      1778      1431
-              select       9       583       427
+                  ol       4      3981      3954
+            optgroup       4      4209      4170
+              option       2       105       105
+              output       2       105       105
+                   p       2        66        66
+             picture       6       533       424
+                 pre       7       982       829
+            progress       4       133       133
+                   q       3       262       237
+                root       2        84        84
+                  rp       2        72        72
+                  rt       1        24        24
+                ruby       5       173       138
+                   s       3       150       129
+                samp       2        84        84
+              script       2       105       105
+              search      10      1551       835
+             section       7      1679      1408
+              select       6       577       437
                 slot       1        31        31
-               small       4       335       234
+               small       3       264       234
               source       3       175       150
-                span       3        93        84
-              strong       3       119        96
-               style       7      1007       966
-                 sub       3        43        35
-             summary       2        46        46
-                 sup       3        45        37
-               table      44     12247      8840
-               tbody      18      3572      3163
-                  td       3       112       112
-            template      17      1271       795
-            textarea       3       127       127
-               tfoot      10      1891      1645
-                  th       3        94        94
-               thead      11      1740      1602
-                time       3       103        93
-               title       4       259       180
-                  tr       9       476       327
+                span       2        84        84
+              strong       2        96        96
+               style       5       867       867
+                 sub       2        35        35
+             summary       1        34        34
+                 sup       2        37        37
+               table      24     10829      8770
+               tbody      11      3473      3202
+                  td       2        81        81
+            template      10       975       689
+            textarea       2       117       117
+               tfoot       7      1739      1619
+                  th       2        81        81
+               thead       7      1682      1571
+                time       2        93        93
+               title       3       210       180
+                  tr       6       450       345
                track       3       168       144
-                   u       3        45        37
-                  ul       8      3999      3951
-                 var       3       110       102
+                   u       2        37        37
+                  ul       4      3960      3936
+                 var       2       102       102
                video       3       231       198
                  wbr       2        57        57

@@ -11,6 +11,9 @@ categories.workspace = true
 [lib]
 proc-macro = true
 
+[features]
+pretty = []
+
 [dependencies]
 proc-macro2 = "1"
 quote = "1"

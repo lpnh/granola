@@ -400,8 +400,19 @@ pub trait HasGlobalAttrs: Sized {
 ///     .custom_data("y", "85160")
 ///     .custom_data("z", "31940");
 ///
-/// assert_eq!(img.bake(),
-/// r#"<img src="ship.png" data-ship-id="1337" data-weapons="laserI laserII" data-shields="72%" data-x="414354" data-y="85160" data-z="31940" />"#);
+/// assert_eq!(
+///     img.bake_pretty(),
+///     r#"<img
+///   src="ship.png"
+///   data-ship-id="1337"
+///   data-weapons="laserI laserII"
+///   data-shields="72%"
+///   data-x="414354"
+///   data-y="85160"
+///   data-z="31940"
+/// />
+/// "#
+/// );
 /// ```
 ///
 /// # Askama template

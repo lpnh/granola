@@ -21,6 +21,7 @@ strum = { version = "0.28.0", features = ["derive"] }
 [workspace.lints.rust]
 unsafe_code = "deny"
 unused_qualifications = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(docsrs)'] }
 
 # https://doc.rust-lang.org/cargo/reference/profiles.html?highlight=share-generics#overrides
 [profile.dev.package."*"]

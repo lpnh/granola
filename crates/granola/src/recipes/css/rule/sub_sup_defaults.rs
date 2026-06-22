@@ -10,14 +10,14 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(SubSupDefaults);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     "sub,
-/// sup {
+///     rule.bake_pretty(),
+///     "sub, sup {
 ///   font-size: 75%;
 ///   line-height: 0;
 ///   position: relative;
 ///   vertical-align: baseline;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

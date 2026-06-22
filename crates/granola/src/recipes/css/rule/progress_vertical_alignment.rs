@@ -10,10 +10,11 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(ProgressVerticalAlignment);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "progress {
 ///   vertical-align: baseline;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

@@ -24,7 +24,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// text-decoration-skip-ink: {{ content | kirei(0) }};
+/// text-decoration-skip-ink: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = TextDecorationSkipInkRecipe, content = Cow<'static, str>)]

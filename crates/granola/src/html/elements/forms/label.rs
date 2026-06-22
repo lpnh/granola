@@ -25,14 +25,11 @@ use crate::{filters, prelude::*};
 ///     .name("reality-check")
 ///     .disabled(true);
 ///
-/// let label = HtmlLabel::new().content(bake_block!["We're so back", input]);
+/// let label = HtmlLabel::new().fold_in("We're so back").fold_in(input);
 ///
 /// assert_eq!(
 ///     label.bake(),
-///     r#"<label>
-///   We're so back
-///   <input type="checkbox" name="reality-check" disabled />
-/// </label>"#
+///     r#"<label>We're so back<input type="checkbox" name="reality-check" disabled /></label>"#
 /// );
 /// ```
 ///
@@ -45,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</label>
+/// >{{ content | kirei }}</label>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -120,15 +117,17 @@ pub trait HasLabelAttrs: Sized {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let input = input!(@type "checkbox").name("reality-check").disabled(true);
+/// let input = input!()
+///     .input_type("checkbox")
+///     .name("reality-check")
+///     .disabled(true);
 ///
 /// let label = label!["We're so back", input];
 ///
-/// assert_eq!(label.bake(),
-/// r#"<label>
-///   We're so back
-///   <input type="checkbox" name="reality-check" disabled />
-/// </label>"#);
+/// assert_eq!(
+///     label.bake(),
+///     r#"<label>We're so back<input type="checkbox" name="reality-check" disabled /></label>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! label {
@@ -139,15 +138,9 @@ macro_rules! label {
         $crate::html::HtmlLabel::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlLabel::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlLabel::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlLabel::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlLabel::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -155,12 +148,6 @@ macro_rules! label {
         $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlLabel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

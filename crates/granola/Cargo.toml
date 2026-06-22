@@ -8,11 +8,23 @@ repository.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[features]
+pretty = ["granola-derive/pretty", "dep:markup_fmt", "dep:malva"]
+
 [dependencies]
 askama = { workspace = true }
 granola-derive = { path = "../granola-derive" }
 indexmap = { workspace = true }
+malva = { version = "0.16.0", optional = true }
+markup_fmt = { version = "0.27.3", optional = true }
 strum = { workspace = true }
+
+[dev-dependencies]
+granola = { path = ".", features = ["pretty"] }
+
+[package.metadata.docs.rs]
+features = ["pretty"]
+rustdoc-args = ["--cfg", "docsrs"]
 
 [lints]
 workspace = true

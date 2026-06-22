@@ -10,13 +10,55 @@ use syn::{
 /// Derive macro for templates.
 ///
 /// Implements:
-/// - `bake()` via `askama::Template::render`.
-/// - `From<T> for Cow<'static, str>` via `bake()`.
-#[proc_macro_derive(Granola)]
+/// - `bake` via `askama::Template::render`.
+/// - `bake_pretty` via `bake` + `markup_fmt` and `malva`.
+/// - `From<T> for Cow<'static, str>` via `bake`.
+#[proc_macro_derive(Granola, attributes(granola))]
 pub fn granola_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+
+    let mut pretty_fn = quote! { ::granola::pretty::pretty };
+    for attr in &input.attrs {
+        if !attr.path().is_ident("granola") {
+            continue;
+        }
+        attr.parse_nested_meta(|meta| {
+            if meta.path.is_ident("format") {
+                let format: Ident = meta.value()?.parse()?;
+                pretty_fn = match format.to_string().as_str() {
+                    "html" => quote! { ::granola::pretty::pretty },
+                    "css" => quote! { ::granola::pretty::pretty_css },
+                    other => {
+                        return Err(meta.error(format!(
+                            "unknown formatter `{other}`, expected `html` or `css`"
+                        )));
+                    }
+                };
+                Ok(())
+            } else {
+                Err(meta.error("unknown `granola` option, expected `format`"))
+            }
+        })
+        .expect("failed to parse #[granola(...)]");
+    }
+
+    let bake_pretty = if cfg!(feature = "pretty") {
+        quote! {
+            /// Renders the template and formats the result for readable
+            /// output (e.g. snapshots, debugging).
+            ///
+            /// # Panics
+            ///
+            /// Panics if the formatter returns an error.
+            pub fn bake_pretty(&self) -> ::std::string::String {
+                #pretty_fn(&self.bake())
+            }
+        }
+    } else {
+        quote! {}
+    };
 
     quote! {
         impl #impl_generics #name #ty_generics #where_clause {
@@ -24,10 +66,13 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             ///
             /// # Panics
             ///
-            /// Panics if [`askama::Template::render`] returns an error. See [`askama::Error`].
+            /// Panics if [`askama::Template::render`] returns an error. See
+            /// [`askama::Error`].
             pub fn bake(&self) -> ::std::string::String {
                 ::askama::Template::render(self).unwrap()
             }
+
+            #bake_pretty
         }
 
         impl #impl_generics From<#name #ty_generics> for ::std::borrow::Cow<'static, str>
@@ -85,7 +130,7 @@ impl Parse for RecipeArgs {
 ///
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
 ///   and impls for `()` and `(A, B)` so recipes compose as tuples;
-/// - the `new()` and `from_cookbook()` constructors, plus a `From<R>` impl
+/// - the `new` and `from_cookbook` constructors, plus a `From<R>` impl
 ///   (`Foo::from(recipe)`);
 /// - a `BakeRecipe` impl lowering `Foo<R>` to `Foo<()>`.
 ///
@@ -175,9 +220,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
             /// Bakes this recipe's content back into the element's default
             /// content type, called when the recipe is lowered via
-            /// [`BakeRecipe`](crate::oven::BakeRecipe).
+            /// [`BakeRecipe`](::granola::oven::BakeRecipe).
             ///
-            /// See [`recipe_boilerplate!`](crate::recipe_boilerplate).
+            /// See [`recipe_boilerplate!`](::granola::recipe_boilerplate).
             fn bake_content(content: Self::Content) -> #content_type;
 
             fn content_recipe(_content: &mut Self::Content) {}
@@ -233,7 +278,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     } else {
         quote! {}
     };
-    // `content(content)`: sets the content on `#struct_name<R>`, keeping the
+    // `content`: sets the content on `#struct_name<R>`, keeping the
     // recipe `R`. Returns `Self`, so the recipe is fixed at construction and
     // flows through unchanged.
     let content_method = if has_content {
@@ -251,6 +296,23 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     } else {
         quote! {}
     };
+    // `fold_in`: folds new content into the current content via `FoldIn`.
+    let fold_in_method = if has_content {
+        quote! {
+            pub fn fold_in(
+                mut self,
+                content: impl ::std::convert::Into<#type_param::Content>,
+            ) -> Self
+            where
+                #type_param::Content: ::granola::oven::FoldIn,
+            {
+                ::granola::oven::FoldIn::fold_in(&mut self.content, content.into());
+                self
+            }
+        }
+    } else {
+        quote! {}
+    };
     let bake_content_field = if has_content {
         quote! { content: #type_param::bake_content(self.content), }
     } else {
@@ -260,10 +322,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     // HTML
     let global_attrs_impl = if has_field("global_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::html::HasGlobalAttrs
+            impl<#type_param: #trait_name> ::granola::html::HasGlobalAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn global_attrs_mut(&mut self) -> &mut crate::html::GlobalAttrs {
+                fn global_attrs_mut(&mut self) -> &mut ::granola::html::GlobalAttrs {
                     &mut self.global_attrs
                 }
             }
@@ -273,10 +335,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let global_aria_attrs_impl = if has_field("global_aria_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::html::HasGlobalAriaAttrs
+            impl<#type_param: #trait_name> ::granola::html::HasGlobalAriaAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn global_aria_attrs_mut(&mut self) -> &mut crate::html::GlobalAriaAttrs {
+                fn global_aria_attrs_mut(&mut self) -> &mut ::granola::html::GlobalAriaAttrs {
                     &mut self.global_aria_attrs
                 }
             }
@@ -286,10 +348,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let custom_data_attrs_impl = if has_field("custom_data_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::html::HasCustomDataAttrs
+            impl<#type_param: #trait_name> ::granola::html::HasCustomDataAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn custom_data_attrs_mut(&mut self) -> &mut crate::html::CustomDataAttrs {
+                fn custom_data_attrs_mut(&mut self) -> &mut ::granola::html::CustomDataAttrs {
                     &mut self.custom_data_attrs
                 }
             }
@@ -299,10 +361,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let event_handlers_impl = if has_field("event_handlers") {
         quote! {
-            impl<#type_param: #trait_name> crate::html::HasEventHandlers
+            impl<#type_param: #trait_name> ::granola::html::HasEventHandlers
                 for #struct_name #ty_generics #where_clause
             {
-                fn event_handlers_mut(&mut self) -> &mut crate::html::EventHandlers {
+                fn event_handlers_mut(&mut self) -> &mut ::granola::html::EventHandlers {
                     &mut self.event_handlers
                 }
             }
@@ -314,10 +376,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     // SVG
     let global_svg_attrs_impl = if has_field("global_svg_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::svg::HasGlobalSvgAttrs
+            impl<#type_param: #trait_name> ::granola::svg::HasGlobalSvgAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn global_svg_attrs_mut(&mut self) -> &mut crate::svg::GlobalSvgAttrs {
+                fn global_svg_attrs_mut(&mut self) -> &mut ::granola::svg::GlobalSvgAttrs {
                     &mut self.global_svg_attrs
                 }
             }
@@ -327,10 +389,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let paint_attrs_impl = if has_field("paint_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::svg::HasPaintAttrs
+            impl<#type_param: #trait_name> ::granola::svg::HasPaintAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn paint_attrs_mut(&mut self) -> &mut crate::svg::PaintAttrs {
+                fn paint_attrs_mut(&mut self) -> &mut ::granola::svg::PaintAttrs {
                     &mut self.paint_attrs
                 }
             }
@@ -340,10 +402,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let shape_attrs_impl = if has_field("shape_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::svg::HasShapeAttrs
+            impl<#type_param: #trait_name> ::granola::svg::HasShapeAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn shape_attrs_mut(&mut self) -> &mut crate::svg::ShapeAttrs {
+                fn shape_attrs_mut(&mut self) -> &mut ::granola::svg::ShapeAttrs {
                     &mut self.shape_attrs
                 }
             }
@@ -353,10 +415,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let text_content_attrs_impl = if has_field("text_content_attrs") {
         quote! {
-            impl<#type_param: #trait_name> crate::svg::HasTextContentAttrs
+            impl<#type_param: #trait_name> ::granola::svg::HasTextContentAttrs
                 for #struct_name #ty_generics #where_clause
             {
-                fn text_content_attrs_mut(&mut self) -> &mut crate::svg::TextContentAttrs {
+                fn text_content_attrs_mut(&mut self) -> &mut ::granola::svg::TextContentAttrs {
                     &mut self.text_content_attrs
                 }
             }
@@ -365,7 +427,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // `new()`: empty constructor, only on `#struct_name<()>`.
+    // `new`: empty constructor, only on `#struct_name<()>`.
     let new_method = quote! {
         pub fn new() -> Self {
             Self {
@@ -429,6 +491,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
         impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
             #content_method
+            #fold_in_method
 
             pub fn from_cookbook() -> Self {
                 #content_init
@@ -453,7 +516,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<#type_param: #trait_name> crate::oven::BakeRecipe
+        impl<#type_param: #trait_name> ::granola::oven::BakeRecipe
             for #struct_name #ty_generics #where_clause
         {
             type Baked = #struct_name<()>;

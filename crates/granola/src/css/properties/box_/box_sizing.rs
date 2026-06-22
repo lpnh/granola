@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// box-sizing: {{ content | kirei(0) }};
+/// box-sizing: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = BoxSizingRecipe, content = Cow<'static, str>)]

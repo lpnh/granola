@@ -23,13 +23,11 @@ use crate::{filters, prelude::*};
 /// let content = HtmlSmall::new().content("&copy; 2026 Oats &amp; Ends Café");
 /// let paragraph = HtmlP::new().content(content);
 ///
-/// let footer = HtmlFooter::new().content(bake_newline!(paragraph));
+/// let footer = HtmlFooter::new().content(paragraph);
 ///
 /// assert_eq!(
 ///     footer.bake(),
-///     r#"<footer>
-///   <p><small>&copy; 2026 Oats &amp; Ends Café</small></p>
-/// </footer>"#
+///     r#"<footer><p><small>&copy; 2026 Oats &amp; Ends Café</small></p></footer>"#
 /// );
 /// ```
 ///
@@ -41,7 +39,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</footer>
+/// >{{ content | kirei }}</footer>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -73,16 +71,15 @@ pub struct HtmlFooter<R: FooterRecipe = ()> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-///
 /// let content = small!("&copy; 2026 Oats &amp; Ends Café");
 /// let paragraph = p!(content);
 ///
-/// let footer = footer!(@newline paragraph);
+/// let footer = footer!(paragraph);
 ///
-/// assert_eq!(footer.bake(),
-/// r#"<footer>
-///   <p><small>&copy; 2026 Oats &amp; Ends Café</small></p>
-/// </footer>"#);
+/// assert_eq!(
+///     footer.bake(),
+///     r#"<footer><p><small>&copy; 2026 Oats &amp; Ends Café</small></p></footer>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! footer {
@@ -93,15 +90,9 @@ macro_rules! footer {
         $crate::html::HtmlFooter::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlFooter::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlFooter::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlFooter::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlFooter::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlFooter::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -109,12 +100,6 @@ macro_rules! footer {
         $crate::html::HtmlFooter::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlFooter::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlFooter::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlFooter::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlFooter::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

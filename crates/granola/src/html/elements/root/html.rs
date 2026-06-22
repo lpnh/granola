@@ -20,17 +20,13 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let body = HtmlBody::new().content(bake_newline!("flow content"));
+/// let body = HtmlBody::new().content("flow content");
 ///
 /// let html = HtmlRoot::new().content(body).lang("en");
 ///
 /// assert_eq!(
 ///     html.bake(),
-///     r#"<html lang="en">
-///   <body>
-///     flow content
-///   </body>
-/// </html>"#
+///     r#"<html lang="en"><body>flow content</body></html>"#
 /// );
 /// ```
 ///
@@ -38,23 +34,16 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let meta = HtmlMeta::new().charset();
-/// let head = HtmlHead::new().content(bake_newline!(meta));
+/// let head = HtmlHead::new().content(meta);
 ///
 /// let p = HtmlP::new().content("Hello, world!");
-/// let body = HtmlBody::new().content(bake_newline!(p));
+/// let body = HtmlBody::new().content(p);
 ///
 /// let html = HtmlRoot::new().content((head, body));
 ///
 /// assert_eq!(
 ///     html.bake(),
-///     r#"<html>
-///   <head>
-///     <meta charset="utf-8" />
-///   </head>
-///   <body>
-///     <p>Hello, world!</p>
-///   </body>
-/// </html>"#
+///     r#"<html><head><meta charset="utf-8" /></head><body><p>Hello, world!</p></body></html>"#
 /// );
 /// ```
 ///
@@ -66,7 +55,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</html>
+/// >{{ content | kirei }}</html>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -86,10 +75,10 @@ pub struct HtmlRoot<R: HtmlRecipe = ()> {
 ///
 /// ```askama
 /// {%- if let Some(h) = head -%}
-/// {{ h }}
-/// {% endif -%}
+///     {{ h }}
+/// {%- endif -%}
 /// {%- if let Some(b) = body -%}
-/// {{ b }}
+///     {{ b }}
 /// {%- endif -%}
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
@@ -159,38 +148,31 @@ impl<B: BodyRecipe> From<HtmlBody<B>> for HtmlRootContent {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let body = body!(@newline "flow content");
+/// let body = body!("flow content");
 ///
 /// let html = root!(body).lang("en");
 ///
-/// assert_eq!(html.bake(),
-/// r#"<html lang="en">
-///   <body>
-///     flow content
-///   </body>
-/// </html>"#);
+/// assert_eq!(
+///     html.bake(),
+///     r#"<html lang="en"><body>flow content</body></html>"#
+/// );
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
 /// let meta = meta!().charset();
-/// let head = head!(@newline meta);
+/// let head = head!(meta);
 ///
 /// let p = HtmlP::new().content("Hello, world!");
-/// let body = body!(@newline p);
+/// let body = body!(p);
 ///
 /// let html = root!(head, body);
 ///
-/// assert_eq!(html.bake(),
-/// r#"<html>
-///   <head>
-///     <meta charset="utf-8" />
-///   </head>
-///   <body>
-///     <p>Hello, world!</p>
-///   </body>
-/// </html>"#);
+/// assert_eq!(
+///     html.bake(),
+///     r#"<html><head><meta charset="utf-8" /></head><body><p>Hello, world!</p></body></html>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! root {

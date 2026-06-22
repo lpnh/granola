@@ -32,12 +32,13 @@ use crate::{filters, prelude::*};
 /// let optgroup = HtmlOptgroup::new().content(options).label("Fruits");
 ///
 /// assert_eq!(
-///     optgroup.bake(),
+///     optgroup.bake_pretty(),
 ///     r#"<optgroup label="Fruits">
 ///   <option>Grape</option>
 ///   <option>Mango</option>
 ///   <option>Strawberry</option>
-/// </optgroup>"#
+/// </optgroup>
+/// "#
 /// );
 /// ```
 ///
@@ -50,7 +51,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</optgroup>
+/// >{{ content | kirei }}</optgroup>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -145,10 +146,7 @@ impl<R: OptgroupRecipe> HasOptgroupAttrs for HtmlOptgroup<R> {
 ///
 /// assert_eq!(
 ///     optgroup.bake(),
-///     r#"<optgroup label="Binary">
-///   <option>Yes</option>
-///   <option>No</option>
-/// </optgroup>"#
+///     r#"<optgroup label="Binary"><option>Yes</option><option>No</option></optgroup>"#
 /// );
 /// ```
 ///
@@ -160,12 +158,13 @@ impl<R: OptgroupRecipe> HasOptgroupAttrs for HtmlOptgroup<R> {
 /// let optgroup = optgroup!(options).label("Fruits");
 ///
 /// assert_eq!(
-///     optgroup.bake(),
+///     optgroup.bake_pretty(),
 ///     r#"<optgroup label="Fruits">
 ///   <option>Grape</option>
 ///   <option>Mango</option>
 ///   <option>Strawberry</option>
-/// </optgroup>"#
+/// </optgroup>
+/// "#
 /// );
 /// ```
 #[macro_export]

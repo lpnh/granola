@@ -28,12 +28,7 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     style.bake(),
-///     r#"<style>
-///   p {
-///     color: violet;
-///     font-weight: lighter;
-///   }
-/// </style>"#
+///     r#"<style>p { color: violet; font-weight: lighter; }</style>"#
 /// );
 /// ```
 ///
@@ -46,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</style>
+/// >{{ content | kirei }}</style>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -140,12 +135,7 @@ impl<R: StyleRecipe> HasStyleAttrs for HtmlStyle<R> {
 ///
 /// assert_eq!(
 ///     style.bake(),
-///     r#"<style>
-///   p {
-///     color: violet;
-///     font-weight: lighter;
-///   }
-/// </style>"#
+///     r#"<style>p { color: violet; font-weight: lighter; }</style>"#
 /// );
 /// ```
 #[macro_export]
@@ -157,13 +147,7 @@ macro_rules! style {
         $crate::html::HtmlStyle::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlStyle::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlStyle::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlStyle::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlStyle::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -172,12 +156,6 @@ macro_rules! style {
         $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlStyle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

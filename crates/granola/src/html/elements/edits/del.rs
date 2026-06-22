@@ -21,15 +21,13 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let del = HtmlDel::new()
-///     .content(bake_newline!("try!"))
+///     .content("try!()")
 ///     .datetime("2019-11-07")
 ///     .cite("https://github.com/rust-lang/rust/pull/62672");
 ///
 /// assert_eq!(
 ///     del.bake(),
-///     r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">
-///   try!
-/// </del>"#
+///     r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">try!()</del>"#
 /// );
 /// ```
 ///
@@ -42,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</del>
+/// >{{ content | kirei }}</del>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -130,14 +128,14 @@ impl<R: DelRecipe> HasDelAttrs for HtmlDel<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let del = del!(@newline "try!")
+/// let del = del!("try!()")
 ///     .datetime("2019-11-07")
 ///     .cite("https://github.com/rust-lang/rust/pull/62672");
 ///
-/// assert_eq!(del.bake(),
-/// r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">
-///   try!
-/// </del>"#);
+/// assert_eq!(
+///     del.bake(),
+///     r#"<del datetime="2019-11-07" cite="https://github.com/rust-lang/rust/pull/62672">try!()</del>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! del {
@@ -148,15 +146,9 @@ macro_rules! del {
         $crate::html::HtmlDel::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDel::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDel::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlDel::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDel::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -164,12 +156,6 @@ macro_rules! del {
         $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDel::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

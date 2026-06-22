@@ -11,11 +11,7 @@ use crate::prelude::*;
 ///
 /// assert_eq!(
 ///     selectors_list.bake(),
-///     "button,
-/// input,
-/// optgroup,
-/// select,
-/// textarea"
+///     "button, input, optgroup, select, textarea"
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

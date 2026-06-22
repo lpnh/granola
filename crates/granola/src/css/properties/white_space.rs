@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// white-space: {{ content | kirei(0) }};
+/// white-space: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = WhiteSpaceRecipe, content = Cow<'static, str>)]

@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// align-items: {{ content | kirei(0) }};
+/// align-items: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = AlignItemsRecipe, content = Cow<'static, str>)]

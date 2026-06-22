@@ -23,13 +23,9 @@ use crate::{filters, prelude::*};
 /// let item = HtmlCol::new().class("item");
 /// let description = HtmlCol::new().class("description");
 ///
-/// let cols = bake_block![item, description];
+/// let cols = bake![item, description];
 ///
-/// assert_eq!(
-///     cols,
-///     r#"<col class="item" />
-/// <col class="description" />"#
-/// );
+/// assert_eq!(cols, r#"<col class="item" /><col class="description" />"#);
 /// ```
 ///
 /// # Askama template
@@ -105,7 +101,7 @@ impl<R: ColRecipe> HasColAttrs for HtmlCol<R> {
 ///
 /// ```askama
 /// {%- for col in items %}
-/// {{ col -}}
+///     {{ col }}
 /// {%- endfor -%}
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
@@ -146,13 +142,9 @@ impl From<HtmlCol> for TableColumns {
 /// let item = col!().class("item");
 /// let description = col!().class("description");
 ///
-/// let cols = bake_block![item, description];
+/// let cols = bake![item, description];
 ///
-/// assert_eq!(
-///     cols,
-///     r#"<col class="item" />
-/// <col class="description" />"#
-/// );
+/// assert_eq!(cols, r#"<col class="item" /><col class="description" />"#);
 /// ```
 #[macro_export]
 macro_rules! col {

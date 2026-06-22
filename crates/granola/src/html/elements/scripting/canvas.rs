@@ -33,16 +33,14 @@ use crate::{filters, prelude::*};
 ///     .width(160)
 ///     .height(80);
 ///
-/// let smiley = bake_block![script, canvas];
+/// let smiley = bake![script, canvas];
 ///
 /// assert_eq!(
 ///     smiley,
 ///     r#"<script>
-///   const ctx = document.getElementById("canvas").getContext("2d");
-///   ctx.font = "64px sans";
-///   ctx.fillText(":-)", 10, 62);
-/// </script>
-/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#
+/// const ctx = document.getElementById("canvas").getContext("2d");
+/// ctx.font = "64px sans";
+/// ctx.fillText(":-)", 10, 62);</script><canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#
 /// );
 /// ```
 ///
@@ -55,7 +53,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</canvas>
+/// >{{ content | kirei }}</canvas>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -152,16 +150,14 @@ impl<R: CanvasRecipe> HasCanvasAttrs for HtmlCanvas<R> {
 ///
 /// let canvas = canvas!("ASCII smiley").id("canvas").width(160).height(80);
 ///
-/// let smiley = bake_block![script, canvas];
+/// let smiley = bake![script, canvas];
 ///
 /// assert_eq!(
 ///     smiley,
 ///     r#"<script>
-///   const ctx = document.getElementById("canvas").getContext("2d");
-///   ctx.font = "64px sans";
-///   ctx.fillText(":-)", 10, 62);
-/// </script>
-/// <canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#
+/// const ctx = document.getElementById("canvas").getContext("2d");
+/// ctx.font = "64px sans";
+/// ctx.fillText(":-)", 10, 62);</script><canvas id="canvas" width="160" height="80">ASCII smiley</canvas>"#
 /// );
 /// ```
 #[macro_export]
@@ -173,15 +169,9 @@ macro_rules! canvas {
         $crate::html::HtmlCanvas::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlCanvas::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlCanvas::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlCanvas::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlCanvas::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlCanvas::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -189,12 +179,6 @@ macro_rules! canvas {
         $crate::html::HtmlCanvas::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlCanvas::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlCanvas::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlCanvas::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlCanvas::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// outline-style: {{ content | kirei(0) }};
+/// outline-style: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = OutlineStyleRecipe, content = Cow<'static, str>)]

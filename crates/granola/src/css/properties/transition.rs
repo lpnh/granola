@@ -29,7 +29,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// transition: {{ content | kirei(0) }};
+/// transition: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = TransitionRecipe, content = Cow<'static, str>)]

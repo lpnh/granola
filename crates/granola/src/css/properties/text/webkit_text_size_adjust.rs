@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// -webkit-text-size-adjust: {{ content | kirei(0) }};
+/// -webkit-text-size-adjust: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = WebkitTextSizeAdjustRecipe, content = Cow<'static, str>)]

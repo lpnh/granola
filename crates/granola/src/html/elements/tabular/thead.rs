@@ -23,18 +23,13 @@ use crate::{filters, prelude::*};
 /// let item = HtmlTh::new().content("Item").scope("col");
 /// let description = HtmlTh::new().content("Description").scope("col");
 ///
-/// let tr = HtmlTr::new().content(bake_block![item, description]);
+/// let tr = HtmlTr::new().fold_in(item).fold_in(description);
 ///
 /// let thead = HtmlThead::new().content(tr);
 ///
 /// assert_eq!(
 ///     thead.bake(),
-///     r#"<thead>
-///   <tr>
-///     <th scope="col">Item</th>
-///     <th scope="col">Description</th>
-///   </tr>
-/// </thead>"#
+///     r#"<thead><tr><th scope="col">Item</th><th scope="col">Description</th></tr></thead>"#
 /// );
 /// ```
 ///
@@ -46,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</thead>
+/// >{{ content | kirei }}</thead>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -87,12 +82,7 @@ pub struct HtmlThead<R: TheadRecipe = ()> {
 ///
 /// assert_eq!(
 ///     thead.bake(),
-///     r#"<thead>
-///   <tr>
-///     <th scope="col">Item</th>
-///     <th scope="col">Description</th>
-///   </tr>
-/// </thead>"#
+///     r#"<thead><tr><th scope="col">Item</th><th scope="col">Description</th></tr></thead>"#
 /// );
 /// ```
 #[macro_export]

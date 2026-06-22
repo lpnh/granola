@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// padding-inline-start: {{ content | kirei(0) }};
+/// padding-inline-start: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = PaddingInlineStartRecipe, content = Cow<'static, str>)]

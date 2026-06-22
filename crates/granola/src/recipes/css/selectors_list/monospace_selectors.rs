@@ -9,13 +9,7 @@ use crate::prelude::*;
 ///
 /// let selectors_list = CssSelectorsList::from(MonospaceSelectors);
 ///
-/// assert_eq!(
-///     selectors_list.bake(),
-///     "code,
-/// kbd,
-/// samp,
-/// pre"
-/// );
+/// assert_eq!(selectors_list.bake(), "code, kbd, samp, pre");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct MonospaceSelectors;

@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// box-shadow: {{ content | kirei(0) }};
+/// box-shadow: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = BoxShadowRecipe, content = Cow<'static, str>)]

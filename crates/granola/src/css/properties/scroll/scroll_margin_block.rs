@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// scroll-margin-block: {{ content | kirei(0) }};
+/// scroll-margin-block: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = ScrollMarginBlockRecipe, content = Cow<'static, str>)]

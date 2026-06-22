@@ -1,4 +1,7 @@
 #![feature(associated_type_defaults)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
+extern crate self as granola;
 
 pub use granola_derive::{Granola, Recipe};
 
@@ -10,11 +13,13 @@ pub mod oven;
 pub mod recipes;
 pub mod svg;
 
+#[cfg(feature = "pretty")]
+#[cfg_attr(docsrs, doc(cfg(feature = "pretty")))]
+pub mod pretty;
+
 pub mod prelude {
     pub use super::{Granola, Recipe, css::*, html::*, oven::BakeRecipe, recipes, svg::*};
-    pub use crate::{
-        bake_block, bake_inline, bake_newline, cookbook, cookbook_type, recipe_boilerplate,
-    };
+    pub use crate::{bake, bake_block, cookbook, cookbook_type, recipe_boilerplate};
 }
 
 pub mod macros {

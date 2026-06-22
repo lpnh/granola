@@ -26,15 +26,15 @@ use crate::prelude::*;
 ///
 /// let hr = HtmlHr::new();
 ///
-/// let story = bake_block![p1, "", hr, "", p2];
+/// let story = bake![p1, hr, p2];
 ///
 /// assert_eq!(
 ///     story,
-///     r#"<p>She blew out the candle. The room went dark.</p>
-///
-/// <hr />
-///
-/// <p>Morning came with birds and the smell of bread from somewhere below.</p>"#
+///     "\
+/// <p>She blew out the candle. The room went dark.</p>\
+/// <hr />\
+/// <p>Morning came with birds and the smell of bread from somewhere below.</p>\
+/// "
 /// );
 /// ```
 ///
@@ -79,15 +79,15 @@ pub struct HtmlHr<R: HrRecipe = ()> {
 /// let p1 = p!("She blew out the candle. The room went dark.");
 /// let p2 = p!("Morning came with birds and the smell of bread from somewhere below.");
 ///
-/// let story = bake_block![p1, "", hr!(), "", p2];
+/// let story = bake![p1, hr!(), p2];
 ///
 /// assert_eq!(
 ///     story,
-///     r#"<p>She blew out the candle. The room went dark.</p>
-///
-/// <hr />
-///
-/// <p>Morning came with birds and the smell of bread from somewhere below.</p>"#
+///     "\
+/// <p>She blew out the candle. The room went dark.</p>\
+/// <hr />\
+/// <p>Morning came with birds and the smell of bread from somewhere below.</p>\
+/// "
 /// );
 /// ```
 #[macro_export]

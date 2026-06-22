@@ -26,16 +26,11 @@ use crate::{filters, prelude::*};
 /// let h2 = HtmlH2::new().content("Latest news");
 /// let ul = HtmlUl::new().content(HtmlLi::new().content("New café on Oak Street"));
 ///
-/// let section = HtmlSection::new().content(bake_block![h2, ul]);
+/// let section = HtmlSection::new().fold_in(h2).fold_in(ul);
 ///
 /// assert_eq!(
 ///     section.bake(),
-///     r#"<section>
-///   <h2>Latest news</h2>
-///   <ul>
-///     <li>New café on Oak Street</li>
-///   </ul>
-/// </section>"#
+///     r#"<section><h2>Latest news</h2><ul><li>New café on Oak Street</li></ul></section>"#
 /// );
 /// ```
 ///
@@ -47,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</section>
+/// >{{ content | kirei }}</section>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -91,12 +86,7 @@ pub struct HtmlSection<R: SectionRecipe = ()> {
 ///
 /// assert_eq!(
 ///     section.bake(),
-///     r#"<section>
-///   <h2>Latest news</h2>
-///   <ul>
-///     <li>New café on Oak Street</li>
-///   </ul>
-/// </section>"#
+///     r#"<section><h2>Latest news</h2><ul><li>New café on Oak Street</li></ul></section>"#
 /// );
 /// ```
 #[macro_export]
@@ -108,15 +98,9 @@ macro_rules! section {
         $crate::html::HtmlSection::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSection::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSection::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlSection::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSection::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -124,12 +108,6 @@ macro_rules! section {
         $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

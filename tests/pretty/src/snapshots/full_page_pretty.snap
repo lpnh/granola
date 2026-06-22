@@ -1,0 +1,91 @@
+---
+source: tests/pretty/src/lib.rs
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A cozy café on the corner of Oak Street and Elm Avenue."
+    />
+    <title>Oats &amp; Ends Café</title>
+    <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      color: #1a1a1a;
+    }
+    .hero {
+      padding: 4rem 1rem;
+      text-align: center;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+    }
+    nav a {
+      margin-right: 1rem;
+      text-decoration: none;
+    }
+    @media (min-width: 720px) {
+      .menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <nav aria-label="Primary">
+        <a href="/">Oats &amp; Ends</a><a href="/menu">Menu</a><a href="/visit"
+        >Visit</a>
+      </nav>
+    </header>
+    <main>
+      <article>
+        <h1>Freshly roasted, freshly baked</h1>
+        <p>
+          We open at six and pour until the last regular leaves. Come for the
+          coffee, stay for the sourdough.
+        </p>
+      </article>
+      <section>
+        <h2>On the menu</h2>
+        <ul class="menu">
+          <li>Black coffee</li>
+          <li>Hot chocolate</li>
+          <li>Sourdough toast</li>
+        </ul>
+      </section>
+      <form action="/subscribe" method="post">
+        <label for="email">Email</label><input
+          id="email"
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          required
+        /><button>Subscribe</button>
+      </form>
+      <table>
+        <caption>Opening hours</caption>
+        <thead>
+          <tr>
+            <th scope="col">Day</th>
+            <th scope="col">Hours</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Weekdays</th>
+            <td>6:00 – 18:00</td>
+          </tr>
+          <tr>
+            <th scope="row">Weekends</th>
+            <td>7:00 – 16:00</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <footer><small>&copy; 2026 Oats &amp; Ends Café</small></footer>
+  </body>
+</html>

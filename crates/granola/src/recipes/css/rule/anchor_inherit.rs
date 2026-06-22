@@ -10,12 +10,13 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(AnchorInherit);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "a {
 ///   color: inherit;
 ///   -webkit-text-decoration: inherit;
 ///   text-decoration: inherit;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

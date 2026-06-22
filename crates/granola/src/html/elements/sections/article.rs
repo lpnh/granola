@@ -25,28 +25,23 @@ use crate::{filters, prelude::*};
 ///
 /// let h2 = HtmlH2::new().content("New Café");
 ///
-/// let content = bake_block![
-///     "Oats &amp; Ends opened last week on Oak Street,
-/// at the corner of Elm Avenue, bringing new aromas to the block.",
-///     "Its cozy atmosphere draws in passersby looking to treat themselves to
-/// a cup or two of good, hot black coffee."
-/// ];
+/// let content = "Oats &amp; Ends opened last week on Oak Street, at the corner of Elm Avenue, bringing new aromas to the block. Its cozy atmosphere draws in passersby looking to treat themselves to a cup or two of good, hot black coffee.";
 ///
 /// let p = HtmlP::new().content(content);
 ///
-/// let article = HtmlArticle::new().content(bake_block![h2, p]);
+/// let article = HtmlArticle::new().fold_in(h2).fold_in(p);
 ///
 /// assert_eq!(
-///     article.bake(),
+///     article.bake_pretty(),
 ///     r#"<article>
 ///   <h2>New Café</h2>
 ///   <p>
-///     Oats &amp; Ends opened last week on Oak Street,
-///     at the corner of Elm Avenue, bringing new aromas to the block.
-///     Its cozy atmosphere draws in passersby looking to treat themselves to
-///     a cup or two of good, hot black coffee.
+///     Oats &amp; Ends opened last week on Oak Street, at the corner of Elm Avenue,
+///     bringing new aromas to the block. Its cozy atmosphere draws in passersby
+///     looking to treat themselves to a cup or two of good, hot black coffee.
 ///   </p>
-/// </article>"#
+/// </article>
+/// "#
 /// );
 /// ```
 ///
@@ -58,7 +53,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</article>
+/// >{{ content | kirei }}</article>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -95,26 +90,21 @@ pub struct HtmlArticle<R: ArticleRecipe = ()> {
 ///
 /// let heading = h2!("New Café");
 ///
-/// let paragraph = p![
-///     "Oats &amp; Ends opened last week on Oak Street,
-/// at the corner of Elm Avenue, bringing new aromas to the block.",
-///     "Its cozy atmosphere draws in passersby looking to treat themselves to
-/// a cup or two of good, hot black coffee."
-/// ];
+/// let paragraph = p!("Oats &amp; Ends opened last week on Oak Street, at the corner of Elm Avenue, bringing new aromas to the block. Its cozy atmosphere draws in passersby looking to treat themselves to a cup or two of good, hot black coffee.");
 ///
 /// let article = article!(heading, paragraph);
 ///
 /// assert_eq!(
-///     article.bake(),
+///     article.bake_pretty(),
 ///     r#"<article>
 ///   <h2>New Café</h2>
 ///   <p>
-///     Oats &amp; Ends opened last week on Oak Street,
-///     at the corner of Elm Avenue, bringing new aromas to the block.
-///     Its cozy atmosphere draws in passersby looking to treat themselves to
-///     a cup or two of good, hot black coffee.
+///     Oats &amp; Ends opened last week on Oak Street, at the corner of Elm Avenue,
+///     bringing new aromas to the block. Its cozy atmosphere draws in passersby
+///     looking to treat themselves to a cup or two of good, hot black coffee.
 ///   </p>
-/// </article>"#
+/// </article>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -126,15 +116,9 @@ macro_rules! article {
         $crate::html::HtmlArticle::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlArticle::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlArticle::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlArticle::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlArticle::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlArticle::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -142,12 +126,6 @@ macro_rules! article {
         $crate::html::HtmlArticle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlArticle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlArticle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlArticle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlArticle::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

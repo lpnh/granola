@@ -26,24 +26,26 @@ use crate::{filters, prelude::*};
 /// let menu = HtmlA::new().content("the menu").href("/menu");
 /// let note = HtmlA::new().content("note").href("/contact");
 ///
-/// let content = bake_block![
-///     bake_inline!["You can find us at ", location, "."],
-///     bake_inline!["Everything we make and love is on ", menu, "."],
-///     bake_inline!["Have a thought? Send us a ", note, "."],
+/// let content = bake![
+///     bake!["You can find us at ", location, "."],
+///     bake!["Everything we make and love is on ", menu, "."],
+///     bake!["Have a thought? Send us a ", note, "."],
 /// ];
 ///
 /// let p = HtmlP::new().content(content);
 /// let nav = HtmlNav::new().content(p).aria_label("Site navigation");
 ///
 /// assert_eq!(
-///     nav.bake(),
+///     nav.bake_pretty(),
 ///     r#"<nav aria-label="Site navigation">
 ///   <p>
-///     You can find us at <a href="/location">Oak Street, corner of Elm Avenue</a>.
-///     Everything we make and love is on <a href="/menu">the menu</a>.
-///     Have a thought? Send us a <a href="/contact">note</a>.
+///     You can find us at <a href="/location"
+///     >Oak Street, corner of Elm Avenue</a>.Everything we make and love is on <a
+///       href="/menu"
+///     >the menu</a>.Have a thought? Send us a <a href="/contact">note</a>.
 ///   </p>
-/// </nav>"#
+/// </nav>
+/// "#
 /// );
 /// ```
 ///
@@ -55,7 +57,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</nav>
+/// >{{ content | kirei }}</nav>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -92,22 +94,24 @@ pub struct HtmlNav<R: NavRecipe = ()> {
 /// let note = a!("note").href("/contact");
 ///
 /// let paragraph = p![
-///     bake_inline!["You can find us at ", location, "."],
-///     bake_inline!["Everything we make and love is on ", menu, "."],
-///     bake_inline!["Have a thought? Send us a ", note, "."],
+///     bake!["You can find us at ", location, "."],
+///     bake!["Everything we make and love is on ", menu, "."],
+///     bake!["Have a thought? Send us a ", note, "."],
 /// ];
 ///
 /// let nav = nav!(paragraph).aria_label("Site navigation");
 ///
 /// assert_eq!(
-///     nav.bake(),
+///     nav.bake_pretty(),
 ///     r#"<nav aria-label="Site navigation">
 ///   <p>
-///     You can find us at <a href="/location">Oak Street, corner of Elm Avenue</a>.
-///     Everything we make and love is on <a href="/menu">the menu</a>.
-///     Have a thought? Send us a <a href="/contact">note</a>.
+///     You can find us at <a href="/location"
+///     >Oak Street, corner of Elm Avenue</a>.Everything we make and love is on <a
+///       href="/menu"
+///     >the menu</a>.Have a thought? Send us a <a href="/contact">note</a>.
 ///   </p>
-/// </nav>"#
+/// </nav>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -119,13 +123,7 @@ macro_rules! nav {
         $crate::html::HtmlNav::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlNav::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlNav::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlNav::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlNav::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlNav::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -134,12 +132,6 @@ macro_rules! nav {
         $crate::html::HtmlNav::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlNav::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlNav::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlNav::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlNav::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

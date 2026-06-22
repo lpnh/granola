@@ -24,7 +24,7 @@ use crate::{filters, prelude::*};
 /// let rt = HtmlRt::new().content("tori");
 /// let closing_rp = HtmlRp::new().content(")");
 ///
-/// let tori = bake_inline![opening_rp, rt, closing_rp];
+/// let tori = bake![opening_rp, rt, closing_rp];
 ///
 /// assert_eq!(tori, r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
 /// ```
@@ -37,7 +37,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</rp>
+/// >{{ content | kirei }}</rp>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -73,7 +73,7 @@ pub struct HtmlRp<R: RpRecipe = ()> {
 /// let rt = rt!("tori");
 /// let closing_rp = rp!(")");
 ///
-/// let tori = bake_inline![opening_rp, rt, closing_rp];
+/// let tori = bake![opening_rp, rt, closing_rp];
 ///
 /// assert_eq!(tori, r#"<rp>(</rp><rt>tori</rt><rp>)</rp>"#);
 /// ```
@@ -86,13 +86,7 @@ macro_rules! rp {
         $crate::html::HtmlRp::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlRp::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlRp::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlRp::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlRp::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlRp::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -101,12 +95,6 @@ macro_rules! rp {
         $crate::html::HtmlRp::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlRp::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlRp::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlRp::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlRp::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

@@ -1,25 +1,9 @@
 use askama::{FastWritable, NO_VALUES, Values};
 use std::fmt::{self, Display, Formatter, Write};
 
-/// Handles inline and block rendering.
-///
-/// - No newline: keeps the content untouched
-/// - Has newline: indent the content, ensuring it's enclosed by newlines
-///     - Blank lines, i.e. `\n` or `\r\n`, pass through without indentation
-///     - The indentation is capped at 16
-///
-/// If `indent_width == 0`, i.e. `kire(0)`, the content is rendered as-is,
-/// skipping the block decision entirely.
 #[askama::filter_fn]
-pub fn kirei<S: FastWritable>(
-    source: S,
-    _env: &dyn Values,
-    indent_width: usize,
-) -> askama::Result<Kirei<S>> {
-    Ok(Kirei {
-        source,
-        indent_width,
-    })
+pub fn kirei<S: FastWritable>(source: S, _env: &dyn Values) -> askama::Result<Kirei<S>> {
+    Ok(Kirei { source })
 }
 
 /// Renders an optional value as an HTML attribute. See [`OptAttr`].
@@ -48,7 +32,6 @@ pub fn bake_bool_attr<'a>(
 /// The content type after being piped into [`kirei`] filter.
 pub struct Kirei<S> {
     source: S,
-    indent_width: usize,
 }
 
 /// Forwards to [`write_into`].
@@ -63,113 +46,8 @@ impl<S: FastWritable> Display for Kirei<S> {
 
 impl<S: FastWritable> FastWritable for Kirei<S> {
     fn write_into(&self, dest: &mut dyn Write, values: &dyn Values) -> askama::Result<()> {
-        if self.indent_width == 0 {
-            return self.source.write_into(dest, values);
-        }
-
-        let mut writer = KireiWriter::new(dest, self.indent_width);
-
-        self.source.write_into(&mut writer, values)?;
-
-        writer.finish().map_err(Into::into)
+        self.source.write_into(dest, values)
     }
-}
-
-const MAX_INDENT: usize = 16;
-const SPACES: &str = "                "; // MAX_INDENT spaces
-
-fn indent_str(width: usize) -> &'static str {
-    &SPACES[..width.min(MAX_INDENT)]
-}
-
-// Buffers until a newline is seen, then switches to streaming block mode.
-enum KireiState {
-    Inline(String),
-    Block { ends_with_newline: bool },
-}
-
-// `Write` adapter implementing the `kirei` streaming state machine.
-struct KireiWriter<'a, W: Write + ?Sized> {
-    dest: &'a mut W,
-    indent: &'static str,
-    state: KireiState,
-}
-
-impl<'a, W: Write + ?Sized> KireiWriter<'a, W> {
-    fn new(dest: &'a mut W, indent_width: usize) -> Self {
-        Self {
-            dest,
-            indent: indent_str(indent_width),
-            state: KireiState::Inline(String::new()),
-        }
-    }
-
-    // Inline: Flush buffered content
-    // Block: Ensure trailing newline
-    fn finish(self) -> fmt::Result {
-        match self.state {
-            KireiState::Inline(buffer) => {
-                if !buffer.is_empty() {
-                    self.dest.write_str(&buffer)?;
-                }
-            }
-            KireiState::Block { ends_with_newline } => {
-                if !ends_with_newline {
-                    self.dest.write_char('\n')?;
-                }
-            }
-        }
-        Ok(())
-    }
-}
-
-impl<W: Write + ?Sized> Write for KireiWriter<'_, W> {
-    fn write_str(&mut self, s: &str) -> fmt::Result {
-        let buffer = match &mut self.state {
-            KireiState::Inline(buffer) => {
-                buffer.push_str(s);
-                if !s.contains('\n') {
-                    return Ok(());
-                }
-                std::mem::take(buffer)
-            }
-            KireiState::Block { ends_with_newline } => {
-                return write_block(self.dest, s, self.indent, ends_with_newline);
-            }
-        };
-
-        // Buffer contains a newline: emit the opening '\n' unless the body
-        // already starts with one, then stream it through the block writer.
-        if !(buffer.starts_with('\n') || buffer.starts_with("\r\n")) {
-            self.dest.write_char('\n')?;
-        }
-
-        let mut ends_with_newline = true;
-
-        let result = write_block(self.dest, &buffer, self.indent, &mut ends_with_newline);
-
-        self.state = KireiState::Block { ends_with_newline };
-
-        result
-    }
-}
-
-fn write_block<W: Write + ?Sized>(
-    dest: &mut W,
-    s: &str,
-    indent: &str,
-    ends_with_newline: &mut bool,
-) -> fmt::Result {
-    for line in s.split_inclusive('\n') {
-        if *ends_with_newline && !matches!(line, "\n" | "\r\n") {
-            dest.write_str(indent)?;
-        }
-
-        dest.write_str(line)?;
-
-        *ends_with_newline = line.ends_with('\n');
-    }
-    Ok(())
 }
 
 /// Renders ` name="value"` when `Some`, nothing when `None`.
@@ -308,233 +186,52 @@ mod test_util {
 
     use super::Kirei;
 
-    pub(super) fn kirei(s: &str, indent: usize) -> String {
+    pub(super) fn kirei(s: &str) -> String {
         let mut buf = String::new();
 
-        Kirei {
-            source: s,
-            indent_width: indent,
-        }
-        .write_into(&mut buf, &())
-        .unwrap();
+        Kirei { source: s }.write_into(&mut buf, &()).unwrap();
 
         buf
     }
 }
 
 #[cfg(test)]
-mod kirei_ws_only_tests {
+mod kirei_tests {
     use super::test_util::kirei;
 
     #[test]
     fn empty() {
-        assert_eq!(kirei("", 4), "");
+        assert_eq!(kirei(""), "");
     }
 
     #[test]
     fn space() {
-        assert_eq!(kirei("   ", 4), "   ");
+        assert_eq!(kirei("   "), "   ");
     }
-
-    #[test]
-    fn single_tab() {
-        assert_eq!(kirei("\t", 4), "\t");
-    }
-
-    #[test]
-    fn multiple_tabs() {
-        assert_eq!(kirei("\t\t\t", 4), "\t\t\t");
-    }
-
-    #[test]
-    fn single_newline() {
-        assert_eq!(kirei("\n", 4), "\n");
-    }
-
-    #[test]
-    fn multiple_newlines() {
-        assert_eq!(kirei("\n\n\n", 4), "\n\n\n");
-    }
-
-    #[test]
-    fn single_crlf() {
-        assert_eq!(kirei("\r\n", 4), "\r\n");
-    }
-
-    #[test]
-    fn multiple_crlf() {
-        assert_eq!(kirei("\r\n\r\n\r\n", 4), "\r\n\r\n\r\n");
-    }
-}
-
-#[cfg(test)]
-mod kirei_inline_tests {
-    use super::test_util::kirei;
 
     #[test]
     fn single_word() {
-        assert_eq!(kirei("halloween", 4), "halloween");
+        assert_eq!(kirei("halloween"), "halloween");
     }
 
     #[test]
     fn words_surrounded_by_ws() {
-        assert_eq!(kirei("   hello   world   ", 4), "   hello   world   ");
-    }
-
-    #[test]
-    fn words_surrounded_by_multiple_tabs() {
-        assert_eq!(
-            kirei("\t\t\thello\t\t\tworld\t\t\t", 4),
-            "\t\t\thello\t\t\tworld\t\t\t"
-        );
-    }
-}
-
-#[cfg(test)]
-mod kirei_block_tests {
-    use super::test_util::kirei;
-
-    #[test]
-    fn newline_start() {
-        assert_eq!(kirei("\nhalloween", 4), "\n    halloween\n");
+        assert_eq!(kirei("   hello   world   "), "   hello   world   ");
     }
 
     #[test]
     fn newline_middle() {
-        assert_eq!(kirei("hello\nworld", 4), "\n    hello\n    world\n");
-    }
-
-    #[test]
-    fn newline_end() {
-        assert_eq!(kirei("halloween\n", 4), "\n    halloween\n");
-    }
-
-    #[test]
-    fn multiple_newline_start() {
-        assert_eq!(kirei("\n\n\nhalloween", 4), "\n\n\n    halloween\n");
-    }
-
-    #[test]
-    fn multiple_newline_middle() {
-        assert_eq!(kirei("hello\n\n\nworld", 4), "\n    hello\n\n\n    world\n");
-    }
-
-    #[test]
-    fn multiple_newline_end() {
-        assert_eq!(kirei("halloween\n\n\n", 4), "\n    halloween\n\n\n");
-    }
-
-    #[test]
-    fn crlf_start() {
-        assert_eq!(kirei("\r\nhalloween", 4), "\r\n    halloween\n");
-    }
-
-    #[test]
-    fn crlf_middle() {
-        assert_eq!(kirei("hello\r\nworld", 4), "\n    hello\r\n    world\n");
-    }
-
-    #[test]
-    fn crlf_end() {
-        assert_eq!(kirei("halloween\r\n", 4), "\n    halloween\r\n");
-    }
-
-    #[test]
-    fn multiple_crlf_start() {
-        assert_eq!(
-            kirei("\r\n\r\n\r\nhalloween", 4),
-            "\r\n\r\n\r\n    halloween\n"
-        );
-    }
-
-    #[test]
-    fn multiple_crlf_middle() {
-        assert_eq!(
-            kirei("hello\r\n\r\n\r\nworld", 4),
-            "\n    hello\r\n\r\n\r\n    world\n"
-        );
-    }
-
-    #[test]
-    fn multiple_crlf_end() {
-        assert_eq!(
-            kirei("halloween\r\n\r\n\r\n", 4),
-            "\n    halloween\r\n\r\n\r\n"
-        );
-    }
-}
-
-#[cfg(test)]
-mod kirei_zero_tests {
-    use super::test_util::kirei;
-
-    #[test]
-    fn inline() {
-        let hello_world = "hello world";
-        assert_eq!(kirei(hello_world, 0), hello_world);
-    }
-
-    #[test]
-    fn newline() {
-        let hello_world = "hello\nworld";
-        assert_eq!(kirei(hello_world, 0), hello_world);
+        assert_eq!(kirei("hello\nworld"), "hello\nworld");
     }
 
     #[test]
     fn leading_indent() {
-        let hello_world = "    hello\nworld";
-        assert_eq!(kirei(hello_world, 0), hello_world);
+        assert_eq!(kirei("    hello\nworld"), "    hello\nworld");
     }
 
     #[test]
-    fn leading_indent_2() {
-        let hello_world = "hello\n    world";
-        assert_eq!(kirei(hello_world, 0), hello_world);
-    }
-
-    #[test]
-    fn trailing_indent() {
-        let hello_world = "hello    \nworld";
-        assert_eq!(kirei(hello_world, 0), hello_world);
-    }
-
-    #[test]
-    fn trailing_indent_2() {
-        let hello_world = "hello\nworld    ";
-        assert_eq!(kirei(hello_world, 0), hello_world);
-    }
-}
-
-#[cfg(test)]
-mod kirei_indent_tests {
-    use super::test_util::kirei;
-
-    #[test]
-    fn leading_indent() {
-        assert_eq!(kirei("    hello\nworld", 2), "\n      hello\n  world\n");
-    }
-
-    #[test]
-    fn leading_indent_2() {
-        assert_eq!(kirei("hello\n    world", 2), "\n  hello\n      world\n");
-    }
-
-    #[test]
-    fn trailing_indent() {
-        assert_eq!(kirei("hello    \nworld", 2), "\n  hello    \n  world\n");
-    }
-
-    #[test]
-    fn trailing_indent_2() {
-        assert_eq!(kirei("hello\nworld    ", 2), "\n  hello\n  world    \n");
-    }
-
-    #[test]
-    fn indent_caps_at_max() {
-        assert_eq!(
-            kirei("foo\nbar", 42),
-            format!("\n{}foo\n{}bar\n", " ".repeat(16), " ".repeat(16))
-        );
+    fn crlf() {
+        assert_eq!(kirei("hello\r\nworld"), "hello\r\nworld");
     }
 }
 
@@ -546,37 +243,10 @@ mod kirei_state_tests {
     use super::Kirei;
 
     #[test]
-    fn inline() {
+    fn write() {
         struct Foo;
 
         impl FastWritable for Foo {
-            fn write_into(&self, dest: &mut dyn Write, _: &dyn Values) -> askama::Result<()> {
-                dest.write_str("halloween")?;
-                dest.write_str(" ")?;
-                dest.write_str("hello")?;
-                dest.write_str(" ")?;
-                dest.write_str("world")?;
-                Ok(())
-            }
-        }
-
-        let mut buf = String::new();
-
-        Kirei {
-            source: Foo,
-            indent_width: 4,
-        }
-        .write_into(&mut buf, &())
-        .unwrap();
-
-        assert_eq!(buf, "halloween hello world");
-    }
-
-    #[test]
-    fn block() {
-        struct Bar;
-
-        impl FastWritable for Bar {
             fn write_into(&self, dest: &mut dyn Write, _: &dyn Values) -> askama::Result<()> {
                 dest.write_str("halloween")?;
                 dest.write_str(" ")?;
@@ -588,13 +258,8 @@ mod kirei_state_tests {
 
         let mut buf = String::new();
 
-        Kirei {
-            source: Bar,
-            indent_width: 4,
-        }
-        .write_into(&mut buf, &())
-        .unwrap();
+        Kirei { source: Foo }.write_into(&mut buf, &()).unwrap();
 
-        assert_eq!(buf, "\n    halloween hello\n    world\n");
+        assert_eq!(buf, "halloween hello\nworld");
     }
 }

@@ -10,12 +10,13 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(HrReset);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "hr {
 ///   height: 0;
 ///   color: inherit;
 ///   border-top-width: 1px;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

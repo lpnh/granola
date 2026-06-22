@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 ///     .href(r#"https://crates.io/crates/ferris-says"#);
 /// let cite = HtmlCite::new().content(url);
 ///
-/// let ferris_says = bake_block![pre, cite];
+/// let ferris_says = bake![pre, cite];
 ///
 /// assert_eq!(
 ///     ferris_says,
@@ -56,8 +56,7 @@ use crate::{filters, prelude::*};
 ///         \) /  o o  \ (/
 ///           '_   -   _'
 ///           / '-----' \
-/// </pre>
-/// <cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#
+/// </pre><cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#
 /// );
 /// ```
 ///
@@ -69,7 +68,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(0) }}</pre>
+/// >{{ content | kirei }}</pre>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -118,7 +117,7 @@ pub struct HtmlPre<R: PreRecipe = ()> {
 /// let url = a!("ferris-says").href(r#"https://crates.io/crates/ferris-says"#);
 /// let cite = cite!(url);
 ///
-/// let ferris_says = bake_block![pre, cite];
+/// let ferris_says = bake![pre, cite];
 ///
 /// assert_eq!(
 ///     ferris_says,
@@ -132,8 +131,7 @@ pub struct HtmlPre<R: PreRecipe = ()> {
 ///         \) /  o o  \ (/
 ///           '_   -   _'
 ///           / '-----' \
-/// </pre>
-/// <cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#
+/// </pre><cite><a href="https://crates.io/crates/ferris-says">ferris-says</a></cite>"#
 /// );
 /// ```
 #[macro_export]
@@ -145,13 +143,7 @@ macro_rules! pre {
         $crate::html::HtmlPre::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlPre::new().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlPre::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlPre::new().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlPre::new().content($crate::bake![$first $(, $rest)*])
     };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlPre::<$crate::cookbook_type!($($r),+)>::from_cookbook()
@@ -160,12 +152,6 @@ macro_rules! pre {
         $crate::html::HtmlPre::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlPre::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlPre::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlPre::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlPre::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

@@ -13,15 +13,16 @@ use crate::{prelude::*, recipes::*};
 /// let page = HtmlDocument::from(Homemade);
 ///
 /// assert_eq!(
-///     page.bake(),
-///     r#"<!doctype html>
+///     page.bake_pretty(),
+///     r#"<!DOCTYPE html>
 /// <html>
 ///   <head>
 ///     <meta charset="utf-8" />
 ///     <meta name="viewport" content="width=device-width, initial-scale=1" />
 ///   </head>
 ///   <body></body>
-/// </html>"#
+/// </html>
+/// "#
 /// );
 /// ```
 ///
@@ -36,7 +37,7 @@ use crate::{prelude::*, recipes::*};
 ///     .declarations_block([("height", "100vh"), ("margin", "0")]);
 /// let style = HtmlStyle::new().content(css_rule);
 ///
-/// let body = HtmlBody::new().content(bake_newline!("Hello, world!"));
+/// let body = HtmlBody::new().content("Hello, world!");
 ///
 /// let page = HtmlDocument::from(Homemade)
 ///     .lang("en")
@@ -46,8 +47,8 @@ use crate::{prelude::*, recipes::*};
 ///     .body(body);
 ///
 /// assert_eq!(
-///     page.bake(),
-///     r#"<!doctype html>
+///     page.bake_pretty(),
+///     r#"<!DOCTYPE html>
 /// <html lang="en">
 ///   <head>
 ///     <meta charset="utf-8" />
@@ -55,16 +56,15 @@ use crate::{prelude::*, recipes::*};
 ///     <meta name="robots" content="noindex, nofollow" />
 ///     <title>Home</title>
 ///     <style>
-///       body {
-///         height: 100vh;
-///         margin: 0;
-///       }
+///     body {
+///       height: 100vh;
+///       margin: 0;
+///     }
 ///     </style>
 ///   </head>
-///   <body>
-///     Hello, world!
-///   </body>
-/// </html>"#
+///   <body>Hello, world!</body>
+/// </html>
+/// "#
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -101,8 +101,8 @@ impl HtmlRecipe for Homemade {
 ///
 /// ```askama
 /// {{ head }}
-/// {% if let Some(b) = body -%}
-/// {{ b }}
+/// {%- if let Some(b) = body -%}
+///     {{ b }}
 /// {%- endif -%}
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
@@ -179,17 +179,17 @@ impl HtmlRoot<Homemade> {
 /// # Askama template
 ///
 /// ```askama
-/// {%- for m in meta %}
-/// {{ m }}
+/// {%- for m in meta -%}
+///     {{ m }}
 /// {%- endfor -%}
-/// {%- if let Some(t) = title %}
-/// {{ t }}
+/// {%- if let Some(t) = title -%}
+///     {{ t }}
 /// {%- endif -%}
-/// {%- for l in link %}
-/// {{ l }}
+/// {%- for l in link -%}
+///     {{ l }}
 /// {%- endfor -%}
-/// {%- for s in style %}
-/// {{ s }}
+/// {%- for s in style -%}
+///     {{ s }}
 /// {%- endfor -%}
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]

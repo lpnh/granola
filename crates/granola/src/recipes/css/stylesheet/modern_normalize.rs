@@ -16,109 +16,91 @@ use crate::{prelude::*, recipes::*};
 /// let stylesheet = CssStylesheet::from(ModernNormalize);
 ///
 /// assert_eq!(
-///     stylesheet.bake(),
-///     r#"*,
-/// ::after,
-/// ::before {
+///     stylesheet.bake_pretty(),
+///     r#"*, ::after, ::before {
 ///   box-sizing: border-box;
 /// }
-///
 /// html {
-///   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+///   font-family:
+///     system-ui,
+///     "Segoe UI",
+///     Roboto,
+///     Helvetica,
+///     Arial,
+///     sans-serif,
+///     "Apple Color Emoji",
+///     "Segoe UI Emoji";
 ///   line-height: 1.15;
 ///   -webkit-text-size-adjust: 100%;
 ///   tab-size: 4;
 /// }
-///
 /// body {
 ///   margin: 0;
 /// }
-///
-/// b,
-/// strong {
+/// b, strong {
 ///   font-weight: bolder;
 /// }
-///
-/// code,
-/// kbd,
-/// samp,
-/// pre {
-///   font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+/// code, kbd, samp, pre {
+///   font-family:
+///     ui-monospace,
+///     SFMono-Regular,
+///     Consolas,
+///     "Liberation Mono",
+///     Menlo,
+///     monospace;
 ///   font-size: 1em;
 /// }
-///
 /// small {
 ///   font-size: 80%;
 /// }
-///
-/// sub,
-/// sup {
+/// sub, sup {
 ///   font-size: 75%;
 ///   line-height: 0;
 ///   position: relative;
 ///   vertical-align: baseline;
 /// }
-///
 /// sub {
 ///   bottom: -0.25em;
 /// }
-///
 /// sup {
 ///   top: -0.5em;
 /// }
-///
 /// table {
 ///   border-color: currentcolor;
 /// }
-///
-/// button,
-/// input,
-/// optgroup,
-/// select,
-/// textarea {
+/// button, input, optgroup, select, textarea {
 ///   font-family: inherit;
 ///   font-size: 100%;
 ///   line-height: 1.15;
 ///   margin: 0;
 /// }
-///
-/// button,
-/// [type="button"],
-/// [type="reset"],
-/// [type="submit"] {
+/// button, [type="button"], [type="reset"], [type="submit"] {
 ///   -webkit-appearance: button;
 /// }
-///
 /// legend {
 ///   padding: 0;
 /// }
-///
 /// progress {
 ///   vertical-align: baseline;
 /// }
-///
-/// ::-webkit-inner-spin-button,
-/// ::-webkit-outer-spin-button {
+/// ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
 ///   height: auto;
 /// }
-///
 /// [type="search"] {
 ///   -webkit-appearance: textfield;
 ///   outline-offset: -2px;
 /// }
-///
 /// ::-webkit-search-decoration {
 ///   -webkit-appearance: none;
 /// }
-///
 /// ::-webkit-file-upload-button {
 ///   -webkit-appearance: button;
 ///   font: inherit;
 /// }
-///
 /// summary {
 ///   display: list-item;
-/// }"#
+/// }
+/// "#
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -153,7 +135,6 @@ impl StylesheetRecipe for ModernNormalize {
 fn html_defaults() -> CssStatement {
     let default_fonts = "system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
 
-    let selectors_list = "html";
     let declarations_block: [CssDeclaration; 4] = [
         CssFontFamily::new().content(default_fonts).into(),
         CssLineHeight::new().content("1.15").into(),
@@ -162,7 +143,7 @@ fn html_defaults() -> CssStatement {
     ];
 
     CssRule::new()
-        .selectors_list(selectors_list)
+        .selectors_list("html")
         .declarations_block(declarations_block)
         .into()
 }
@@ -215,9 +196,9 @@ fn forms_defaults() -> CssStatement {
 fn button_appearance() -> CssStatement {
     let selectors_list = [
         "button",
-        "[type=\"button\"]",
-        "[type=\"reset\"]",
-        "[type=\"submit\"]",
+        r#"[type="button"]"#,
+        r#"[type="reset"]"#,
+        r#"[type="submit"]"#,
     ];
     let declarations_block = ("-webkit-appearance", "button");
 
@@ -235,27 +216,25 @@ fn legend_padding() -> CssStatement {
 }
 
 fn search_appearance() -> CssStatement {
-    let selectors_list = r#"[type="search"]"#;
     let declarations_block: [CssDeclaration; 2] = [
         ("-webkit-appearance", "textfield").into(),
         CssOutlineOffset::new().content("-2px").into(),
     ];
 
     CssRule::new()
-        .selectors_list(selectors_list)
+        .selectors_list(r#"[type="search"]"#)
         .declarations_block(declarations_block)
         .into()
 }
 
 fn file_upload_button() -> CssStatement {
-    let selectors_list = "::-webkit-file-upload-button";
     let declarations_block: [CssDeclaration; 2] = [
         ("-webkit-appearance", "button").into(),
         CssFont::from(Inherit).into(),
     ];
 
     CssRule::new()
-        .selectors_list(selectors_list)
+        .selectors_list("::-webkit-file-upload-button")
         .declarations_block(declarations_block)
         .into()
 }

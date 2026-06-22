@@ -30,11 +30,7 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     instructions.bake(),
-///     r#"<ol>
-///   <li>Add the sugar</li>
-///   <li>Coat with spice</li>
-///   <li>Fold in everything nice</li>
-/// </ol>"#
+///     r#"<ol><li>Add the sugar</li><li>Coat with spice</li><li>Fold in everything nice</li></ol>"#
 /// );
 /// ```
 ///
@@ -47,7 +43,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</ol>
+/// >{{ content | kirei }}</ol>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -156,11 +152,7 @@ impl<R: OlRecipe> HasOlAttrs for HtmlOl<R> {
 ///
 /// assert_eq!(
 ///     instructions.bake(),
-///     r#"<ol>
-///   <li>Add the sugar</li>
-///   <li>Coat with spice</li>
-///   <li>Fold in everything nice</li>
-/// </ol>"#
+///     r#"<ol><li>Add the sugar</li><li>Coat with spice</li><li>Fold in everything nice</li></ol>"#
 /// );
 /// ```
 ///
@@ -174,10 +166,7 @@ impl<R: OlRecipe> HasOlAttrs for HtmlOl<R> {
 ///
 /// assert_eq!(
 ///     instructions.bake(),
-///     r#"<ol>
-///   <li>Add the sugar</li>
-///   <li>Coat with spice</li>
-/// </ol>"#
+///     r#"<ol><li>Add the sugar</li><li>Coat with spice</li></ol>"#
 /// );
 /// ```
 #[macro_export]

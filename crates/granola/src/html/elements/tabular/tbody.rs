@@ -23,17 +23,17 @@ use crate::{filters, prelude::*};
 /// let th_1 = HtmlTh::new().content("Black coffee").scope("row");
 /// let td_1 = HtmlTd::new().content("A good, hot, black coffee");
 ///
-/// let black_coffee = HtmlTr::new().content(bake_block![th_1, td_1]);
+/// let black_coffee = HtmlTr::new().fold_in(th_1).fold_in(td_1);
 ///
 /// let th_2 = HtmlTh::new().content("Hot chocolate").scope("row");
 /// let td_2 = HtmlTd::new().content("Melted dark chocolate with milk");
 ///
-/// let hot_chocolate = HtmlTr::new().content(bake_block![th_2, td_2]);
+/// let hot_chocolate = HtmlTr::new().fold_in(th_2).fold_in(td_2);
 ///
 /// let tbody = HtmlTbody::new().content([black_coffee, hot_chocolate]);
 ///
 /// assert_eq!(
-///     tbody.bake(),
+///     tbody.bake_pretty(),
 ///     r#"<tbody>
 ///   <tr>
 ///     <th scope="row">Black coffee</th>
@@ -43,7 +43,8 @@ use crate::{filters, prelude::*};
 ///     <th scope="row">Hot chocolate</th>
 ///     <td>Melted dark chocolate with milk</td>
 ///   </tr>
-/// </tbody>"#
+/// </tbody>
+/// "#
 /// );
 /// ```
 ///
@@ -55,7 +56,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</tbody>
+/// >{{ content | kirei }}</tbody>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -100,7 +101,7 @@ pub struct HtmlTbody<R: TbodyRecipe = ()> {
 /// let tbody = tbody!(black_coffee, hot_chocolate);
 ///
 /// assert_eq!(
-///     tbody.bake(),
+///     tbody.bake_pretty(),
 ///     r#"<tbody>
 ///   <tr>
 ///     <th scope="row">Black coffee</th>
@@ -110,7 +111,8 @@ pub struct HtmlTbody<R: TbodyRecipe = ()> {
 ///     <th scope="row">Hot chocolate</th>
 ///     <td>Melted dark chocolate with milk</td>
 ///   </tr>
-/// </tbody>"#
+/// </tbody>
+/// "#
 /// );
 /// ```
 #[macro_export]

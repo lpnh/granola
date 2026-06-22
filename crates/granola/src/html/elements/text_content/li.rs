@@ -1,7 +1,7 @@
 use askama::Template;
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
 
-use crate::{filters, prelude::*};
+use crate::{filters, oven::FoldIn, prelude::*};
 
 /// The HTML `<li>` element.
 ///
@@ -23,13 +23,9 @@ use crate::{filters, prelude::*};
 /// let sugar = HtmlLi::new().content("sugar");
 /// let spice = HtmlLi::new().content("spice");
 ///
-/// let items = bake_block![sugar, spice];
+/// let items = bake![sugar, spice];
 ///
-/// assert_eq!(
-///     items,
-///     r#"<li>sugar</li>
-/// <li>spice</li>"#
-/// );
+/// assert_eq!(items, r#"<li>sugar</li><li>spice</li>"#);
 /// ```
 ///
 /// # Askama template
@@ -41,7 +37,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</li>
+/// >{{ content | kirei }}</li>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -110,8 +106,8 @@ impl<R: LiRecipe> HasLiAttrs for HtmlLi<R> {
 /// The content of [`HtmlMenu`], [`HtmlOl`], or [`HtmlUl`].
 ///
 /// ```askama
-/// {%- for li in items %}
-/// {{ li -}}
+/// {%- for li in items -%}
+///     {{ li }}
 /// {%- endfor -%}
 /// ```
 #[derive(Default, Debug, Clone, Template, Granola)]
@@ -134,6 +130,22 @@ impl From<HtmlLi> for ListItems {
     }
 }
 
+impl Extend<HtmlLi> for ListItems {
+    fn extend<I: IntoIterator<Item = HtmlLi>>(&mut self, iter: I) {
+        self.items.extend(iter);
+    }
+}
+
+impl FoldIn for ListItems {
+    fn fold_in(&mut self, mut content: Self) {
+        if self.items.is_empty() {
+            self.items = content.items;
+        } else {
+            self.items.append(&mut content.items);
+        }
+    }
+}
+
 /// Shorthand for `HtmlLi`.
 ///
 /// # Example
@@ -152,13 +164,9 @@ impl From<HtmlLi> for ListItems {
 /// let sugar = li!("sugar");
 /// let spice = li!("spice");
 ///
-/// let items = bake_block![sugar, spice];
+/// let items = bake![sugar, spice];
 ///
-/// assert_eq!(
-///     items,
-///     r#"<li>sugar</li>
-/// <li>spice</li>"#
-/// );
+/// assert_eq!(items, r#"<li>sugar</li><li>spice</li>"#);
 /// ```
 #[macro_export]
 macro_rules! li {
@@ -169,15 +177,9 @@ macro_rules! li {
         $crate::html::HtmlLi::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlLi::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlLi::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlLi::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlLi::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlLi::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -185,12 +187,6 @@ macro_rules! li {
         $crate::html::HtmlLi::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlLi::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlLi::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlLi::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlLi::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

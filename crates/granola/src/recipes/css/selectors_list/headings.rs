@@ -9,13 +9,7 @@ use crate::prelude::*;
 ///
 /// let selectors_list = CssSelectorsList::from(Headings);
 ///
-/// assert_eq!(
-///     selectors_list.bake(),
-///     "h1,
-/// h2,
-/// h3,
-/// h4"
-/// );
+/// assert_eq!(selectors_list.bake(), "h1, h2, h3, h4");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Headings;

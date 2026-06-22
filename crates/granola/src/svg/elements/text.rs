@@ -33,7 +33,7 @@ use crate::{filters, prelude::*};
 ///   {{- specific_attrs -}}
 ///   {{- paint_attrs -}}
 ///   {{- text_content_attrs -}}
-/// >{{ content | kirei(2) }}</text>
+/// >{{ content | kirei }}</text>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -190,12 +190,6 @@ macro_rules! text {
         $crate::svg::SvgText::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::svg::SvgText::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::svg::SvgText::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -204,11 +198,5 @@ macro_rules! text {
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

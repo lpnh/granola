@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// justify-content: {{ content | kirei(0) }};
+/// justify-content: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = JustifyContentRecipe, content = Cow<'static, str>)]

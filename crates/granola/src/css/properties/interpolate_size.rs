@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// interpolate-size: {{ content | kirei(0) }};
+/// interpolate-size: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = InterpolateSizeRecipe, content = Cow<'static, str>)]

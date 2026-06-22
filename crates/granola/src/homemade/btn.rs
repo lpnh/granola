@@ -15,8 +15,8 @@ const BTN_BG_DARKENED: &str =
 /// let rule = CssRule::from(Btn);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     ".btn {
+///     rule.bake_pretty(),
+///     r#".btn {
 ///   display: inline flex;
 ///   align-items: center;
 ///   justify-content: center;
@@ -35,7 +35,8 @@ const BTN_BG_DARKENED: &str =
 ///   transition: background-color 150ms ease;
 ///   --btn-bg: var(--btn-color, var(--color-base-200));
 ///   --btn-fg: var(--color-base-content);
-/// }"
+/// }
+/// "#
 /// );
 /// ```
 ///
@@ -45,8 +46,8 @@ const BTN_BG_DARKENED: &str =
 /// let stylesheet = CssStylesheet::from(Btn);
 ///
 /// assert_eq!(
-///     stylesheet.bake(),
-///     ".btn {
+///     stylesheet.bake_pretty(),
+///     r#".btn {
 ///   display: inline flex;
 ///   align-items: center;
 ///   justify-content: center;
@@ -66,27 +67,32 @@ const BTN_BG_DARKENED: &str =
 ///   --btn-bg: var(--btn-color, var(--color-base-200));
 ///   --btn-fg: var(--color-base-content);
 /// }
-///
 /// .btn:hover {
-///   --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 7%);
+///   --btn-bg: color-mix(
+///     in oklab,
+///     var(--btn-color, var(--color-base-200)),
+///     #000 7%
+///   );
 /// }
-///
 /// .btn:active {
-///   --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 7%);
+///   --btn-bg: color-mix(
+///     in oklab,
+///     var(--btn-color, var(--color-base-200)),
+///     #000 7%
+///   );
 ///   transform: scale(0.97);
 /// }
-///
 /// .btn:focus-visible {
 ///   outline-width: 2px;
 ///   outline-style: solid;
 ///   outline-color: var(--btn-color, var(--color-base-200));
 ///   outline-offset: 2px;
 /// }
-///
 /// .btn-primary {
 ///   --btn-color: var(--color-primary);
 ///   --btn-fg: var(--color-primary-content);
-/// }"
+/// }
+/// "#
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -221,11 +227,12 @@ impl RuleRecipe for BtnFocusVisible {
 /// let rule = CssRule::from(BtnPrimary);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     ".btn-primary {
+///     rule.bake_pretty(),
+///     r#".btn-primary {
 ///   --btn-color: var(--color-primary);
 ///   --btn-fg: var(--color-primary-content);
-/// }"
+/// }
+/// "#
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

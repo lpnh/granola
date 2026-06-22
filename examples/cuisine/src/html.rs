@@ -64,7 +64,8 @@ fn palette_div(palette: &Palette) -> HtmlDiv {
     )
     .class("swatches");
 
-    let input = input!(@type InputType::Color)
+    let input = input!()
+        .input_type(InputType::Color)
         .name("bg_color")
         .value(palette.source.clone());
     let button = button!("Update");

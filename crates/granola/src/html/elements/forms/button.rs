@@ -21,15 +21,13 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let button = HtmlButton::new()
-///     .content(bake_newline!("Add to favorites"))
+///     .content("Add to favorites")
 ///     .button_type(ButtonType::Button)
 ///     .name("favorite");
 ///
 /// assert_eq!(
 ///     button.bake(),
-///     r#"<button type="button" name="favorite">
-///   Add to favorites
-/// </button>"#
+///     r#"<button type="button" name="favorite">Add to favorites</button>"#
 /// );
 /// ```
 ///
@@ -42,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</button>
+/// >{{ content | kirei }}</button>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -272,14 +270,14 @@ impl From<ButtonType> for Cow<'static, str> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let button = button!(@newline "Add to favorites")
+/// let button = button!("Add to favorites")
 ///     .button_type(ButtonType::Button)
 ///     .name("favorite");
 ///
-/// assert_eq!(button.bake(),
-/// r#"<button type="button" name="favorite">
-///   Add to favorites
-/// </button>"#);
+/// assert_eq!(
+///     button.bake(),
+///     r#"<button type="button" name="favorite">Add to favorites</button>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! button {
@@ -290,15 +288,9 @@ macro_rules! button {
         $crate::html::HtmlButton::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlButton::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlButton::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlButton::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlButton::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlButton::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -306,12 +298,6 @@ macro_rules! button {
         $crate::html::HtmlButton::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlButton::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlButton::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlButton::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlButton::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

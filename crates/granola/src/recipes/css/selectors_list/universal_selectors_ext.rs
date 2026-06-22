@@ -12,11 +12,7 @@ use crate::{prelude::*, recipes::*};
 ///
 /// assert_eq!(
 ///     list.bake(),
-///     "*,
-/// ::after,
-/// ::before,
-/// ::backdrop,
-/// ::file-selector-button"
+///     "*, ::after, ::before, ::backdrop, ::file-selector-button"
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

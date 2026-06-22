@@ -10,10 +10,11 @@ use crate::prelude::*;
 /// let rule = CssRule::from(SubVerticalPos);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "sub {
 ///   bottom: -0.25em;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

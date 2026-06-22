@@ -23,17 +23,13 @@ use crate::{filters, prelude::*};
 /// let td = HtmlTd::new()
 ///     .content("Don't see what you're after? We'll do our best.")
 ///     .colspan(2);
-/// let tr = HtmlTr::new().content(bake_newline!(td));
+/// let tr = HtmlTr::new().content(td);
 ///
 /// let tfoot = HtmlTfoot::new().content(tr);
 ///
 /// assert_eq!(
 ///     tfoot.bake(),
-///     r#"<tfoot>
-///   <tr>
-///     <td colspan="2">Don't see what you're after? We'll do our best.</td>
-///   </tr>
-/// </tfoot>"#
+///     r#"<tfoot><tr><td colspan="2">Don't see what you're after? We'll do our best.</td></tr></tfoot>"#
 /// );
 /// ```
 ///
@@ -45,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</tfoot>
+/// >{{ content | kirei }}</tfoot>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -78,16 +74,14 @@ pub struct HtmlTfoot<R: TfootRecipe = ()> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let td = td!("Don't see what you're after? We'll do our best.").colspan(2);
-/// let tr = tr!(@newline td);
+/// let tr = tr!(td);
 ///
 /// let tfoot = tfoot!(tr);
 ///
-/// assert_eq!(tfoot.bake(),
-/// r#"<tfoot>
-///   <tr>
-///     <td colspan="2">Don't see what you're after? We'll do our best.</td>
-///   </tr>
-/// </tfoot>"#);
+/// assert_eq!(
+///     tfoot.bake(),
+///     r#"<tfoot><tr><td colspan="2">Don't see what you're after? We'll do our best.</td></tr></tfoot>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! tfoot {

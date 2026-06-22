@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// padding-block: {{ content | kirei(0) }};
+/// padding-block: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = PaddingBlockRecipe, content = Cow<'static, str>)]

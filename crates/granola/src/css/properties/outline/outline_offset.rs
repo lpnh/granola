@@ -20,7 +20,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// outline-offset: {{ content | kirei(0) }};
+/// outline-offset: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = OutlineOffsetRecipe, content = Cow<'static, str>)]

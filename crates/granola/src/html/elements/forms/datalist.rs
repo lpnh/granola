@@ -32,12 +32,13 @@ use crate::{filters, prelude::*};
 /// let datalist = HtmlDatalist::new().content(options).id("ice-cream-flavors");
 ///
 /// assert_eq!(
-///     datalist.bake(),
+///     datalist.bake_pretty(),
 ///     r#"<datalist id="ice-cream-flavors">
 ///   <option value="Chocolate"></option>
 ///   <option value="Strawberry"></option>
 ///   <option value="Vanilla"></option>
-/// </datalist>"#
+/// </datalist>
+/// "#
 /// );
 /// ```
 ///
@@ -49,7 +50,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</datalist>
+/// >{{ content | kirei }}</datalist>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -81,35 +82,35 @@ pub struct HtmlDatalist<R: DatalistRecipe = ()> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let yes = option!(@value "Yes");
-/// let no = option!(@value "No");
+/// let yes = option!().value("Yes");
+/// let no = option!().value("No");
 ///
 /// let datalist = datalist![yes, no].id("binary");
 ///
 /// assert_eq!(datalist.bake(),
-/// r#"<datalist id="binary">
-///   <option value="Yes"></option>
-///   <option value="No"></option>
-/// </datalist>"#);
+/// r#"<datalist id="binary"><option value="Yes"></option><option value="No"></option></datalist>"#);
 /// ```
 ///
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
 /// let options = [
-///     option!(@value "Chocolate"),
-///     option!(@value "Strawberry"),
-///     option!(@value "Vanilla"),
+///     option!().value("Chocolate"),
+///     option!().value("Strawberry"),
+///     option!().value("Vanilla"),
 /// ];
 ///
 /// let datalist = datalist!(options).id("ice-cream-flavors");
 ///
-/// assert_eq!(datalist.bake(),
-/// r#"<datalist id="ice-cream-flavors">
+/// assert_eq!(
+///     datalist.bake_pretty(),
+///     r#"<datalist id="ice-cream-flavors">
 ///   <option value="Chocolate"></option>
 ///   <option value="Strawberry"></option>
 ///   <option value="Vanilla"></option>
-/// </datalist>"#);
+/// </datalist>
+/// "#
+/// );
 /// ```
 #[macro_export]
 macro_rules! datalist {
@@ -122,6 +123,7 @@ macro_rules! datalist {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlDatalist::new().content([$first $(, $rest)*])
     };
+
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDatalist::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };

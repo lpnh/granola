@@ -9,13 +9,7 @@ use crate::prelude::*;
 ///
 /// let selectors_list = CssSelectorsList::from(FormControls);
 ///
-/// assert_eq!(
-///     selectors_list.bake(),
-///     "button,
-/// input,
-/// select,
-/// textarea"
-/// );
+/// assert_eq!(selectors_list.bake(), "button, input, select, textarea");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct FormControls;

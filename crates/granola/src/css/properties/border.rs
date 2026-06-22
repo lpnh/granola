@@ -87,7 +87,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// border: {{ content | kirei(0) }};
+/// border: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = BorderRecipe, content = Cow<'static, str>)]

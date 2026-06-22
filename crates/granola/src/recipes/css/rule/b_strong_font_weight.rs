@@ -10,11 +10,11 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(BStrongFontWeight);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     "b,
-/// strong {
+///     rule.bake_pretty(),
+///     "b, strong {
 ///   font-weight: bolder;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

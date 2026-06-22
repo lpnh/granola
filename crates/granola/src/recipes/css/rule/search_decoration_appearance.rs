@@ -10,10 +10,11 @@ use crate::prelude::*;
 /// let rule = CssRule::from(SearchDecorationAppearance);
 ///
 /// assert_eq!(
-///     rule.bake(),
+///     rule.bake_pretty(),
 ///     "::-webkit-search-decoration {
 ///   -webkit-appearance: none;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]

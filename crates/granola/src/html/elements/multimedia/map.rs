@@ -35,14 +35,27 @@ use crate::{filters, prelude::*};
 ///
 /// let map = HtmlMap::new().content(area).name("minas-gerais");
 ///
-/// let img_map = bake_block![img, map];
-///
 /// assert_eq!(
-///     img_map,
-///     r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
-/// <map name="minas-gerais">
-///   <area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />
-/// </map>"##
+///     img.bake_pretty(),
+///     r##"<img
+///   src="mg_flag.png"
+///   alt="MG flag"
+///   width="600"
+///   height="420"
+///   usemap="#minas-gerais"
+/// />
+/// "##
+/// );
+/// assert_eq!(
+///     map.bake_pretty(),
+///     r#"<map name="minas-gerais">
+///   <area
+///     shape="poly"
+///     coords="300,63,470,357,130,357"
+///     href="https://w.wiki/LTnF"
+///     alt="Red triangle"
+///   /></map>
+/// "#
 /// );
 /// ```
 ///
@@ -55,7 +68,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</map>
+/// >{{ content | kirei }}</map>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -130,25 +143,42 @@ impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let img = img!(@src_alt "mg_flag.png", "MG flag")
+/// let img = img!()
+///     .src("mg_flag.png")
+///     .alt("MG flag")
 ///     .width(600)
 ///     .height(420)
 ///     .usemap("#minas-gerais");
 ///
-/// let area = area!(@href_alt "https://w.wiki/LTnF", "Red triangle")
+/// let area = area!()
+///     .href("https://w.wiki/LTnF")
+///     .alt("Red triangle")
 ///     .shape("poly")
 ///     .coords("300,63,470,357,130,357");
 ///
 /// let map = map!(area).name("minas-gerais");
 ///
-/// let img_map = bake_block![img, map];
-///
 /// assert_eq!(
-///     img_map,
-///     r##"<img src="mg_flag.png" alt="MG flag" width="600" height="420" usemap="#minas-gerais" />
-/// <map name="minas-gerais">
-///   <area shape="poly" coords="300,63,470,357,130,357" href="https://w.wiki/LTnF" alt="Red triangle" />
-/// </map>"##
+///     img.bake_pretty(),
+///     r##"<img
+///   src="mg_flag.png"
+///   alt="MG flag"
+///   width="600"
+///   height="420"
+///   usemap="#minas-gerais"
+/// />
+/// "##
+/// );
+/// assert_eq!(
+///     map.bake_pretty(),
+///     r#"<map name="minas-gerais">
+///   <area
+///     shape="poly"
+///     coords="300,63,470,357,130,357"
+///     href="https://w.wiki/LTnF"
+///     alt="Red triangle"
+///   /></map>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -160,15 +190,9 @@ macro_rules! map {
         $crate::html::HtmlMap::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlMap::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlMap::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlMap::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlMap::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -176,12 +200,6 @@ macro_rules! map {
         $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlMap::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

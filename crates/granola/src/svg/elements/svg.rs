@@ -32,13 +32,11 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     svg.bake(),
-///     r#"<svg>
-///   <path d="M 10,30
-///     A 20,20 0,0,1 50,30
-///     A 20,20 0,0,1 90,30
-///     Q 90,60 50,90
-///     Q 10,60 10,30 z" />
-/// </svg>"#
+///     r#"<svg><path d="M 10,30
+///   A 20,20 0,0,1 50,30
+///   A 20,20 0,0,1 90,30
+///   Q 90,60 50,90
+///   Q 10,60 10,30 z" /></svg>"#
 /// );
 /// ```
 ///
@@ -51,7 +49,7 @@ use crate::{filters, prelude::*};
 ///   {{- paint_attrs -}}
 ///   {{- shape_attrs -}}
 ///   {{- text_content_attrs -}}
-/// >{{ content | kirei(2) }}</svg>
+/// >{{ content | kirei }}</svg>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -189,13 +187,11 @@ impl<R: SvgRecipe> HasSvgAttrs for Svg<R> {
 ///
 /// assert_eq!(
 ///     svg.bake(),
-///     r#"<svg>
-///   <path d="M 10,30
-///     A 20,20 0,0,1 50,30
-///     A 20,20 0,0,1 90,30
-///     Q 90,60 50,90
-///     Q 10,60 10,30 z" />
-/// </svg>"#
+///     r#"<svg><path d="M 10,30
+///   A 20,20 0,0,1 50,30
+///   A 20,20 0,0,1 90,30
+///   Q 90,60 50,90
+///   Q 10,60 10,30 z" /></svg>"#
 /// );
 /// ```
 #[macro_export]
@@ -210,12 +206,6 @@ macro_rules! svg {
         $crate::svg::Svg::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::svg::Svg::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::svg::Svg::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::svg::Svg::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -224,11 +214,5 @@ macro_rules! svg {
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::svg::Svg::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::svg::Svg::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::svg::Svg::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
     };
 }

@@ -27,25 +27,24 @@ use crate::{filters, prelude::*};
 /// let who_s_there = HtmlP::new().content("Who's there?");
 ///
 /// let name_slot = HtmlSlot::new().name("setup");
-/// let name_p1 = HtmlP::new().content(bake_inline![name_slot, "."]);
-/// let name_p2 = HtmlP::new().content(bake_inline![name_slot, " who?"]);
+/// let name_p1 = HtmlP::new().content(bake![name_slot, "."]);
+/// let name_p2 = HtmlP::new().content(bake_block![name_slot, "who?"]);
 ///
 /// let punchline_slot = HtmlSlot::new().name("punchline");
 /// let punchline = HtmlP::new().content(punchline_slot);
 ///
-/// let content = bake_block![knock_knock, who_s_there, name_p1, name_p2, punchline];
+/// let content = bake![knock_knock, who_s_there, name_p1, name_p2, punchline];
 ///
 /// let template = HtmlTemplate::new().content(content).id("tmpl");
 ///
 /// assert_eq!(
-///     template.bake(),
-///     r#"<template id="tmpl">
-///   <p>Knock knock.</p>
-///   <p>Who's there?</p>
-///   <p><slot name="setup"></slot>.</p>
-///   <p><slot name="setup"></slot> who?</p>
-///   <p><slot name="punchline"></slot></p>
-/// </template>"#
+///     template.bake_pretty(),
+///     r#"<template id="tmpl"><p>Knock knock.</p><p>Who's there?</p><p>
+///     <slot name="setup"></slot>.
+///   </p><p><slot name="setup"></slot> who?</p><p>
+///     <slot name="punchline"></slot>
+///   </p></template>
+/// "#
 /// );
 /// ```
 ///
@@ -58,7 +57,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</template>
+/// >{{ content | kirei }}</template>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -186,30 +185,25 @@ impl<R: TemplateRecipe> HasTemplateAttrs for HtmlTemplate<R> {
 /// let who_s_there = p!("Who's there?");
 ///
 /// let name_slot = slot!().name("setup");
-/// let name_p1 = p!(@inline name_slot, ".");
-/// let name_p2 = p!(@inline name_slot, " who?");
+/// let name_p1 = p!(name_slot, ".");
+/// let name_p2 = p!(name_slot, " who?");
 ///
 /// let punchline_slot = slot!().name("punchline");
 /// let punchline = p!(punchline_slot);
 ///
-/// let content = bake_block![
-///     knock_knock,
-///     who_s_there,
-///     name_p1,
-///     name_p2,
-///     punchline
-/// ];
+/// let content = bake![knock_knock, who_s_there, name_p1, name_p2, punchline];
 ///
 /// let template = template!(content).id("tmpl");
 ///
-/// assert_eq!(template.bake(),
-/// r#"<template id="tmpl">
-///   <p>Knock knock.</p>
-///   <p>Who's there?</p>
-///   <p><slot name="setup"></slot>.</p>
-///   <p><slot name="setup"></slot> who?</p>
-///   <p><slot name="punchline"></slot></p>
-/// </template>"#);
+/// assert_eq!(
+///     template.bake_pretty(),
+///     r#"<template id="tmpl"><p>Knock knock.</p><p>Who's there?</p><p>
+///     <slot name="setup"></slot>.
+///   </p><p><slot name="setup"></slot> who?</p><p>
+///     <slot name="punchline"></slot>
+///   </p></template>
+/// "#
+/// );
 /// ```
 #[macro_export]
 macro_rules! template {
@@ -220,15 +214,9 @@ macro_rules! template {
         $crate::html::HtmlTemplate::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTemplate::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlTemplate::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlTemplate::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlTemplate::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlTemplate::<($($r,)+)>::from_cookbook()
     };
@@ -236,12 +224,6 @@ macro_rules! template {
         $crate::html::HtmlTemplate::<($($r,)+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTemplate::<($($r,)+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlTemplate::<($($r,)+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlTemplate::<($($r,)+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlTemplate::<($($r,)+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

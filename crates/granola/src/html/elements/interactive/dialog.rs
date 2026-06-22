@@ -20,28 +20,25 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let open_button = HtmlButton::new()
-///     .content("open dialog")
-///     .popovertarget("modal_popover");
 /// let close_button = HtmlButton::new()
 ///     .content("Close")
 ///     .popovertarget("modal_popover")
 ///     .popovertargetaction("hide");
 ///
 /// let dialog = HtmlDialog::new()
-///     .content(bake_block!["Hello, there!", close_button])
+///     .fold_in("Hello, there!")
+///     .fold_in(close_button)
 ///     .id("modal_popover")
 ///     .popover("auto");
 ///
-/// let modal = bake_block![open_button, dialog];
-///
 /// assert_eq!(
-///     modal,
-///     r#"<button popovertarget="modal_popover">open dialog</button>
-/// <dialog id="modal_popover" popover="auto">
-///   Hello, there!
-///   <button popovertarget="modal_popover" popovertargetaction="hide">Close</button>
-/// </dialog>"#
+///     dialog.bake_pretty(),
+///     r#"<dialog id="modal_popover" popover="auto">
+///   Hello, there!<button popovertarget="modal_popover" popovertargetaction="hide">
+///     Close
+///   </button>
+/// </dialog>
+/// "#
 /// );
 /// ```
 ///
@@ -54,7 +51,7 @@ use crate::{filters, prelude::*};
 ///   {{- global_aria_attrs -}}
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers -}}
-/// >{{ content | kirei(2) }}</dialog>
+/// >{{ content | kirei }}</dialog>
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
@@ -142,24 +139,22 @@ impl<R: DialogRecipe> HasDialogAttrs for HtmlDialog<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let open_button = button!("open dialog").popovertarget("modal_popover");
 /// let close_button = button!("Close")
 ///     .popovertarget("modal_popover")
 ///     .popovertargetaction("hide");
 ///
-/// let dialog = dialog!["Hello, there!", close_button]
+/// let dialog = dialog!("Hello, there!", close_button)
 ///     .id("modal_popover")
 ///     .popover("auto");
 ///
-/// let modal = bake_block![open_button, dialog];
-///
 /// assert_eq!(
-///     modal,
-///     r#"<button popovertarget="modal_popover">open dialog</button>
-/// <dialog id="modal_popover" popover="auto">
-///   Hello, there!
-///   <button popovertarget="modal_popover" popovertargetaction="hide">Close</button>
-/// </dialog>"#
+///     dialog.bake_pretty(),
+///     r#"<dialog id="modal_popover" popover="auto">
+///   Hello, there!<button popovertarget="modal_popover" popovertargetaction="hide">
+///     Close
+///   </button>
+/// </dialog>
+/// "#
 /// );
 /// ```
 #[macro_export]
@@ -171,15 +166,9 @@ macro_rules! dialog {
         $crate::html::HtmlDialog::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDialog::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlDialog::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@newline $content:expr $(,)?) => {
-        $crate::html::HtmlDialog::new().content($crate::bake_newline!($content))
-    };
-    (@inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDialog::new().content($crate::bake_inline![$($content),+])
-    };
     (@cookbook $($r:ty),+) => {
         $crate::html::HtmlDialog::<$crate::cookbook_type!($($r),+)>::from_cookbook()
     };
@@ -187,12 +176,6 @@ macro_rules! dialog {
         $crate::html::HtmlDialog::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
     };
     (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDialog::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
-    };
-    (@cookbook $($r:ty),+ ; @newline $content:expr $(,)?) => {
-        $crate::html::HtmlDialog::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_newline!($content))
-    };
-    (@cookbook $($r:ty),+ ; @inline $($content:expr),+ $(,)?) => {
-        $crate::html::HtmlDialog::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_inline![$($content),+])
+        $crate::html::HtmlDialog::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

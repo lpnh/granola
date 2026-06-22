@@ -11,11 +11,11 @@ use crate::{prelude::*, recipes::*};
 /// let rule = CssRule::from(SpinButtonHeight);
 ///
 /// assert_eq!(
-///     rule.bake(),
-///     "::-webkit-inner-spin-button,
-/// ::-webkit-outer-spin-button {
+///     rule.bake_pretty(),
+///     "::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
 ///   height: auto;
-/// }"
+/// }
+/// "
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
