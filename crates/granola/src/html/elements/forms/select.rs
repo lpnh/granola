@@ -23,7 +23,10 @@ use crate::{filters, prelude::*};
 /// let opt_1 = HtmlOption::new().content("Salmon").value("salmon");
 /// let opt_2 = HtmlOption::new().content("Turbot").value("turbot");
 ///
-/// let select = HtmlSelect::new().name("fishes").fold_in(opt_1).fold_in(opt_2);
+/// let select = HtmlSelect::new()
+///     .name("fishes")
+///     .fold_in(opt_1)
+///     .fold_in(opt_2);
 ///
 /// assert_eq!(
 ///     select.bake_pretty(),

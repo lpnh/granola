@@ -8,7 +8,12 @@ use axum::{
 use http::Response;
 use serde::Deserialize;
 
-use crate::{SharedState, css::Stylesheet, html::home_page, utils::Palette};
+use crate::{
+    SharedState,
+    css::Stylesheet,
+    html::{home_page, palette_page, reset_page},
+    utils::Palette,
+};
 
 #[derive(strum::IntoStaticStr, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -59,15 +64,24 @@ pub struct ResetForm {
 }
 
 pub async fn home_handler(State(state): State<SharedState>) -> Html<String> {
-    let (palette, reset) = {
-        let state = state.read().unwrap();
-        (state.palette.clone(), state.reset)
-    };
+    let palette = state.read().unwrap().palette.clone();
 
-    Html(home_page(palette, reset).bake())
+    Html(home_page(palette).bake())
 }
 
-pub async fn palette_handler(
+pub async fn palette_handler(State(state): State<SharedState>) -> Html<String> {
+    let palette = state.read().unwrap().palette.clone();
+
+    Html(palette_page(palette).bake())
+}
+
+pub async fn reset_handler(State(state): State<SharedState>) -> Html<String> {
+    let reset = state.read().unwrap().reset;
+
+    Html(reset_page(reset).bake())
+}
+
+pub async fn palette_form_handler(
     State(state): State<SharedState>,
     Form(user_input): Form<PaletteForm>,
 ) -> Redirect {
@@ -75,16 +89,16 @@ pub async fn palette_handler(
         state.write().unwrap().palette = palette;
     }
 
-    Redirect::to("/")
+    Redirect::to("/palette")
 }
 
-pub async fn reset_handler(
+pub async fn reset_form_handler(
     State(state): State<SharedState>,
     Form(form): Form<ResetForm>,
 ) -> Redirect {
     state.write().unwrap().reset = form.reset;
 
-    Redirect::to("/")
+    Redirect::to("/reset")
 }
 
 pub async fn stylesheet_handler(stylesheet: &'static str) -> Response<Body> {

@@ -2,7 +2,11 @@ mod css;
 use css::Stylesheet;
 mod handlers;
 mod html;
-use handlers::{Reset, home_handler, palette_handler, reset_handler, stylesheet_handler};
+mod snippets;
+use handlers::{
+    Reset, home_handler, palette_form_handler, palette_handler, reset_form_handler, reset_handler,
+    stylesheet_handler,
+};
 mod utils;
 use utils::Palette;
 
@@ -27,8 +31,10 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(home_handler))
-        .route("/palette_endpoint", post(palette_handler))
-        .route("/reset_endpoint", post(reset_handler))
+        .route("/palette", get(palette_handler))
+        .route("/reset", get(reset_handler))
+        .route("/palette_endpoint", post(palette_form_handler))
+        .route("/reset_endpoint", post(reset_form_handler))
         .with_state(shared_state())
         .merge(static_router());
 

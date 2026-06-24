@@ -3,7 +3,7 @@ use std::borrow::Cow;
 
 use crate::{prelude::*, recipes::*};
 
-/// The homemade recipe for the [`HtmlDocument`] template.
+/// The homemade recipe for the [`HtmlDocument`].
 ///
 /// # Example
 ///

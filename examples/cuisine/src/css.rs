@@ -1,7 +1,7 @@
 use std::sync::LazyLock;
 use strum::IntoEnumIterator;
 
-use granola::{macros::*, prelude::*, recipes::*};
+use granola::{homemade::Garnish, macros::*, prelude::*, recipes::*};
 
 /// A stylesheet paired with its content-hashed URL.
 ///
@@ -78,8 +78,10 @@ static MODERN_NORMALIZE: LazyLock<BakedStylesheet> = LazyLock::new(|| {
 static PREFLIGHT: LazyLock<BakedStylesheet> =
     LazyLock::new(|| BakedStylesheet::new("preflight", CssStylesheet::from(Preflight)));
 
-fn cuisine_stylesheet() -> CssStylesheet {
+fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
     stylesheet!(
+        @cookbook Garnish;
+        @push
         rule!(":root", ("--border", "1px")),
         rule!(
             "body",
@@ -93,13 +95,9 @@ fn cuisine_stylesheet() -> CssStylesheet {
             ]
         ),
         rule!(
-            ".palette",
+            "main",
             declarations_block![
                 CssBackground::new().content("var(--base-200)"),
-                CssDisplay::from(Flex),
-                CssFlexDirection::from(Column),
-                CssAlignItems::from(Center),
-                CssGap::new().content("1.5rem"),
                 CssPadding::new().content("2rem"),
                 CssBoxShadow::new()
                     .content("0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",),
@@ -113,6 +111,7 @@ fn cuisine_stylesheet() -> CssStylesheet {
                 CssGap::new().content("1rem"),
                 CssJustifyContent::from(Center),
                 CssFlexWrap::from(Wrap),
+                CssPadding::new().content("2rem"),
             ]
         ),
         rule!(
@@ -137,7 +136,7 @@ fn cuisine_stylesheet() -> CssStylesheet {
             CssFontSize::new().content("0.75rem"),
         ),
         rule!(
-            simple_selector!(".palette").descendant("form"),
+            simple_selector!("main").descendant("form"),
             declarations_block![
                 CssDisplay::from(Flex),
                 CssGap::new().content("0.5rem"),
@@ -156,7 +155,7 @@ mod cuisine_tests {
     fn stylesheet_test() {
         assert_eq!(
             cuisine_stylesheet().bake(),
-            r#":root { --border: 1px; } body { background-color: var(--base-100); color: var(--base-content); display: flex; flex-direction: column; align-items: center; gap: 2rem; } .palette { background: var(--base-200); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 2rem; box-shadow: 0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000); text-align: center; } .swatches { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; } .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; } .square { width: 64px; height: 64px; box-shadow: 0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000), 0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset; } .swatch p { font-size: 0.75rem; } .palette form { display: flex; gap: 0.5rem; justify-content: center; align-items: center; }"#
+            r#"a:not([class]) { text-decoration-skip-ink: auto; color: currentcolor; } :root { --border: 1px; } body { background-color: var(--base-100); color: var(--base-content); display: flex; flex-direction: column; align-items: center; gap: 2rem; } main { background: var(--base-200); padding: 2rem; box-shadow: 0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000); text-align: center; } .swatches { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; padding: 2rem; } .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; } .square { width: 64px; height: 64px; box-shadow: 0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000), 0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset; } .swatch p { font-size: 0.75rem; } main form { display: flex; gap: 0.5rem; justify-content: center; align-items: center; }"#
         );
     }
 }

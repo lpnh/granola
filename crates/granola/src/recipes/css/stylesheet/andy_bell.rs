@@ -75,7 +75,7 @@ impl StylesheetRecipe for AndyBell {
             body_defaults(),
             headings_and_forms_line_height(),
             headings_text_wrap(),
-            unclassed_anchor_default_style(),
+            CssRule::from(AnchorDefaults).into(),
             images_width_and_display(),
             form_controls_font_inherit(),
             textarea_min_height(),
@@ -159,19 +159,6 @@ fn headings_and_forms_line_height() -> CssStatement {
 fn headings_text_wrap() -> CssStatement {
     let selectors_list = CssSelectorsList::from(Headings).bake_recipe();
     let declarations_block = CssTextWrap::from(Balance);
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-        .into()
-}
-
-fn unclassed_anchor_default_style() -> CssStatement {
-    let selectors_list = "a:not([class])";
-    let declarations_block: [CssDeclaration; 2] = [
-        CssTextDecorationSkipInk::from(Auto).into(),
-        CssColor::from(Currentcolor).into(),
-    ];
 
     CssRule::new()
         .selectors_list(selectors_list)

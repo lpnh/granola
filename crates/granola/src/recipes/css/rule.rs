@@ -1,5 +1,7 @@
 mod all_headings_font_reset;
 pub use all_headings_font_reset::*;
+mod anchor_defaults;
+pub use anchor_defaults::*;
 mod anchor_inherit;
 pub use anchor_inherit::*;
 mod b_strong_font_weight;

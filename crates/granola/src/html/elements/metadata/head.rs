@@ -26,7 +26,10 @@ use crate::{filters, prelude::*};
 ///     .content("width=device-width");
 /// let title = HtmlTitle::new().content("Document title");
 ///
-/// let head = HtmlHead::new().fold_in(charset).fold_in(viewport).fold_in(title);
+/// let head = HtmlHead::new()
+///     .fold_in(charset)
+///     .fold_in(viewport)
+///     .fold_in(title);
 ///
 /// assert_eq!(
 ///     head.bake_pretty(),
