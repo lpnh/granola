@@ -12,9 +12,7 @@ keywords = ["askama", "html", "template", "web"]
 categories = ["template-engine", "web-programming"]
 
 [workspace.dependencies]
-askama = { git = "https://github.com/askama-rs/askama.git", features = [
-    "code-in-doc",
-] }
+askama = { version = "0.16.0", features = ["code-in-doc"] }
 indexmap = "2.14.0"
 strum = { version = "0.28.0", features = ["derive"] }
 
