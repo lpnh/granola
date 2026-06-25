@@ -3,7 +3,7 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
-/// The `display` CSS property.
+/// The CSS `display` property.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/display)
 ///

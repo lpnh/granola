@@ -2,6 +2,8 @@ mod at_rule;
 pub use at_rule::*;
 mod declarations;
 pub use declarations::*;
+mod functions;
+pub use functions::*;
 mod properties;
 pub use properties::*;
 mod rule;

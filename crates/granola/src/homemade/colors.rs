@@ -1,0 +1,347 @@
+use std::borrow::Cow;
+
+use crate::prelude::*;
+
+/// The homemade recipe for the color custom properties.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let stylesheet = CssStylesheet::from(Colors);
+///
+/// assert_eq!(
+///     stylesheet.bake_pretty(),
+///     r#":root {
+///   --color-background: initial;
+///   --color-surface: initial;
+///   --color-border: initial;
+///   --color-text: initial;
+///   --color-primary: initial;
+///   --color-error: initial;
+///   --color-success: initial;
+/// }
+/// "#
+/// );
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct Colors;
+
+impl StylesheetRecipe for Colors {
+    fn statements_recipe(statements: &mut Vec<CssStatement>) {
+        statements.extend([CssRule::from(Colors).into()]);
+    }
+}
+
+impl RuleRecipe for Colors {
+    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
+        selectors_list.push_mut(":root");
+    }
+
+    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
+        declarations_block.extend_mut([
+            CssCustomProperty::from(ColorBackground).into(),
+            CssCustomProperty::from(ColorSurface).into(),
+            CssCustomProperty::from(ColorBorder).into(),
+            CssCustomProperty::from(ColorText).into(),
+            CssCustomProperty::from(ColorPrimary).into(),
+            CssCustomProperty::from(ColorError).into(),
+            CssCustomProperty::from(ColorSuccess).into(),
+        ]);
+    }
+}
+
+/// The homemade recipe for the `color-background` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorBackground);
+///
+/// assert_eq!(custom_property.bake(), "--color-background: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorBackground);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-background)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorBackground;
+
+impl CustomPropertyRecipe for ColorBackground {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-background".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorBackground {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-background".into();
+    }
+}
+
+/// The homemade recipe for the `color-background` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorSurface);
+///
+/// assert_eq!(custom_property.bake(), "--color-surface: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorSurface);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-surface)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorSurface;
+
+impl CustomPropertyRecipe for ColorSurface {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-surface".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorSurface {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-surface".into();
+    }
+}
+
+/// The homemade recipe for the `color-border` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorBorder);
+///
+/// assert_eq!(custom_property.bake(), "--color-border: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorBorder);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-border)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorBorder;
+
+impl CustomPropertyRecipe for ColorBorder {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-border".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorBorder {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-border".into();
+    }
+}
+
+/// The homemade recipe for the `color-text` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorText);
+///
+/// assert_eq!(custom_property.bake(), "--color-text: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorText);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-text)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorText;
+
+impl CustomPropertyRecipe for ColorText {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-text".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorText {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-text".into();
+    }
+}
+
+/// The homemade recipe for the `color-primary` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorPrimary);
+///
+/// assert_eq!(custom_property.bake(), "--color-primary: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorPrimary);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-primary)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorPrimary;
+
+impl CustomPropertyRecipe for ColorPrimary {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-primary".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorPrimary {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-primary".into();
+    }
+}
+
+/// The homemade recipe for the `color-error` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorError);
+///
+/// assert_eq!(custom_property.bake(), "--color-error: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorError);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-error)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorError;
+
+impl CustomPropertyRecipe for ColorError {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-error".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorError {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-error".into();
+    }
+}
+
+/// The homemade recipe for the `color-success` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorSuccess);
+///
+/// assert_eq!(custom_property.bake(), "--color-success: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorSuccess);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-success)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorSuccess;
+
+impl CustomPropertyRecipe for ColorSuccess {
+    recipe_boilerplate!();
+
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-success".into();
+    }
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorSuccess {
+    recipe_boilerplate!();
+
+    fn content_recipe(content: &mut Self::Content) {
+        *content = "--color-success".into();
+    }
+}

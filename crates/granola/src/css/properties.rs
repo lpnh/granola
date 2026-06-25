@@ -14,6 +14,8 @@ mod color;
 pub use color::*;
 mod cursor;
 pub use cursor::*;
+mod custom_property;
+pub use custom_property::*;
 mod display;
 pub use display::*;
 mod flex;
