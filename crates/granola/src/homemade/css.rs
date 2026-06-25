@@ -1,4 +1,4 @@
-use crate::{prelude::*, recipes::*};
+use crate::{homemade::*, prelude::*, recipes::*};
 
 /// The homemade recipe for the [`CssStylesheet`].
 ///
@@ -11,7 +11,16 @@ use crate::{prelude::*, recipes::*};
 ///
 /// assert_eq!(
 ///     stylesheet.bake_pretty(),
-///     r#"a:not([class]) {
+///     r#":root {
+///   --color-background: initial;
+///   --color-surface: initial;
+///   --color-border: initial;
+///   --color-text: initial;
+///   --color-primary: initial;
+///   --color-error: initial;
+///   --color-success: initial;
+/// }
+/// a:not([class]) {
 ///   text-decoration-skip-ink: auto;
 ///   color: currentcolor;
 /// }
@@ -23,6 +32,9 @@ pub struct Garnish;
 
 impl StylesheetRecipe for Garnish {
     fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.extend([CssRule::from(AnchorDefaults).into()]);
+        statements.extend([
+            CssRule::from(Colors).into(),
+            CssRule::from(AnchorDefaults).into(),
+        ]);
     }
 }

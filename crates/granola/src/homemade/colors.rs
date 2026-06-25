@@ -75,14 +75,12 @@ impl RuleRecipe for Colors {
 pub struct ColorBackground;
 
 impl CustomPropertyRecipe for ColorBackground {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-background".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 
@@ -117,14 +115,12 @@ impl FnVarRecipe for ColorBackground {
 pub struct ColorSurface;
 
 impl CustomPropertyRecipe for ColorSurface {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-surface".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 
@@ -159,14 +155,12 @@ impl FnVarRecipe for ColorSurface {
 pub struct ColorBorder;
 
 impl CustomPropertyRecipe for ColorBorder {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-border".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 
@@ -201,14 +195,12 @@ impl FnVarRecipe for ColorBorder {
 pub struct ColorText;
 
 impl CustomPropertyRecipe for ColorText {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-text".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 
@@ -243,14 +235,12 @@ impl FnVarRecipe for ColorText {
 pub struct ColorPrimary;
 
 impl CustomPropertyRecipe for ColorPrimary {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-primary".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 
@@ -285,14 +275,12 @@ impl FnVarRecipe for ColorPrimary {
 pub struct ColorError;
 
 impl CustomPropertyRecipe for ColorError {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-error".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 
@@ -327,14 +315,12 @@ impl FnVarRecipe for ColorError {
 pub struct ColorSuccess;
 
 impl CustomPropertyRecipe for ColorSuccess {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "color-success".into();
     }
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "initial".into();
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
     }
 }
 

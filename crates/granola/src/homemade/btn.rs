@@ -1,7 +1,6 @@
 use std::borrow::Cow;
 
-use super::{ColorPrimary, ColorSurface, ColorText};
-use crate::{prelude::*, recipes::*};
+use crate::{homemade::*, prelude::*, recipes::*};
 
 /// The homemade recipe for the `btn` stylesheet.
 ///
@@ -151,17 +150,17 @@ impl RuleRecipe for Btn {
                 .content("background-color 150ms ease")
                 .into(),
             CssCustomProperty::from(BtnBg)
-                .content(CssFnVar::from(BtnColor))
+                .value(CssFnVar::from(BtnColor))
                 .into(),
             CssCustomProperty::from(BtnBorder)
-                .content(CssFnColorMix::new().content(bake![
+                .value(CssFnColorMix::new().content(bake![
                     "in oklab, ",
                     CssFnVar::from(BtnBg),
                     ", #000 5%"
                 ]))
                 .into(),
             CssCustomProperty::from(BtnFg)
-                .content(CssFnVar::from(ColorText))
+                .value(CssFnVar::from(ColorText))
                 .into(),
         ]);
     }
@@ -205,7 +204,7 @@ impl RuleRecipe for BtnHover {
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.declarations = vec![
             CssCustomProperty::from(BtnBg)
-                .content(CssFnColorMix::new().content(bake![
+                .value(CssFnColorMix::new().content(bake![
                     "in oklab, ",
                     CssFnVar::from(BtnColor),
                     ", #000 7%"
@@ -259,14 +258,14 @@ impl RuleRecipe for BtnActive {
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.declarations = vec![
             CssCustomProperty::from(BtnBg)
-                .content(CssFnColorMix::new().content(bake![
+                .value(CssFnColorMix::new().content(bake![
                     "in oklab, ",
                     CssFnVar::from(BtnColor),
                     ", #000 5%"
                 ]))
                 .into(),
             CssCustomProperty::from(BtnBorder)
-                .content(CssFnColorMix::new().content(bake![
+                .value(CssFnColorMix::new().content(bake![
                     "in oklab, ",
                     CssFnVar::from(BtnColor),
                     ", #000 7%"
@@ -352,10 +351,10 @@ impl RuleRecipe for BtnPrimary {
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.extend_mut([
             CssCustomProperty::from(BtnColor)
-                .content(CssFnVar::from(ColorPrimary))
+                .value(CssFnVar::from(ColorPrimary))
                 .into(),
             CssCustomProperty::from(BtnFg)
-                .content(CssFnVar::from(ColorText))
+                .value(CssFnVar::from(ColorText))
                 .into(),
         ]);
     }
@@ -376,7 +375,7 @@ impl SimpleSelectorRecipe for BtnPrimary {
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnColor).content(CssFnVar::from(ColorPrimary));
+/// let custom_property = CssCustomProperty::from(BtnColor).value(CssFnVar::from(ColorPrimary));
 ///
 /// assert_eq!(custom_property.bake(), "--btn-color: var(--color-primary);");
 /// ```
@@ -392,8 +391,6 @@ impl SimpleSelectorRecipe for BtnPrimary {
 pub struct BtnColor;
 
 impl CustomPropertyRecipe for BtnColor {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "btn-color".into();
     }
@@ -414,7 +411,7 @@ impl FnVarRecipe for BtnColor {
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnBg).content(CssFnVar::from(BtnColor));
+/// let custom_property = CssCustomProperty::from(BtnBg).value(CssFnVar::from(BtnColor));
 ///
 /// assert_eq!(
 ///     custom_property.bake(),
@@ -433,8 +430,6 @@ impl FnVarRecipe for BtnColor {
 pub struct BtnBg;
 
 impl CustomPropertyRecipe for BtnBg {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "btn-bg".into();
     }
@@ -455,7 +450,7 @@ impl FnVarRecipe for BtnBg {
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnFg).content(CssFnVar::from(ColorText));
+/// let custom_property = CssCustomProperty::from(BtnFg).value(CssFnVar::from(ColorText));
 ///
 /// assert_eq!(custom_property.bake(), "--btn-fg: var(--color-text);");
 /// ```
@@ -471,8 +466,6 @@ impl FnVarRecipe for BtnBg {
 pub struct BtnFg;
 
 impl CustomPropertyRecipe for BtnFg {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "btn-fg".into();
     }
@@ -493,7 +486,7 @@ impl FnVarRecipe for BtnFg {
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnBorder).content(CssFnVar::from(BtnBg));
+/// let custom_property = CssCustomProperty::from(BtnBorder).value(CssFnVar::from(BtnBg));
 ///
 /// assert_eq!(custom_property.bake(), "--btn-border: var(--btn-bg);");
 /// ```
@@ -509,8 +502,6 @@ impl FnVarRecipe for BtnFg {
 pub struct BtnBorder;
 
 impl CustomPropertyRecipe for BtnBorder {
-    recipe_boilerplate!();
-
     fn name_recipe(name: &mut Cow<'static, str>) {
         *name = "btn-border".into();
     }

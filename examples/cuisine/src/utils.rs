@@ -3,10 +3,10 @@ use std::str::FromStr;
 #[derive(Clone)]
 pub struct Palette {
     pub source: String,
-    pub base_100: String,
-    pub base_200: String,
-    pub base_300: String,
-    pub base_content: String,
+    pub color_background: String,
+    pub color_surface: String,
+    pub color_border: String,
+    pub color_text: String,
 }
 
 impl Palette {
@@ -26,20 +26,20 @@ impl Palette {
 
         Some(Self {
             source: hex.to_string(),
-            base_100: base_oklch.to_css(),
-            base_200: Oklch {
+            color_background: base_oklch.to_css(),
+            color_surface: Oklch {
                 l: (base_oklch.l + step).clamp(0.0, 1.0),
                 c: base_oklch.c + 0.01,
                 h: base_oklch.h,
             }
             .to_css(),
-            base_300: Oklch {
+            color_border: Oklch {
                 l: (base_oklch.l + step * 2.0).clamp(0.0, 1.0),
                 c: base_oklch.c + 0.02,
                 h: base_oklch.h,
             }
             .to_css(),
-            base_content: Oklch {
+            color_text: Oklch {
                 l: if is_dark { 0.93 } else { 0.15 },
                 c: base_oklch.c * 0.5,
                 h: base_oklch.h,

@@ -1,5 +1,5 @@
 use askama::Template;
-use granola::{homemade::Homemade, macros::*, prelude::*};
+use granola::{homemade::*, macros::*, prelude::*};
 
 use crate::{css::Stylesheet, handlers::Reset, snippets::snippets, utils::Palette};
 
@@ -23,10 +23,10 @@ pub fn home_page(palette: Palette) -> HtmlDocument<Homemade> {
 
 pub fn palette_page(palette: Palette) -> HtmlDocument<Homemade> {
     let swatches = div!(
-        swatch_div("base-100", &palette.base_100),
-        swatch_div("base-200", &palette.base_200),
-        swatch_div("base-300", &palette.base_300),
-        swatch_div("base-content", &palette.base_content),
+        swatch_div("color-background", &palette.color_background),
+        swatch_div("color-surface", &palette.color_surface),
+        swatch_div("color-border", &palette.color_border),
+        swatch_div("color-text", &palette.color_text),
     )
     .class("swatches");
 
@@ -77,12 +77,13 @@ fn example_page(
 
 fn palette_style(palette: Palette) -> HtmlStyle {
     let css_rule = rule!(
-        @selectors ":root";
-        @declarations
-        ("--base-100", palette.base_100),
-        ("--base-200", palette.base_200),
-        ("--base-300", palette.base_300),
-        ("--base-content", palette.base_content),
+        ":root",
+        declarations_block![
+            CssCustomProperty::from(ColorBackground).value(palette.color_background),
+            CssCustomProperty::from(ColorSurface).value(palette.color_surface),
+            CssCustomProperty::from(ColorBorder).value(palette.color_border),
+            CssCustomProperty::from(ColorText).value(palette.color_text),
+        ]
     );
 
     style!(css_rule)

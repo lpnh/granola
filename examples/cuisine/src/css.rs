@@ -82,12 +82,11 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
     stylesheet!(
         @cookbook Garnish;
         @push
-        rule!(":root", ("--border", "1px")),
         rule!(
             "body",
             declarations_block![
-                CssBackgroundColor::new().content("var(--base-100)"),
-                CssColor::new().content("var(--base-content)"),
+                CssBackgroundColor::new().content("var(--color-background)"),
+                CssColor::new().content("var(--color-text)"),
                 CssDisplay::from(Flex),
                 CssFlexDirection::from(Column),
                 CssAlignItems::from(Center),
@@ -97,10 +96,10 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
         rule!(
             "main",
             declarations_block![
-                CssBackground::new().content("var(--base-200)"),
+                CssBackground::new().content("var(--color-surface)"),
                 CssPadding::new().content("2rem"),
                 CssBoxShadow::new()
-                    .content("0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000)",),
+                    .content("0 1px 2px color-mix(in oklab, var(--color-text) 10%, #0000)",),
                 CssTextAlign::from(Center),
             ]
         ),
@@ -128,7 +127,7 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
             declarations_block![
                 CssWidth::new().content("64px"),
                 CssHeight::new().content("64px"),
-                CssBoxShadow::new().content("0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000), 0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
+                CssBoxShadow::new().content("0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
             ]
         ),
         rule!(
@@ -155,7 +154,7 @@ mod cuisine_tests {
     fn stylesheet_test() {
         assert_eq!(
             cuisine_stylesheet().bake(),
-            r#"a:not([class]) { text-decoration-skip-ink: auto; color: currentcolor; } :root { --border: 1px; } body { background-color: var(--base-100); color: var(--base-content); display: flex; flex-direction: column; align-items: center; gap: 2rem; } main { background: var(--base-200); padding: 2rem; box-shadow: 0 1px 2px color-mix(in oklab, var(--base-content) 10%, #0000); text-align: center; } .swatches { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; padding: 2rem; } .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; } .square { width: 64px; height: 64px; box-shadow: 0 0 0 var(--border) color-mix(in oklab, var(--base-content) 10%, #0000), 0 1px color-mix(in oklab, var(--base-content) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset; } .swatch p { font-size: 0.75rem; } main form { display: flex; gap: 0.5rem; justify-content: center; align-items: center; }"#
+            r#":root { --color-background: initial; --color-surface: initial; --color-border: initial; --color-text: initial; --color-primary: initial; --color-error: initial; --color-success: initial; } a:not([class]) { text-decoration-skip-ink: auto; color: currentcolor; } body { background-color: var(--color-background); color: var(--color-text); display: flex; flex-direction: column; align-items: center; gap: 2rem; } main { background: var(--color-surface); padding: 2rem; box-shadow: 0 1px 2px color-mix(in oklab, var(--color-text) 10%, #0000); text-align: center; } .swatches { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; padding: 2rem; } .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; } .square { width: 64px; height: 64px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset; } .swatch p { font-size: 0.75rem; } main form { display: flex; gap: 0.5rem; justify-content: center; align-items: center; }"#
         );
     }
 }
