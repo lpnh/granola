@@ -17,6 +17,7 @@ use crate::{homemade::*, prelude::*, recipes::*};
 ///   --color-border: initial;
 ///   --color-text: initial;
 ///   --color-primary: initial;
+///   --color-primary-text: initial;
 ///   --color-error: initial;
 ///   --color-success: initial;
 /// }

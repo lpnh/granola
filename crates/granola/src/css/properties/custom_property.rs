@@ -60,3 +60,9 @@ impl<R: CustomPropertyRecipe> From<CssCustomProperty<R>> for CssDeclarationsBloc
         Self::new().push(css_custom_property)
     }
 }
+
+impl<R: CustomPropertyRecipe> From<CssCustomProperty<R>> for CssFnVar {
+    fn from(css_custom_property: CssCustomProperty<R>) -> Self {
+        Self::new().custom_property(css_custom_property.name)
+    }
+}

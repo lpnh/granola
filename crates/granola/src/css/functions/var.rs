@@ -12,7 +12,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_fn_var = CssFnVar::new().content("--color-background");
+/// let css_fn_var = CssFnVar::new().custom_property("color-background");
 ///
 /// assert_eq!(css_fn_var.bake(), "var(--color-background)");
 /// ```
@@ -20,12 +20,27 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// var({{ content | kirei }})
+/// var(--{{ custom_property | kirei -}}
+///     {%- if let Some(f) = fallback %}, {{ f }}{% endif -%}
+/// )
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FnVarRecipe, content = Cow<'static, str>)]
+#[recipe(name = FnVarRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnVar<R: FnVarRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub custom_property: Cow<'static, str>,
+    pub fallback: Option<Cow<'static, str>>,
+}
+
+impl<R: FnVarRecipe> CssFnVar<R> {
+    pub fn custom_property(mut self, custom_property: impl Into<Cow<'static, str>>) -> Self {
+        self.custom_property = custom_property.into();
+        self
+    }
+
+    pub fn fallback(mut self, fallback: impl Into<Cow<'static, str>>) -> Self {
+        self.fallback = Some(fallback.into());
+        self
+    }
 }

@@ -19,6 +19,7 @@ use crate::prelude::*;
 ///   --color-border: initial;
 ///   --color-text: initial;
 ///   --color-primary: initial;
+///   --color-primary-text: initial;
 ///   --color-error: initial;
 ///   --color-success: initial;
 /// }
@@ -46,6 +47,7 @@ impl RuleRecipe for Colors {
             CssCustomProperty::from(ColorBorder).into(),
             CssCustomProperty::from(ColorText).into(),
             CssCustomProperty::from(ColorPrimary).into(),
+            CssCustomProperty::from(ColorPrimaryText).into(),
             CssCustomProperty::from(ColorError).into(),
             CssCustomProperty::from(ColorSuccess).into(),
         ]);
@@ -85,10 +87,8 @@ impl CustomPropertyRecipe for ColorBackground {
 }
 
 impl FnVarRecipe for ColorBackground {
-    recipe_boilerplate!();
-
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-background".into();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-background".into();
     }
 }
 
@@ -125,10 +125,8 @@ impl CustomPropertyRecipe for ColorSurface {
 }
 
 impl FnVarRecipe for ColorSurface {
-    recipe_boilerplate!();
-
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-surface".into();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-surface".into();
     }
 }
 
@@ -165,10 +163,8 @@ impl CustomPropertyRecipe for ColorBorder {
 }
 
 impl FnVarRecipe for ColorBorder {
-    recipe_boilerplate!();
-
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-border".into();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-border".into();
     }
 }
 
@@ -205,10 +201,8 @@ impl CustomPropertyRecipe for ColorText {
 }
 
 impl FnVarRecipe for ColorText {
-    recipe_boilerplate!();
-
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-text".into();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-text".into();
     }
 }
 
@@ -245,10 +239,46 @@ impl CustomPropertyRecipe for ColorPrimary {
 }
 
 impl FnVarRecipe for ColorPrimary {
-    recipe_boilerplate!();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-primary".into();
+    }
+}
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-primary".into();
+/// The homemade recipe for the `color-primary-text` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let custom_property = CssCustomProperty::from(ColorPrimaryText);
+///
+/// assert_eq!(custom_property.bake(), "--color-primary-text: initial;");
+/// ```
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*};
+///
+/// let var_fn = CssFnVar::from(ColorPrimaryText);
+///
+/// assert_eq!(var_fn.bake(), "var(--color-primary-text)");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct ColorPrimaryText;
+
+impl CustomPropertyRecipe for ColorPrimaryText {
+    fn name_recipe(name: &mut Cow<'static, str>) {
+        *name = "color-primary-text".into();
+    }
+
+    fn value_recipe(value: &mut Cow<'static, str>) {
+        *value = "initial".into();
+    }
+}
+
+impl FnVarRecipe for ColorPrimaryText {
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-primary-text".into();
     }
 }
 
@@ -285,10 +315,8 @@ impl CustomPropertyRecipe for ColorError {
 }
 
 impl FnVarRecipe for ColorError {
-    recipe_boilerplate!();
-
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-error".into();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-error".into();
     }
 }
 
@@ -325,9 +353,7 @@ impl CustomPropertyRecipe for ColorSuccess {
 }
 
 impl FnVarRecipe for ColorSuccess {
-    recipe_boilerplate!();
-
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "--color-success".into();
+    fn custom_property_recipe(custom_property: &mut Cow<'static, str>) {
+        *custom_property = "color-success".into();
     }
 }
