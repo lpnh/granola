@@ -56,7 +56,7 @@ const BTN_SIZE: &str = "btn-size";
 ///   white-space: nowrap;
 ///   border: 1px solid;
 ///   border-color: var(--btn-border);
-///   border-radius: 0.4em;
+///   border-radius: 0.5em;
 ///   background-color: var(--btn-bg);
 ///   color: var(--btn-fg);
 ///   cursor: pointer;
@@ -194,7 +194,7 @@ impl RuleRecipe for Btn {
             CssBorderColor::new()
                 .content(CssFnVar::new().custom_property(BTN_BORDER))
                 .into(),
-            CssBorderRadius::new().content("0.4em").into(),
+            CssBorderRadius::new().content("0.5em").into(),
             CssBackgroundColor::new()
                 .content(CssFnVar::new().custom_property(BTN_BG))
                 .into(),

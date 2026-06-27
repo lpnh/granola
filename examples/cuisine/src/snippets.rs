@@ -4,6 +4,7 @@ const SVG_RECT: &str = "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/200
 
 pub fn snippets() -> HtmlSection {
     section!(
+        hr!(),
         headings(),
         paragraphs(),
         blockquote(),

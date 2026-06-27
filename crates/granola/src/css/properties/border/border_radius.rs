@@ -12,9 +12,9 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let css_border_radius = CssBorderRadius::new().content("0.4em");
+/// let css_border_radius = CssBorderRadius::new().content("0.5em");
 ///
-/// assert_eq!(css_border_radius.bake(), "border-radius: 0.4em;");
+/// assert_eq!(css_border_radius.bake(), "border-radius: 0.5em;");
 /// ```
 ///
 /// # Askama template

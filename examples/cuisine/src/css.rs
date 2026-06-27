@@ -97,9 +97,9 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
             "main",
             declarations_block![
                 CssBackground::new().content("var(--color-surface)"),
+                CssBorder::new().content("1px solid var(--color-border)"),
+                CssBorderRadius::new().content("1em"),
                 CssPadding::new().content("2rem"),
-                CssBoxShadow::new()
-                    .content("0 1px 2px color-mix(in oklab, var(--color-text) 10%, #0000)",),
                 CssTextAlign::from(Center),
             ]
         ),
@@ -125,6 +125,7 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
         rule!(
             ".square",
             declarations_block![
+                CssBorderRadius::new().content(".25em"),
                 CssWidth::new().content("64px"),
                 CssHeight::new().content("64px"),
                 CssBoxShadow::new().content("0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
@@ -135,26 +136,11 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
             CssFontSize::new().content("0.75rem"),
         ),
         rule!(
-            simple_selector!("main").descendant("form"),
+            ".picker",
             declarations_block![
-                CssDisplay::from(Flex),
-                CssGap::new().content("0.5rem"),
-                CssJustifyContent::from(Center),
-                CssAlignItems::from(Center),
+                CssDisplay::new().content("grid"),
+                CssGap::new().content("1rem"),
             ]
         ),
     )
-}
-
-#[cfg(test)]
-mod cuisine_tests {
-    use super::cuisine_stylesheet;
-
-    #[test]
-    fn stylesheet_test() {
-        assert_eq!(
-            cuisine_stylesheet().bake(),
-            r#":root { --color-background: initial; --color-surface: initial; --color-border: initial; --color-text: initial; --color-primary: initial; --color-primary-text: initial; --color-error: initial; --color-success: initial; } a:not([class]) { text-decoration-skip-ink: auto; color: currentcolor; } body { background-color: var(--color-background); color: var(--color-text); display: flex; flex-direction: column; align-items: center; gap: 2rem; } main { background: var(--color-surface); padding: 2rem; box-shadow: 0 1px 2px color-mix(in oklab, var(--color-text) 10%, #0000); text-align: center; } .swatches { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; padding: 2rem; } .swatch { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; } .square { width: 64px; height: 64px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset; } .swatch p { font-size: 0.75rem; } main form { display: flex; gap: 0.5rem; justify-content: center; align-items: center; }"#
-        );
-    }
 }

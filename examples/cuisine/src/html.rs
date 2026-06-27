@@ -1,4 +1,5 @@
-use askama::Template;
+use std::borrow::Cow;
+
 use granola::{homemade::*, macros::*, prelude::*};
 
 use crate::{css::Stylesheet, handlers::Reset, snippets::snippets, utils::Palette};
@@ -16,17 +17,20 @@ pub fn home_page(palette: Palette) -> HtmlDocument<Homemade> {
         ),
     ];
 
-    page("cuisine example", header!(h1!("cuisine")), main!(menu))
-        .push_link(Stylesheet::Cuisine.link())
-        .push_style(palette_style(palette))
+    page(
+        "cuisine example",
+        body!(header!(h1!("cuisine")), main!(menu)),
+    )
+    .push_link(Stylesheet::Cuisine.link())
+    .push_style(palette_style(palette))
 }
 
 pub fn palette_page(palette: Palette) -> HtmlDocument<Homemade> {
     let swatches = div!(
-        swatch_div("color-background", &palette.color_background),
-        swatch_div("color-surface", &palette.color_surface),
-        swatch_div("color-border", &palette.color_border),
-        swatch_div("color-text", &palette.color_text),
+        swatch_div("background", &palette.color_background),
+        swatch_div("surface", &palette.color_surface),
+        swatch_div("border", &palette.color_border),
+        swatch_div("text", &palette.color_text),
     )
     .class("swatches");
 
@@ -55,23 +59,22 @@ pub fn reset_page(reset: Reset) -> HtmlDocument<Homemade> {
     page
 }
 
-fn page(title: &'static str, header: HtmlHeader, main: HtmlMain) -> HtmlDocument<Homemade> {
+fn page(title: &'static str, body: HtmlBody) -> HtmlDocument<Homemade> {
     HtmlDocument::from(Homemade)
         .lang("en")
         .push_title(title!(title))
-        .body(body!(header, main))
+        .body(body)
 }
 
 fn example_page(
     title: &'static str,
     heading: &'static str,
     picker: HtmlForm,
-    content: impl Template,
+    content: impl Into<Cow<'static, str>>,
 ) -> HtmlDocument<Homemade> {
     page(
         title,
-        header!(back_link(), h1!(heading)),
-        main!(picker, hr!(), content),
+        body!(header!(back_link(), h1!(heading)), picker, main!(content)),
     )
 }
 
@@ -94,7 +97,7 @@ fn back_link() -> HtmlNav {
 }
 
 fn reset_picker(current: Reset) -> HtmlForm {
-    let select = div![
+    form!(
         label!(
             "Select one reset: ",
             select!(
@@ -106,15 +109,13 @@ fn reset_picker(current: Reset) -> HtmlForm {
             )
             .id("select-reset")
             .name("reset"),
-            button!("Apply").button_type(ButtonType::Submit),
         )
         .for_id("select-reset"),
-    ];
-
-    form!(select)
-        .method(FormMethod::Post)
-        .action("/reset_endpoint")
-        .aria_label("Stylesheet reset")
+        button!("Apply").button_type(ButtonType::Submit),
+    )
+    .method(FormMethod::Post)
+    .action("/reset_endpoint")
+    .aria_label("Stylesheet reset")
 }
 
 fn reset_option(current: Reset, reset: Reset) -> HtmlOption {
@@ -124,26 +125,29 @@ fn reset_option(current: Reset, reset: Reset) -> HtmlOption {
 }
 
 fn palette_picker(palette_source: &str) -> HtmlForm {
-    let color_input = label!(
-        "Select a color: ",
-        input!()
-            .id("select-palette")
-            .input_type(InputType::Color)
-            .name("bg_color")
-            .value(palette_source.to_string()),
-    );
-
-    form!(color_input, button!("Update"))
-        .method(FormMethod::Post)
-        .action("/palette_endpoint")
+    form!(
+        label!(
+            "Select a color: ",
+            input!()
+                .id("select-palette")
+                .input_type(InputType::Color)
+                .name("bg_color")
+                .value(palette_source.to_string()),
+        )
+        .for_id("select-palette"),
+        button!(@cookbook Btn; "Update"),
+    )
+    .class("picker")
+    .method(FormMethod::Post)
+    .action("/palette_endpoint")
 }
 
 fn swatch_div(name: &str, value: &str) -> HtmlDiv {
     let square = div!()
         .class("square")
-        .style(format!("background: var(--{name});"));
-    let name = p!(name.to_string());
-    let val = p!(code!(value.to_string()));
+        .style(format!("background: var(--color-{name});"));
+    let name = p!(name.to_string()).style(CssFontSize::new().content("0.9rem"));
+    let val = code!(value.to_string());
 
     div!(square, name, val).class("swatch")
 }

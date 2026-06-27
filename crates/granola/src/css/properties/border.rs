@@ -4,8 +4,12 @@ mod border_color;
 pub use border_color::*;
 mod border_radius;
 pub use border_radius::*;
+mod border_style;
+pub use border_style::*;
 mod border_top_width;
 pub use border_top_width::*;
+mod border_width;
+pub use border_width::*;
 
 // mod border_block;
 // mod border_block_color;
@@ -57,13 +61,11 @@ pub use border_top_width::*;
 // mod border_spacing;
 // mod border_start_end_radius;
 // mod border_start_start_radius;
-// mod border_style;
 // mod border_top;
 // mod border_top_color;
 // mod border_top_left_radius;
 // mod border_top_right_radius;
 // mod border_top_style;
-// mod border_width;
 
 use askama::Template;
 use std::{borrow::Cow, marker::PhantomData};
