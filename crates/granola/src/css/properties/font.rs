@@ -4,6 +4,8 @@ mod font_feature_settings;
 pub use font_feature_settings::*;
 mod font_size;
 pub use font_size::*;
+mod font_style;
+pub use font_style::*;
 mod font_variation_settings;
 pub use font_variation_settings::*;
 mod font_weight;

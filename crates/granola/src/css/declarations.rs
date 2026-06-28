@@ -60,6 +60,11 @@ impl CssDeclarationsBlock {
         self
     }
 
+    pub fn extend(mut self, css_declarations: impl IntoIterator<Item = CssDeclaration>) -> Self {
+        self.declarations.extend(css_declarations);
+        self
+    }
+
     pub fn extend_mut(
         &mut self,
         css_declarations: impl IntoIterator<Item = CssDeclaration>,

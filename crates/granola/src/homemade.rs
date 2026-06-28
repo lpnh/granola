@@ -6,3 +6,5 @@ mod css;
 pub use css::*;
 mod html;
 pub use html::*;
+mod tooltip;
+pub use tooltip::*;
