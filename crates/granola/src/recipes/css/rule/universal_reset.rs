@@ -33,7 +33,7 @@ impl RuleRecipe for UniversalReset {
             CssBoxSizing::from(BorderBox).into(),
             CssMargin::new().content("0").into(),
             CssPadding::new().content("0").into(),
-            CssBorder::from(Solid).content("0").into(),
+            CssBorder::new().fold_in("0").fold_in("solid").into(),
         ]);
     }
 }

@@ -64,6 +64,13 @@ pub struct HtmlHead<R: HeadRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: HeadRecipe<Content = Cow<'static, str>>> HtmlHead<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// Shorthand for `HtmlHead`.
 ///
 /// # Example

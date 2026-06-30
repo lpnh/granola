@@ -2,8 +2,6 @@ use crate::prelude::*;
 
 /// The `dotted` property value recipe.
 ///
-/// Composes with a preceding value, e.g. `underline dotted`.
-///
 /// # Example
 ///
 /// ```rust
@@ -20,11 +18,7 @@ impl TextDecorationRecipe for Dotted {
     recipe_boilerplate!();
 
     fn content_recipe(content: &mut Self::Content) {
-        if content.is_empty() {
-            *content = "dotted".into();
-        } else {
-            *content = format!("{content} dotted").into();
-        }
+        *content = "dotted".into();
     }
 }
 
@@ -32,10 +26,6 @@ impl WebkitTextDecorationRecipe for Dotted {
     recipe_boilerplate!();
 
     fn content_recipe(content: &mut Self::Content) {
-        if content.is_empty() {
-            *content = "dotted".into();
-        } else {
-            *content = format!("{content} dotted").into();
-        }
+        *content = "dotted".into();
     }
 }

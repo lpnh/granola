@@ -31,7 +31,7 @@ pub struct CssTextDecoration<R: TextDecorationRecipe = ()> {
 }
 
 impl<R: TextDecorationRecipe<Content = Cow<'static, str>>> CssTextDecoration<R> {
-    pub fn add_value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    pub fn fold_in(mut self, value: impl Into<Cow<'static, str>>) -> Self {
         let value = value.into();
         if value.is_empty() {
             return self;

@@ -279,12 +279,12 @@ fn abbr_text_decoration() -> CssStatement {
     let selectors_list = "abbr:where([title])";
     let declarations_block: [CssDeclaration; 2] = [
         CssWebkitTextDecoration::new()
-            .add_value("underline")
-            .add_value("dotted")
+            .fold_in("underline")
+            .fold_in("dotted")
             .into(),
         CssTextDecoration::new()
-            .add_value("underline")
-            .add_value("dotted")
+            .fold_in("underline")
+            .fold_in("dotted")
             .into(),
     ];
 
@@ -484,7 +484,7 @@ fn date_and_time_value() -> CssStatement {
 fn datetime_edit_display() -> CssStatement {
     CssRule::new()
         .selectors_list("::-webkit-datetime-edit")
-        .declarations_block(CssDisplay::new().add_value("inline").add_value("flex"))
+        .declarations_block(CssDisplay::new().fold_in("inline").fold_in("flex"))
         .into()
 }
 

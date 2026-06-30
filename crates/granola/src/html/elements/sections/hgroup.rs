@@ -69,6 +69,13 @@ pub struct HtmlHgroup<R: HgroupRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: HgroupRecipe<Content = Cow<'static, str>>> HtmlHgroup<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// Shorthand for `HtmlHgroup`.
 ///
 /// # Example

@@ -7,17 +7,9 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border = CssBorder::from(Solid).content("0");
+/// let css_border = CssBorder::from(Solid);
 ///
-/// assert_eq!(css_border.bake(), "border: 0 solid;");
-/// ```
-///
-/// ```rust
-/// use granola::{prelude::*, recipes::*};
-///
-/// let css_outline_style = CssOutlineStyle::from(Solid);
-///
-/// assert_eq!(css_outline_style.bake(), "outline-style: solid;");
+/// assert_eq!(css_border.bake(), "border: solid;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Solid;
@@ -26,11 +18,7 @@ impl BorderRecipe for Solid {
     recipe_boilerplate!();
 
     fn content_recipe(content: &mut Self::Content) {
-        if content.is_empty() {
-            *content = "solid".into();
-        } else {
-            *content = format!("{content} {}", "solid").into();
-        }
+        *content = "solid".into();
     }
 }
 

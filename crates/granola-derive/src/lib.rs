@@ -266,26 +266,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 mut self,
                 content: impl ::std::convert::Into<#type_param::Content>,
             ) -> Self {
-                let mut content = content.into();
-                #type_param::content_recipe(&mut content);
-                self.content = content;
-                self
-            }
-        }
-    } else {
-        quote! {}
-    };
-    // `fold_in`: folds new content into the current content via `FoldIn`.
-    let fold_in_method = if has_content {
-        quote! {
-            pub fn fold_in(
-                mut self,
-                content: impl ::std::convert::Into<#type_param::Content>,
-            ) -> Self
-            where
-                #type_param::Content: ::granola::oven::FoldIn,
-            {
-                ::granola::oven::FoldIn::fold_in(&mut self.content, content.into());
+                self.content = content.into();
                 self
             }
         }
@@ -446,7 +427,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
         impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
             #content_method
-            #fold_in_method
 
             pub fn from_cookbook() -> Self {
                 #content_init

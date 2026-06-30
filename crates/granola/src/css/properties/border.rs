@@ -99,6 +99,21 @@ pub struct CssBorder<R: BorderRecipe = ()> {
     pub content: R::Content,
 }
 
+impl<R: BorderRecipe<Content = Cow<'static, str>>> CssBorder<R> {
+    pub fn fold_in(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        let value = value.into();
+        if value.is_empty() {
+            return self;
+        }
+        self.content = if self.content.is_empty() {
+            value
+        } else {
+            format!("{} {value}", self.content).into()
+        };
+        self
+    }
+}
+
 impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclaration {
     fn from(css_border: CssBorder<R>) -> Self {
         Self::new("border", css_border.bake_recipe().content)

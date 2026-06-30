@@ -173,10 +173,7 @@ impl RuleRecipe for Btn {
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.extend_mut([
-            CssDisplay::new()
-                .add_value("inline")
-                .add_value("flex")
-                .into(),
+            CssDisplay::new().fold_in("inline").fold_in("flex").into(),
             CssAlignItems::from(Center).into(),
             CssJustifyContent::from(Center).into(),
             CssPadding::new().content("0.6em 1.2em").into(),

@@ -70,6 +70,13 @@ pub struct HtmlArticle<R: ArticleRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: ArticleRecipe<Content = Cow<'static, str>>> HtmlArticle<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// Shorthand for `HtmlArticle`.
 ///
 /// # Example

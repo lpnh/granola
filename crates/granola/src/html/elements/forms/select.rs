@@ -65,6 +65,13 @@ pub struct HtmlSelect<R: SelectRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: SelectRecipe<Content = Cow<'static, str>>> HtmlSelect<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// The HTML `<select>` element specific attributes.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select#attributes)

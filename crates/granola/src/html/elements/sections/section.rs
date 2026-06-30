@@ -61,6 +61,13 @@ pub struct HtmlSection<R: SectionRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: SectionRecipe<Content = Cow<'static, str>>> HtmlSection<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// Shorthand for `HtmlSection`.
 ///
 /// # Example

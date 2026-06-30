@@ -7,9 +7,7 @@
 //! [`Roast`] for the priority order.
 //!
 //! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed
-//! collections. [`cookbook!`](crate::cookbook_type!) composes multiple recipes
-//! into `(A, (B, C))` in type position; [`cookbook!`](crate::cookbook!) is its
-//! value-level counterpart.
+//! collections.
 //!
 //! [autoref-based specialization]:
 //! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
@@ -23,23 +21,28 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// `recipe_boilerplate!()` keeps `type Content` at its default, so mapping back
 /// into the default content type is a no-op.
 ///
+/// `content_recipe` seeds `Content`'s construction-time default; it never
+/// runs again once `.content()` hands the field a caller-supplied value.
+///
 /// ```rust
 /// use granola::prelude::*;
 ///
 /// #[derive(Default, Debug, Clone)]
-/// struct Yell;
+/// struct Greeting;
 ///
-/// impl SpanRecipe for Yell {
+/// impl SpanRecipe for Greeting {
 ///     recipe_boilerplate!();
 ///
 ///     fn content_recipe(content: &mut Self::Content) {
-///         *content = content.to_uppercase().into();
+///         *content = "hello!".into();
 ///     }
 /// }
 ///
-/// let span = HtmlSpan::from(Yell).content("oh, hi!");
+/// let span = HtmlSpan::from(Greeting);
+/// assert_eq!(span.bake(), "<span>hello!</span>");
 ///
-/// assert_eq!(span.bake(), "<span>OH, HI!</span>");
+/// let span = HtmlSpan::from(Greeting).content("bye!");
+/// assert_eq!(span.bake(), "<span>bye!</span>");
 /// ```
 ///
 /// `recipe_boilerplate!(@from T; @into U)` sets `type Content = T` and maps

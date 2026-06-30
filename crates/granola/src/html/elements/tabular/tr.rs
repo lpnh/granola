@@ -56,6 +56,13 @@ pub struct HtmlTr<R: TrRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: TrRecipe<Content = Cow<'static, str>>> HtmlTr<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// A collection of HTML `<tr>` items.
 ///
 /// The content of [`HtmlTbody`], [`HtmlTfoot`], or [`HtmlThead`].

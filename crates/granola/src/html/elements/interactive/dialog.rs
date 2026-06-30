@@ -69,6 +69,13 @@ pub struct HtmlDialog<R: DialogRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: DialogRecipe<Content = Cow<'static, str>>> HtmlDialog<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// The HTML `<dialog>` element specific attributes.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog#attributes)

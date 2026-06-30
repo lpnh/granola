@@ -18,10 +18,6 @@ impl DisplayRecipe for Flex {
     recipe_boilerplate!();
 
     fn content_recipe(content: &mut Self::Content) {
-        if content.is_empty() {
-            *content = "flex".into();
-        } else {
-            *content = format!("{} {}", content, "flex").into();
-        }
+        *content = "flex".into();
     }
 }

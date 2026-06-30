@@ -57,6 +57,13 @@ pub struct HtmlDetails<R: DetailsRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: DetailsRecipe<Content = Cow<'static, str>>> HtmlDetails<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// The HTML `<details>` element specific attributes.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details#attributes)

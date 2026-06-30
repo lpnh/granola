@@ -61,6 +61,13 @@ pub struct HtmlPicture<R: PictureRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: PictureRecipe<Content = Cow<'static, str>>> HtmlPicture<R> {
+    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
+        FoldIn::fold_in(&mut self.content, content.into());
+        self
+    }
+}
+
 /// Shorthand for `HtmlPicture`.
 ///
 /// # Example
