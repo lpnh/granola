@@ -100,13 +100,13 @@ macro_rules! figcaption {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlFigcaption::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlFigcaption::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlFigcaption::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlFigcaption::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlFigcaption::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlFigcaption::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlFigcaption::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

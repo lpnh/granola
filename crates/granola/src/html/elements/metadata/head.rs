@@ -106,13 +106,13 @@ macro_rules! head {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlHead::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlHead::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlHead::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlHead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlHead::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

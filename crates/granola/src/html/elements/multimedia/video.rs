@@ -257,13 +257,13 @@ macro_rules! video {
         $crate::html::HtmlVideo::from_src($src)
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlVideo::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlVideo::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlVideo::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlVideo::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

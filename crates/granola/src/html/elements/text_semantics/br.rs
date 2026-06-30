@@ -86,7 +86,7 @@ macro_rules! br {
         $crate::html::HtmlBr::new()
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlBr::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlBr::<$r>::from_cookbook()
     };
 }

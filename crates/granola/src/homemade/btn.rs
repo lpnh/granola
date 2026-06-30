@@ -26,14 +26,9 @@ const BTN_SIZE: &str = "btn-size";
 /// ```rust
 /// use granola::{homemade::*, prelude::*};
 ///
-/// let btn = cookbook![Btn, BtnGhost, BtnSquare];
+/// let button = HtmlButton::from(Btn).content("x");
 ///
-/// let button = HtmlButton::from(btn).content("x");
-///
-/// assert_eq!(
-///     button.bake(),
-///     r#"<button class="btn btn-ghost btn-square">x</button>"#
-/// );
+/// assert_eq!(button.bake(), r#"<button class="btn">x</button>"#);
 /// ```
 ///
 /// ```rust
@@ -178,7 +173,10 @@ impl RuleRecipe for Btn {
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.extend_mut([
-            CssDisplay::from((Inline, Flex)).into(),
+            CssDisplay::new()
+                .add_value("inline")
+                .add_value("flex")
+                .into(),
             CssAlignItems::from(Center).into(),
             CssJustifyContent::from(Center).into(),
             CssPadding::new().content("0.6em 1.2em").into(),

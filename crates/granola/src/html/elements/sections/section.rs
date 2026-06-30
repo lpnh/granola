@@ -101,13 +101,13 @@ macro_rules! section {
         $crate::html::HtmlSection::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlSection::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlSection::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSection::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlSection::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

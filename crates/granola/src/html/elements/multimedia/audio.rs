@@ -215,13 +215,13 @@ macro_rules! audio {
         $crate::html::HtmlAudio::from_src($src)
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlAudio::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlAudio::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlAudio::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlAudio::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlAudio::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlAudio::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

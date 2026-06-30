@@ -197,7 +197,7 @@ macro_rules! source {
     (@src $src:expr $(,)?) => {
         $crate::html::HtmlSource::from_src($src)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlSource::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlSource::<$r>::from_cookbook()
     };
 }

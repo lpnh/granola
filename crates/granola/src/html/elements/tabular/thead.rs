@@ -96,13 +96,13 @@ macro_rules! thead {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlThead::new().content([$first $(, $rest)*])
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlThead::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlThead::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlThead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlThead::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlThead::<$crate::cookbook_type!($($r),+)>::from_cookbook().content([$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlThead::<$r>::from_cookbook().content([$first $(, $rest)*])
     };
 }

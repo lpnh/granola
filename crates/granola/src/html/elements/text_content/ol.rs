@@ -180,13 +180,13 @@ macro_rules! ol {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlOl::new().content([$first $(, $rest)*])
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlOl::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlOl::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlOl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlOl::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlOl::<$crate::cookbook_type!($($r),+)>::from_cookbook().content([$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlOl::<$r>::from_cookbook().content([$first $(, $rest)*])
     };
 }

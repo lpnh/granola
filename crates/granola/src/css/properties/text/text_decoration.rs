@@ -30,6 +30,21 @@ pub struct CssTextDecoration<R: TextDecorationRecipe = ()> {
     pub content: R::Content,
 }
 
+impl<R: TextDecorationRecipe<Content = Cow<'static, str>>> CssTextDecoration<R> {
+    pub fn add_value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        let value = value.into();
+        if value.is_empty() {
+            return self;
+        }
+        self.content = if self.content.is_empty() {
+            value
+        } else {
+            format!("{} {value}", self.content).into()
+        };
+        self
+    }
+}
+
 impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclaration {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
         Self::new("text-decoration", css_text_decoration.bake_recipe().content)

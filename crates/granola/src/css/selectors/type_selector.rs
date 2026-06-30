@@ -121,7 +121,7 @@ macro_rules! type_selector {
     ($sel:expr $(,)?) => {
         $crate::css::CssTypeSelector::new().selector($sel)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::css::CssTypeSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::css::CssTypeSelector::<$r>::from_cookbook()
     };
 }

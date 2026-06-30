@@ -365,7 +365,7 @@ impl RuleRecipe for Tooltip {
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.extend_mut([
-            CssDisplay::from((Inline, Flex)).into(),
+            CssDisplay::new().add_value("inline").add_value("flex").into(),
             CssAnchorScope::new().content("all").into(),
             CssAnchorName::new().content("--tip").into(),
         ]);
@@ -408,7 +408,7 @@ impl RuleRecipe for Tip {
 
     fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
         declarations_block.extend_mut([
-            CssDisplay::from((Inline, Flex)).into(),
+            CssDisplay::new().add_value("inline").add_value("flex").into(),
             CssAlignItems::from(Center).into(),
             CssJustifyContent::from(Center).into(),
             CssWidth::new().content("1.15rem").into(),

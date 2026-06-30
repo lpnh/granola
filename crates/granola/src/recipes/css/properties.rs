@@ -28,8 +28,6 @@ mod dotted;
 pub use dotted::*;
 mod flex;
 pub use flex::*;
-mod important;
-pub use important::*;
 mod inherit;
 pub use inherit::*;
 mod inline;

@@ -281,7 +281,7 @@ macro_rules! link {
     (@href $href:expr $(,)?) => {
         $crate::html::HtmlLink::from_href($href)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlLink::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlLink::<$r>::from_cookbook()
     };
 }

@@ -129,7 +129,7 @@ impl Parse for RecipeArgs {
 /// For a struct `Foo<R>`, it generates:
 ///
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
-///   and impls for `()` and `(A, B)` so recipes compose as tuples;
+///   and an impl for `()` (the baked, no-op recipe);
 /// - the `new` and `from_cookbook` constructors, plus a `From<R>` impl
 ///   (`Foo::from(recipe)`);
 /// - a `BakeRecipe` impl lowering `Foo<R>` to `Foo<()>`.
@@ -226,27 +226,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             fn bake_content(content: Self::Content) -> #content_type;
 
             fn content_recipe(_content: &mut Self::Content) {}
-        }
-    } else {
-        quote! {}
-    };
-
-    // `(A, B)` impl: where clause plus the composed Content type + hooks.
-    let tuple_where = if has_content {
-        quote! { where A: #trait_name, B: #trait_name<Content = A::Content>, }
-    } else {
-        quote! { where A: #trait_name, B: #trait_name, }
-    };
-    let tuple_content = if let Some(ref content_type) = default_content_type {
-        quote! {
-            type Content = A::Content;
-            fn bake_content(content: Self::Content) -> #content_type {
-                A::bake_content(content)
-            }
-            fn content_recipe(content: &mut Self::Content) {
-                A::content_recipe(content);
-                B::content_recipe(content);
-            }
         }
     } else {
         quote! {}
@@ -436,18 +415,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         }
     };
 
-    // Trait docs + `on_unimplemented` diagnostics.
-    let trait_doc = format!("Recipe trait for [`{struct_name}`].");
-    let trait_str = trait_name.to_string();
-    let msg = format!("`{{Self}}` is not a recipe of `{trait_str}`");
-    let label = format!("all recipes must implement `{trait_str}`");
-
     quote! {
-        #[doc = #trait_doc]
-        #[diagnostic::on_unimplemented(
-            message = #msg,
-            label = #label,
-        )]
         pub trait #trait_name:
             ::std::default::Default
             + ::std::clone::Clone
@@ -460,19 +428,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
         impl #trait_name for () {
             #unit_content
-        }
-
-        #[doc(hidden)]
-        impl<A, B> #trait_name for (A, B)
-        #tuple_where
-        {
-            #tuple_content
-            #(
-                fn #method_names(#field_idents: &mut #field_types) {
-                    A::#method_names(#field_idents);
-                    B::#method_names(#field_idents);
-                }
-            )*
         }
 
         #global_attrs_impl

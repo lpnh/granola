@@ -125,13 +125,13 @@ macro_rules! slot {
         $crate::html::HtmlSlot::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@cookbook $($r:ty),+) => {
+    (@cookbook $r:ty $(,)?) => {
         $crate::html::HtmlSlot::<($($r,)+)>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
         $crate::html::HtmlSlot::<($($r,)+)>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlSlot::<($($r,)+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
 }

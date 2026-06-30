@@ -96,13 +96,13 @@ macro_rules! ruby {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlRuby::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlRuby::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlRuby::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::html::HtmlRuby::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::html::HtmlRuby::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlRuby::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlRuby::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

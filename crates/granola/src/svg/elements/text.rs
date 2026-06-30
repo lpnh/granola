@@ -190,13 +190,13 @@ macro_rules! text {
         $crate::svg::SvgText::new().content($crate::bake_block![$first $(, $rest)*])
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::svg::SvgText::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
-        $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($content)
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
+        $crate::svg::SvgText::<$r>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::svg::SvgText::<$crate::cookbook_type!($($r),+)>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::svg::SvgText::<$r>::from_cookbook().content($crate::bake_block![$first $(, $rest)*])
     };
 }

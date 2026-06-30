@@ -9,13 +9,9 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_decoration: CssTextDecoration<(Underline, Dotted)> =
-///     CssTextDecoration::from_cookbook();
+/// let css_text_decoration: CssTextDecoration<Dotted> = CssTextDecoration::from_cookbook();
 ///
-/// assert_eq!(
-///     css_text_decoration.bake(),
-///     "text-decoration: underline dotted;"
-/// );
+/// assert_eq!(css_text_decoration.bake(), "text-decoration: dotted;");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Dotted;

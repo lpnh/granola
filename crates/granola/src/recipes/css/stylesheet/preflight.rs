@@ -278,9 +278,13 @@ fn html_host_defaults() -> CssStatement {
 fn abbr_text_decoration() -> CssStatement {
     let selectors_list = "abbr:where([title])";
     let declarations_block: [CssDeclaration; 2] = [
-        CssWebkitTextDecoration::from((Underline, Dotted)).into(),
-        CssTextDecoration::from((Underline, Dotted))
-            .bake_recipe()
+        CssWebkitTextDecoration::new()
+            .add_value("underline")
+            .add_value("dotted")
+            .into(),
+        CssTextDecoration::new()
+            .add_value("underline")
+            .add_value("dotted")
             .into(),
     ];
 
@@ -480,7 +484,7 @@ fn date_and_time_value() -> CssStatement {
 fn datetime_edit_display() -> CssStatement {
     CssRule::new()
         .selectors_list("::-webkit-datetime-edit")
-        .declarations_block(CssDisplay::from((Inline, Flex)))
+        .declarations_block(CssDisplay::new().add_value("inline").add_value("flex"))
         .into()
 }
 
@@ -542,6 +546,6 @@ fn button_appearance() -> CssStatement {
 fn hidden_display() -> CssStatement {
     CssRule::new()
         .selectors_list("[hidden]:where(:not([hidden='until-found']))")
-        .declarations_block(CssDisplay::from((None, Important)))
+        .declarations_block(CssDeclaration::from(CssDisplay::from(None)).important())
         .into()
 }

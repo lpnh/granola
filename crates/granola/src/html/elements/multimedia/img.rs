@@ -285,7 +285,7 @@ macro_rules! img {
     (@src $src:expr $(,)?) => {
         $crate::html::HtmlImg::from_src($src)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlImg::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlImg::<$r>::from_cookbook()
     };
 }

@@ -30,6 +30,21 @@ pub struct CssWebkitTextDecoration<R: WebkitTextDecorationRecipe = ()> {
     pub content: R::Content,
 }
 
+impl<R: WebkitTextDecorationRecipe<Content = Cow<'static, str>>> CssWebkitTextDecoration<R> {
+    pub fn add_value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+        let value = value.into();
+        if value.is_empty() {
+            return self;
+        }
+        self.content = if self.content.is_empty() {
+            value
+        } else {
+            format!("{} {value}", self.content).into()
+        };
+        self
+    }
+}
+
 impl<R: WebkitTextDecorationRecipe> From<CssWebkitTextDecoration<R>> for CssDeclaration {
     fn from(css_webkit_text_decoartion: CssWebkitTextDecoration<R>) -> Self {
         Self::new(

@@ -277,7 +277,7 @@ macro_rules! area {
     (@href $href:expr $(,)?) => {
         $crate::html::HtmlArea::from_href($href)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlArea::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlArea::<$r>::from_cookbook()
     };
 }

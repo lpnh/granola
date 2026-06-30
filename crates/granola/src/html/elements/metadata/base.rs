@@ -136,7 +136,7 @@ macro_rules! base {
     (@href $href:expr $(,)?) => {
         $crate::html::HtmlBase::from_href($href)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlBase::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlBase::<$r>::from_cookbook()
     };
 }

@@ -1,19 +1,8 @@
 use granola::prelude::*;
 
 #[derive(Default, Debug, Clone, PartialEq)]
-struct SomeRecipe;
-
-impl ButtonRecipe for SomeRecipe {
-    recipe_boilerplate!();
-
-    fn global_aria_attrs_recipe(global_aria_attrs: &mut GlobalAriaAttrs) {
-        global_aria_attrs.aria_label("Search");
-    }
-}
-
-#[derive(Default, Debug, Clone, PartialEq)]
 struct NotARecipe;
 
 fn main() {
-    let _button: HtmlButton<(SomeRecipe, NotARecipe)> = HtmlButton::from_cookbook();
+    let _button: HtmlButton<NotARecipe> = HtmlButton::from_cookbook();
 }

@@ -90,13 +90,13 @@ macro_rules! small {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlSmall::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@cookbook $($r:ty),+) => {
+    (@cookbook $r:ty $(,)?) => {
         $crate::html::HtmlSmall::<($($r,)+)>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
         $crate::html::HtmlSmall::<($($r,)+)>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlSmall::<($($r,)+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

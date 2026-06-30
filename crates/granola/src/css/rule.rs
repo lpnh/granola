@@ -169,7 +169,7 @@ macro_rules! rule {
         $crate::css::CssRule::new().selectors_list([$first_sel $(, $rest_sel)*]).declarations_block([$first_decl $(, $rest_decl)*])
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::css::CssRule::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::css::CssRule::<$r>::from_cookbook()
     };
 }

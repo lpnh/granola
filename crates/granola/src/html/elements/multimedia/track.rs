@@ -177,7 +177,7 @@ macro_rules! track {
     (@src $src:expr $(,)?) => {
         $crate::html::HtmlTrack::from_src($src)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlTrack::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlTrack::<$r>::from_cookbook()
     };
 }

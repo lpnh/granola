@@ -174,7 +174,7 @@ macro_rules! embed {
     (@src $src:expr $(,)?) => {
         $crate::html::HtmlEmbed::from_src($src)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlEmbed::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlEmbed::<$r>::from_cookbook()
     };
 }

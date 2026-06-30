@@ -19,7 +19,7 @@ pub mod pretty;
 
 pub mod prelude {
     pub use super::{Granola, Recipe, css::*, html::*, oven::BakeRecipe, recipes, svg::*};
-    pub use crate::{bake, bake_block, cookbook, cookbook_type, recipe_boilerplate};
+    pub use crate::{bake, bake_block, recipe_boilerplate};
 }
 
 pub mod macros {

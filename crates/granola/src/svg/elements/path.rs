@@ -151,7 +151,7 @@ macro_rules! path {
         $crate::svg::SvgPath::new()
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::svg::SvgPath::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::svg::SvgPath::<$r>::from_cookbook()
     };
 }

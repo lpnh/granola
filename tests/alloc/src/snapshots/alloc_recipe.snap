@@ -4,4 +4,4 @@ source: tests/alloc/src/main.rs
              snippet  allocs     churn      peak
              -------  ------     -----      ----
    document_homemade      14     12552      8880
-stylesheet_preflight     132     38187     34116
+stylesheet_preflight     132     38043     33972

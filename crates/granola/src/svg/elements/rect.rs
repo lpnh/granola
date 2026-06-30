@@ -181,7 +181,7 @@ macro_rules! rect {
         $crate::svg::SvgRect::new()
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::svg::SvgRect::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::svg::SvgRect::<$r>::from_cookbook()
     };
 }

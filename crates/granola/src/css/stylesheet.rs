@@ -139,14 +139,14 @@ macro_rules! stylesheet {
         ])
     };
 
-    (@cookbook $($r:ty),+) => {
-        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::css::CssStylesheet::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; @push $rule:expr $(,)?) => {
-        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($rule)
+    (@cookbook $r:ty ; @push $rule:expr $(,)?) => {
+        $crate::css::CssStylesheet::<$r>::from_cookbook().push($rule)
     };
-    (@cookbook $($r:ty),+ ; @push $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::css::CssStylesheet::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty ; @push $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::css::CssStylesheet::<$r>::from_cookbook()
             .push($first)
             $(.push($rest))*
     };

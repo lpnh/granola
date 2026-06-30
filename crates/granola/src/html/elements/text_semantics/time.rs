@@ -136,13 +136,13 @@ macro_rules! time {
         $crate::html::HtmlTime::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $($r:ty),+) => {
+    (@cookbook $r:ty $(,)?) => {
         $crate::html::HtmlTime::<($($r,)+)>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; $content:expr $(,)?) => {
+    (@cookbook $r:ty ; $content:expr $(,)?) => {
         $crate::html::HtmlTime::<($($r,)+)>::from_cookbook().content($content)
     };
-    (@cookbook $($r:ty),+ ; $first:expr $(, $rest:expr)+ $(,)?) => {
+    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlTime::<($($r,)+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

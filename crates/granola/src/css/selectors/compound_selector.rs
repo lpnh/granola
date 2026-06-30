@@ -291,13 +291,13 @@ macro_rules! compound_selector {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::css::CssCompoundSelector::from($first)$(.push($rest))*
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::css::CssCompoundSelector::<$r>::from_cookbook()
     };
-    (@cookbook $($r:ty),+ ; @push $sel:expr $(,)?) => {
-        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($sel)
+    (@cookbook $r:ty ; @push $sel:expr $(,)?) => {
+        $crate::css::CssCompoundSelector::<$r>::from_cookbook().push($sel)
     };
-    (@cookbook $($r:ty),+ ; @push $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::css::CssCompoundSelector::<$crate::cookbook_type!($($r),+)>::from_cookbook().push($first)$(.push($rest))*
+    (@cookbook $r:ty ; @push $first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::css::CssCompoundSelector::<$r>::from_cookbook().push($first)$(.push($rest))*
     };
 }

@@ -175,7 +175,7 @@ macro_rules! meta {
     (@content $content:expr $(,)?) => {
         $crate::html::HtmlMeta::from_content($content)
     };
-    (@cookbook $($r:ty),+) => {
-        $crate::html::HtmlMeta::<$crate::cookbook_type!($($r),+)>::from_cookbook()
+    (@cookbook $r:ty $(,)?) => {
+        $crate::html::HtmlMeta::<$r>::from_cookbook()
     };
 }

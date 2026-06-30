@@ -142,6 +142,13 @@ impl CssDeclaration {
             value: value.into(),
         }
     }
+
+    pub fn important(mut self) -> Self {
+        if !self.value.is_empty() {
+            self.value = format!("{} !important", self.value).into();
+        }
+        self
+    }
 }
 
 impl<P: Into<Cow<'static, str>>, V: Into<Cow<'static, str>>> From<(P, V)> for CssDeclaration {
