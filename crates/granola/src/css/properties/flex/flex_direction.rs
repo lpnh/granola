@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// flex-direction: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FlexDirectionRecipe, content = Cow<'static, str>)]
+#[recipe(name = FlexDirectionRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFlexDirection<R: FlexDirectionRecipe = ()> {
     _recipe: PhantomData<R>,

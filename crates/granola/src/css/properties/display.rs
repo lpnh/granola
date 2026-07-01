@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -23,24 +23,16 @@ use crate::{filters, prelude::*};
 /// display: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = DisplayRecipe, content = Cow<'static, str>, content = Cow<'static, str>)]
+#[recipe(name = DisplayRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssDisplay<R: DisplayRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
 }
 
-impl<R: DisplayRecipe<Content = Cow<'static, str>>> CssDisplay<R> {
-    pub fn fold_in(mut self, value: impl Into<Cow<'static, str>>) -> Self {
-        let value = value.into();
-        if value.is_empty() {
-            return self;
-        }
-        self.content = if self.content.is_empty() {
-            value
-        } else {
-            format!("{} {value}", self.content).into()
-        };
+impl<R: DisplayRecipe<Content = Bake>> CssDisplay<R> {
+    pub fn fold_in(mut self, value: impl Into<Bake>) -> Self {
+        self.content.fold_in_ws(value);
         self
     }
 }

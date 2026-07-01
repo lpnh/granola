@@ -59,7 +59,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = FieldsetRecipe, content = Cow<'static, str>)]
+#[recipe(name = FieldsetRecipe, content = Bake)]
 pub struct HtmlFieldset<R: FieldsetRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

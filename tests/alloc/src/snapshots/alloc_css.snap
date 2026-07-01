@@ -5,7 +5,7 @@ source: tests/alloc/src/main.rs
              -------  ------     -----      ----
           stylesheet       7       903       870
                 rule       6       767       756
-             at_rule       6       436       350
+             at_rule       5       401       350
   declarations_block       5       312       288
       selectors_list       3       488       488
          declaration       3        69        60

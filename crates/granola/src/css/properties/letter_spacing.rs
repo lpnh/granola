@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// letter-spacing: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = LetterSpacingRecipe, content = Cow<'static, str>)]
+#[recipe(name = LetterSpacingRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssLetterSpacing<R: LetterSpacingRecipe = ()> {
     _recipe: PhantomData<R>,

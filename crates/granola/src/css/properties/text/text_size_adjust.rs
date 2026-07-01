@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// text-size-adjust: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TextSizeAdjustRecipe, content = Cow<'static, str>)]
+#[recipe(name = TextSizeAdjustRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTextSizeAdjust<R: TextSizeAdjustRecipe = ()> {
     _recipe: PhantomData<R>,

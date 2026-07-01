@@ -3,7 +3,6 @@ fn main() {}
 #[cfg(test)]
 mod tests_recipe {
     use askama::Template;
-    use std::borrow::Cow;
 
     use granola::{homemade::*, prelude::*};
 
@@ -113,7 +112,7 @@ mod tests_recipe {
             baked.bake(),
             r#"<button type="button">clicked 3 times</button>"#
         );
-        let content: Cow<'static, str> = baked.content;
+        let content: Bake = baked.content;
         assert_eq!(content, "clicked 3 times");
     }
 
@@ -137,9 +136,9 @@ mod tests_recipe {
             }
         }
 
-        impl From<TagList> for Cow<'static, str> {
+        impl From<TagList> for Bake {
             fn from(list: TagList) -> Self {
-                Cow::Owned(list.render().unwrap())
+                Self::new(&list)
             }
         }
 
@@ -169,7 +168,7 @@ mod tests_recipe {
         let baked_recipe = HtmlDiv::from(Tags).bake_recipe();
         assert_eq!(baked_recipe.bake(), "<div><b>foo</b><b>bar</b></div>");
 
-        let baked_content: Cow<'static, str> = baked_recipe.content;
+        let baked_content: Bake = baked_recipe.content;
         assert_eq!(baked_content, "<b>foo</b><b>bar</b>");
 
         let baked_baz = HtmlDiv::from(Tags)
@@ -177,7 +176,7 @@ mod tests_recipe {
             .bake_recipe();
         assert_eq!(baked_baz.bake(), "<div><b>baz</b></div>");
 
-        let baked_baz_content: Cow<'static, str> = baked_baz.content;
+        let baked_baz_content: Bake = baked_baz.content;
         assert_eq!(baked_baz_content, "<b>baz</b>");
     }
 }

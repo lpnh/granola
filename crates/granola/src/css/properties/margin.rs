@@ -17,7 +17,7 @@ pub use margin_top::*;
 // margin_inline_start
 
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -41,7 +41,7 @@ use crate::{filters, prelude::*};
 /// margin: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = MarginRecipe, content = Cow<'static, str>)]
+#[recipe(name = MarginRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssMargin<R: MarginRecipe = ()> {
     _recipe: PhantomData<R>,

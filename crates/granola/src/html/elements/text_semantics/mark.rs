@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -25,7 +25,7 @@ use crate::{filters, prelude::*};
 /// let br = HtmlBr::new();
 ///
 /// let the_tower = bake![
-///     bake_block!["Seem", but_the_clouds, "of the sky"],
+///     bake_ws!["Seem", but_the_clouds, "of the sky"],
 ///     br,
 ///     "When the horizon fades;",
 ///     br,
@@ -57,7 +57,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MarkRecipe, content = Cow<'static, str>)]
+#[recipe(name = MarkRecipe, content = Bake)]
 pub struct HtmlMark<R: MarkRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -90,7 +90,7 @@ pub struct HtmlMark<R: MarkRecipe = ()> {
 /// let br = br!();
 ///
 /// let the_tower = bake![
-///     bake_block!["Seem", but_the_clouds, "of the sky"],
+///     bake_ws!["Seem", but_the_clouds, "of the sky"],
 ///     br,
 ///     "When the horizon fades;",
 ///     br,

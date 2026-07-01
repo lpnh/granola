@@ -38,7 +38,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SlotRecipe, content = Cow<'static, str>)]
+#[recipe(name = SlotRecipe, content = Bake)]
 pub struct HtmlSlot<R: SlotRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -122,7 +122,7 @@ macro_rules! slot {
         $crate::html::HtmlSlot::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSlot::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::html::HtmlSlot::new().content($crate::bake_ws![$first $(, $rest)*])
     };
 
 }

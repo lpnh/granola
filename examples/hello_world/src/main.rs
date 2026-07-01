@@ -18,13 +18,11 @@ async fn main() {
 }
 
 async fn handler() -> Html<String> {
-    let doctype = HtmlDoctype::new();
-
     let heading = HtmlH1::new().content("Hello, world!");
     let body = HtmlBody::new().content(heading);
     let root = HtmlRoot::new().content(body);
 
-    let home = bake_block![doctype, root];
+    let home_page = HtmlDocument::new().content(root);
 
-    Html(home)
+    Html(home_page.bake())
 }

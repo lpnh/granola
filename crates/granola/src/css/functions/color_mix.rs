@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::prelude::*;
 
@@ -38,28 +38,23 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnColorMix<R: FnColorMixRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub color_space: Option<Cow<'static, str>>,
-    pub colors: Vec<Cow<'static, str>>,
+    pub color_space: Option<Bake>,
+    pub colors: Vec<Bake>,
 }
 
 impl<R: FnColorMixRecipe> CssFnColorMix<R> {
-    pub fn interpolation(mut self, color_space: impl Into<Cow<'static, str>>) -> Self {
+    pub fn interpolation(mut self, color_space: impl Into<Bake>) -> Self {
         self.color_space = Some(color_space.into());
         self
     }
 
-    pub fn color(mut self, color: impl Into<Cow<'static, str>>) -> Self {
+    pub fn color(mut self, color: impl Into<Bake>) -> Self {
         self.colors.push(color.into());
         self
     }
 
-    pub fn color_pct(
-        mut self,
-        color: impl Into<Cow<'static, str>>,
-        percentage: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.colors
-            .push(bake_block![color.into(), percentage.into()].into());
+    pub fn color_pct(mut self, color: impl Into<Bake>, percentage: impl Into<Bake>) -> Self {
+        self.colors.push(bake_ws![color.into(), percentage.into()]);
         self
     }
 }

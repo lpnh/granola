@@ -55,7 +55,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = DialogRecipe, content = Cow<'static, str>)]
+#[recipe(name = DialogRecipe, content = Bake)]
 pub struct HtmlDialog<R: DialogRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -69,9 +69,9 @@ pub struct HtmlDialog<R: DialogRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: DialogRecipe<Content = Cow<'static, str>>> HtmlDialog<R> {
-    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
-        FoldIn::fold_in(&mut self.content, content.into());
+impl<R: DialogRecipe<Content = Bake>> HtmlDialog<R> {
+    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+        self.content.fold_in(content);
         self
     }
 }

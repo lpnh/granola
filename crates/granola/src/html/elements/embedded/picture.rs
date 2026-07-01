@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -51,7 +51,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = PictureRecipe, content = Cow<'static, str>)]
+#[recipe(name = PictureRecipe, content = Bake)]
 pub struct HtmlPicture<R: PictureRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -61,9 +61,9 @@ pub struct HtmlPicture<R: PictureRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: PictureRecipe<Content = Cow<'static, str>>> HtmlPicture<R> {
-    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
-        FoldIn::fold_in(&mut self.content, content.into());
+impl<R: PictureRecipe<Content = Bake>> HtmlPicture<R> {
+    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+        self.content.fold_in(content);
         self
     }
 }

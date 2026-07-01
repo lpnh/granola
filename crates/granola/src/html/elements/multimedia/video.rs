@@ -44,7 +44,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = VideoRecipe, content = Cow<'static, str>)]
+#[recipe(name = VideoRecipe, content = Bake)]
 pub struct HtmlVideo<R: VideoRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

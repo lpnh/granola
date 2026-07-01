@@ -1,7 +1,7 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
-use crate::{filters, oven::FoldIn, prelude::*};
+use crate::{filters, prelude::*};
 
 /// The HTML `<li>` element.
 ///
@@ -41,7 +41,7 @@ use crate::{filters, oven::FoldIn, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LiRecipe, content = Cow<'static, str>)]
+#[recipe(name = LiRecipe, content = Bake)]
 pub struct HtmlLi<R: LiRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -133,16 +133,6 @@ impl From<HtmlLi> for ListItems {
 impl Extend<HtmlLi> for ListItems {
     fn extend<I: IntoIterator<Item = HtmlLi>>(&mut self, iter: I) {
         self.items.extend(iter);
-    }
-}
-
-impl FoldIn for ListItems {
-    fn fold_in(&mut self, mut content: Self) {
-        if self.items.is_empty() {
-            self.items = content.items;
-        } else {
-            self.items.append(&mut content.items);
-        }
     }
 }
 

@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `::file-selector-button` selector recipe.
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalFileSelectorButton;
 
 impl SimpleSelectorRecipe for UniversalFileSelectorButton {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = "::file-selector-button".into();
     }
 }

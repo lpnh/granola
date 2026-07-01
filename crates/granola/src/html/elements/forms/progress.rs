@@ -48,7 +48,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ProgressRecipe, content = Cow<'static, str>)]
+#[recipe(name = ProgressRecipe, content = Bake)]
 pub struct HtmlProgress<R: ProgressRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

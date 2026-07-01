@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use crate::prelude::*;
 
 /// Named color spaces.
 ///
@@ -55,7 +55,7 @@ pub enum ColorSpace {
     Oklch,
 }
 
-impl From<ColorSpace> for Cow<'static, str> {
+impl From<ColorSpace> for Bake {
     fn from(color_space: ColorSpace) -> Self {
         <&'static str>::from(color_space).into()
     }

@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -44,7 +44,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = H3Recipe, content = Cow<'static, str>)]
+#[recipe(name = H3Recipe, content = Bake)]
 pub struct HtmlH3<R: H3Recipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

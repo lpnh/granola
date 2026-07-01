@@ -37,7 +37,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TextRecipe, content = Cow<'static, str>)]
+#[recipe(name = TextRecipe, content = Bake)]
 pub struct SvgText<R: TextRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -187,7 +187,7 @@ macro_rules! text {
         $crate::svg::SvgText::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::svg::SvgText::new().content($crate::bake_block![$first $(, $rest)*])
+        $crate::svg::SvgText::new().content($crate::bake_ws![$first $(, $rest)*])
     };
 
 }

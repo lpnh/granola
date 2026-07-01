@@ -168,7 +168,7 @@ pub struct Tooltip;
 #[derive(Default, Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TooltipContent {
-    element: Cow<'static, str>,
+    element: Bake,
     bubble: HtmlSpan<TipBubble>,
 }
 
@@ -176,7 +176,7 @@ impl TooltipContent {
     pub fn new(
         mut self,
         id: impl Into<Cow<'static, str>>,
-        element: impl Into<Cow<'static, str>> + HasGlobalAriaAttrs,
+        element: impl Into<Bake> + HasGlobalAriaAttrs,
     ) -> Self {
         let cloned_id = id.into().to_string();
         self.element = element.aria_describedby(cloned_id.clone()).into();
@@ -213,14 +213,14 @@ impl HtmlSpan<Tooltip> {
     pub fn with_id(
         mut self,
         id: impl Into<Cow<'static, str>>,
-        element: impl Into<Cow<'static, str>> + HasGlobalAriaAttrs,
+        element: impl Into<Bake> + HasGlobalAriaAttrs,
     ) -> Self {
         let id_str = id.into();
         self.content = self.content.new(id_str.clone(), element);
         self
     }
 
-    pub fn text(mut self, text: impl Into<Cow<'static, str>>) -> Self {
+    pub fn text(mut self, text: impl Into<Bake>) -> Self {
         self.content.bubble = self.content.bubble.content(text);
         self
     }
@@ -230,13 +230,13 @@ impl HtmlDiv<Tooltip> {
     pub fn with_id(
         self,
         id: impl Into<Cow<'static, str>>,
-        element: impl Into<Cow<'static, str>> + HasGlobalAriaAttrs,
+        element: impl Into<Bake> + HasGlobalAriaAttrs,
     ) -> Self {
         Self::from(Tooltip).content.new(id.into(), element);
         self
     }
 
-    pub fn text(mut self, text: impl Into<Cow<'static, str>>) -> Self {
+    pub fn text(mut self, text: impl Into<Bake>) -> Self {
         self.content.bubble = self.content.bubble.content(text);
         self
     }

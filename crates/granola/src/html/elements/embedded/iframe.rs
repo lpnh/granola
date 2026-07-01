@@ -43,7 +43,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = IframeRecipe, content = Cow<'static, str>)]
+#[recipe(name = IframeRecipe, content = Bake)]
 pub struct HtmlIframe<R: IframeRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

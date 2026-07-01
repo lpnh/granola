@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -27,48 +27,32 @@ use crate::{filters, prelude::*};
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnCalc<R: FnCalcRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub expression: Cow<'static, str>,
+    pub expression: Bake,
 }
 
 impl<R: FnCalcRecipe> CssFnCalc<R> {
-    pub fn expression(mut self, expression: impl Into<Cow<'static, str>>) -> Self {
+    pub fn expression(mut self, expression: impl Into<Bake>) -> Self {
         self.expression = expression.into();
         self
     }
 
-    pub fn add(
-        mut self,
-        first: impl Into<Cow<'static, str>>,
-        second: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.expression = bake_block![first.into(), "+", second.into()].into();
+    pub fn add(mut self, first: impl Into<Bake>, second: impl Into<Bake>) -> Self {
+        self.expression = bake_ws![first.into(), "+", second.into()];
         self
     }
 
-    pub fn subtract(
-        mut self,
-        first: impl Into<Cow<'static, str>>,
-        second: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.expression = bake_block![first.into(), "-", second.into()].into();
+    pub fn subtract(mut self, first: impl Into<Bake>, second: impl Into<Bake>) -> Self {
+        self.expression = bake_ws![first.into(), "-", second.into()];
         self
     }
 
-    pub fn multiply(
-        mut self,
-        first: impl Into<Cow<'static, str>>,
-        second: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.expression = bake_block![first.into(), "*", second.into()].into();
+    pub fn multiply(mut self, first: impl Into<Bake>, second: impl Into<Bake>) -> Self {
+        self.expression = bake_ws![first.into(), "*", second.into()];
         self
     }
 
-    pub fn divide(
-        mut self,
-        first: impl Into<Cow<'static, str>>,
-        second: impl Into<Cow<'static, str>>,
-    ) -> Self {
-        self.expression = bake_block![first.into(), "/", second.into()].into();
+    pub fn divide(mut self, first: impl Into<Bake>, second: impl Into<Bake>) -> Self {
+        self.expression = bake_ws![first.into(), "/", second.into()];
         self
     }
 }

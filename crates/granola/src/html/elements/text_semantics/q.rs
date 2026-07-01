@@ -45,7 +45,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = QRecipe, content = Cow<'static, str>)]
+#[recipe(name = QRecipe, content = Bake)]
 pub struct HtmlQ<R: QRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

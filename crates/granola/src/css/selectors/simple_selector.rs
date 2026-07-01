@@ -27,11 +27,11 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSimpleSelector<R: SimpleSelectorRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub selector: Cow<'static, str>,
+    pub selector: Bake,
 }
 
 impl<R: SimpleSelectorRecipe> CssSimpleSelector<R> {
-    pub fn selector(mut self, selector: impl Into<Cow<'static, str>>) -> Self {
+    pub fn selector(mut self, selector: impl Into<Bake>) -> Self {
         self.selector = selector.into();
         self
     }

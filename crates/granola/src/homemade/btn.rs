@@ -2,8 +2,6 @@
 //! Source: https://github.com/saadeghi/daisyui/blob/master/packages/daisyui/src/components/button.css
 //! Licensed under MIT License (https://github.com/saadeghi/daisyui/blob/master/LICENSE)
 
-use std::borrow::Cow;
-
 use crate::{homemade::*, prelude::*, recipes::*};
 
 const BTN_FG: &str = "btn-fg";
@@ -161,7 +159,7 @@ impl StylesheetRecipe for Btn {
 }
 
 impl SimpleSelectorRecipe for Btn {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn".into();
     }
 }
@@ -244,7 +242,7 @@ impl RuleRecipe for Btn {
 pub struct BtnHover;
 
 impl SimpleSelectorRecipe for BtnHover {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn:hover".into();
     }
 }
@@ -294,7 +292,7 @@ impl RuleRecipe for BtnHover {
 pub struct BtnActive;
 
 impl SimpleSelectorRecipe for BtnActive {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn:active".into();
     }
 }
@@ -349,7 +347,7 @@ impl RuleRecipe for BtnActive {
 pub struct BtnFocusVisible;
 
 impl SimpleSelectorRecipe for BtnFocusVisible {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn:focus-visible".into();
     }
 }
@@ -409,7 +407,7 @@ impl RuleRecipe for BtnPrimary {
 }
 
 impl SimpleSelectorRecipe for BtnPrimary {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn-primary".into();
     }
 }
@@ -474,7 +472,7 @@ impl RuleRecipe for BtnGhost {
 }
 
 impl SimpleSelectorRecipe for BtnGhost {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn-ghost".into();
     }
 }
@@ -513,7 +511,7 @@ impl RuleRecipe for BtnSquare {
 }
 
 impl SimpleSelectorRecipe for BtnSquare {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = ".btn-square".into();
     }
 }
@@ -533,7 +531,7 @@ impl SimpleSelectorRecipe for BtnSquare {
 pub struct BtnBg;
 
 impl CustomPropertyRecipe for BtnBg {
-    fn name_recipe(name: &mut Cow<'static, str>) {
+    fn name_recipe(name: &mut Bake) {
         *name = BTN_BG.into();
     }
 }
@@ -553,7 +551,7 @@ impl CustomPropertyRecipe for BtnBg {
 pub struct BtnFg;
 
 impl CustomPropertyRecipe for BtnFg {
-    fn name_recipe(name: &mut Cow<'static, str>) {
+    fn name_recipe(name: &mut Bake) {
         *name = BTN_FG.into();
     }
 }
@@ -573,7 +571,7 @@ impl CustomPropertyRecipe for BtnFg {
 pub struct BtnBorder;
 
 impl CustomPropertyRecipe for BtnBorder {
-    fn name_recipe(name: &mut Cow<'static, str>) {
+    fn name_recipe(name: &mut Bake) {
         *name = BTN_BORDER.into();
     }
 }

@@ -5,7 +5,7 @@
 // mod transition_timing_function;
 
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -32,7 +32,7 @@ use crate::{filters, prelude::*};
 /// transition: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TransitionRecipe, content = Cow<'static, str>)]
+#[recipe(name = TransitionRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTransition<R: TransitionRecipe = ()> {
     _recipe: PhantomData<R>,

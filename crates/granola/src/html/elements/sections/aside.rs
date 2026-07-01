@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -21,7 +21,7 @@ use crate::{filters, prelude::*};
 /// use granola::prelude::*;
 ///
 /// let tip = HtmlStrong::new().content("Tip:");
-/// let content = HtmlP::new().content(bake_block![tip, "trust your senses more than the timer."]);
+/// let content = HtmlP::new().content(bake_ws![tip, "trust your senses more than the timer."]);
 ///
 /// let aside = HtmlAside::new()
 ///     .content(content)
@@ -45,7 +45,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AsideRecipe, content = Cow<'static, str>)]
+#[recipe(name = AsideRecipe, content = Bake)]
 pub struct HtmlAside<R: AsideRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

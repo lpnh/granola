@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -26,7 +26,7 @@ use crate::{filters, prelude::*};
 /// interpolate-size: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = InterpolateSizeRecipe, content = Cow<'static, str>)]
+#[recipe(name = InterpolateSizeRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssInterpolateSize<R: InterpolateSizeRecipe = ()> {
     _recipe: PhantomData<R>,

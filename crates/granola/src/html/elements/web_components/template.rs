@@ -28,7 +28,7 @@ use crate::{filters, prelude::*};
 ///
 /// let name_slot = HtmlSlot::new().name("setup");
 /// let name_p1 = HtmlP::new().content(bake![name_slot, "."]);
-/// let name_p2 = HtmlP::new().content(bake_block![name_slot, "who?"]);
+/// let name_p2 = HtmlP::new().content(bake_ws![name_slot, "who?"]);
 ///
 /// let punchline_slot = HtmlSlot::new().name("punchline");
 /// let punchline = HtmlP::new().content(punchline_slot);
@@ -61,7 +61,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TemplateRecipe, content = Cow<'static, str>)]
+#[recipe(name = TemplateRecipe, content = Bake)]
 pub struct HtmlTemplate<R: TemplateRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

@@ -10,7 +10,7 @@ pub use position_try_fallbacks::*;
 // position_visibility;
 
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -34,7 +34,7 @@ use crate::{filters, prelude::*};
 /// position: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = PositionRecipe, content = Cow<'static, str>)]
+#[recipe(name = PositionRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssPosition<R: PositionRecipe = ()> {
     _recipe: PhantomData<R>,

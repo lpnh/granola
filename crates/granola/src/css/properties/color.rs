@@ -3,7 +3,7 @@
 // mod color_scheme;
 
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -27,7 +27,7 @@ use crate::{filters, prelude::*};
 /// color: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = ColorRecipe, content = Cow<'static, str>)]
+#[recipe(name = ColorRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssColor<R: ColorRecipe = ()> {
     _recipe: PhantomData<R>,

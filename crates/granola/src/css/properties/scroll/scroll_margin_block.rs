@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// scroll-margin-block: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = ScrollMarginBlockRecipe, content = Cow<'static, str>)]
+#[recipe(name = ScrollMarginBlockRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssScrollMarginBlock<R: ScrollMarginBlockRecipe = ()> {
     _recipe: PhantomData<R>,

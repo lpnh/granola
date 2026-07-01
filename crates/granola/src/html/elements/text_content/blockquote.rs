@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let content = bake_block![
+/// let content = bake_ws![
 ///   "The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.",
 ///   "Usually, this is rendered visually by indentation.",
 ///   "A URL for the source of the quotation may be given using the cite attribute,",
@@ -63,7 +63,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = BlockquoteRecipe, content = Cow<'static, str>)]
+#[recipe(name = BlockquoteRecipe, content = Bake)]
 pub struct HtmlBlockquote<R: BlockquoteRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -140,7 +140,7 @@ impl<R: BlockquoteRecipe> HasBlockquoteAttrs for HtmlBlockquote<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let content = bake_block![
+/// let content = bake_ws![
 ///   "The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.",
 ///   "Usually, this is rendered visually by indentation.",
 ///   "A URL for the source of the quotation may be given using the cite attribute,",

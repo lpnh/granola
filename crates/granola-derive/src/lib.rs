@@ -12,7 +12,7 @@ use syn::{
 /// Implements:
 /// - `bake` via `askama::Template::render`.
 /// - `bake_pretty` via `bake` + `markup_fmt` and `malva`.
-/// - `From<T> for Cow<'static, str>` via `bake`.
+/// - `From<T> for Bake` and `From<&T> for Bake`.
 #[proc_macro_derive(Granola, attributes(granola))]
 pub fn granola_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -69,17 +69,25 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             /// Panics if [`askama::Template::render`] returns an error. See
             /// [`askama::Error`].
             pub fn bake(&self) -> ::std::string::String {
-                ::askama::Template::render(self).unwrap()
+                self.render().unwrap()
             }
 
             #bake_pretty
         }
 
-        impl #impl_generics From<#name #ty_generics> for ::std::borrow::Cow<'static, str>
+        impl #impl_generics From<#name #ty_generics> for ::granola::oven::Bake
         #where_clause
         {
             fn from(c: #name #ty_generics) -> Self {
-                ::std::borrow::Cow::Owned(c.bake())
+                Self::from(&c)
+            }
+        }
+
+        impl #impl_generics From<&#name #ty_generics> for ::granola::oven::Bake
+        #where_clause
+        {
+            fn from(c: &#name #ty_generics) -> Self {
+                ::granola::oven::Bake::new(c)
             }
         }
     }
@@ -132,11 +140,11 @@ impl Parse for RecipeArgs {
 ///   and an impl for `()` (the baked, no-op recipe);
 /// - the `new` and `from_cookbook` constructors, plus a `From<R>` impl
 ///   (`Foo::from(recipe)`);
-/// - a `BakeRecipe` impl lowering `Foo<R>` to `Foo<()>`.
+/// - a `bake_recipe` method lowering `Foo<R>` to `Foo<()>`.
 ///
 /// Some field names add more:
 /// - `content` (with `#[recipe(content = T)]`): a `Content` associated type, a
-///   `content(content)` constructor, and a required `bake_content` method
+///   `content(content)` builder method, and a required `bake_content` method
 ///   mapping `Content` back into the default content type `T`.
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
 ///   `event_handlers`, `global_svg_attrs`, `paint_attrs`, `shape_attrs`,
@@ -219,7 +227,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
             /// Bakes this recipe's content back into the element's default
             /// content type, called when the recipe is lowered via
-            /// [`BakeRecipe`](::granola::oven::BakeRecipe).
+            /// `bake_recipe`.
             ///
             /// See [`recipe_boilerplate!`](::granola::recipe_boilerplate).
             fn bake_content(content: Self::Content) -> #content_type;
@@ -452,12 +460,10 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<#type_param: #trait_name> ::granola::oven::BakeRecipe
-            for #struct_name #ty_generics #where_clause
-        {
-            type Baked = #struct_name<()>;
-
-            fn bake_recipe(self) -> Self::Baked {
+        impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
+            /// Converts this element into its recipe-free form, replacing
+            /// the recipe type parameter with its default.
+            pub fn bake_recipe(self) -> #struct_name<()> {
                 #struct_name {
                     _recipe: ::std::marker::PhantomData,
                     #bake_content_field

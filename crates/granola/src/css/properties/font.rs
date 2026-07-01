@@ -12,7 +12,7 @@ mod font_weight;
 pub use font_weight::*;
 
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -36,7 +36,7 @@ use crate::{filters, prelude::*};
 /// font: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = FontRecipe, content = Cow<'static, str>)]
+#[recipe(name = FontRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFont<R: FontRecipe = ()> {
     _recipe: PhantomData<R>,

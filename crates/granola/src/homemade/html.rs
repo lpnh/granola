@@ -1,5 +1,4 @@
 use askama::Template;
-use std::borrow::Cow;
 
 use crate::{prelude::*, recipes::*};
 
@@ -194,7 +193,7 @@ pub struct HomemadeHeadContent {
 }
 
 impl HtmlDocument<Homemade> {
-    pub fn lang(mut self, lang: impl Into<Cow<'static, str>>) -> Self {
+    pub fn lang(mut self, lang: impl Into<Bake>) -> Self {
         self.content = self.content.lang(lang);
         self
     }

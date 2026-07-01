@@ -41,7 +41,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = AudioRecipe, content = Cow<'static, str>)]
+#[recipe(name = AudioRecipe, content = Bake)]
 pub struct HtmlAudio<R: AudioRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

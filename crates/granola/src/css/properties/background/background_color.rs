@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -26,7 +26,7 @@ use crate::{filters, prelude::*};
 /// background-color: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = BackgroundColorRecipe, content = Cow<'static, str>)]
+#[recipe(name = BackgroundColorRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssBackgroundColor<R: BackgroundColorRecipe = ()> {
     _recipe: PhantomData<R>,

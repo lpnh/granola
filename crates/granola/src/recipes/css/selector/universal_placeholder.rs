@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `::placeholder` selector recipe.
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalPlaceholder;
 
 impl SimpleSelectorRecipe for UniversalPlaceholder {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = "::placeholder".into();
     }
 }

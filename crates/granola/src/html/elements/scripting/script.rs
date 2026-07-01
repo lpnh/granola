@@ -38,7 +38,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ScriptRecipe, content = Cow<'static, str>)]
+#[recipe(name = ScriptRecipe, content = Bake)]
 pub struct HtmlScript<R: ScriptRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,

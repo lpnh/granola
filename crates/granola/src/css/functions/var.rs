@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -29,17 +29,17 @@ use crate::{filters, prelude::*};
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnVar<R: FnVarRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub custom_property: Cow<'static, str>,
-    pub fallback: Option<Cow<'static, str>>,
+    pub custom_property: Bake,
+    pub fallback: Option<Bake>,
 }
 
 impl<R: FnVarRecipe> CssFnVar<R> {
-    pub fn custom_property(mut self, custom_property: impl Into<Cow<'static, str>>) -> Self {
+    pub fn custom_property(mut self, custom_property: impl Into<Bake>) -> Self {
         self.custom_property = custom_property.into();
         self
     }
 
-    pub fn fallback(mut self, fallback: impl Into<Cow<'static, str>>) -> Self {
+    pub fn fallback(mut self, fallback: impl Into<Bake>) -> Self {
         self.fallback = Some(fallback.into());
         self
     }

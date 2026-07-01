@@ -1,22 +1,273 @@
-//! String-building primitives and recipe machinery.
-//!
-//! [`bake!`](crate::bake) and [`bake_block!`](crate::bake_block), render
-//! [`Template`] types, [`AsRef<str>`] values, and any other [`FastWritable`]
-//! type (e.g. primitives) freely mixed into a single [`String`]. The dispatch
-//! is resolved at compile time via [autoref-based specialization]; see
-//! [`Roast`] for the priority order.
-//!
-//! [`BakeRecipe`] converts a built `Foo<R>` into `Foo<()>` for storage in typed
-//! collections.
-//!
-//! [autoref-based specialization]:
-//! https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html
+use askama::{FastWritable, NO_VALUES, Template, Values};
+use std::{borrow::Cow, fmt};
 
-use std::borrow::Cow;
+/// [`Cow<'static, str>`] with extra steps.
+#[derive(Hash, Debug, Clone, Default, PartialEq, Eq)]
+pub struct Bake(Cow<'static, str>);
 
-use askama::{FastWritable, NO_VALUES, Template};
+impl Bake {
+    /// Creates [`Bake`] from [`Template`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if [`FastWritable::write_into`] returns an error. See
+    /// [`askama::Error`].
+    pub fn new<T: Template + FastWritable>(template: &T) -> Self {
+        let mut buf = String::with_capacity(T::SIZE_HINT);
+        FastWritable::write_into(template, &mut buf, NO_VALUES).unwrap();
+        Self(Cow::Owned(buf))
+    }
 
-/// Implements `type Content` and `bake_content`.
+    /// Appends a [`FastWritable`] item.
+    ///
+    /// # Panics
+    ///
+    /// Panics if [`FastWritable::write_into`] returns an error. See
+    /// [`askama::Error`].
+    pub fn push(&mut self, item: &impl FastWritable) {
+        item.write_into(self.0.to_mut(), NO_VALUES).unwrap();
+    }
+
+    /// Appends `content` in place.
+    pub fn fold_in(&mut self, content: impl Into<Self>) {
+        self.fold_in_with("", content);
+    }
+
+    /// Appends `content` in place, separated from the existing content by a
+    /// single space. If either half is empty, no separator is written.
+    pub fn fold_in_ws(&mut self, content: impl Into<Self>) {
+        self.fold_in_with(" ", content);
+    }
+
+    /// Appends `content` in place, separated from the existing content by
+    /// `sep`. If either half is empty, no separator is written.
+    pub fn fold_in_with(&mut self, sep: &str, content: impl Into<Self>) {
+        let content = content.into();
+        if content.0.is_empty() {
+            return;
+        }
+        if self.0.is_empty() {
+            self.0 = content.0;
+            return;
+        }
+        match &mut self.0 {
+            Cow::Borrowed(s) => {
+                let mut buf = String::with_capacity(s.len() + sep.len() + content.0.len());
+                buf.push_str(s);
+                buf.push_str(sep);
+                buf.push_str(&content.0);
+                self.0 = Cow::Owned(buf);
+            }
+            Cow::Owned(buf) => {
+                buf.reserve(sep.len() + content.0.len());
+                buf.push_str(sep);
+                buf.push_str(&content.0);
+            }
+        }
+    }
+
+    /// Returns `true` if the content is empty.
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    /// Creates an empty [`Bake`] with at least `capacity` bytes of capacity.
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self(Cow::Owned(String::with_capacity(capacity)))
+    }
+}
+
+impl FastWritable for Bake {
+    fn write_into(&self, dest: &mut dyn fmt::Write, values: &dyn Values) -> askama::Result<()> {
+        self.0.write_into(dest, values)
+    }
+}
+
+impl fmt::Display for Bake {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.write_into(f, NO_VALUES).map_err(Into::into)
+    }
+}
+
+impl AsRef<str> for Bake {
+    fn as_ref(&self) -> &str {
+        &self.0
+    }
+}
+
+impl From<&'static str> for Bake {
+    fn from(s: &'static str) -> Self {
+        Cow::<'static, str>::Borrowed(s).into()
+    }
+}
+
+impl From<String> for Bake {
+    fn from(s: String) -> Self {
+        Cow::<'static, str>::Owned(s).into()
+    }
+}
+
+impl From<Cow<'static, str>> for Bake {
+    fn from(c: Cow<'static, str>) -> Self {
+        Self(c)
+    }
+}
+
+macro_rules! impl_from_primitive {
+    ($($ty:ty),+ $(,)?) => {$(
+        impl From<$ty> for Bake {
+            fn from(value: $ty) -> Self {
+                value.to_string().into()
+            }
+        }
+    )+};
+}
+
+impl_from_primitive!(
+    u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32, f64, bool, char,
+);
+
+impl PartialEq<str> for Bake {
+    fn eq(&self, other: &str) -> bool {
+        self.0 == other
+    }
+}
+
+impl PartialEq<&str> for Bake {
+    fn eq(&self, other: &&str) -> bool {
+        PartialEq::<str>::eq(self, other)
+    }
+}
+
+impl From<Bake> for Cow<'static, str> {
+    fn from(c: Bake) -> Self {
+        c.0
+    }
+}
+
+impl From<Bake> for String {
+    fn from(c: Bake) -> Self {
+        c.0.into_owned()
+    }
+}
+
+// Provide an upfront size estimate for `bake!` and `bake_ws!` macros.
+//
+// The macros call `(&&BakeSize(item)).bake_size()`.
+// Method resolution picks the first applicable impl by autoref:
+//
+// - `TemplateBakeSize` (on `&BakeSize`, reads `T::SIZE_HINT`).
+// - `StrBakeSize` (on `&&BakeSize`, reads the string length).
+// - `AnyBakeSize` (on `BakeSize`, returns 0).
+//
+// See:
+// <https://lukaskalbertodt.github.io/2019/12/05/generalized-autoref-based-specialization.html>
+#[doc(hidden)]
+pub struct BakeSize<'a, T: ?Sized>(pub &'a T);
+
+#[doc(hidden)]
+pub trait TemplateBakeSize {
+    fn bake_size(&self) -> usize;
+}
+
+impl<T: Template + ?Sized> TemplateBakeSize for &BakeSize<'_, T> {
+    fn bake_size(&self) -> usize {
+        T::SIZE_HINT
+    }
+}
+
+#[doc(hidden)]
+pub trait StrBakeSize {
+    fn bake_size(&self) -> usize;
+}
+
+impl<T: AsRef<str> + ?Sized> StrBakeSize for &&BakeSize<'_, T> {
+    fn bake_size(&self) -> usize {
+        self.0.as_ref().len()
+    }
+}
+
+#[doc(hidden)]
+pub trait AnyBakeSize {
+    fn bake_size(&self) -> usize;
+}
+
+impl<T: ?Sized> AnyBakeSize for BakeSize<'_, T> {
+    fn bake_size(&self) -> usize {
+        0
+    }
+}
+
+/// Creates [`Bake`] by concatenating [`Template`],
+/// string-like values, and primitives, freely mixed.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let docs = HtmlA::new().content("docs").href("https://askama.rs");
+///
+/// let content = bake!["Read the ", docs, "."];
+///
+/// let span = HtmlSpan::new().content(content);
+///
+/// assert_eq!(
+///     span.bake(),
+///     r#"<span>Read the <a href="https://askama.rs">docs</a>.</span>"#
+/// );
+/// ```
+#[macro_export]
+macro_rules! bake {
+    (@bind [$($bound:ident)*] $head:expr $(, $tail:expr)*) => {{
+        let item = &$head;
+        $crate::bake!(@bind [$($bound)* item] $($tail),*)
+    }};
+    (@bind [$($bound:ident)*]) => {{
+        #[allow(unused_imports)]
+        use $crate::oven::{AnyBakeSize as _, StrBakeSize as _, TemplateBakeSize as _};
+        let capacity = 0usize $(+ (&&$crate::oven::BakeSize($bound)).bake_size())*;
+        let mut content = $crate::oven::Bake::with_capacity(capacity);
+        $(
+            content.push($bound);
+        )*
+        content
+    }};
+    ($($item:expr),+ $(,)?) => {
+        $crate::bake!(@bind [] $($item),+)
+    };
+}
+
+/// Creates [`Bake`] by concatenating [`Template`],
+/// string-like values, and primitives, freely mixed, separated by a single
+/// space.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let textarea = HtmlTextarea::new()
+///     .content("Exegi monumentum aere perennius")
+///     .id("ode");
+///
+/// let content = bake_ws!["Notes", textarea];
+///
+/// let label = HtmlLabel::new().content(content).for_id("ode");
+///
+/// assert_eq!(
+///     label.bake(),
+///     r#"<label for="ode">Notes <textarea id="ode">Exegi monumentum aere perennius</textarea></label>"#
+/// );
+/// ```
+#[macro_export]
+macro_rules! bake_ws {
+    ($first:expr $(, $rest:expr)* $(,)?) => {
+        $crate::bake!($first $(, " ", $rest)*)
+    };
+}
+
+/// Defines `type Content` and `bake_content`.
 ///
 /// `recipe_boilerplate!(R)` sets `Content` to `R`'s default content type.
 ///
@@ -46,7 +297,6 @@ use askama::{FastWritable, NO_VALUES, Template};
 ///
 /// ```rust
 /// use askama::Template;
-/// use std::borrow::Cow;
 ///
 /// use granola::prelude::*;
 ///
@@ -54,9 +304,9 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// #[template(ext = "html", source = "hi!")]
 /// struct Hi;
 ///
-/// impl From<Hi> for Cow<'static, str> {
+/// impl From<Hi> for Bake {
 ///     fn from(hi: Hi) -> Self {
-///         Cow::Owned(hi.render().unwrap())
+///         Bake::new(&hi)
 ///     }
 /// }
 ///
@@ -65,8 +315,10 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// }
 ///
 /// let span = HtmlSpan::from(Hi);
-///
 /// assert_eq!(span.bake(), "<span>hi!</span>");
+///
+/// let baked = HtmlSpan::from(Hi).bake_recipe();
+/// assert_eq!(baked.bake(), "<span>hi!</span>");
 /// ```
 #[macro_export]
 macro_rules! recipe_boilerplate {
@@ -86,197 +338,9 @@ macro_rules! recipe_boilerplate {
     };
 }
 
-/// Wrapper type carrying the autoref-based content dispatch.
-///
-/// See [`Roast`].
-pub struct Bake<T>(pub T);
-
-/// Tiered content dispatch.
-///
-/// The priority order:
-///
-/// 1. `T: Template` — rendered via [`Template::render_into`] with an exact
-///    [`Template::SIZE_HINT`].
-/// 2. `T: AsRef<str>` — appended via [`String::push_str`] with an exact `len`
-///    size hint.
-/// 3. any other `T: FastWritable` (e.g. primitives) — written via
-///    [`FastWritable::write_into`]; no size hint is available, so it reports
-///    `0`.
-///
-/// A type matching several bounds (e.g. `String`, which is both `AsRef<str>`
-/// and `FastWritable`) resolves to the highest applicable tier. `String` takes
-/// the `AsRef<str>` tier, with its `len` size hint.
-///
-/// # Panics
-///
-/// Panics if [`Template::render_into`] or [`FastWritable::write_into`] returns
-/// an error. See [`askama::Error`].
-pub trait Roast {
-    fn bake_content(&self, buf: &mut String);
-
-    fn size_hint(&self) -> usize;
-}
-
-impl<T: Template> Roast for &&Bake<&T> {
-    fn bake_content(&self, buf: &mut String) {
-        self.0.render_into(buf).unwrap();
-    }
-
-    fn size_hint(&self) -> usize {
-        T::SIZE_HINT
-    }
-}
-
-impl<T: AsRef<str>> Roast for &Bake<&T> {
-    fn bake_content(&self, buf: &mut String) {
-        buf.push_str(self.0.as_ref());
-    }
-
-    fn size_hint(&self) -> usize {
-        self.0.as_ref().len()
-    }
-}
-
-impl<T: FastWritable> Roast for Bake<&T> {
-    fn bake_content(&self, buf: &mut String) {
-        self.0.write_into(buf, NO_VALUES).unwrap();
-    }
-
-    fn size_hint(&self) -> usize {
-        0
-    }
-}
-
-/// Converts `Foo<R>` into `Foo`.
-///
-/// `PhantomData<R>` selects which recipe runs during construction.
-/// `bake_recipe` moves all fields into `Foo<()>`, calling the recipe's
-/// `bake_content` to map any content field back into the default content type.
-///
-/// This is the canonical way to land a `Foo<R>` into a collection that stores
-/// `Foo<()>`. It exists as its own trait because `From<Foo<R>> for Foo<()>`
-/// cannot be written: at `R = ()` it overlaps the std reflexive `impl<T>
-/// From<T> for T`.
-pub trait BakeRecipe {
-    type Baked;
-
-    fn bake_recipe(self) -> Self::Baked;
-}
-
-/// Content append in-place.
-///
-/// Folds new content into the existing content, growing it. The bound marks a
-/// content type as appendable.
-pub trait FoldIn {
-    fn fold_in(&mut self, content: Self);
-}
-
-impl FoldIn for Cow<'static, str> {
-    fn fold_in(&mut self, content: Self) {
-        if content.is_empty() {
-            return;
-        }
-        if self.is_empty() {
-            *self = content;
-        } else {
-            self.to_mut().push_str(&content);
-        }
-    }
-}
-
-/// Renders any number of items into a single [`String`], concatenated without
-/// any separator.
-///
-/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`)
-/// freely mixed.
-///
-/// # Example
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let docs = HtmlA::new().content("docs").href("https://askama.rs");
-///
-/// let content = bake!["Read the ", docs, "."];
-///
-/// let span = HtmlSpan::new().content(content);
-///
-/// assert_eq!(
-///     span.bake(),
-///     r#"<span>Read the <a href="https://askama.rs">docs</a>.</span>"#
-/// );
-/// ```
-#[macro_export]
-macro_rules! bake {
-    ($($item:expr),+ $(,)?) => {{
-        #[allow(unused_imports)]
-        use $crate::oven::Roast as _;
-
-        let mut buf = String::new();
-
-        $({
-            let content = $crate::oven::Bake(&$item);
-            buf.reserve((&&&content).size_hint());
-            (&&&content).bake_content(&mut buf);
-        })*
-
-        buf
-    }};
-}
-
-/// Renders any number of items into a single [`String`], placing each on a new
-/// line.
-///
-/// Accepts [`Template`] types and string-like values (e.g. `&str`, `String`)
-/// freely mixed.
-///
-/// # Example
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// let textarea = HtmlTextarea::new()
-///     .content("Exegi monumentum aere perennius")
-///     .id("ode");
-///
-/// let content = bake_block!["Notes", textarea];
-///
-/// let label = HtmlLabel::new().content(content).for_id("ode");
-///
-/// assert_eq!(
-///     label.bake(),
-///     r#"<label for="ode">Notes <textarea id="ode">Exegi monumentum aere perennius</textarea></label>"#
-/// );
-/// ```
-#[macro_export]
-macro_rules! bake_block {
-    ($first:expr $(, $rest:expr)* $(,)?) => {{
-        #[allow(unused_imports)]
-        use $crate::oven::Roast as _;
-
-        let mut buf = String::new();
-
-        {
-            let content = $crate::oven::Bake(&$first);
-            buf.reserve((&&&content).size_hint());
-            (&&&content).bake_content(&mut buf);
-        }
-
-        $({
-            let content = $crate::oven::Bake(&$rest);
-            buf.reserve(1 + (&&&content).size_hint());
-            buf.push(' ');
-            (&&&content).bake_content(&mut buf);
-        })*
-
-        buf
-    }};
-}
-
 #[cfg(test)]
 mod from_content_type_tests {
-    use askama::{FastWritable, NO_VALUES, Values};
-    use std::{borrow::Cow, fmt};
+    use askama::Template;
 
     use crate::prelude::*;
 
@@ -286,20 +350,14 @@ mod from_content_type_tests {
     impl PRecipe for Number {
         type Content = u8;
 
-        fn bake_content(content: Self::Content) -> Cow<'static, str> {
+        fn bake_content(content: Self::Content) -> Bake {
             content.to_string().into()
         }
     }
 
-    #[derive(Default, Debug, Clone, PartialEq)]
+    #[derive(Default, Debug, Clone, PartialEq, Template)]
+    #[template(ext = "html", source = "{{ self.0 }}°C")]
     struct Celsius(i32);
-
-    impl FastWritable for Celsius {
-        fn write_into(&self, dest: &mut dyn fmt::Write, _: &dyn Values) -> askama::Result<()> {
-            write!(dest, "{}°C", self.0)?;
-            Ok(())
-        }
-    }
 
     #[derive(Default, Debug, Clone)]
     struct Temperature;
@@ -307,10 +365,8 @@ mod from_content_type_tests {
     impl PRecipe for Temperature {
         type Content = Celsius;
 
-        fn bake_content(content: Self::Content) -> Cow<'static, str> {
-            let mut buf = String::new();
-            content.write_into(&mut buf, NO_VALUES).unwrap();
-            Cow::Owned(buf)
+        fn bake_content(content: Self::Content) -> Bake {
+            Bake::new(&content)
         }
     }
 
@@ -328,7 +384,7 @@ mod from_content_type_tests {
         let baked = HtmlP::from(Number).content(42).bake_recipe();
         assert_eq!(baked.bake(), "<p>42</p>");
 
-        let content: Cow<_> = baked.content;
+        let content: Bake = baked.content;
         assert_eq!(content, "42");
     }
 
@@ -346,7 +402,7 @@ mod from_content_type_tests {
         let baked = HtmlP::from(Temperature).content(Celsius(26)).bake_recipe();
         assert_eq!(baked.bake(), "<p>26°C</p>");
 
-        let content: Cow<_> = baked.content;
+        let content: Bake = baked.content;
         assert_eq!(content, "26°C");
     }
 }
@@ -382,34 +438,34 @@ mod oven_tests {
     }
 
     #[test]
-    fn bake_block_1() {
-        assert_eq!(bake_block![""], "");
+    fn bake_ws_1() {
+        assert_eq!(bake_ws![""], "");
     }
 
     #[test]
-    fn bake_block_2() {
-        assert_eq!(bake_block!["single\nitem"], "single\nitem");
+    fn bake_ws_2() {
+        assert_eq!(bake_ws!["single\nitem"], "single\nitem");
     }
 
     #[test]
-    fn bake_block_3() {
-        assert_eq!(bake_block!["hello", "world"], "hello world");
+    fn bake_ws_3() {
+        assert_eq!(bake_ws!["hello", "world"], "hello world");
     }
 
     #[test]
-    fn bake_block_4() {
+    fn bake_ws_4() {
         assert_eq!(
-            bake_block!["halloween", "hello world"],
+            bake_ws!["halloween", "hello world"],
             "halloween hello world"
         );
     }
 
     #[test]
-    fn bake_block_5() {
+    fn bake_ws_5() {
         use crate::prelude::HtmlSpan;
 
         let span = HtmlSpan::new().content("bar");
 
-        assert_eq!(bake_block!["foo", span, 42], "foo <span>bar</span> 42");
+        assert_eq!(bake_ws!["foo", span, 42], "foo <span>bar</span> 42");
     }
 }

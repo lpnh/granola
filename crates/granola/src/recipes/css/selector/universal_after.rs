@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::prelude::*;
 
 /// The `::after` selector recipe.
@@ -17,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalAfter;
 
 impl SimpleSelectorRecipe for UniversalAfter {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
+    fn selector_recipe(selector: &mut Bake) {
         *selector = "::after".into();
     }
 }

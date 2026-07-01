@@ -15,7 +15,7 @@ pub fn address() -> HtmlAddress {
         .content("contact@holmes.co.uk")
         .href("mailto:contact@holmes.co.uk");
 
-    let content = bake_block!["221B Baker St, London NW1 6XE ·", mail];
+    let content = bake_ws!["221B Baker St, London NW1 6XE ·", mail];
 
     HtmlAddress::new().content(content)
 }
@@ -31,7 +31,7 @@ pub fn area() -> HtmlArea {
 pub fn article() -> HtmlArticle {
     let h2 = HtmlH2::new().content("New Café");
 
-    let content = bake_block![
+    let content = bake_ws![
         "Oats &amp; Ends opened last week on Oak Street,
     at the corner of Elm Avenue, bringing new aromas to the block.",
         "Its cozy atmosphere draws in passersby looking to treat themselves to
@@ -40,7 +40,7 @@ pub fn article() -> HtmlArticle {
 
     let p = HtmlP::new().content(content);
 
-    HtmlArticle::new().content(bake_block![h2, p])
+    HtmlArticle::new().content(bake_ws![h2, p])
 }
 
 pub fn aside() -> HtmlAside {
@@ -59,7 +59,7 @@ pub fn b() -> String {
     let water = HtmlB::new().content("water");
     let salt = HtmlB::new().content("salt");
 
-    bake!["Mix ", flour, ", ", water, ", and ", salt, "."]
+    bake!["Mix ", flour, ", ", water, ", and ", salt, "."].into()
 }
 
 pub fn base() -> HtmlBase {
@@ -69,7 +69,7 @@ pub fn base() -> HtmlBase {
 pub fn bdi() -> String {
     let gal = HtmlBdi::new().content("גל גדות");
 
-    bake![gal, " liked your post"]
+    bake![gal, " liked your post"].into()
 }
 
 pub fn bdo() -> HtmlBdo {
@@ -77,7 +77,7 @@ pub fn bdo() -> HtmlBdo {
 }
 
 pub fn blockquote() -> HtmlBlockquote {
-    let content = bake_block![
+    let content = bake_ws![
         "The &lt;blockquote&gt; element indicates that the enclosed text is an extended quotation.",
         "Usually, this is rendered visually by indentation.",
         "A URL for the source of the quotation may be given using the cite attribute,",
@@ -101,7 +101,7 @@ pub fn br() -> HtmlP {
     let roses = bake!["Roses are red,", br];
     let violets = "Violets are blue.";
 
-    HtmlP::new().content(bake_block![roses, violets])
+    HtmlP::new().content(bake_ws![roses, violets])
 }
 
 pub fn button() -> HtmlButton {
@@ -125,7 +125,7 @@ pub fn canvas() -> String {
         .width(160)
         .height(80);
 
-    bake_block![script, canvas]
+    bake_ws![script, canvas].into()
 }
 
 pub fn caption() -> HtmlCaption {
@@ -144,7 +144,7 @@ pub fn col() -> String {
     let item = HtmlCol::new().class("item");
     let description = HtmlCol::new().class("description");
 
-    bake_block![item, description]
+    bake_ws![item, description].into()
 }
 
 pub fn colgroup() -> HtmlColgroup {
@@ -173,7 +173,7 @@ pub fn dd() -> String {
     let dd =
         HtmlDd::new().content("A longing for a home that no longer exists, or perhaps never did.");
 
-    bake_block![dt, dd]
+    bake_ws![dt, dd].into()
 }
 
 pub fn del() -> HtmlDel {
@@ -186,7 +186,7 @@ pub fn del() -> HtmlDel {
 pub fn details() -> HtmlDetails {
     let summary = HtmlSummary::new().content("Pandora's box");
 
-    HtmlDetails::new().content(bake_block![summary, "Hope"])
+    HtmlDetails::new().content(bake_ws![summary, "Hope"])
 }
 
 pub fn dfn() -> HtmlP {
@@ -207,11 +207,11 @@ pub fn dialog() -> String {
         .popovertargetaction("hide");
 
     let dialog = HtmlDialog::new()
-        .content(bake_block!["Hello, there!", close_button])
+        .content(bake_ws!["Hello, there!", close_button])
         .id("modal_popover")
         .popover("auto");
 
-    bake_block![open_button, dialog]
+    bake_ws![open_button, dialog].into()
 }
 
 pub fn div() -> HtmlDiv {
@@ -220,7 +220,7 @@ pub fn div() -> HtmlDiv {
         .content("Cancel")
         .button_type(ButtonType::Button);
 
-    let content = bake_block![save, cancel];
+    let content = bake_ws![save, cancel];
 
     HtmlDiv::new()
         .content(content)
@@ -232,14 +232,14 @@ pub fn dl() -> HtmlDl {
     let dd_1 =
         HtmlDd::new().content("A longing for a home that no longer exists, or perhaps never did.");
 
-    let group_1 = bake_block![dt_1, dd_1];
+    let group_1 = bake_ws![dt_1, dd_1];
 
     let dt_2 = HtmlDt::new().content("Pålegg");
     let dd_2 = HtmlDd::new().content("Anything and everything you might put on a slice of bread.");
 
-    let group_2 = bake_block![dt_2, dd_2];
+    let group_2 = bake_ws![dt_2, dd_2];
 
-    let list = bake_block![group_1, "", group_2];
+    let list = bake_ws![group_1, "", group_2];
 
     HtmlDl::new().content(list)
 }
@@ -252,13 +252,13 @@ pub fn dt() -> String {
     let dt = HtmlDt::new().content("Pålegg");
     let dd = HtmlDd::new().content("Anything and everything you might put on a slice of bread.");
 
-    bake_block![dt, dd]
+    bake_ws![dt, dd].into()
 }
 
 pub fn em() -> String {
     let owned = HtmlEm::new().content("owned");
 
-    bake!["I never said he ", owned, " it."]
+    bake!["I never said he ", owned, " it."].into()
 }
 
 pub fn embed() -> HtmlEmbed {
@@ -280,7 +280,7 @@ pub fn fieldset() -> HtmlFieldset {
         .content("That is the question")
         .for_id("chbx");
 
-    HtmlFieldset::new().content(bake_block![legend, input, label])
+    HtmlFieldset::new().content(bake_ws![legend, input, label])
 }
 
 pub fn figcaption() -> String {
@@ -288,7 +288,7 @@ pub fn figcaption() -> String {
 
     let figcaption = HtmlFigcaption::new().content("Defining a function in Lua");
 
-    bake_block![code, figcaption]
+    bake_ws![code, figcaption].into()
 }
 
 pub fn figure() -> HtmlFigure {
@@ -296,7 +296,7 @@ pub fn figure() -> HtmlFigure {
 
     let figcaption = HtmlFigcaption::new().content("Defining a function in Lua");
 
-    let content = bake_block![code, figcaption];
+    let content = bake_ws![code, figcaption];
 
     HtmlFigure::new().content(content)
 }
@@ -310,11 +310,11 @@ pub fn footer() -> HtmlFooter {
 
 pub fn form() -> HtmlForm {
     let input = HtmlInput::new().name("cast-wish");
-    let label = HtmlLabel::new().content(bake_block!["Wish:", input]);
+    let label = HtmlLabel::new().content(bake_ws!["Wish:", input]);
     let button = HtmlButton::new().content("Cast");
 
     HtmlForm::new()
-        .content(bake_block![label, button])
+        .content(bake_ws![label, button])
         .method(FormMethod::Get)
 }
 
@@ -345,7 +345,7 @@ pub fn head() -> HtmlHead {
         .content("width=device-width");
     let title = HtmlTitle::new().content("Document title");
 
-    HtmlHead::new().content(bake_block![charset, viewport, title])
+    HtmlHead::new().content(bake_ws![charset, viewport, title])
 }
 
 pub fn header() -> HtmlHeader {
@@ -363,7 +363,7 @@ pub fn hgroup() -> HtmlHgroup {
 
     let paragraph = HtmlP::new().content(subtitle);
 
-    HtmlHgroup::new().content(bake_block![heading, paragraph])
+    HtmlHgroup::new().content(bake_ws![heading, paragraph])
 }
 
 pub fn hr() -> String {
@@ -373,13 +373,13 @@ pub fn hr() -> String {
 
     let hr = HtmlHr::new();
 
-    bake_block![p1, "", hr, "", p2]
+    bake_ws![p1, "", hr, "", p2].into()
 }
 
 pub fn i() -> String {
     let voila = HtmlI::new().content("voilà");
 
-    bake!["and ", voila, "!"]
+    bake!["and ", voila, "!"].into()
 }
 
 pub fn iframe() -> HtmlIframe {
@@ -418,7 +418,7 @@ pub fn label() -> HtmlLabel {
         .name("reality-check")
         .disabled(true);
 
-    HtmlLabel::new().content(bake_block!["We're so back", input])
+    HtmlLabel::new().content(bake_ws!["We're so back", input])
 }
 
 pub fn legend() -> HtmlLegend {
@@ -429,7 +429,7 @@ pub fn li() -> String {
     let sugar = HtmlLi::new().content("sugar");
     let spice = HtmlLi::new().content("spice");
 
-    bake_block![sugar, spice]
+    bake_ws![sugar, spice].into()
 }
 
 pub fn link() -> HtmlLink {
@@ -456,7 +456,7 @@ pub fn map() -> String {
 
     let map = HtmlMap::new().content(area).name("minas-gerais");
 
-    bake_block![img, map]
+    bake_ws![img, map].into()
 }
 
 pub fn mark() -> String {
@@ -464,7 +464,7 @@ pub fn mark() -> String {
 
     let br = HtmlBr::new();
 
-    bake_block![
+    bake_ws![
         bake!["Seem ", but_the_clouds, " of the sky"],
         br,
         "When the horizon fades;",
@@ -473,6 +473,7 @@ pub fn mark() -> String {
         br,
         "Among the deepening shades."
     ]
+    .into()
 }
 
 pub fn menu() -> HtmlMenu {
@@ -508,7 +509,7 @@ pub fn nav() -> HtmlNav {
     let menu = HtmlA::new().content("the menu").href("/menu");
     let note = HtmlA::new().content("note").href("/contact");
 
-    let content = bake_block![
+    let content = bake_ws![
         bake!["You can find us at ", location, "."],
         bake!["Everything we make and love is on ", menu, "."],
         bake!["Have a thought? Send us a ", note, "."],
@@ -572,7 +573,7 @@ pub fn picture() -> HtmlPicture {
         .media("(width >= 600px)");
     let img = HtmlImg::new().src("logo-narrow.png").alt("logo");
 
-    HtmlPicture::new().content(bake_block![source, img])
+    HtmlPicture::new().content(bake_ws![source, img])
 }
 
 pub fn pre() -> String {
@@ -598,7 +599,7 @@ pub fn pre() -> String {
         .href(r#"https://crates.io/crates/ferris-says"#);
     let cite = HtmlCite::new().content(url);
 
-    bake_block![pre, cite]
+    bake_ws![pre, cite].into()
 }
 
 pub fn progress() -> HtmlProgress {
@@ -626,7 +627,7 @@ pub fn rp() -> String {
     let rt = HtmlRt::new().content("tori");
     let closing_rp = HtmlRp::new().content(")");
 
-    bake![opening_rp, rt, closing_rp]
+    bake![opening_rp, rt, closing_rp].into()
 }
 
 pub fn rt() -> HtmlRt {
@@ -646,7 +647,7 @@ pub fn ruby() -> HtmlRuby {
 pub fn s() -> String {
     let nine = HtmlS::new().content("nine");
 
-    bake!["Our solar system has ", nine, " eight planets"]
+    bake!["Our solar system has ", nine, " eight planets"].into()
 }
 
 pub fn samp() -> HtmlSamp {
@@ -669,7 +670,7 @@ pub fn search() -> HtmlSearch {
     let button = HtmlButton::new().content("Search");
 
     let form = HtmlForm::new()
-        .content(bake_block![label, input, button])
+        .content(bake_ws![label, input, button])
         .action("/search");
 
     HtmlSearch::new().content(form)
@@ -679,7 +680,7 @@ pub fn section() -> HtmlSection {
     let h2 = HtmlH2::new().content("Latest news");
     let ul = HtmlUl::new().content(HtmlLi::new().content("New café on Oak Street"));
 
-    HtmlSection::new().content(bake_block![h2, ul])
+    HtmlSection::new().content(bake_ws![h2, ul])
 }
 
 pub fn select() -> HtmlSelect {
@@ -687,7 +688,7 @@ pub fn select() -> HtmlSelect {
     let opt_2 = HtmlOption::new().content("Turbot").value("turbot");
 
     HtmlSelect::new()
-        .content(bake_block![opt_1, opt_2])
+        .content(bake_ws![opt_1, opt_2])
         .name("fishes")
 }
 
@@ -728,7 +729,7 @@ pub fn style() -> HtmlStyle {
 pub fn sub() -> String {
     let sub = HtmlSub::new().content("2");
 
-    bake!["H", sub, "O"]
+    bake!["H", sub, "O"].into()
 }
 
 pub fn summary() -> HtmlSummary {
@@ -738,7 +739,7 @@ pub fn summary() -> HtmlSummary {
 pub fn sup() -> String {
     let sup = HtmlSup::new().content("e");
 
-    bake!["100", sup, " anniversaire"]
+    bake!["100", sup, " anniversaire"].into()
 }
 
 pub fn table() -> HtmlTable {
@@ -752,19 +753,19 @@ pub fn table() -> HtmlTable {
     let head_1 = HtmlTh::new().content("Item").scope("col");
     let head_2 = HtmlTh::new().content("Description").scope("col");
 
-    let tr_head = HtmlTr::new().content(bake_block![head_1, head_2]);
+    let tr_head = HtmlTr::new().content(bake_ws![head_1, head_2]);
 
     let thead = HtmlThead::new().content(tr_head);
 
     let th_1 = HtmlTh::new().content("Black coffee").scope("row");
     let td_1 = HtmlTd::new().content("A good, hot, black coffee");
 
-    let black_coffee = HtmlTr::new().content(bake_block![th_1, td_1]);
+    let black_coffee = HtmlTr::new().content(bake_ws![th_1, td_1]);
 
     let th_2 = HtmlTh::new().content("Hot chocolate").scope("row");
     let td_2 = HtmlTd::new().content("Melted dark chocolate with milk");
 
-    let hot_chocolate = HtmlTr::new().content(bake_block![th_2, td_2]);
+    let hot_chocolate = HtmlTr::new().content(bake_ws![th_2, td_2]);
 
     let tbody = HtmlTbody::new().content([black_coffee, hot_chocolate]);
 
@@ -775,7 +776,7 @@ pub fn table() -> HtmlTable {
 
     let tfoot = HtmlTfoot::new().content(tr_foot);
 
-    let content = bake_block![caption, colgroup, thead, tbody, tfoot,];
+    let content = bake_ws![caption, colgroup, thead, tbody, tfoot,];
 
     HtmlTable::new().content(content)
 }
@@ -784,12 +785,12 @@ pub fn tbody() -> HtmlTbody {
     let th_1 = HtmlTh::new().content("Black coffee").scope("row");
     let td_1 = HtmlTd::new().content("A good, hot, black coffee");
 
-    let black_coffee = HtmlTr::new().content(bake_block![th_1, td_1]);
+    let black_coffee = HtmlTr::new().content(bake_ws![th_1, td_1]);
 
     let th_2 = HtmlTh::new().content("Hot chocolate").scope("row");
     let td_2 = HtmlTd::new().content("Melted dark chocolate with milk");
 
-    let hot_chocolate = HtmlTr::new().content(bake_block![th_2, td_2]);
+    let hot_chocolate = HtmlTr::new().content(bake_ws![th_2, td_2]);
 
     HtmlTbody::new().content([black_coffee, hot_chocolate])
 }
@@ -809,7 +810,7 @@ pub fn template() -> HtmlTemplate {
     let punchline_slot = HtmlSlot::new().name("punchline");
     let punchline = HtmlP::new().content(punchline_slot);
 
-    let content = bake_block![knock_knock, who_s_there, name_p1, name_p2, punchline];
+    let content = bake_ws![knock_knock, who_s_there, name_p1, name_p2, punchline];
 
     HtmlTemplate::new().content(content).id("tmpl")
 }
@@ -838,7 +839,7 @@ pub fn thead() -> HtmlThead {
     let item = HtmlTh::new().content("Item").scope("col");
     let description = HtmlTh::new().content("Description").scope("col");
 
-    let tr = HtmlTr::new().content(bake_block![item, description]);
+    let tr = HtmlTr::new().content(bake_ws![item, description]);
 
     HtmlThead::new().content(tr)
 }
@@ -857,7 +858,7 @@ pub fn tr() -> HtmlTr {
     let th = HtmlTh::new().content("Hot chocolate").scope("row");
     let td = HtmlTd::new().content("Melted dark chocolate with milk");
 
-    HtmlTr::new().content(bake_block![th, td])
+    HtmlTr::new().content(bake_ws![th, td])
 }
 
 pub fn track() -> HtmlTrack {
@@ -870,7 +871,7 @@ pub fn track() -> HtmlTrack {
 pub fn u() -> String {
     let wowwd = HtmlU::new().content("world");
 
-    bake!["hewwo, ", wowwd, "!"]
+    bake!["hewwo, ", wowwd, "!"].into()
 }
 
 pub fn ul() -> HtmlUl {
@@ -886,7 +887,7 @@ pub fn ul() -> HtmlUl {
 pub fn var() -> String {
     let var = HtmlVar::new().content("a");
 
-    bake!["An equilateral triangle with side ", var]
+    bake!["An equilateral triangle with side ", var].into()
 }
 
 pub fn video() -> HtmlVideo {
@@ -902,7 +903,7 @@ pub fn wbr() -> HtmlWbr {
 }
 
 pub fn at_rule() -> CssAtRule {
-    let block = bake_block![
+    let block = bake_ws![
         "from { transform: translateX(0%); }",
         "to { transform: translateX(100%); }",
     ];

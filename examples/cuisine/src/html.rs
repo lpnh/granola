@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use granola::{homemade::*, macros::*, prelude::*};
 
 use crate::{css::Stylesheet, handlers::Reset, snippets::snippets, utils::Palette};
@@ -70,7 +68,7 @@ fn example_page(
     title: &'static str,
     heading: &'static str,
     picker: HtmlForm,
-    content: impl Into<Cow<'static, str>>,
+    content: impl Into<Bake>,
 ) -> HtmlDocument<Homemade> {
     page(
         title,

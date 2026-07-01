@@ -3,7 +3,7 @@
 // mod transform_style;
 
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
 
@@ -27,7 +27,7 @@ use crate::{filters, prelude::*};
 /// transform: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-#[recipe(name = TransformRecipe, content = Cow<'static, str>)]
+#[recipe(name = TransformRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTransform<R: TransformRecipe = ()> {
     _recipe: PhantomData<R>,

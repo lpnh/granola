@@ -48,7 +48,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = FormRecipe, content = Cow<'static, str>)]
+#[recipe(name = FormRecipe, content = Bake)]
 pub struct HtmlForm<R: FormRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -62,9 +62,9 @@ pub struct HtmlForm<R: FormRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: FormRecipe<Content = Cow<'static, str>>> HtmlForm<R> {
-    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
-        FoldIn::fold_in(&mut self.content, content.into());
+impl<R: FormRecipe<Content = Bake>> HtmlForm<R> {
+    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+        self.content.fold_in(content);
         self
     }
 }

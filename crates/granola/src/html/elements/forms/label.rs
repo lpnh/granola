@@ -46,7 +46,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LabelRecipe, content = Cow<'static, str>)]
+#[recipe(name = LabelRecipe, content = Bake)]
 pub struct HtmlLabel<R: LabelRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -57,9 +57,9 @@ pub struct HtmlLabel<R: LabelRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: LabelRecipe<Content = Cow<'static, str>>> HtmlLabel<R> {
-    pub fn fold_in(mut self, content: impl Into<Cow<'static, str>>) -> Self {
-        FoldIn::fold_in(&mut self.content, content.into());
+impl<R: LabelRecipe<Content = Bake>> HtmlLabel<R> {
+    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+        self.content.fold_in(content);
         self
     }
 }

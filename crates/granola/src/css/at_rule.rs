@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
 use crate::prelude::*;
 
@@ -22,7 +22,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::prelude::*;
 ///
-/// let block = bake_block![
+/// let block = bake_ws![
 ///     "from { transform: translateX(0%); }",
 ///     "to { transform: translateX(100%); }",
 /// ];
@@ -60,29 +60,29 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssAtRule<R: AtRuleRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub identifier: Cow<'static, str>,
-    pub rule: Cow<'static, str>,
-    pub block: Option<Cow<'static, str>>,
+    pub identifier: Bake,
+    pub rule: Bake,
+    pub block: Option<Bake>,
 }
 
 impl<R: AtRuleRecipe> CssAtRule<R> {
-    pub fn identifier(mut self, identifier: impl Into<Cow<'static, str>>) -> Self {
+    pub fn identifier(mut self, identifier: impl Into<Bake>) -> Self {
         self.identifier = identifier.into();
         self
     }
 
-    pub fn rule(mut self, rule: impl Into<Cow<'static, str>>) -> Self {
+    pub fn rule(mut self, rule: impl Into<Bake>) -> Self {
         self.rule = rule.into();
         self
     }
 
-    pub fn block(mut self, block: impl Into<Cow<'static, str>>) -> Self {
+    pub fn block(mut self, block: impl Into<Bake>) -> Self {
         self.block = Some(block.into());
         self
     }
 }
 
-impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for CssAtRule {
+impl<I: Into<Bake>, R: Into<Bake>> From<(I, R)> for CssAtRule {
     fn from((identifier, rule): (I, R)) -> Self {
         Self {
             identifier: identifier.into(),
@@ -107,7 +107,7 @@ impl<I: Into<Cow<'static, str>>, R: Into<Cow<'static, str>>> From<(I, R)> for Cs
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let block = bake_block![
+/// let block = bake_ws![
 ///     "from { transform: translateX(0%); }",
 ///     "to { transform: translateX(100%); }",
 /// ];
