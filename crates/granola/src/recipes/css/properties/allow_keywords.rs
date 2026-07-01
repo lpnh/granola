@@ -18,7 +18,7 @@ use crate::prelude::*;
 pub struct AllowKeywords;
 
 impl InterpolateSizeRecipe for AllowKeywords {
-    recipe_boilerplate!();
+    recipe_boilerplate!(InterpolateSizeRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "allow-keywords".into();

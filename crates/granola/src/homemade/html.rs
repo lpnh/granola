@@ -83,11 +83,7 @@ impl HtmlDocumentRecipe for Homemade {
 }
 
 impl HtmlRecipe for Homemade {
-    type Content = HomemadeRootContent;
-
-    fn bake_content(content: Self::Content) -> HtmlRootContent {
-        content.into()
-    }
+    recipe_boilerplate!(HtmlRecipe, HomemadeRootContent);
 
     fn content_recipe(content: &mut Self::Content) {
         content.head = HtmlHead::from(Homemade);
@@ -131,11 +127,7 @@ impl From<HtmlBody> for HomemadeRootContent {
 }
 
 impl HeadRecipe for Homemade {
-    type Content = HomemadeHeadContent;
-
-    fn bake_content(content: Self::Content) -> Cow<'static, str> {
-        content.into()
-    }
+    recipe_boilerplate!(HeadRecipe, HomemadeHeadContent);
 
     fn content_recipe(content: &mut Self::Content) {
         content.meta.push(HtmlMeta::from(CharsetUtf8).bake_recipe());

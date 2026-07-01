@@ -284,20 +284,11 @@ macro_rules! button {
     () => {
         $crate::html::HtmlButton::new()
     };
+
     ($content:expr $(,)?) => {
         $crate::html::HtmlButton::new().content($content)
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlButton::new().content($crate::bake![$first $(, $rest)*])
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlButton::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlButton::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlButton::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

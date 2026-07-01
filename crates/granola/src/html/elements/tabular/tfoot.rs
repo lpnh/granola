@@ -94,13 +94,4 @@ macro_rules! tfoot {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlTfoot::new().content([$first $(, $rest)*])
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlTfoot::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlTfoot::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTfoot::<$r>::from_cookbook().content([$first $(, $rest)*])
-    };
 }

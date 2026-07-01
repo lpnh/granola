@@ -265,7 +265,7 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let link = link!(@href_rel "fancy.css", "stylesheet");
+/// let link = link!().href("fancy.css").rel("stylesheet");
 ///
 /// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
@@ -273,15 +273,5 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 macro_rules! link {
     () => {
         $crate::html::HtmlLink::new()
-    };
-
-    (@href_rel $href:expr, $rel:expr $(,)?) => {
-        $crate::html::HtmlLink::from_href_rel($href, $rel)
-    };
-    (@href $href:expr $(,)?) => {
-        $crate::html::HtmlLink::from_href($href)
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlLink::<$r>::from_cookbook()
     };
 }

@@ -1,4 +1,3 @@
-#![feature(associated_type_defaults)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 extern crate self as granola;

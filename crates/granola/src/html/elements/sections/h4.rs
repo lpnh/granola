@@ -81,13 +81,4 @@ macro_rules! h4 {
         $crate::html::HtmlH4::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlH4::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlH4::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlH4::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

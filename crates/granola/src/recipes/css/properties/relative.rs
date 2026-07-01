@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Relative;
 
 impl PositionRecipe for Relative {
-    recipe_boilerplate!();
+    recipe_boilerplate!(PositionRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "relative".into();

@@ -126,13 +126,4 @@ macro_rules! article {
         $crate::html::HtmlArticle::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlArticle::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlArticle::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlArticle::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

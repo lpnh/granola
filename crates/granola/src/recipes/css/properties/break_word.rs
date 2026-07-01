@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct BreakWord;
 
 impl OverflowWrapRecipe for BreakWord {
-    recipe_boilerplate!();
+    recipe_boilerplate!(OverflowWrapRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "break-word".into();

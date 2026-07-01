@@ -194,10 +194,12 @@ impl<R: AudioRecipe> HasAudioAttrs for HtmlAudio<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let audio = audio!(@src "toms-dinner.mp3").autoplay(true);
+/// let audio = audio!().src("toms-dinner.mp3").autoplay(true);
 ///
-/// assert_eq!(audio.bake(),
-/// r#"<audio src="toms-dinner.mp3" autoplay></audio>"#);
+/// assert_eq!(
+///     audio.bake(),
+///     r#"<audio src="toms-dinner.mp3" autoplay></audio>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! audio {
@@ -211,17 +213,4 @@ macro_rules! audio {
         $crate::html::HtmlAudio::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@src $src:expr $(,)?) => {
-        $crate::html::HtmlAudio::from_src($src)
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlAudio::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlAudio::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlAudio::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

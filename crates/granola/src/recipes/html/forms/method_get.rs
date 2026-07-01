@@ -14,7 +14,7 @@ use crate::prelude::*;
 pub struct MethodGet;
 
 impl FormRecipe for MethodGet {
-    recipe_boilerplate!();
+    recipe_boilerplate!(FormRecipe);
 
     fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
         form_attrs.method(FormMethod::Get);

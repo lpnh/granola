@@ -51,6 +51,11 @@ impl<R: StylesheetRecipe> CssStylesheet<R> {
         self.statements.push(rule.into());
         self
     }
+
+    pub fn push_rule(mut self, rule: impl Into<CssRule>) -> Self {
+        self = self.push(rule.into());
+        self
+    }
 }
 
 impl<S: Into<CssStatement>, const N: usize> From<[S; N]> for CssStylesheet {
@@ -129,6 +134,7 @@ macro_rules! stylesheet {
     () => {
         $crate::css::CssStylesheet::new()
     };
+
     ($rule:expr $(,)?) => {
         $crate::css::CssStylesheet::from($rule)
     };
@@ -137,17 +143,5 @@ macro_rules! stylesheet {
             $crate::css::CssStatement::from($first)
             $(, $crate::css::CssStatement::from($rest))*
         ])
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::css::CssStylesheet::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; @push $rule:expr $(,)?) => {
-        $crate::css::CssStylesheet::<$r>::from_cookbook().push($rule)
-    };
-    (@cookbook $r:ty ; @push $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::css::CssStylesheet::<$r>::from_cookbook()
-            .push($first)
-            $(.push($rest))*
     };
 }

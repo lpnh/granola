@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Bolder;
 
 impl FontWeightRecipe for Bolder {
-    recipe_boilerplate!();
+    recipe_boilerplate!(FontWeightRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "bolder".into();

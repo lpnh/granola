@@ -215,8 +215,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 ::askama::FastWritable
                 + ::std::default::Default
                 + ::std::clone::Clone
-                + ::std::fmt::Debug
-                = #content_type;
+                + ::std::fmt::Debug;
 
             /// Bakes this recipe's content back into the element's default
             /// content type, called when the recipe is lowered via
@@ -231,9 +230,11 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    // `()` impl: identity bake-back for the default content type.
+    // `()` impl: default content type, identity bake-back.
     let unit_content = if let Some(ref content_type) = default_content_type {
         quote! {
+            type Content = #content_type;
+
             fn bake_content(content: #content_type) -> #content_type {
                 content
             }

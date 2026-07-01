@@ -84,7 +84,7 @@ impl<R: PictureRecipe<Content = Cow<'static, str>>> HtmlPicture<R> {
 /// use granola::{macros::*, prelude::*};
 ///
 /// let source = source!().srcset("logo-wide.png").media("(width >= 600px)");
-/// let img = img!(@src_alt "logo-narrow.png", "logo");
+/// let img = img!().src("logo-narrow.png").alt("logo");
 ///
 /// let picture = picture!(source, img);
 ///
@@ -109,15 +109,5 @@ macro_rules! picture {
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlPicture::new().content($crate::bake![$first $(, $rest)*])
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlPicture::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlPicture::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlPicture::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

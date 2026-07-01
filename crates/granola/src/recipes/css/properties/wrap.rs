@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Wrap;
 
 impl FlexWrapRecipe for Wrap {
-    recipe_boilerplate!();
+    recipe_boilerplate!(FlexWrapRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "wrap".into();

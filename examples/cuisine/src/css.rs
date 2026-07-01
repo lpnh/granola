@@ -79,11 +79,9 @@ static PREFLIGHT: LazyLock<BakedStylesheet> =
     LazyLock::new(|| BakedStylesheet::new("preflight", CssStylesheet::from(Preflight)));
 
 fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
-    stylesheet!(
-        @cookbook Garnish;
-        @push
-        rule!(
-            "body",
+    CssStylesheet::from(Garnish)
+        .push_rule(
+            ("body",
             declarations_block![
                 CssBackgroundColor::new().content("var(--color-background)"),
                 CssColor::new().content("var(--color-text)"),
@@ -91,56 +89,57 @@ fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
                 CssFlexDirection::from(Column),
                 CssAlignItems::from(Center),
                 CssGap::new().content("2rem"),
-            ]
-        ),
-        rule!(
-            "main",
+            ])
+        )
+        .push_rule(
+            ("main",
             declarations_block![
                 CssBackground::new().content("var(--color-surface)"),
                 CssBorder::new().content("1px solid var(--color-border)"),
                 CssBorderRadius::new().content("1em"),
                 CssPadding::new().content("2rem"),
                 CssTextAlign::from(Center),
-            ]
-        ),
-        rule!(
-            ".swatches",
+            ])
+        )
+        .push_rule(
+            (".swatches",
             declarations_block![
                 CssDisplay::from(Flex),
                 CssGap::new().content("1rem"),
                 CssJustifyContent::from(Center),
                 CssFlexWrap::from(Wrap),
                 CssPadding::new().content("2rem"),
-            ]
-        ),
-        rule!(
-            ".swatch",
+            ])
+        )
+        .push_rule(
+            (".swatch",
             declarations_block![
                 CssDisplay::from(Flex),
                 CssFlexDirection::from(Column),
                 CssAlignItems::from(Center),
                 CssGap::new().content("0.25rem"),
-            ]
-        ),
-        rule!(
-            ".square",
+            ])
+        )
+        .push_rule(
+            (".square",
             declarations_block![
                 CssBorderRadius::new().content(".25em"),
                 CssWidth::new().content("64px"),
                 CssHeight::new().content("64px"),
                 CssBoxShadow::new().content("0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
-            ]
-        ),
-        rule!(
-            simple_selector!(".swatch").descendant("p"),
-            CssFontSize::new().content("0.75rem"),
-        ),
-        rule!(
-            ".picker",
+            ])
+        )
+        .push_rule(
+            (
+                simple_selector!(".swatch").descendant("p"),
+                CssFontSize::new().content("0.75rem")
+            )
+        )
+        .push_rule(
+            (".picker",
             declarations_block![
                 CssDisplay::new().content("grid"),
                 CssGap::new().content("1rem"),
-            ]
-        ),
-    )
+            ])
+        )
 }

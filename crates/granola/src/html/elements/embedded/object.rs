@@ -194,13 +194,4 @@ macro_rules! object {
         $crate::html::HtmlObject::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlObject::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlObject::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlObject::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

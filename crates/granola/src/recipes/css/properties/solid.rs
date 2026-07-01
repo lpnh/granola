@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Solid;
 
 impl BorderRecipe for Solid {
-    recipe_boilerplate!();
+    recipe_boilerplate!(BorderRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "solid".into();
@@ -23,7 +23,7 @@ impl BorderRecipe for Solid {
 }
 
 impl OutlineStyleRecipe for Solid {
-    recipe_boilerplate!();
+    recipe_boilerplate!(OutlineStyleRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "solid".into();

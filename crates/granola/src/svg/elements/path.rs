@@ -150,8 +150,4 @@ macro_rules! path {
     () => {
         $crate::svg::SvgPath::new()
     };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::svg::SvgPath::<$r>::from_cookbook()
-    };
 }

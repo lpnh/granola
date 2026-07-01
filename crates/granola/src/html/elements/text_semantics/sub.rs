@@ -85,13 +85,4 @@ macro_rules! sub {
         $crate::html::HtmlSub::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlSub::<($($r,)+)>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

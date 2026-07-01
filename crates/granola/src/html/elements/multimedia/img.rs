@@ -263,10 +263,9 @@ impl<R: ImgRecipe> HasImgAttrs for HtmlImg<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let img = img!(@src_alt
-///     "profile.png",
-///     "A mustachioed in a red cap and blue overalls"
-/// );
+/// let img = img!()
+///     .src("profile.png")
+///     .alt("A mustachioed in a red cap and blue overalls");
 ///
 /// assert_eq!(
 ///     img.bake(),
@@ -277,15 +276,5 @@ impl<R: ImgRecipe> HasImgAttrs for HtmlImg<R> {
 macro_rules! img {
     () => {
         $crate::html::HtmlImg::new()
-    };
-
-    (@src_alt $src:expr, $alt:expr $(,)?) => {
-        $crate::html::HtmlImg::from_src_alt($src, $alt)
-    };
-    (@src $src:expr $(,)?) => {
-        $crate::html::HtmlImg::from_src($src)
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlImg::<$r>::from_cookbook()
     };
 }

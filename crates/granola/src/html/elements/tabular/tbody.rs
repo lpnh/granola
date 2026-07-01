@@ -126,13 +126,4 @@ macro_rules! tbody {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlTbody::new().content([$first $(, $rest)*])
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlTbody::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlTbody::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTbody::<$r>::from_cookbook().content([$first $(, $rest)*])
-    };
 }

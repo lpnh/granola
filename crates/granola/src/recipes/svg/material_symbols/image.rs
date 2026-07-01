@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::{prelude::*, recipes::*};
 
 /// The Material Symbols `image` icon recipe.
@@ -23,11 +21,7 @@ use crate::{prelude::*, recipes::*};
 pub struct MaterialSymbolsImage;
 
 impl SvgRecipe for MaterialSymbolsImage {
-    type Content = SvgPath<MaterialSymbolsImage>;
-
-    fn bake_content(content: Self::Content) -> Cow<'static, str> {
-        content.into()
-    }
+    recipe_boilerplate!(SvgRecipe, SvgPath<MaterialSymbolsImage>);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = SvgPath::from(MaterialSymbolsImage);

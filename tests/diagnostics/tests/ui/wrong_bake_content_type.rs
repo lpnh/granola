@@ -7,9 +7,7 @@ use granola::prelude::*;
 struct BrokenRecipe;
 
 impl SpanRecipe for BrokenRecipe {
-    type Content = u32;
-
-    recipe_boilerplate!();
+    recipe_boilerplate!(SpanRecipe, u32);
 }
 
 fn main() {}

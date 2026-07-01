@@ -16,13 +16,9 @@ use std::borrow::Cow;
 
 use askama::{FastWritable, NO_VALUES, Template};
 
-/// Implements `bake_content` for a recipe's content map-back.
+/// Implements `type Content` and `bake_content`.
 ///
-/// `recipe_boilerplate!()` keeps `type Content` at its default, so mapping back
-/// into the default content type is a no-op.
-///
-/// `content_recipe` seeds `Content`'s construction-time default; it never
-/// runs again once `.content()` hands the field a caller-supplied value.
+/// `recipe_boilerplate!(R)` sets `Content` to `R`'s default content type.
 ///
 /// ```rust
 /// use granola::prelude::*;
@@ -31,7 +27,7 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// struct Greeting;
 ///
 /// impl SpanRecipe for Greeting {
-///     recipe_boilerplate!();
+///     recipe_boilerplate!(SpanRecipe);
 ///
 ///     fn content_recipe(content: &mut Self::Content) {
 ///         *content = "hello!".into();
@@ -45,13 +41,14 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// assert_eq!(span.bake(), "<span>bye!</span>");
 /// ```
 ///
-/// `recipe_boilerplate!(@from T; @into U)` sets `type Content = T` and maps
-/// back via `T: Into<U>`, where `U` is the default content type.
+/// `recipe_boilerplate!(R, T)` sets `Content = T`.
+/// Requires `T: Into<C>`, where `C` is `R`'s default content type.
 ///
 /// ```rust
 /// use askama::Template;
-/// use granola::prelude::*;
 /// use std::borrow::Cow;
+///
+/// use granola::prelude::*;
 ///
 /// #[derive(Default, Debug, Clone, Template)]
 /// #[template(ext = "html", source = "hi!")]
@@ -64,7 +61,7 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// }
 ///
 /// impl SpanRecipe for Hi {
-///     recipe_boilerplate!(@from Hi; @into Cow<'static, str>);
+///     recipe_boilerplate!(SpanRecipe, Hi);
 /// }
 ///
 /// let span = HtmlSpan::from(Hi);
@@ -73,15 +70,17 @@ use askama::{FastWritable, NO_VALUES, Template};
 /// ```
 #[macro_export]
 macro_rules! recipe_boilerplate {
-    () => {
+    ($recipe:path) => {
+        type Content = <() as $recipe>::Content;
+
         fn bake_content(content: Self::Content) -> Self::Content {
             content
         }
     };
-    (@from $new_content_type:ty ; @into $default_content_type:ty) => {
-        type Content = $new_content_type;
+    ($recipe:path , $custom_type:ty) => {
+        type Content = $custom_type;
 
-        fn bake_content(content: $new_content_type) -> $default_content_type {
+        fn bake_content(content: $custom_type) -> <() as $recipe>::Content {
             content.into()
         }
     };

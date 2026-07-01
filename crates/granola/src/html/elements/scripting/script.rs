@@ -253,18 +253,4 @@ macro_rules! script {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlScript::new().content($crate::bake![$first $(, $rest)*])
     };
-
-    (@src $src:expr $(,)?) => {
-        $crate::html::HtmlScript::from_src($src)
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlScript::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlScript::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlScript::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

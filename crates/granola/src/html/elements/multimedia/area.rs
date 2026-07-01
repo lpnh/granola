@@ -270,14 +270,4 @@ macro_rules! area {
     () => {
         $crate::html::HtmlArea::new()
     };
-
-    (@href_alt $href:expr, $alt:expr $(,)?) => {
-        $crate::html::HtmlArea::from_href_alt($href, $alt)
-    };
-    (@href $href:expr $(,)?) => {
-        $crate::html::HtmlArea::from_href($href)
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlArea::<$r>::from_cookbook()
-    };
 }

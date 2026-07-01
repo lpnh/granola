@@ -186,11 +186,7 @@ impl TooltipContent {
 }
 
 impl SpanRecipe for Tooltip {
-    type Content = TooltipContent;
-
-    fn bake_content(content: Self::Content) -> Cow<'static, str> {
-        content.into()
-    }
+    recipe_boilerplate!(SpanRecipe, TooltipContent);
 
     fn content_recipe(content: &mut Self::Content) {
         content.bubble = HtmlSpan::from(TipBubble);
@@ -202,11 +198,7 @@ impl SpanRecipe for Tooltip {
 }
 
 impl DivRecipe for Tooltip {
-    type Content = TooltipContent;
-
-    fn bake_content(content: Self::Content) -> Cow<'static, str> {
-        content.into()
-    }
+    recipe_boilerplate!(DivRecipe, TooltipContent);
 
     fn content_recipe(content: &mut Self::Content) {
         content.bubble = HtmlSpan::from(TipBubble);
@@ -390,7 +382,7 @@ impl RuleRecipe for Tooltip {
 pub struct Tip;
 
 impl ButtonRecipe for Tip {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ButtonRecipe);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("tip");
@@ -465,7 +457,7 @@ fn tip_trigger_hover() -> CssRule {
 pub struct TipBubble;
 
 impl SpanRecipe for TipBubble {
-    recipe_boilerplate!();
+    recipe_boilerplate!(SpanRecipe);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("tip-bubble").role("tooltip");

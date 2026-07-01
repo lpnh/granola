@@ -204,7 +204,4 @@ macro_rules! simple_selector {
     ($sel:expr $(,)?) => {
         $crate::css::CssSimpleSelector::new().selector($sel)
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::css::CssSimpleSelector::<$r>::from_cookbook()
-    };
 }

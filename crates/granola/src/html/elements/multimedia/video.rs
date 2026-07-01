@@ -233,13 +233,16 @@ impl<R: VideoRecipe> HasVideoAttrs for HtmlVideo<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let video = video!(@src "Never_Gonna_Give_You_Up.mp4")
+/// let video = video!()
+///     .src("Never_Gonna_Give_You_Up.mp4")
 ///     .width(800)
 ///     .height(600)
 ///     .autoplay(true);
 ///
-/// assert_eq!(video.bake(),
-/// r#"<video src="Never_Gonna_Give_You_Up.mp4" width="800" height="600" autoplay></video>"#);
+/// assert_eq!(
+///     video.bake(),
+///     r#"<video src="Never_Gonna_Give_You_Up.mp4" width="800" height="600" autoplay></video>"#
+/// );
 /// ```
 #[macro_export]
 macro_rules! video {
@@ -251,19 +254,5 @@ macro_rules! video {
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlVideo::new().content($crate::bake![$first $(, $rest)*])
-    };
-
-    (@src $src:expr $(,)?) => {
-        $crate::html::HtmlVideo::from_src($src)
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlVideo::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlVideo::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlVideo::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

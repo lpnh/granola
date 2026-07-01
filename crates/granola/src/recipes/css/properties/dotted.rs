@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Dotted;
 
 impl TextDecorationRecipe for Dotted {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextDecorationRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "dotted".into();
@@ -23,7 +23,7 @@ impl TextDecorationRecipe for Dotted {
 }
 
 impl WebkitTextDecorationRecipe for Dotted {
-    recipe_boilerplate!();
+    recipe_boilerplate!(WebkitTextDecorationRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "dotted".into();

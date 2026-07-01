@@ -23,7 +23,7 @@ use crate::prelude::*;
 pub struct Center;
 
 impl AlignItemsRecipe for Center {
-    recipe_boilerplate!();
+    recipe_boilerplate!(AlignItemsRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "center".into();
@@ -31,7 +31,7 @@ impl AlignItemsRecipe for Center {
 }
 
 impl JustifyContentRecipe for Center {
-    recipe_boilerplate!();
+    recipe_boilerplate!(JustifyContentRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "center".into();
@@ -39,7 +39,7 @@ impl JustifyContentRecipe for Center {
 }
 
 impl TextAlignRecipe for Center {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextAlignRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "center".into();

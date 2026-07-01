@@ -87,13 +87,4 @@ macro_rules! bdo {
         $crate::html::HtmlBdo::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlBdo::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlBdo::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlBdo::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

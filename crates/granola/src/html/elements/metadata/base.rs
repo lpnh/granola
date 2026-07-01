@@ -123,7 +123,7 @@ impl<R: BaseRecipe> HasBaseAttrs for HtmlBase<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let base = base!(@href "https://www.example.com");
+/// let base = base!().href("https://www.example.com");
 ///
 /// assert_eq!(base.bake(), r#"<base href="https://www.example.com" />"#);
 /// ```
@@ -131,12 +131,5 @@ impl<R: BaseRecipe> HasBaseAttrs for HtmlBase<R> {
 macro_rules! base {
     () => {
         $crate::html::HtmlBase::new()
-    };
-
-    (@href $href:expr $(,)?) => {
-        $crate::html::HtmlBase::from_href($href)
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlBase::<$r>::from_cookbook()
     };
 }

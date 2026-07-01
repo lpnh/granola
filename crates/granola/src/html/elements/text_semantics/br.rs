@@ -85,8 +85,4 @@ macro_rules! br {
     () => {
         $crate::html::HtmlBr::new()
     };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlBr::<$r>::from_cookbook()
-    };
 }

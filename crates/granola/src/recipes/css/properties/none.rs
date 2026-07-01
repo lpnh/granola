@@ -47,7 +47,7 @@ use crate::prelude::*;
 pub struct None;
 
 impl BorderRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(BorderRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -55,7 +55,7 @@ impl BorderRecipe for None {
 }
 
 impl DisplayRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(DisplayRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -63,7 +63,7 @@ impl DisplayRecipe for None {
 }
 
 impl BoxShadowRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(BoxShadowRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -71,7 +71,7 @@ impl BoxShadowRecipe for None {
 }
 
 impl ListStyleRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ListStyleRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -79,7 +79,7 @@ impl ListStyleRecipe for None {
 }
 
 impl TextDecorationRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextDecorationRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -87,7 +87,7 @@ impl TextDecorationRecipe for None {
 }
 
 impl TextSizeAdjustRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextSizeAdjustRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -95,7 +95,7 @@ impl TextSizeAdjustRecipe for None {
 }
 
 impl WebkitTextSizeAdjustRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(WebkitTextSizeAdjustRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();
@@ -103,7 +103,7 @@ impl WebkitTextSizeAdjustRecipe for None {
 }
 
 impl WebkitTextDecorationRecipe for None {
-    recipe_boilerplate!();
+    recipe_boilerplate!(WebkitTextDecorationRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "none".into();

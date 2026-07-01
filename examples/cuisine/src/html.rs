@@ -135,7 +135,7 @@ fn palette_picker(palette_source: &str) -> HtmlForm {
                 .value(palette_source.to_string()),
         )
         .for_id("select-palette"),
-        button!(@cookbook Btn; "Update"),
+        HtmlButton::from(Btn).content("Update"),
     )
     .class("picker")
     .method(FormMethod::Post)

@@ -225,7 +225,7 @@ impl<R: IframeRecipe> HasIframeAttrs for HtmlIframe<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let iframe = iframe!(@src "https://w.wiki/LJK7")
+/// let iframe = iframe!().src("https://w.wiki/LJK7")
 ///     .title("Pedestrians crossing an intersection.");
 ///
 /// assert_eq!(iframe.bake(),
@@ -243,17 +243,4 @@ macro_rules! iframe {
         $crate::html::HtmlIframe::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@src $src:expr $(,)?) => {
-        $crate::html::HtmlIframe::from_src($src)
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlIframe::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlIframe::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlIframe::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

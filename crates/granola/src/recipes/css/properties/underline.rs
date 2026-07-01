@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Underline;
 
 impl TextDecorationRecipe for Underline {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextDecorationRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "underline".into();
@@ -23,7 +23,7 @@ impl TextDecorationRecipe for Underline {
 }
 
 impl WebkitTextDecorationRecipe for Underline {
-    recipe_boilerplate!();
+    recipe_boilerplate!(WebkitTextDecorationRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "underline".into();

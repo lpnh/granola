@@ -126,10 +126,7 @@ impl<R: StyleRecipe> HasStyleAttrs for HtmlStyle<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_rule = rule!(
-///     @selectors "p";
-///     @declarations ("color", "violet"), ("font-weight", "lighter")
-/// );
+/// let css_rule = rule!("p", [("color", "violet"), ("font-weight", "lighter")]);
 ///
 /// let style = style!(css_rule);
 ///
@@ -148,14 +145,5 @@ macro_rules! style {
     };
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlStyle::new().content($crate::bake![$first $(, $rest)*])
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlStyle::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlStyle::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlStyle::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
     };
 }

@@ -135,10 +135,11 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 /// use granola::{macros::*, prelude::*};
 ///
 /// let css_rule = rule!(
-///     @selectors ":root";
-///     @declarations
-///     ("--base-100", "oklch(93% 0.076 100.4)"),
-///     ("--base-200", "oklch(90% 0.086 100.4)"),
+///     ":root",
+///     [
+///         ("--base-100", "oklch(93% 0.076 100.4)"),
+///         ("--base-200", "oklch(90% 0.086 100.4)"),
+///     ]
 /// );
 ///
 /// assert_eq!(
@@ -156,20 +157,8 @@ macro_rules! rule {
         $crate::css::CssRule::new()
     };
     ($sel:expr, $decl:expr $(,)?) => {
-        $crate::css::CssRule::new().selectors_list($sel).declarations_block($decl)
-    };
-
-    (@selectors $sel:expr ; @declarations $first_decl:expr $(, $rest_decl:expr)+ $(,)?) => {
-        $crate::css::CssRule::new().selectors_list($sel).declarations_block([$first_decl $(, $rest_decl)*])
-    };
-    (@selectors $first_sel:expr $(, $rest_sel:expr)+ ; @declarations $decl:expr $(,)?) => {
-        $crate::css::CssRule::new().selectors_list([$first_sel $(, $rest_sel)*]).declarations_block($decl)
-    };
-    (@selectors $first_sel:expr $(, $rest_sel:expr)+ ; @declarations $first_decl:expr $(, $rest_decl:expr)+ $(,)?) => {
-        $crate::css::CssRule::new().selectors_list([$first_sel $(, $rest_sel)*]).declarations_block([$first_decl $(, $rest_decl)*])
-    };
-
-    (@cookbook $r:ty $(,)?) => {
-        $crate::css::CssRule::<$r>::from_cookbook()
+        $crate::css::CssRule::new()
+            .selectors_list($sel)
+            .declarations_block($decl)
     };
 }

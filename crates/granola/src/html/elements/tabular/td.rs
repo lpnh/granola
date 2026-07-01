@@ -148,13 +148,4 @@ macro_rules! td {
         $crate::html::HtmlTd::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlTd::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlTd::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlTd::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

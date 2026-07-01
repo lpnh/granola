@@ -124,13 +124,4 @@ macro_rules! datalist {
         $crate::html::HtmlDatalist::new().content([$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlDatalist::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlDatalist::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDatalist::<$r>::from_cookbook().content([$first $(, $rest)*])
-    };
 }

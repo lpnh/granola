@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Inline;
 
 impl DisplayRecipe for Inline {
-    recipe_boilerplate!();
+    recipe_boilerplate!(DisplayRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "inline".into();

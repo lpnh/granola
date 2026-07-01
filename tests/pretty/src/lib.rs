@@ -2,23 +2,28 @@
 mod tests {
     use granola::{homemade::*, prelude::*};
 
-    fn site_styles() -> CssStylesheet {
+    fn page_stylesheet() -> CssStylesheet {
         CssStylesheet::new()
-            .push(CssRule::new().selectors_list("body").declarations_block([
-                ("margin", "0"),
-                ("font-family", "system-ui, sans-serif"),
-                ("color", "#1a1a1a"),
-            ]))
-            .push(CssRule::new().selectors_list(".hero").declarations_block([
-                ("padding", "4rem 1rem"),
-                ("text-align", "center"),
-                ("background", "linear-gradient(135deg, #f6d365, #fda085)"),
-            ]))
-            .push(
-                CssRule::new()
-                    .selectors_list("nav a")
-                    .declarations_block([("margin-right", "1rem"), ("text-decoration", "none")]),
-            )
+            .push_rule((
+                "body",
+                [
+                    ("margin", "0"),
+                    ("font-family", "system-ui, sans-serif"),
+                    ("color", "#1a1a1a"),
+                ],
+            ))
+            .push_rule((
+                ".hero",
+                [
+                    ("padding", "4rem 1rem"),
+                    ("text-align", "center"),
+                    ("background", "linear-gradient(135deg, #f6d365, #fda085)"),
+                ],
+            ))
+            .push_rule((
+                "nav a",
+                [("margin-right", "1rem"), ("text-decoration", "none")],
+            ))
             .push(
                 CssAtRule::new()
                     .identifier("media")
@@ -40,7 +45,7 @@ mod tests {
             .name("description")
             .content("A cozy café on the corner of Oak Street and Elm Avenue.");
         let title = HtmlTitle::new().content("Oats &amp; Ends Café");
-        let style = HtmlStyle::new().content(site_styles());
+        let style = HtmlStyle::new().content(page_stylesheet());
 
         let brand = HtmlA::new().content("Oats &amp; Ends").href("/");
         let nav = HtmlNav::new()
@@ -139,5 +144,5 @@ mod tests {
     }
 
     compare_snapshot!(full_page, page());
-    compare_snapshot!(stylesheet, site_styles());
+    compare_snapshot!(stylesheet, page_stylesheet());
 }

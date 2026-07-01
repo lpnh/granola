@@ -207,7 +207,4 @@ macro_rules! complex_selector {
     ($sel:expr $(,)?) => {
         $crate::css::CssComplexSelector::new().first($sel)
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::css::CssComplexSelector::<$r>::from_cookbook()
-    };
 }

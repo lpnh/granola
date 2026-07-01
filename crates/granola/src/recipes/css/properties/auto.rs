@@ -26,7 +26,7 @@ use crate::prelude::*;
 pub struct Auto;
 
 impl HeightRecipe for Auto {
-    recipe_boilerplate!();
+    recipe_boilerplate!(HeightRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "auto".into();
@@ -34,7 +34,7 @@ impl HeightRecipe for Auto {
 }
 
 impl TextDecorationSkipInkRecipe for Auto {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextDecorationSkipInkRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "auto".into();
@@ -42,7 +42,7 @@ impl TextDecorationSkipInkRecipe for Auto {
 }
 
 impl OutlineRecipe for Auto {
-    recipe_boilerplate!();
+    recipe_boilerplate!(OutlineRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "auto".into();

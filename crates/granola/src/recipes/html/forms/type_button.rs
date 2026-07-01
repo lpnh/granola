@@ -17,7 +17,7 @@ use crate::prelude::*;
 pub struct TypeButton;
 
 impl ButtonRecipe for TypeButton {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ButtonRecipe);
 
     fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
         button_attrs.button_type(ButtonType::Button);

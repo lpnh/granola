@@ -159,7 +159,8 @@ impl<R: TrackRecipe> HasTrackAttrs for HtmlTrack<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let track = track!(@src "der_himmel_uber_berlin.vtt")
+/// let track = track!()
+///     .src("der_himmel_uber_berlin.vtt")
 ///     .kind("captions")
 ///     .enabled(true);
 ///
@@ -172,12 +173,5 @@ impl<R: TrackRecipe> HasTrackAttrs for HtmlTrack<R> {
 macro_rules! track {
     () => {
         $crate::html::HtmlTrack::new()
-    };
-
-    (@src $src:expr $(,)?) => {
-        $crate::html::HtmlTrack::from_src($src)
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlTrack::<$r>::from_cookbook()
     };
 }

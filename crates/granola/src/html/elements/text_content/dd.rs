@@ -90,13 +90,4 @@ macro_rules! dd {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlDd::new().content($crate::bake![$first $(, $rest)*])
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlDd::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlDd::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDd::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

@@ -9,5 +9,8 @@ publish = false
 [dependencies]
 granola = { path = "../../crates/granola", features = ["pretty"] }
 
+[dev-dependencies]
+askama = { workspace = true }
+
 [lints]
 workspace = true

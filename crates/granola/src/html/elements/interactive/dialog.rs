@@ -176,13 +176,4 @@ macro_rules! dialog {
         $crate::html::HtmlDialog::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlDialog::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlDialog::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDialog::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

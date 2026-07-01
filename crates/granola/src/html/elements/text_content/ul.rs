@@ -109,13 +109,4 @@ macro_rules! ul {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlUl::new().content([$first $(, $rest)*])
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlUl::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlUl::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlUl::<$r>::from_cookbook().content([$first $(, $rest)*])
-    };
 }

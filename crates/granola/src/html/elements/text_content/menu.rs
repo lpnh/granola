@@ -107,13 +107,4 @@ macro_rules! menu {
     ($first:expr $(, $rest:expr)+ $(,)?) => {
         $crate::html::HtmlMenu::new().content([$first $(, $rest)*])
     };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlMenu::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlMenu::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlMenu::<$r>::from_cookbook().content([$first $(, $rest)*])
-    };
 }

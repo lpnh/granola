@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Vertical;
 
 impl ResizeRecipe for Vertical {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ResizeRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "vertical".into();

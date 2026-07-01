@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct Balance;
 
 impl TextWrapRecipe for Balance {
-    recipe_boilerplate!();
+    recipe_boilerplate!(TextWrapRecipe);
 
     fn content_recipe(content: &mut Self::Content) {
         *content = "balance".into();

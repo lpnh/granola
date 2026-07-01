@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct MethodPost;
 
 impl FormRecipe for MethodPost {
-    recipe_boilerplate!();
+    recipe_boilerplate!(FormRecipe);
 
     fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
         form_attrs.method(FormMethod::Post);

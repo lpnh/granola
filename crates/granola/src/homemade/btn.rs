@@ -115,7 +115,7 @@ const BTN_SIZE: &str = "btn-size";
 pub struct Btn;
 
 impl ButtonRecipe for Btn {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ButtonRecipe);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("btn");
@@ -123,7 +123,7 @@ impl ButtonRecipe for Btn {
 }
 
 impl ButtonRecipe for BtnPrimary {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ButtonRecipe);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("btn-primary");
@@ -131,7 +131,7 @@ impl ButtonRecipe for BtnPrimary {
 }
 
 impl ButtonRecipe for BtnGhost {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ButtonRecipe);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("btn-ghost");
@@ -139,7 +139,7 @@ impl ButtonRecipe for BtnGhost {
 }
 
 impl ButtonRecipe for BtnSquare {
-    recipe_boilerplate!();
+    recipe_boilerplate!(ButtonRecipe);
 
     fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
         global_attrs.class("btn-square");

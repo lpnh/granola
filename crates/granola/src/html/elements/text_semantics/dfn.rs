@@ -92,13 +92,4 @@ macro_rules! dfn {
         $crate::html::HtmlDfn::new().content($crate::bake![$first $(, $rest)*])
     };
 
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlDfn::<$r>::from_cookbook()
-    };
-    (@cookbook $r:ty ; $content:expr $(,)?) => {
-        $crate::html::HtmlDfn::<$r>::from_cookbook().content($content)
-    };
-    (@cookbook $r:ty ; $first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::html::HtmlDfn::<$r>::from_cookbook().content($crate::bake![$first $(, $rest)*])
-    };
 }

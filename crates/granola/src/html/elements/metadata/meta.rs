@@ -159,7 +159,7 @@ impl<R: MetaRecipe> HasMetaAttrs for HtmlMeta<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let meta = meta!(@content "noindex, nofollow").name("robots");
+/// let meta = meta!().content("noindex, nofollow").name("robots");
 ///
 /// assert_eq!(
 ///     meta.bake(),
@@ -170,12 +170,5 @@ impl<R: MetaRecipe> HasMetaAttrs for HtmlMeta<R> {
 macro_rules! meta {
     () => {
         $crate::html::HtmlMeta::new()
-    };
-
-    (@content $content:expr $(,)?) => {
-        $crate::html::HtmlMeta::from_content($content)
-    };
-    (@cookbook $r:ty $(,)?) => {
-        $crate::html::HtmlMeta::<$r>::from_cookbook()
     };
 }
