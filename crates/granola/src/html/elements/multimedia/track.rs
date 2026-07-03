@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -54,7 +54,7 @@ pub struct HtmlTrack<R: TrackRecipe = ()> {
 }
 
 impl HtmlTrack {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -75,10 +75,10 @@ impl HtmlTrack {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TrackAttrs {
-    pub kind: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
-    pub srclang: Option<Cow<'static, str>>,
-    pub label: Option<Cow<'static, str>>,
+    pub kind: Option<Bake>,
+    pub src: Option<Bake>,
+    pub srclang: Option<Bake>,
+    pub label: Option<Bake>,
     pub enabled: bool,
 }
 
@@ -96,7 +96,7 @@ pub trait HasTrackAttrs: Sized {
     /// The type of text track.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#kind)
-    fn kind(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn kind(mut self, value: impl Into<Bake>) -> Self {
         self.track_attrs_mut().kind = Some(value.into());
         self
     }
@@ -104,7 +104,7 @@ pub trait HasTrackAttrs: Sized {
     /// User-visible label.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#label)
-    fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn label(mut self, value: impl Into<Bake>) -> Self {
         self.track_attrs_mut().label = Some(value.into());
         self
     }
@@ -112,7 +112,7 @@ pub trait HasTrackAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.track_attrs_mut().src = Some(value.into());
         self
     }
@@ -120,7 +120,7 @@ pub trait HasTrackAttrs: Sized {
     /// Language of the text track.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/track#srclang)
-    fn srclang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn srclang(mut self, value: impl Into<Bake>) -> Self {
         self.track_attrs_mut().srclang = Some(value.into());
         self
     }

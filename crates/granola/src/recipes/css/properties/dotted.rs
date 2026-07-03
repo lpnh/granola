@@ -17,15 +17,15 @@ pub struct Dotted;
 impl TextDecorationRecipe for Dotted {
     recipe_boilerplate!(TextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "dotted".into();
+    fn content_recipe() -> Self::Content {
+        "dotted".into()
     }
 }
 
 impl WebkitTextDecorationRecipe for Dotted {
     recipe_boilerplate!(WebkitTextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "dotted".into();
+    fn content_recipe() -> Self::Content {
+        "dotted".into()
     }
 }

@@ -35,9 +35,3 @@ impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclaration {
         Self::new("outline-width", css_outline_width.bake_recipe().content)
     }
 }
-
-impl<R: OutlineWidthRecipe> From<CssOutlineWidth<R>> for CssDeclarationsBlock {
-    fn from(css_outline_width: CssOutlineWidth<R>) -> Self {
-        Self::new().push(css_outline_width)
-    }
-}

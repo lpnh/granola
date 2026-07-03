@@ -35,9 +35,3 @@ impl<R: AnchorNameRecipe> From<CssAnchorName<R>> for CssDeclaration {
         Self::new("anchor-name", css_anchor_name.bake_recipe().content)
     }
 }
-
-impl<R: AnchorNameRecipe> From<CssAnchorName<R>> for CssDeclarationsBlock {
-    fn from(css_anchor_name: CssAnchorName<R>) -> Self {
-        Self::new().push(css_anchor_name)
-    }
-}

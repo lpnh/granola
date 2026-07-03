@@ -35,9 +35,3 @@ impl<R: BorderColorRecipe> From<CssBorderColor<R>> for CssDeclaration {
         Self::new("border-color", css_border_color.bake_recipe().content)
     }
 }
-
-impl<R: BorderColorRecipe> From<CssBorderColor<R>> for CssDeclarationsBlock {
-    fn from(css_border_color: CssBorderColor<R>) -> Self {
-        Self::new().push(css_border_color)
-    }
-}

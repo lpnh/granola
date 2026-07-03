@@ -35,9 +35,3 @@ impl<R: ListStyleRecipe> From<CssListStyle<R>> for CssDeclaration {
         Self::new("list-style", css_list_style.bake_recipe().content)
     }
 }
-
-impl<R: ListStyleRecipe> From<CssListStyle<R>> for CssDeclarationsBlock {
-    fn from(css_list_style: CssListStyle<R>) -> Self {
-        Self::new().push(css_list_style)
-    }
-}

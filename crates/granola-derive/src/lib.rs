@@ -206,7 +206,6 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         .iter()
         .map(|i| format_ident!("{i}_recipe"))
         .collect();
-    let param_names: Vec<Ident> = field_idents.iter().map(|i| format_ident!("_{i}")).collect();
     let has_field = |name: &str| field_idents.iter().any(|i| i == name);
 
     // When the recipe carries a `content` field (`#[recipe(content = T)]`), the
@@ -232,7 +231,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             /// See [`recipe_boilerplate!`](::granola::recipe_boilerplate).
             fn bake_content(content: Self::Content) -> #content_type;
 
-            fn content_recipe(_content: &mut Self::Content) {}
+            fn content_recipe() -> Self::Content {
+                ::std::default::Default::default()
+            }
         }
     } else {
         quote! {}
@@ -255,8 +256,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     // `content(...)`, and the `bake_recipe` lowering.
     let content_init = if has_content {
         quote! {
-            let mut content = <#type_param::Content as ::std::default::Default>::default();
-            #type_param::content_recipe(&mut content);
+            let content = #type_param::content_recipe();
         }
     } else {
         quote! {}
@@ -413,7 +413,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             + 'static
         {
             #trait_content
-            #(fn #method_names(#param_names: &mut #field_types) {})*
+            #(fn #method_names() -> #field_types {
+                ::std::default::Default::default()
+            })*
         }
 
         impl #trait_name for () {
@@ -439,14 +441,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
             pub fn from_cookbook() -> Self {
                 #content_init
-                #(
-                    let mut #field_idents =
-                        <#field_types as ::std::default::Default>::default();
-                    #type_param::#method_names(&mut #field_idents);
-                )*
                 Self {
                     #content_struct_field
-                    #(#field_idents,)*
+                    #(#field_idents: #type_param::#method_names(),)*
                     ..::std::default::Default::default()
                 }
             }

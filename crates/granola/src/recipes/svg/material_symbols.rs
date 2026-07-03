@@ -27,13 +27,14 @@ pub struct MaterialSymbols;
 impl SvgRecipe for MaterialSymbols {
     recipe_boilerplate!(SvgRecipe);
 
-    fn specific_attrs_recipe(specific_attrs: &mut SvgAttrs) {
-        specific_attrs.height("24px");
-        specific_attrs.view_box("0 -960 960 960");
-        specific_attrs.width("24px");
+    fn specific_attrs_recipe() -> SvgAttrs {
+        SvgAttrs::default()
+            .height("24px")
+            .view_box("0 -960 960 960")
+            .width("24px")
     }
 
-    fn paint_attrs_recipe(paint_attrs: &mut PaintAttrs) {
-        FillCurrentColor::paint_attrs_recipe(paint_attrs)
+    fn paint_attrs_recipe() -> PaintAttrs {
+        FillCurrentColor::paint_attrs_recipe()
     }
 }

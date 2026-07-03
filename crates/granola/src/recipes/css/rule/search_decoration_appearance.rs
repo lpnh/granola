@@ -21,11 +21,11 @@ use crate::prelude::*;
 pub struct SearchDecorationAppearance;
 
 impl RuleRecipe for SearchDecorationAppearance {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("::-webkit-search-decoration");
+    fn selectors_list_recipe() -> Bake {
+        "::-webkit-search-decoration".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(("-webkit-appearance", "none"));
+    fn declarations_block_recipe() -> Bake {
+        CssDeclaration::from(("-webkit-appearance", "none")).into()
     }
 }

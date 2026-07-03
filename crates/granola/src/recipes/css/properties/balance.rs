@@ -17,7 +17,7 @@ pub struct Balance;
 impl TextWrapRecipe for Balance {
     recipe_boilerplate!(TextWrapRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "balance".into();
+    fn content_recipe() -> Self::Content {
+        "balance".into()
     }
 }

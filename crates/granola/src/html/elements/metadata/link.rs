@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -73,32 +73,29 @@ pub struct HtmlLink<R: LinkRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct LinkAttrs {
-    pub preload_as: Option<Cow<'static, str>>,
-    pub blocking: Option<Cow<'static, str>>,
-    pub crossorigin: Option<Cow<'static, str>>,
-    pub fetchpriority: Option<Cow<'static, str>>,
-    pub href: Option<Cow<'static, str>>,
-    pub hreflang: Option<Cow<'static, str>>,
-    pub imagesizes: Option<Cow<'static, str>>,
-    pub imagesrcset: Option<Cow<'static, str>>,
-    pub integrity: Option<Cow<'static, str>>,
-    pub media: Option<Cow<'static, str>>,
-    pub referrerpolicy: Option<Cow<'static, str>>,
-    pub rel: Option<Cow<'static, str>>,
-    pub sizes: Option<Cow<'static, str>>,
-    pub mime_type: Option<Cow<'static, str>>,
+    pub preload_as: Option<Bake>,
+    pub blocking: Option<Bake>,
+    pub crossorigin: Option<Bake>,
+    pub fetchpriority: Option<Bake>,
+    pub href: Option<Bake>,
+    pub hreflang: Option<Bake>,
+    pub imagesizes: Option<Bake>,
+    pub imagesrcset: Option<Bake>,
+    pub integrity: Option<Bake>,
+    pub media: Option<Bake>,
+    pub referrerpolicy: Option<Bake>,
+    pub rel: Option<Bake>,
+    pub sizes: Option<Bake>,
+    pub mime_type: Option<Bake>,
     pub disabled: bool,
 }
 
 impl HtmlLink {
-    pub fn from_href_rel(
-        href: impl Into<Cow<'static, str>>,
-        rel: impl Into<Cow<'static, str>>,
-    ) -> Self {
+    pub fn from_href_rel(href: impl Into<Bake>, rel: impl Into<Bake>) -> Self {
         Self::from_href(href).rel(rel)
     }
 
-    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_href(href: impl Into<Bake>) -> Self {
         Self::new().href(href)
     }
 }
@@ -110,7 +107,7 @@ pub trait HasLinkAttrs: Sized {
     /// `rel="modulepreload"`).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#as)
-    fn preload_as(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn preload_as(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().preload_as = Some(value.into());
         self
     }
@@ -118,7 +115,7 @@ pub trait HasLinkAttrs: Sized {
     /// Whether the element is potentially render-blocking.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#blocking)
-    fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn blocking(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().blocking = Some(value.into());
         self
     }
@@ -126,7 +123,7 @@ pub trait HasLinkAttrs: Sized {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn crossorigin(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().crossorigin = Some(value.into());
         self
     }
@@ -142,7 +139,7 @@ pub trait HasLinkAttrs: Sized {
     /// Sets the priority for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
-    fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn fetchpriority(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().fetchpriority = Some(value.into());
         self
     }
@@ -150,7 +147,7 @@ pub trait HasLinkAttrs: Sized {
     /// Address of the hyperlink.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#href)
-    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn href(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().href = Some(value.into());
         self
     }
@@ -158,7 +155,7 @@ pub trait HasLinkAttrs: Sized {
     /// Language of the linked resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#hreflang)
-    fn hreflang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn hreflang(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().hreflang = Some(value.into());
         self
     }
@@ -166,7 +163,7 @@ pub trait HasLinkAttrs: Sized {
     /// Image sizes for different page layouts (for `rel="preload"`).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#imagesizes)
-    fn imagesizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn imagesizes(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().imagesizes = Some(value.into());
         self
     }
@@ -175,7 +172,7 @@ pub trait HasLinkAttrs: Sized {
     /// small monitors, etc. (for `rel="preload"`).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#imagesrcset)
-    fn imagesrcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn imagesrcset(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().imagesrcset = Some(value.into());
         self
     }
@@ -183,7 +180,7 @@ pub trait HasLinkAttrs: Sized {
     /// Integrity metadata used in Subresource Integrity checks.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#integrity)
-    fn integrity(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn integrity(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().integrity = Some(value.into());
         self
     }
@@ -191,7 +188,7 @@ pub trait HasLinkAttrs: Sized {
     /// Applicable media.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#media)
-    fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn media(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().media = Some(value.into());
         self
     }
@@ -199,7 +196,7 @@ pub trait HasLinkAttrs: Sized {
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#referrerpolicy)
-    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn referrerpolicy(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
@@ -208,7 +205,7 @@ pub trait HasLinkAttrs: Sized {
     /// hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn rel(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().rel = Some(value.into());
         self
     }
@@ -216,7 +213,7 @@ pub trait HasLinkAttrs: Sized {
     /// Sizes of the icons (for `rel="icon"`).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#sizes)
-    fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn sizes(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().sizes = Some(value.into());
         self
     }
@@ -226,7 +223,7 @@ pub trait HasLinkAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link#type)
     ///
     /// See [`MimeType`]
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn mime_type(mut self, value: impl Into<Bake>) -> Self {
         self.link_attrs_mut().mime_type = Some(value.into());
         self
     }

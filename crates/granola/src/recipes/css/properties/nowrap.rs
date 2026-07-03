@@ -17,7 +17,7 @@ pub struct Nowrap;
 impl WhiteSpaceRecipe for Nowrap {
     recipe_boilerplate!(WhiteSpaceRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "nowrap".into();
+    fn content_recipe() -> Self::Content {
+        "nowrap".into()
     }
 }

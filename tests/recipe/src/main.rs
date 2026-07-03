@@ -88,13 +88,13 @@ mod tests_recipe {
         impl ButtonRecipe for Counter {
             recipe_boilerplate!(ButtonRecipe);
 
-            fn content_recipe(content: &mut Self::Content) {
+            fn content_recipe() -> Self::Content {
                 let count = 1 + 2;
-                *content = format!("clicked {count} times").into();
+                format!("clicked {count} times").into()
             }
 
-            fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-                button_attrs.button_type(ButtonType::Button);
+            fn specific_attrs_recipe() -> ButtonAttrs {
+                ButtonAttrs::default().button_type(ButtonType::Button)
             }
         }
 
@@ -148,8 +148,10 @@ mod tests_recipe {
         impl DivRecipe for Tags {
             recipe_boilerplate!(DivRecipe, TagList);
 
-            fn content_recipe(content: &mut Self::Content) {
-                content.tags = vec!["foo".into(), "bar".into()];
+            fn content_recipe() -> Self::Content {
+                Self::Content {
+                    tags: vec!["foo".into(), "bar".into()],
+                }
             }
         }
 

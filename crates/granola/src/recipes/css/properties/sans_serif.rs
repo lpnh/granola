@@ -17,7 +17,7 @@ pub struct SansSerif;
 impl FontFamilyRecipe for SansSerif {
     recipe_boilerplate!(FontFamilyRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "sans-serif".into();
+    fn content_recipe() -> Self::Content {
+        "sans-serif".into()
     }
 }

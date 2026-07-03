@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -79,7 +79,7 @@ pub struct HtmlOptgroup<R: OptgroupRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OptgroupAttrs {
-    pub label: Option<Cow<'static, str>>,
+    pub label: Option<Bake>,
     pub disabled: bool,
 }
 
@@ -97,7 +97,7 @@ pub trait HasOptgroupAttrs: Sized {
     /// User-visible label.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/optgroup#label)
-    fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn label(mut self, value: impl Into<Bake>) -> Self {
         self.optgroup_attrs_mut().label = Some(value.into());
         self
     }

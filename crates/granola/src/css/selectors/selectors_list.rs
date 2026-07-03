@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::{borrow::Cow, marker::PhantomData};
 
 use crate::prelude::*;
@@ -22,59 +22,61 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// {%- for s in selectors -%}
-///     {{ s }}{% if !loop.last %}, {% endif %}
-/// {%- endfor -%}
+/// {{ selectors }}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[recipe(name = SelectorsListRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSelectorsList<R: SelectorsListRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub selectors: Vec<CssComplexSelector>,
+    pub selectors: Bake,
 }
 
 impl<R: SelectorsListRecipe> CssSelectorsList<R> {
-    pub fn push(mut self, selector: impl Into<CssComplexSelector>) -> Self {
-        self.selectors.push(selector.into());
+    pub fn push(mut self, selector: impl FastWritable) -> Self {
+        self.selectors.fold_in_with(", ", selector);
         self
     }
 
-    pub fn push_mut(&mut self, selector: impl Into<CssComplexSelector>) -> &mut Self {
-        self.selectors.push(selector.into());
+    pub fn push_mut(&mut self, selector: impl FastWritable) -> &mut Self {
+        self.selectors.fold_in_with(", ", selector);
         self
     }
 
-    pub fn extend_mut(
+    pub fn extend_mut<S: FastWritable>(
         &mut self,
-        selectors: impl IntoIterator<Item = CssComplexSelector>,
+        selectors: impl IntoIterator<Item = S>,
     ) -> &mut Self {
-        self.selectors.extend(selectors);
+        for selector in selectors {
+            self.selectors.fold_in_with(", ", selector);
+        }
         self
     }
 }
 
-impl<S: Into<CssComplexSelector>, const N: usize> From<[S; N]> for CssSelectorsList {
+impl<S: FastWritable, const N: usize> From<[S; N]> for CssSelectorsList {
     fn from(items: [S; N]) -> Self {
-        Self {
-            selectors: items.into_iter().map(Into::into).collect(),
-            ..Default::default()
+        let mut list = Self::new();
+        for item in items {
+            list.push_mut(item);
         }
+        list
     }
 }
 
-impl<S: Into<CssComplexSelector>> From<Vec<S>> for CssSelectorsList {
+impl<S: FastWritable> From<Vec<S>> for CssSelectorsList {
     fn from(items: Vec<S>) -> Self {
-        Self {
-            selectors: items.into_iter().map(Into::into).collect(),
-            ..Default::default()
+        let mut list = Self::new();
+        for item in items {
+            list.push_mut(item);
         }
+        list
     }
 }
 
 impl<R: ComplexSelectorRecipe> From<CssComplexSelector<R>> for CssSelectorsList {
     fn from(complex_selector: CssComplexSelector<R>) -> Self {
-        Self::new().push(complex_selector.bake_recipe())
+        Self::new().push(complex_selector)
     }
 }
 
@@ -90,21 +92,30 @@ impl<R: SimpleSelectorRecipe> From<CssSimpleSelector<R>> for CssSelectorsList {
     }
 }
 
+impl From<Bake> for CssSelectorsList {
+    fn from(selectors: Bake) -> Self {
+        Self {
+            selectors,
+            ..Default::default()
+        }
+    }
+}
+
 impl From<Cow<'static, str>> for CssSelectorsList {
     fn from(s: Cow<'static, str>) -> Self {
-        Self::new().push(s)
+        Bake::from(s).into()
     }
 }
 
 impl From<&'static str> for CssSelectorsList {
     fn from(s: &'static str) -> Self {
-        Self::new().push(s)
+        Bake::from(s).into()
     }
 }
 
 impl From<String> for CssSelectorsList {
     fn from(s: String) -> Self {
-        Self::new().push(s)
+        Bake::from(s).into()
     }
 }
 

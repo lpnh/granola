@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -61,14 +61,11 @@ pub struct HtmlArea<R: AreaRecipe = ()> {
 }
 
 impl HtmlArea {
-    pub fn from_href_alt(
-        href: impl Into<Cow<'static, str>>,
-        alt: impl Into<Cow<'static, str>>,
-    ) -> Self {
+    pub fn from_href_alt(href: impl Into<Bake>, alt: impl Into<Bake>) -> Self {
         Self::new().href(href).alt(alt)
     }
 
-    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_href(href: impl Into<Bake>) -> Self {
         Self::new().href(href)
     }
 }
@@ -95,17 +92,17 @@ impl HtmlArea {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AreaAttrs {
-    pub shape: Option<Cow<'static, str>>,
-    pub coords: Option<Cow<'static, str>>,
-    pub href: Option<Cow<'static, str>>,
-    pub alt: Option<Cow<'static, str>>,
-    pub download: Option<Cow<'static, str>>,
-    pub hreflang: Option<Cow<'static, str>>,
-    pub lang: Option<Cow<'static, str>>,
-    pub ping: Option<Cow<'static, str>>,
-    pub referrerpolicy: Option<Cow<'static, str>>,
-    pub rel: Option<Cow<'static, str>>,
-    pub target: Option<Cow<'static, str>>,
+    pub shape: Option<Bake>,
+    pub coords: Option<Bake>,
+    pub href: Option<Bake>,
+    pub alt: Option<Bake>,
+    pub download: Option<Bake>,
+    pub hreflang: Option<Bake>,
+    pub lang: Option<Bake>,
+    pub ping: Option<Bake>,
+    pub referrerpolicy: Option<Bake>,
+    pub rel: Option<Bake>,
+    pub target: Option<Bake>,
 }
 
 pub trait HasAreaAttrs: Sized {
@@ -114,7 +111,7 @@ pub trait HasAreaAttrs: Sized {
     /// Replacement text for use when images are not available.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#alt)
-    fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn alt(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().alt = Some(value.into());
         self
     }
@@ -122,7 +119,7 @@ pub trait HasAreaAttrs: Sized {
     /// Coordinates for the shape to be created in an image map.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#coords)
-    fn coords(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn coords(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().coords = Some(value.into());
         self
     }
@@ -131,7 +128,7 @@ pub trait HasAreaAttrs: Sized {
     /// filename if so.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#download)
-    fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn download(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().download = Some(value.into());
         self
     }
@@ -139,7 +136,7 @@ pub trait HasAreaAttrs: Sized {
     /// Address of the hyperlink.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#href)
-    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn href(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().href = Some(value.into());
         self
     }
@@ -151,7 +148,7 @@ pub trait HasAreaAttrs: Sized {
     /// URLs to ping.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#ping)
-    fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn ping(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().ping = Some(value.into());
         self
     }
@@ -159,7 +156,7 @@ pub trait HasAreaAttrs: Sized {
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#referrerpolicy)
-    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn referrerpolicy(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
@@ -168,7 +165,7 @@ pub trait HasAreaAttrs: Sized {
     /// hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn rel(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().rel = Some(value.into());
         self
     }
@@ -176,7 +173,7 @@ pub trait HasAreaAttrs: Sized {
     /// The kind of shape to be created in an image map.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#shape)
-    fn shape(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn shape(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().shape = Some(value.into());
         self
     }
@@ -184,7 +181,7 @@ pub trait HasAreaAttrs: Sized {
     /// Navigable for hyperlink navigation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area#target)
-    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn target(mut self, value: impl Into<Bake>) -> Self {
         self.area_attrs_mut().target = Some(value.into());
         self
     }

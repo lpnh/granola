@@ -35,9 +35,3 @@ impl<R: MarginTopRecipe> From<CssMarginTop<R>> for CssDeclaration {
         Self::new("margin-top", css_margin_top.bake_recipe().content)
     }
 }
-
-impl<R: MarginTopRecipe> From<CssMarginTop<R>> for CssDeclarationsBlock {
-    fn from(css_margin_top: CssMarginTop<R>) -> Self {
-        Self::new().push(css_margin_top)
-    }
-}

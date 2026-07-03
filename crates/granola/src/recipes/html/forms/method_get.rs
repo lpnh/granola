@@ -16,7 +16,7 @@ pub struct MethodGet;
 impl FormRecipe for MethodGet {
     recipe_boilerplate!(FormRecipe);
 
-    fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
-        form_attrs.method(FormMethod::Get);
+    fn specific_attrs_recipe() -> FormAttrs {
+        FormAttrs::default().method(FormMethod::Get)
     }
 }

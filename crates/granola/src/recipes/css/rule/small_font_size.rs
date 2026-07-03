@@ -21,11 +21,11 @@ use crate::prelude::*;
 pub struct SmallFontSize;
 
 impl RuleRecipe for SmallFontSize {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("small");
+    fn selectors_list_recipe() -> Bake {
+        "small".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(CssFontSize::new().content("80%"));
+    fn declarations_block_recipe() -> Bake {
+        CssFontSize::new().content("80%").into()
     }
 }

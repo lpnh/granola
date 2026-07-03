@@ -41,9 +41,3 @@ impl<R: FontFeatureSettingsRecipe> From<CssFontFeatureSettings<R>> for CssDeclar
         )
     }
 }
-
-impl<R: FontFeatureSettingsRecipe> From<CssFontFeatureSettings<R>> for CssDeclarationsBlock {
-    fn from(css_font_feature_settings: CssFontFeatureSettings<R>) -> Self {
-        Self::new().push(css_font_feature_settings)
-    }
-}

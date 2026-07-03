@@ -44,9 +44,3 @@ impl<R: OutlineRecipe> From<CssOutline<R>> for CssDeclaration {
         Self::new("outline", css_outline.bake_recipe().content)
     }
 }
-
-impl<R: OutlineRecipe> From<CssOutline<R>> for CssDeclarationsBlock {
-    fn from(css_outline: CssOutline<R>) -> Self {
-        Self::new().push(css_outline)
-    }
-}

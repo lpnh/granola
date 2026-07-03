@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -56,7 +56,7 @@ pub struct HtmlAudio<R: AudioRecipe = ()> {
 }
 
 impl HtmlAudio {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -79,9 +79,9 @@ impl HtmlAudio {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AudioAttrs {
-    pub crossorigin: Option<Cow<'static, str>>,
-    pub preload: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
+    pub crossorigin: Option<Bake>,
+    pub preload: Option<Bake>,
+    pub src: Option<Bake>,
     pub autoplay: bool,
     pub controls: bool,
     pub media_loop: bool,
@@ -115,7 +115,7 @@ pub trait HasAudioAttrs: Sized {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn crossorigin(mut self, value: impl Into<Bake>) -> Self {
         self.audio_attrs_mut().crossorigin = Some(value.into());
         self
     }
@@ -147,7 +147,7 @@ pub trait HasAudioAttrs: Sized {
     /// Hints how much buffering the media resource will likely need.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#preload)
-    fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn preload(mut self, value: impl Into<Bake>) -> Self {
         self.audio_attrs_mut().preload = Some(value.into());
         self
     }
@@ -155,7 +155,7 @@ pub trait HasAudioAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/audio#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.audio_attrs_mut().src = Some(value.into());
         self
     }

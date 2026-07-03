@@ -41,9 +41,3 @@ impl<R: PaddingInlineStartRecipe> From<CssPaddingInlineStart<R>> for CssDeclarat
         )
     }
 }
-
-impl<R: PaddingInlineStartRecipe> From<CssPaddingInlineStart<R>> for CssDeclarationsBlock {
-    fn from(css_padding_inline_start: CssPaddingInlineStart<R>) -> Self {
-        Self::new().push(css_padding_inline_start)
-    }
-}

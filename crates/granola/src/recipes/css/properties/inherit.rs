@@ -65,107 +65,103 @@ pub struct Inherit;
 impl FontRecipe for Inherit {
     recipe_boilerplate!(FontRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl FontFamilyRecipe for Inherit {
     recipe_boilerplate!(FontFamilyRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        if content.is_empty() {
-            *content = "inherit".into();
-        } else {
-            *content = format!("{} {}", content, "inherit").into();
-        }
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl FontSizeRecipe for Inherit {
     recipe_boilerplate!(FontSizeRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl FontWeightRecipe for Inherit {
     recipe_boilerplate!(FontWeightRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl ColorRecipe for Inherit {
     recipe_boilerplate!(ColorRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl BorderColorRecipe for Inherit {
     recipe_boilerplate!(BorderColorRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl TextDecorationRecipe for Inherit {
     recipe_boilerplate!(TextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl WebkitTextDecorationRecipe for Inherit {
     recipe_boilerplate!(WebkitTextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl WebkitTextSizeAdjustRecipe for Inherit {
     recipe_boilerplate!(WebkitTextSizeAdjustRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl TextAlignRecipe for Inherit {
     recipe_boilerplate!(TextAlignRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl FontFeatureSettingsRecipe for Inherit {
     recipe_boilerplate!(FontFeatureSettingsRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl FontVariationSettingsRecipe for Inherit {
     recipe_boilerplate!(FontVariationSettingsRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }
 
 impl LetterSpacingRecipe for Inherit {
     recipe_boilerplate!(LetterSpacingRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inherit".into();
+    fn content_recipe() -> Self::Content {
+        "inherit".into()
     }
 }

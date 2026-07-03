@@ -1,5 +1,5 @@
-use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -58,7 +58,7 @@ pub struct HtmlLabel<R: LabelRecipe = ()> {
 }
 
 impl<R: LabelRecipe<Content = Bake>> HtmlLabel<R> {
-    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self
     }
@@ -76,7 +76,7 @@ impl<R: LabelRecipe<Content = Bake>> HtmlLabel<R> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct LabelAttrs {
-    pub for_id: Option<Cow<'static, str>>,
+    pub for_id: Option<Bake>,
 }
 
 impl HasLabelAttrs for LabelAttrs {
@@ -103,7 +103,7 @@ pub trait HasLabelAttrs: Sized {
     /// Associate the label with form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/for)
-    fn for_id(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn for_id(mut self, value: impl Into<Bake>) -> Self {
         self.label_attrs_mut().for_id = Some(value.into());
         self
     }

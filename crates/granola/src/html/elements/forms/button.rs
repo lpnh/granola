@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -84,18 +84,18 @@ pub struct HtmlButton<R: ButtonRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ButtonAttrs {
-    pub button_type: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
-    pub value: Option<Cow<'static, str>>,
-    pub commandfor: Option<Cow<'static, str>>,
-    pub command: Option<Cow<'static, str>>,
-    pub form: Option<Cow<'static, str>>,
-    pub formaction: Option<Cow<'static, str>>,
-    pub formenctype: Option<Cow<'static, str>>,
-    pub formmethod: Option<Cow<'static, str>>,
-    pub formtarget: Option<Cow<'static, str>>,
-    pub popovertarget: Option<Cow<'static, str>>,
-    pub popovertargetaction: Option<Cow<'static, str>>,
+    pub button_type: Option<Bake>,
+    pub name: Option<Bake>,
+    pub value: Option<Bake>,
+    pub commandfor: Option<Bake>,
+    pub command: Option<Bake>,
+    pub form: Option<Bake>,
+    pub formaction: Option<Bake>,
+    pub formenctype: Option<Bake>,
+    pub formmethod: Option<Bake>,
+    pub formtarget: Option<Bake>,
+    pub popovertarget: Option<Bake>,
+    pub popovertargetaction: Option<Bake>,
     pub formnovalidate: bool,
     pub disabled: bool,
 }
@@ -106,7 +106,7 @@ pub trait HasButtonAttrs: Sized {
     /// Indicates to the targeted element which action to take.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#command)
-    fn command(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn command(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().command = Some(value.into());
         self
     }
@@ -114,7 +114,7 @@ pub trait HasButtonAttrs: Sized {
     /// Targets another element to be invoked.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#commandfor)
-    fn commandfor(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn commandfor(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().commandfor = Some(value.into());
         self
     }
@@ -130,7 +130,7 @@ pub trait HasButtonAttrs: Sized {
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn form(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().form = Some(value.into());
         self
     }
@@ -138,7 +138,7 @@ pub trait HasButtonAttrs: Sized {
     /// URL to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#formaction)
-    fn formaction(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn formaction(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().formaction = Some(value.into());
         self
     }
@@ -146,7 +146,7 @@ pub trait HasButtonAttrs: Sized {
     /// Entry list encoding type to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#formenctype)
-    fn formenctype(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn formenctype(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().formenctype = Some(value.into());
         self
     }
@@ -170,7 +170,7 @@ pub trait HasButtonAttrs: Sized {
     /// Navigable for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#formtarget)
-    fn formtarget(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn formtarget(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().formtarget = Some(value.into());
         self
     }
@@ -182,7 +182,7 @@ pub trait HasButtonAttrs: Sized {
     /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().name = Some(value.into());
         self
     }
@@ -190,7 +190,7 @@ pub trait HasButtonAttrs: Sized {
     /// Targets a popover element to toggle, show, or hide.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#popovertarget)
-    fn popovertarget(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn popovertarget(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().popovertarget = Some(value.into());
         self
     }
@@ -199,7 +199,7 @@ pub trait HasButtonAttrs: Sized {
     /// hidden.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#popovertargetaction)
-    fn popovertargetaction(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn popovertargetaction(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().popovertargetaction = Some(value.into());
         self
     }
@@ -209,7 +209,7 @@ pub trait HasButtonAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type)
     ///
     /// See [`ButtonType`]
-    fn button_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn button_type(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().button_type = Some(value.into());
         self
     }
@@ -217,7 +217,7 @@ pub trait HasButtonAttrs: Sized {
     /// Value to be used for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#value)
-    fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn value(mut self, value: impl Into<Bake>) -> Self {
         self.button_attrs_mut().value = Some(value.into());
         self
     }
@@ -249,7 +249,7 @@ pub enum ButtonType {
     Button,
 }
 
-impl From<ButtonType> for Cow<'static, str> {
+impl From<ButtonType> for Bake {
     fn from(button_type: ButtonType) -> Self {
         <&'static str>::from(button_type).into()
     }

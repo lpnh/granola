@@ -35,9 +35,3 @@ impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclaration {
         Self::new("font-family", css_font_family.bake_recipe().content)
     }
 }
-
-impl<R: FontFamilyRecipe> From<CssFontFamily<R>> for CssDeclarationsBlock {
-    fn from(css_font_family: CssFontFamily<R>) -> Self {
-        Self::new().push(css_font_family)
-    }
-}

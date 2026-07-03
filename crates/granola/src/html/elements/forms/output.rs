@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -72,9 +72,9 @@ pub struct HtmlOutput<R: OutputRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OutputAttrs {
-    pub name: Option<Cow<'static, str>>,
-    pub for_id: Option<Cow<'static, str>>,
-    pub form: Option<Cow<'static, str>>,
+    pub name: Option<Bake>,
+    pub for_id: Option<Bake>,
+    pub form: Option<Bake>,
 }
 
 pub trait HasOutputAttrs: Sized {
@@ -83,7 +83,7 @@ pub trait HasOutputAttrs: Sized {
     /// Specifies controls from which the output was calculated.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/for)
-    fn for_id(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn for_id(mut self, value: impl Into<Bake>) -> Self {
         self.output_attrs_mut().for_id = Some(value.into());
         self
     }
@@ -91,7 +91,7 @@ pub trait HasOutputAttrs: Sized {
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn form(mut self, value: impl Into<Bake>) -> Self {
         self.output_attrs_mut().form = Some(value.into());
         self
     }
@@ -100,7 +100,7 @@ pub trait HasOutputAttrs: Sized {
     /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/output#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.output_attrs_mut().name = Some(value.into());
         self
     }

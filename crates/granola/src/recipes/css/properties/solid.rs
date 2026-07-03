@@ -17,15 +17,15 @@ pub struct Solid;
 impl BorderRecipe for Solid {
     recipe_boilerplate!(BorderRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "solid".into();
+    fn content_recipe() -> Self::Content {
+        "solid".into()
     }
 }
 
 impl OutlineStyleRecipe for Solid {
     recipe_boilerplate!(OutlineStyleRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "solid".into();
+    fn content_recipe() -> Self::Content {
+        "solid".into()
     }
 }

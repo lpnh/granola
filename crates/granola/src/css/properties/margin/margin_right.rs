@@ -35,9 +35,3 @@ impl<R: MarginRightRecipe> From<CssMarginRight<R>> for CssDeclaration {
         Self::new("margin-right", css_margin_right.bake_recipe().content)
     }
 }
-
-impl<R: MarginRightRecipe> From<CssMarginRight<R>> for CssDeclarationsBlock {
-    fn from(css_margin_right: CssMarginRight<R>) -> Self {
-        Self::new().push(css_margin_right)
-    }
-}

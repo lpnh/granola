@@ -1,5 +1,5 @@
-use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -58,7 +58,7 @@ pub struct HtmlDetails<R: DetailsRecipe = ()> {
 }
 
 impl<R: DetailsRecipe<Content = Bake>> HtmlDetails<R> {
-    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self
     }
@@ -77,7 +77,7 @@ impl<R: DetailsRecipe<Content = Bake>> HtmlDetails<R> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct DetailsAttrs {
-    pub name: Option<Cow<'static, str>>,
+    pub name: Option<Bake>,
     pub open: bool,
 }
 
@@ -87,7 +87,7 @@ pub trait HasDetailsAttrs: Sized {
     /// Name of group of mutually-exclusive details elements.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.details_attrs_mut().name = Some(value.into());
         self
     }

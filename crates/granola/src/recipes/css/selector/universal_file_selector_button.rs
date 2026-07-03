@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalFileSelectorButton;
 
 impl SimpleSelectorRecipe for UniversalFileSelectorButton {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = "::file-selector-button".into();
+    fn selector_recipe() -> Bake {
+        "::file-selector-button".into()
     }
 }

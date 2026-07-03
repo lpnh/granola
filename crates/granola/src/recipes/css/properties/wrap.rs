@@ -17,7 +17,7 @@ pub struct Wrap;
 impl FlexWrapRecipe for Wrap {
     recipe_boilerplate!(FlexWrapRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "wrap".into();
+    fn content_recipe() -> Self::Content {
+        "wrap".into()
     }
 }

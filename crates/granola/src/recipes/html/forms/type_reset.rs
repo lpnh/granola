@@ -19,13 +19,13 @@ pub struct TypeReset;
 impl ButtonRecipe for TypeReset {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-        button_attrs.button_type(ButtonType::Reset);
+    fn specific_attrs_recipe() -> ButtonAttrs {
+        ButtonAttrs::default().button_type(ButtonType::Reset)
     }
 }
 
 impl InputRecipe for TypeReset {
-    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
-        input_attrs.input_type(InputType::Reset);
+    fn specific_attrs_recipe() -> InputAttrs {
+        InputAttrs::default().input_type(InputType::Reset)
     }
 }

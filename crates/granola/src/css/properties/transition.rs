@@ -44,9 +44,3 @@ impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclaration {
         Self::new("transition", css_transition.bake_recipe().content)
     }
 }
-
-impl<R: TransitionRecipe> From<CssTransition<R>> for CssDeclarationsBlock {
-    fn from(css_transition: CssTransition<R>) -> Self {
-        Self::new().push(css_transition)
-    }
-}

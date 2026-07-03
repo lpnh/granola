@@ -17,7 +17,7 @@ pub struct Inline;
 impl DisplayRecipe for Inline {
     recipe_boilerplate!(DisplayRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "inline".into();
+    fn content_recipe() -> Self::Content {
+        "inline".into()
     }
 }

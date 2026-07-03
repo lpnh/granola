@@ -42,9 +42,3 @@ impl<R: TextDecorationSkipInkRecipe> From<CssTextDecorationSkipInk<R>> for CssDe
         )
     }
 }
-
-impl<R: TextDecorationSkipInkRecipe> From<CssTextDecorationSkipInk<R>> for CssDeclarationsBlock {
-    fn from(css_text_decoration_skip_ink: CssTextDecorationSkipInk<R>) -> Self {
-        Self::new().push(css_text_decoration_skip_ink)
-    }
-}

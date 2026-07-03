@@ -35,9 +35,3 @@ impl<R: TabSizeRecipe> From<CssTabSize<R>> for CssDeclaration {
         Self::new("tab-size", css_tab_size.bake_recipe().content)
     }
 }
-
-impl<R: TabSizeRecipe> From<CssTabSize<R>> for CssDeclarationsBlock {
-    fn from(css_tab_size: CssTabSize<R>) -> Self {
-        Self::new().push(css_tab_size)
-    }
-}

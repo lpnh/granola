@@ -35,9 +35,3 @@ impl<R: GapRecipe> From<CssGap<R>> for CssDeclaration {
         Self::new("gap", css_gap.bake_recipe().content)
     }
 }
-
-impl<R: GapRecipe> From<CssGap<R>> for CssDeclarationsBlock {
-    fn from(css_gap: CssGap<R>) -> Self {
-        Self::new().push(css_gap)
-    }
-}

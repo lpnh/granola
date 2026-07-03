@@ -46,9 +46,3 @@ impl<R: PositionRecipe> From<CssPosition<R>> for CssDeclaration {
         Self::new("position", css_position.bake_recipe().content)
     }
 }
-
-impl<R: PositionRecipe> From<CssPosition<R>> for CssDeclarationsBlock {
-    fn from(css_position: CssPosition<R>) -> Self {
-        Self::new().push(css_position)
-    }
-}

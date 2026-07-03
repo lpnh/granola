@@ -21,11 +21,11 @@ use crate::prelude::*;
 pub struct SubVerticalPos;
 
 impl RuleRecipe for SubVerticalPos {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("sub");
+    fn selectors_list_recipe() -> Bake {
+        "sub".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(CssBottom::new().content("-0.25em"));
+    fn declarations_block_recipe() -> Bake {
+        CssBottom::new().content("-0.25em").into()
     }
 }

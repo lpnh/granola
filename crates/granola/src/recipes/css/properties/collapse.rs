@@ -17,7 +17,7 @@ pub struct Collapse;
 impl BorderCollapseRecipe for Collapse {
     recipe_boilerplate!(BorderCollapseRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "collapse".into();
+    fn content_recipe() -> Self::Content {
+        "collapse".into()
     }
 }

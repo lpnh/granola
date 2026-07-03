@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -71,8 +71,8 @@ pub struct SvgPath<R: PathRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct PathAttrs {
-    pub d: Option<Cow<'static, str>>,
-    pub path_length: Option<Cow<'static, str>>,
+    pub d: Option<Bake>,
+    pub path_length: Option<Bake>,
 }
 
 pub trait HasPathAttrs: Sized {
@@ -81,7 +81,7 @@ pub trait HasPathAttrs: Sized {
     /// Defines the shape of the path.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/d)
-    fn d(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn d(mut self, value: impl Into<Bake>) -> Self {
         self.path_attrs_mut().d = Some(value.into());
         self
     }
@@ -89,7 +89,7 @@ pub trait HasPathAttrs: Sized {
     /// The total length for the path, in user units.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/pathLength)
-    fn path_length(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn path_length(mut self, value: impl Into<Bake>) -> Self {
         self.path_attrs_mut().path_length = Some(value.into());
         self
     }

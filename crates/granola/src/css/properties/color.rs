@@ -39,9 +39,3 @@ impl<R: ColorRecipe> From<CssColor<R>> for CssDeclaration {
         Self::new("color", css_color.bake_recipe().content)
     }
 }
-
-impl<R: ColorRecipe> From<CssColor<R>> for CssDeclarationsBlock {
-    fn from(css_color: CssColor<R>) -> Self {
-        Self::new().push(css_color)
-    }
-}

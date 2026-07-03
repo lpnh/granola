@@ -35,9 +35,3 @@ impl<R: IsolationRecipe> From<CssIsolation<R>> for CssDeclaration {
         Self::new("isolation", css_isolation.bake_recipe().content)
     }
 }
-
-impl<R: IsolationRecipe> From<CssIsolation<R>> for CssDeclarationsBlock {
-    fn from(css_isolation: CssIsolation<R>) -> Self {
-        Self::new().push(css_isolation)
-    }
-}

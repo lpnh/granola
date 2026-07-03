@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -68,11 +68,11 @@ pub struct HtmlTh<R: ThRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ThAttrs {
-    abbr: Option<Cow<'static, str>>,
+    abbr: Option<Bake>,
     colspan: Option<u32>,
-    headers: Option<Cow<'static, str>>,
+    headers: Option<Bake>,
     rowspan: Option<u32>,
-    scope: Option<Cow<'static, str>>,
+    scope: Option<Bake>,
 }
 
 pub trait HasThAttrs: Sized {
@@ -82,7 +82,7 @@ pub trait HasThAttrs: Sized {
     /// in other contexts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#abbr)
-    fn abbr(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn abbr(mut self, value: impl Into<Bake>) -> Self {
         self.th_attrs_mut().abbr = Some(value.into());
         self
     }
@@ -98,7 +98,7 @@ pub trait HasThAttrs: Sized {
     /// The header cells for this cell.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#headers)
-    fn headers(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn headers(mut self, value: impl Into<Bake>) -> Self {
         self.th_attrs_mut().headers = Some(value.into());
         self
     }
@@ -114,7 +114,7 @@ pub trait HasThAttrs: Sized {
     /// Specifies which cells the header cell applies to.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#scope)
-    fn scope(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn scope(mut self, value: impl Into<Bake>) -> Self {
         self.th_attrs_mut().scope = Some(value.into());
         self
     }

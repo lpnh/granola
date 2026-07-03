@@ -35,9 +35,3 @@ impl<R: WidthRecipe> From<CssWidth<R>> for CssDeclaration {
         Self::new("width", css_width.bake_recipe().content)
     }
 }
-
-impl<R: WidthRecipe> From<CssWidth<R>> for CssDeclarationsBlock {
-    fn from(css_width: CssWidth<R>) -> Self {
-        Self::new().push(css_width)
-    }
-}

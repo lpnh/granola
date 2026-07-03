@@ -35,9 +35,3 @@ impl<R: HeightRecipe> From<CssHeight<R>> for CssDeclaration {
         Self::new("height", css_height.bake_recipe().content)
     }
 }
-
-impl<R: HeightRecipe> From<CssHeight<R>> for CssDeclarationsBlock {
-    fn from(css_height: CssHeight<R>) -> Self {
-        Self::new().push(css_height)
-    }
-}

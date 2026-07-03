@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -65,7 +65,7 @@ pub struct HtmlHead<R: HeadRecipe = ()> {
 }
 
 impl<R: HeadRecipe<Content = Bake>> HtmlHead<R> {
-    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self
     }

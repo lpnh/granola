@@ -18,52 +18,45 @@ impl Bake {
         Self(Cow::Owned(buf))
     }
 
-    /// Appends a [`FastWritable`] item.
+    /// Appends a [`FastWritable`] item in place.
     ///
     /// # Panics
     ///
     /// Panics if [`FastWritable::write_into`] returns an error. See
     /// [`askama::Error`].
-    pub fn push(&mut self, item: &impl FastWritable) {
+    pub fn fold_in(&mut self, item: impl FastWritable) {
         item.write_into(self.0.to_mut(), NO_VALUES).unwrap();
     }
 
-    /// Appends `content` in place.
-    pub fn fold_in(&mut self, content: impl Into<Self>) {
-        self.fold_in_with("", content);
+    /// Appends a [`FastWritable`] item in place, separated from the existing
+    /// content by `sep`. If either half is empty, no separator is written.
+    ///
+    /// # Panics
+    ///
+    /// Panics if [`FastWritable::write_into`] returns an error. See
+    /// [`askama::Error`].
+    pub fn fold_in_with(&mut self, sep: &str, item: impl FastWritable) {
+        let buf = self.0.to_mut();
+        let start = buf.len();
+        if start > 0 {
+            buf.push_str(sep);
+        }
+        item.write_into(&mut *buf, NO_VALUES).unwrap();
+        if start > 0 && buf.len() == start + sep.len() {
+            buf.truncate(start);
+        }
     }
 
-    /// Appends `content` in place, separated from the existing content by a
-    /// single space. If either half is empty, no separator is written.
-    pub fn fold_in_ws(&mut self, content: impl Into<Self>) {
-        self.fold_in_with(" ", content);
-    }
-
-    /// Appends `content` in place, separated from the existing content by
-    /// `sep`. If either half is empty, no separator is written.
-    pub fn fold_in_with(&mut self, sep: &str, content: impl Into<Self>) {
-        let content = content.into();
-        if content.0.is_empty() {
-            return;
-        }
-        if self.0.is_empty() {
-            self.0 = content.0;
-            return;
-        }
-        match &mut self.0 {
-            Cow::Borrowed(s) => {
-                let mut buf = String::with_capacity(s.len() + sep.len() + content.0.len());
-                buf.push_str(s);
-                buf.push_str(sep);
-                buf.push_str(&content.0);
-                self.0 = Cow::Owned(buf);
-            }
-            Cow::Owned(buf) => {
-                buf.reserve(sep.len() + content.0.len());
-                buf.push_str(sep);
-                buf.push_str(&content.0);
-            }
-        }
+    /// Appends a [`FastWritable`] item in place, separated from the existing
+    /// content by a single space. If either half is empty, no separator is
+    /// written.
+    ///
+    /// # Panics
+    ///
+    /// Panics if [`FastWritable::write_into`] returns an error. See
+    /// [`askama::Error`].
+    pub fn fold_in_ws(&mut self, item: impl FastWritable) {
+        self.fold_in_with(" ", item);
     }
 
     /// Returns `true` if the content is empty.
@@ -229,7 +222,7 @@ macro_rules! bake {
         let capacity = 0usize $(+ (&&$crate::oven::BakeSize($bound)).bake_size())*;
         let mut content = $crate::oven::Bake::with_capacity(capacity);
         $(
-            content.push($bound);
+            content.fold_in($bound);
         )*
         content
     }};
@@ -280,8 +273,8 @@ macro_rules! bake_ws {
 /// impl SpanRecipe for Greeting {
 ///     recipe_boilerplate!(SpanRecipe);
 ///
-///     fn content_recipe(content: &mut Self::Content) {
-///         *content = "hello!".into();
+///     fn content_recipe() -> Self::Content {
+///         "hello!".into()
 ///     }
 /// }
 ///

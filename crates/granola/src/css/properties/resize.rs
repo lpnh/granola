@@ -35,9 +35,3 @@ impl<R: ResizeRecipe> From<CssResize<R>> for CssDeclaration {
         Self::new("resize", css_resize.bake_recipe().content)
     }
 }
-
-impl<R: ResizeRecipe> From<CssResize<R>> for CssDeclarationsBlock {
-    fn from(css_resize: CssResize<R>) -> Self {
-        Self::new().push(css_resize)
-    }
-}

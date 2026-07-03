@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -50,7 +50,7 @@ pub struct HtmlScript<R: ScriptRecipe = ()> {
 }
 
 impl HtmlScript {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -76,13 +76,13 @@ impl HtmlScript {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ScriptAttrs {
-    pub script_type: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
-    pub blocking: Option<Cow<'static, str>>,
-    pub crossorigin: Option<Cow<'static, str>>,
-    pub fetchpriority: Option<Cow<'static, str>>,
-    pub integrity: Option<Cow<'static, str>>,
-    pub referrerpolicy: Option<Cow<'static, str>>,
+    pub script_type: Option<Bake>,
+    pub src: Option<Bake>,
+    pub blocking: Option<Bake>,
+    pub crossorigin: Option<Bake>,
+    pub fetchpriority: Option<Bake>,
+    pub integrity: Option<Bake>,
+    pub referrerpolicy: Option<Bake>,
     pub async_script: bool,
     pub defer: bool,
     pub nomodule: bool,
@@ -102,7 +102,7 @@ pub trait HasScriptAttrs: Sized {
     /// Whether the element is potentially render-blocking.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#blocking)
-    fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn blocking(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().blocking = Some(value.into());
         self
     }
@@ -110,7 +110,7 @@ pub trait HasScriptAttrs: Sized {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn crossorigin(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().crossorigin = Some(value.into());
         self
     }
@@ -126,7 +126,7 @@ pub trait HasScriptAttrs: Sized {
     /// Sets the priority for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
-    fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn fetchpriority(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().fetchpriority = Some(value.into());
         self
     }
@@ -134,7 +134,7 @@ pub trait HasScriptAttrs: Sized {
     /// Integrity metadata used in Subresource Integrity checks.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#integrity)
-    fn integrity(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn integrity(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().integrity = Some(value.into());
         self
     }
@@ -150,7 +150,7 @@ pub trait HasScriptAttrs: Sized {
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#referrerpolicy)
-    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn referrerpolicy(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
@@ -158,7 +158,7 @@ pub trait HasScriptAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().src = Some(value.into());
         self
     }
@@ -168,7 +168,7 @@ pub trait HasScriptAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type)
     ///
     /// See [`ScriptType`] and [`MimeType`]
-    fn script_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn script_type(mut self, value: impl Into<Bake>) -> Self {
         self.script_attrs_mut().script_type = Some(value.into());
         self
     }
@@ -217,7 +217,7 @@ pub enum ScriptType {
     Speculationrules,
 }
 
-impl From<ScriptType> for Cow<'static, str> {
+impl From<ScriptType> for Bake {
     fn from(script_type: ScriptType) -> Self {
         <&'static str>::from(script_type).into()
     }

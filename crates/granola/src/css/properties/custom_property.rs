@@ -49,15 +49,9 @@ impl<R: CustomPropertyRecipe> From<CssCustomProperty<R>> for CssDeclaration {
     fn from(css_custom_property: CssCustomProperty<R>) -> Self {
         let css_custom_property = css_custom_property.bake_recipe();
         Self::new(
-            format!("--{}", css_custom_property.name),
+            bake!("--", css_custom_property.name),
             css_custom_property.value,
         )
-    }
-}
-
-impl<R: CustomPropertyRecipe> From<CssCustomProperty<R>> for CssDeclarationsBlock {
-    fn from(css_custom_property: CssCustomProperty<R>) -> Self {
-        Self::new().push(css_custom_property)
     }
 }
 

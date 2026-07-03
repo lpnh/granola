@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct CharsetUtf8;
 
 impl MetaRecipe for CharsetUtf8 {
-    fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
-        meta_attrs.charset();
+    fn specific_attrs_recipe() -> MetaAttrs {
+        MetaAttrs::default().charset()
     }
 }

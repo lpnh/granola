@@ -35,9 +35,3 @@ impl<R: LetterSpacingRecipe> From<CssLetterSpacing<R>> for CssDeclaration {
         Self::new("letter-spacing", css_letter_spacing.bake_recipe().content)
     }
 }
-
-impl<R: LetterSpacingRecipe> From<CssLetterSpacing<R>> for CssDeclarationsBlock {
-    fn from(css_letter_spacing: CssLetterSpacing<R>) -> Self {
-        Self::new().push(css_letter_spacing)
-    }
-}

@@ -17,7 +17,7 @@ pub struct Isolate;
 impl IsolationRecipe for Isolate {
     recipe_boilerplate!(IsolationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "isolate".into();
+    fn content_recipe() -> Self::Content {
+        "isolate".into()
     }
 }

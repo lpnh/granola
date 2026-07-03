@@ -1,5 +1,5 @@
-use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -63,7 +63,7 @@ pub struct HtmlForm<R: FormRecipe = ()> {
 }
 
 impl<R: FormRecipe<Content = Bake>> HtmlForm<R> {
-    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self
     }
@@ -89,14 +89,14 @@ impl<R: FormRecipe<Content = Bake>> HtmlForm<R> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct FormAttrs {
-    pub accept_charset: Option<Cow<'static, str>>,
-    pub action: Option<Cow<'static, str>>,
-    pub autocomplete: Option<Cow<'static, str>>,
-    pub enctype: Option<Cow<'static, str>>,
-    pub method: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
-    pub rel: Option<Cow<'static, str>>,
-    pub target: Option<Cow<'static, str>>,
+    pub accept_charset: Option<Bake>,
+    pub action: Option<Bake>,
+    pub autocomplete: Option<Bake>,
+    pub enctype: Option<Bake>,
+    pub method: Option<Bake>,
+    pub name: Option<Bake>,
+    pub rel: Option<Bake>,
+    pub target: Option<Bake>,
     pub novalidate: bool,
 }
 
@@ -106,7 +106,7 @@ pub trait HasFormAttrs: Sized {
     /// Character encodings to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#accept-charset)
-    fn accept_charset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn accept_charset(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().accept_charset = Some(value.into());
         self
     }
@@ -114,7 +114,7 @@ pub trait HasFormAttrs: Sized {
     /// URL to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#action)
-    fn action(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn action(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().action = Some(value.into());
         self
     }
@@ -122,7 +122,7 @@ pub trait HasFormAttrs: Sized {
     /// Default setting for autofill feature for controls in the form.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
-    fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn autocomplete(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().autocomplete = Some(value.into());
         self
     }
@@ -130,7 +130,7 @@ pub trait HasFormAttrs: Sized {
     /// Entry list encoding type to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#enctype)
-    fn enctype(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn enctype(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().enctype = Some(value.into());
         self
     }
@@ -140,7 +140,7 @@ pub trait HasFormAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#method)
     ///
     /// See [`FormMethod`]
-    fn method(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn method(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().method = Some(value.into());
         self
     }
@@ -148,7 +148,7 @@ pub trait HasFormAttrs: Sized {
     /// Name of form to use in the `document.forms` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().name = Some(value.into());
         self
     }
@@ -164,7 +164,7 @@ pub trait HasFormAttrs: Sized {
     /// Controls the annotations and what kinds of links the form creates.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn rel(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().rel = Some(value.into());
         self
     }
@@ -172,7 +172,7 @@ pub trait HasFormAttrs: Sized {
     /// Navigable for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#target)
-    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn target(mut self, value: impl Into<Bake>) -> Self {
         self.form_attrs_mut().target = Some(value.into());
         self
     }
@@ -216,7 +216,7 @@ pub enum FormMethod {
     Dialog,
 }
 
-impl From<FormMethod> for Cow<'static, str> {
+impl From<FormMethod> for Bake {
     fn from(form_method: FormMethod) -> Self {
         <&'static str>::from(form_method).into()
     }

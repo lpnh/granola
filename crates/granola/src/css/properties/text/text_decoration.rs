@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
@@ -31,7 +31,7 @@ pub struct CssTextDecoration<R: TextDecorationRecipe = ()> {
 }
 
 impl<R: TextDecorationRecipe<Content = Bake>> CssTextDecoration<R> {
-    pub fn fold_in(mut self, value: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, value: impl FastWritable) -> Self {
         self.content.fold_in_ws(value);
         self
     }
@@ -40,11 +40,5 @@ impl<R: TextDecorationRecipe<Content = Bake>> CssTextDecoration<R> {
 impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclaration {
     fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
         Self::new("text-decoration", css_text_decoration.bake_recipe().content)
-    }
-}
-
-impl<R: TextDecorationRecipe> From<CssTextDecoration<R>> for CssDeclarationsBlock {
-    fn from(css_text_decoration: CssTextDecoration<R>) -> Self {
-        Self::new().push(css_text_decoration)
     }
 }

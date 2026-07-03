@@ -58,9 +58,9 @@ use crate::{prelude::*, recipes::*};
 pub struct JoshWComeau;
 
 impl StylesheetRecipe for JoshWComeau {
-    fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.extend([
-            CssRule::from(BoxSizingReset).into(),
+    fn statements_recipe() -> Bake {
+        bake_ws![
+            CssRule::from(BoxSizingReset),
             default_margin_reset(),
             keyword_animations(),
             body_defaults(),
@@ -70,18 +70,17 @@ impl StylesheetRecipe for JoshWComeau {
             paragraph_text_wrap(),
             headings_text_wrap(),
             root_stacking_context(),
-        ]);
+        ]
     }
 }
 
-fn default_margin_reset() -> CssStatement {
+fn default_margin_reset() -> CssRule {
     CssRule::new()
         .selectors_list("*:not(dialog)")
         .declarations_block(CssMargin::new().content("0"))
-        .into()
 }
 
-fn keyword_animations() -> CssStatement {
+fn keyword_animations() -> CssAtRule {
     let inner_rule = CssRule::new()
         .selectors_list("html")
         .declarations_block(CssInterpolateSize::from(AllowKeywords));
@@ -90,74 +89,57 @@ fn keyword_animations() -> CssStatement {
         .identifier("media")
         .rule("(prefers-reduced-motion: no-preference)")
         .block(inner_rule)
-        .into()
 }
 
-fn body_defaults() -> CssStatement {
-    let declarations_block: [CssDeclaration; 2] = [
-        CssLineHeight::new().content("1.5").into(),
-        ("-webkit-font-smoothing", "antialiased").into(),
+fn body_defaults() -> CssRule {
+    let declarations_block = bake_ws![
+        CssLineHeight::new().content("1.5"),
+        CssDeclaration::from(("-webkit-font-smoothing", "antialiased")),
     ];
 
     CssRule::new()
         .selectors_list("body")
         .declarations_block(declarations_block)
-        .into()
 }
 
-fn media_defaults() -> CssStatement {
-    let selectors_list = CssSelectorsList::from(MediaSelectors).bake_recipe();
-    let declarations_block: [CssDeclaration; 2] = [
-        CssDisplay::from(Block).into(),
-        CssMaxWidth::new().content("100%").into(),
-    ];
+fn media_defaults() -> CssRule {
+    let selectors_list = CssSelectorsList::from(MediaSelectors);
 
     CssRule::new()
         .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-        .into()
+        .push_property(CssDisplay::from(Block))
+        .push_property(CssMaxWidth::new().content("100%"))
 }
 
-fn form_controls_font_inherit() -> CssStatement {
+fn form_controls_font_inherit() -> CssRule {
     let selectors_list = CssSelectorsList::from(FormControls).bake_recipe();
     let declarations_block = CssFont::from(Inherit);
 
     CssRule::new()
         .selectors_list(selectors_list)
         .declarations_block(declarations_block)
-        .into()
 }
 
-fn text_overflow_reset() -> CssStatement {
-    let selectors_list = CssSelectorsList::from(AllHeadingsExt).bake_recipe();
-    let declarations_block = CssOverflowWrap::from(BreakWord);
-
+fn text_overflow_reset() -> CssRule {
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-        .into()
+        .selectors_list(CssSelectorsList::from(AllHeadingsExt))
+        .declarations_block(CssOverflowWrap::from(BreakWord))
 }
 
-fn paragraph_text_wrap() -> CssStatement {
+fn paragraph_text_wrap() -> CssRule {
     CssRule::new()
         .selectors_list("p")
         .declarations_block(CssTextWrap::from(Pretty))
-        .into()
 }
 
-fn headings_text_wrap() -> CssStatement {
-    let selectors_list = CssSelectorsList::from(AllHeadings).bake_recipe();
-    let declarations_block = CssTextWrap::from(Balance);
-
+fn headings_text_wrap() -> CssRule {
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-        .into()
+        .selectors_list(CssSelectorsList::from(AllHeadings))
+        .declarations_block(CssTextWrap::from(Balance))
 }
 
-fn root_stacking_context() -> CssStatement {
+fn root_stacking_context() -> CssRule {
     CssRule::new()
         .selectors_list(["#root", "#__next"])
         .declarations_block(CssIsolation::from(Isolate))
-        .into()
 }

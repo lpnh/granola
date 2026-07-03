@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -89,7 +89,7 @@ pub struct HtmlTemplate<R: TemplateRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TemplateAttrs {
-    pub shadowrootmode: Option<Cow<'static, str>>,
+    pub shadowrootmode: Option<Bake>,
     pub shadowrootclonable: bool,
     pub shadowrootcustomelementregistry: bool,
     pub shadowrootdelegatesfocus: bool,
@@ -127,7 +127,7 @@ pub trait HasTemplateAttrs: Sized {
     /// Enables streaming declarative shadow roots.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/template#shadowrootmode)
-    fn shadowrootmode(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn shadowrootmode(mut self, value: impl Into<Bake>) -> Self {
         self.template_attrs_mut().shadowrootmode = Some(value.into());
         self
     }

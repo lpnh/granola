@@ -35,9 +35,3 @@ impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclaration {
         Self::new("justify-content", css_justify_content.bake_recipe().content)
     }
 }
-
-impl<R: JustifyContentRecipe> From<CssJustifyContent<R>> for CssDeclarationsBlock {
-    fn from(css_justify_content: CssJustifyContent<R>) -> Self {
-        Self::new().push(css_justify_content)
-    }
-}

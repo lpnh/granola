@@ -1,5 +1,5 @@
-use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use askama::{FastWritable, Template};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -70,7 +70,7 @@ pub struct HtmlDialog<R: DialogRecipe = ()> {
 }
 
 impl<R: DialogRecipe<Content = Bake>> HtmlDialog<R> {
-    pub fn fold_in(mut self, content: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self
     }
@@ -89,7 +89,7 @@ impl<R: DialogRecipe<Content = Bake>> HtmlDialog<R> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct DialogAttrs {
-    pub closedby: Option<Cow<'static, str>>,
+    pub closedby: Option<Bake>,
     pub open: bool,
 }
 
@@ -99,7 +99,7 @@ pub trait HasDialogAttrs: Sized {
     /// Which user actions will close the dialog.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog#closedby)
-    fn closedby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn closedby(mut self, value: impl Into<Bake>) -> Self {
         self.dialog_attrs_mut().closedby = Some(value.into());
         self
     }

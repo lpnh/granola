@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -71,8 +71,8 @@ pub struct HtmlIns<R: InsRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct InsAttrs {
-    pub datetime: Option<Cow<'static, str>>,
-    pub cite: Option<Cow<'static, str>>,
+    pub datetime: Option<Bake>,
+    pub cite: Option<Bake>,
 }
 
 pub trait HasInsAttrs: Sized {
@@ -81,7 +81,7 @@ pub trait HasInsAttrs: Sized {
     /// Link to the source of the quotation or more information about the edit.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ins#cite)
-    fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn cite(mut self, value: impl Into<Bake>) -> Self {
         self.ins_attrs_mut().cite = Some(value.into());
         self
     }
@@ -89,7 +89,7 @@ pub trait HasInsAttrs: Sized {
     /// Date and (optionally) time of the change.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ins#datetime)
-    fn datetime(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn datetime(mut self, value: impl Into<Bake>) -> Self {
         self.ins_attrs_mut().datetime = Some(value.into());
         self
     }

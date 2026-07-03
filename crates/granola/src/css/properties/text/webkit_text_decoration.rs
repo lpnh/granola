@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
@@ -31,7 +31,7 @@ pub struct CssWebkitTextDecoration<R: WebkitTextDecorationRecipe = ()> {
 }
 
 impl<R: WebkitTextDecorationRecipe<Content = Bake>> CssWebkitTextDecoration<R> {
-    pub fn fold_in(mut self, value: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, value: impl FastWritable) -> Self {
         self.content.fold_in_ws(value);
         self
     }
@@ -43,11 +43,5 @@ impl<R: WebkitTextDecorationRecipe> From<CssWebkitTextDecoration<R>> for CssDecl
             "-webkit-text-decoration",
             css_webkit_text_decoartion.bake_recipe().content,
         )
-    }
-}
-
-impl<R: WebkitTextDecorationRecipe> From<CssWebkitTextDecoration<R>> for CssDeclarationsBlock {
-    fn from(css_webkit_text_decoartion: CssWebkitTextDecoration<R>) -> Self {
-        Self::new().push(css_webkit_text_decoartion)
     }
 }

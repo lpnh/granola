@@ -35,9 +35,3 @@ impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclaration {
         Self::new("align-items", css_align_items.bake_recipe().content)
     }
 }
-
-impl<R: AlignItemsRecipe> From<CssAlignItems<R>> for CssDeclarationsBlock {
-    fn from(css_align_items: CssAlignItems<R>) -> Self {
-        Self::new().push(css_align_items)
-    }
-}

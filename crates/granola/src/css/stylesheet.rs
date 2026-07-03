@@ -1,9 +1,9 @@
 #![allow(unused_qualifications)]
 
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// A CSS style sheet.
 ///
@@ -20,7 +20,7 @@ use crate::prelude::*;
 ///
 /// let rule = CssRule::new()
 ///     .selectors_list("p")
-///     .declarations_block(("color", "rebeccapurple"));
+///     .push_property(("color", "rebeccapurple"));
 ///
 /// let css_stylesheet = CssStylesheet::new().push(at_rule).push(rule);
 ///
@@ -33,9 +33,7 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// {%- for s in statements -%}
-///     {{ s }}{% if !loop.last %} {% endif %}
-/// {%- endfor -%}
+/// {{ statements | kirei }}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[granola(format = css)]
@@ -43,12 +41,12 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssStylesheet<R: StylesheetRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub statements: Vec<CssStatement>,
+    pub statements: Bake,
 }
 
 impl<R: StylesheetRecipe> CssStylesheet<R> {
-    pub fn push(mut self, rule: impl Into<CssStatement>) -> Self {
-        self.statements.push(rule.into());
+    pub fn push(mut self, statement: impl FastWritable) -> Self {
+        self.statements.fold_in_ws(statement);
         self
     }
 
@@ -58,57 +56,21 @@ impl<R: StylesheetRecipe> CssStylesheet<R> {
     }
 }
 
-impl<S: Into<CssStatement>, const N: usize> From<[S; N]> for CssStylesheet {
-    fn from(items: [S; N]) -> Self {
-        Self {
-            statements: items.into_iter().map(Into::into).collect(),
-            ..Default::default()
-        }
-    }
-}
-
-impl<S: Into<CssStatement>> From<Vec<S>> for CssStylesheet {
-    fn from(items: Vec<S>) -> Self {
-        Self {
-            statements: items.into_iter().map(Into::into).collect(),
-            ..Default::default()
-        }
-    }
-}
-
 impl<R: RuleRecipe> From<CssRule<R>> for CssStylesheet {
     fn from(rule: CssRule<R>) -> Self {
-        Self::new().push(rule)
+        Self {
+            statements: Bake::new(&rule),
+            ..Default::default()
+        }
     }
 }
 
 impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStylesheet {
     fn from(at_rule: CssAtRule<R>) -> Self {
-        Self::new().push(at_rule)
-    }
-}
-
-/// The [`CssRule`] and [`CssAtRule`] CSS statements.
-///
-/// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Syntax/Introduction#css_statements)
-#[derive(Debug, Clone, Template, Granola)]
-#[template(ext = "html", escape = "none")]
-pub enum CssStatement {
-    #[template(source = "{{ self.0 }}")]
-    Rule(CssRule),
-    #[template(source = "{{ self.0 }}")]
-    AtRule(CssAtRule),
-}
-
-impl<R: RuleRecipe> From<CssRule<R>> for CssStatement {
-    fn from(rule: CssRule<R>) -> Self {
-        Self::Rule(rule.bake_recipe())
-    }
-}
-
-impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
-    fn from(at_rule: CssAtRule<R>) -> Self {
-        Self::AtRule(at_rule.bake_recipe())
+        Self {
+            statements: Bake::new(&at_rule),
+            ..Default::default()
+        }
     }
 }
 
@@ -121,7 +83,7 @@ impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStatement {
 ///
 /// let at_rule = at_rule!("import", r#"url("layout.css")"#);
 ///
-/// let rule = rule!("p", ("color", "rebeccapurple"));
+/// let rule = rule!("p", declaration!("color", "rebeccapurple"));
 ///
 /// let css_stylesheet = stylesheet!(at_rule, rule);
 ///
@@ -134,14 +96,9 @@ macro_rules! stylesheet {
     () => {
         $crate::css::CssStylesheet::new()
     };
-
-    ($rule:expr $(,)?) => {
-        $crate::css::CssStylesheet::from($rule)
-    };
-    ($first:expr $(, $rest:expr)+ $(,)?) => {
-        $crate::css::CssStylesheet::from([
-            $crate::css::CssStatement::from($first)
-            $(, $crate::css::CssStatement::from($rest))*
-        ])
-    };
+    ($($statement:expr),+ $(,)?) => {{
+        let mut css_stylesheet = $crate::css::CssStylesheet::new();
+        css_stylesheet.statements = $crate::bake_ws![$($statement),+];
+        css_stylesheet
+    }};
 }

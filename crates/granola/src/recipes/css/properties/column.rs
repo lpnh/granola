@@ -17,7 +17,7 @@ pub struct Column;
 impl FlexDirectionRecipe for Column {
     recipe_boilerplate!(FlexDirectionRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "column".into();
+    fn content_recipe() -> Self::Content {
+        "column".into()
     }
 }

@@ -38,9 +38,3 @@ impl<R: ScrollMarginBlockRecipe> From<CssScrollMarginBlock<R>> for CssDeclaratio
         )
     }
 }
-
-impl<R: ScrollMarginBlockRecipe> From<CssScrollMarginBlock<R>> for CssDeclarationsBlock {
-    fn from(css_scroll_margin_block: CssScrollMarginBlock<R>) -> Self {
-        Self::new().push(css_scroll_margin_block)
-    }
-}

@@ -41,9 +41,3 @@ impl<R: InterpolateSizeRecipe> From<CssInterpolateSize<R>> for CssDeclaration {
         )
     }
 }
-
-impl<R: InterpolateSizeRecipe> From<CssInterpolateSize<R>> for CssDeclarationsBlock {
-    fn from(css_interpolate_size: CssInterpolateSize<R>) -> Self {
-        Self::new().push(css_interpolate_size)
-    }
-}

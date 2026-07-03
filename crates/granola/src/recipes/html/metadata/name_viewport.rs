@@ -18,7 +18,7 @@ use crate::prelude::*;
 pub struct NameViewport;
 
 impl MetaRecipe for NameViewport {
-    fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
-        meta_attrs.name("viewport");
+    fn specific_attrs_recipe() -> MetaAttrs {
+        MetaAttrs::default().name("viewport")
     }
 }

@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -69,7 +69,7 @@ pub struct HtmlTime<R: TimeRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TimeAttrs {
-    pub datetime: Option<Cow<'static, str>>,
+    pub datetime: Option<Bake>,
 }
 
 pub trait HasTimeAttrs: Sized {
@@ -78,7 +78,7 @@ pub trait HasTimeAttrs: Sized {
     /// Machine-readable datetime representation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
-    fn datetime(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn datetime(mut self, value: impl Into<Bake>) -> Self {
         self.time_attrs_mut().datetime = Some(value.into());
         self
     }

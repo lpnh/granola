@@ -35,9 +35,3 @@ impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclaration {
         Self::new("font-weight", css_font_weight.bake_recipe().content)
     }
 }
-
-impl<R: FontWeightRecipe> From<CssFontWeight<R>> for CssDeclarationsBlock {
-    fn from(css_font_weight: CssFontWeight<R>) -> Self {
-        Self::new().push(css_font_weight)
-    }
-}

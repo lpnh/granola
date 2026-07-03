@@ -21,11 +21,15 @@ use crate::{prelude::*, recipes::*};
 pub struct BStrongFontWeight;
 
 impl RuleRecipe for BStrongFontWeight {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.extend_mut(["b".into(), "strong".into()]);
+    fn selectors_list_recipe() -> Bake {
+        let mut selectors_list = Bake::default();
+        for selector in ["b", "strong"] {
+            selectors_list.fold_in_with(", ", selector);
+        }
+        selectors_list
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(CssFontWeight::from(Bolder));
+    fn declarations_block_recipe() -> Bake {
+        CssFontWeight::from(Bolder).into()
     }
 }

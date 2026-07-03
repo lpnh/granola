@@ -35,9 +35,3 @@ impl<R: BoxSizingRecipe> From<CssBoxSizing<R>> for CssDeclaration {
         Self::new("box-sizing", css_box_sizing.bake_recipe().content)
     }
 }
-
-impl<R: BoxSizingRecipe> From<CssBoxSizing<R>> for CssDeclarationsBlock {
-    fn from(css_box_sizing: CssBoxSizing<R>) -> Self {
-        Self::new().push(css_box_sizing)
-    }
-}

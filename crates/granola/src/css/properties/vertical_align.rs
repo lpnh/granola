@@ -35,9 +35,3 @@ impl<R: VerticalAlignRecipe> From<CssVerticalAlign<R>> for CssDeclaration {
         Self::new("vertical-align", css_vertical_align.bake_recipe().content)
     }
 }
-
-impl<R: VerticalAlignRecipe> From<CssVerticalAlign<R>> for CssDeclarationsBlock {
-    fn from(css_vertical_align: CssVerticalAlign<R>) -> Self {
-        Self::new().push(css_vertical_align)
-    }
-}

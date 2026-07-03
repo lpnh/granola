@@ -17,7 +17,7 @@ pub struct BreakWord;
 impl OverflowWrapRecipe for BreakWord {
     recipe_boilerplate!(OverflowWrapRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "break-word".into();
+    fn content_recipe() -> Self::Content {
+        "break-word".into()
     }
 }

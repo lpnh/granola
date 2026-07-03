@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
 use crate::prelude::*;
@@ -14,7 +14,7 @@ use crate::prelude::*;
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list("p")
-///     .declarations_block(("color", "rebeccapurple"));
+///     .push_property(("color", "rebeccapurple"));
 ///
 /// assert_eq!(css_rule.bake(), "p { color: rebeccapurple; }");
 /// ```
@@ -26,21 +26,20 @@ use crate::prelude::*;
 /// let css_selector_list = CssSelectorsList::new().push(css_selector);
 ///
 /// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-/// let css_declarations_block = CssDeclarationsBlock::new().push(css_declaration);
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list(css_selector_list)
-///     .declarations_block(css_declarations_block);
+///     .declarations_block(css_declaration);
 ///
 /// assert_eq!(css_rule.bake(), "p { color: rgb(102, 51, 153); }");
 /// ```
 ///
 /// ```rust
-/// use granola::prelude::*;
+/// use granola::{macros::*, prelude::*};
 ///
 /// let css_selector = ":root";
 ///
-/// let css_declarations_block = [
+/// let css_declarations_block = declarations_block![
 ///     ("--base-100", "oklch(93% 0.076 100.4)"),
 ///     ("--base-200", "oklch(90% 0.086 100.4)"),
 /// ];
@@ -70,39 +69,39 @@ use crate::prelude::*;
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssRule<R: RuleRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub selectors_list: CssSelectorsList,
-    pub declarations_block: CssDeclarationsBlock,
+    pub selectors_list: Bake,
+    pub declarations_block: Bake,
 }
 
 impl<R: RuleRecipe> CssRule<R> {
-    pub fn selectors_list(mut self, selectors_list: impl Into<CssSelectorsList>) -> Self {
-        self.selectors_list = selectors_list.into();
+    pub fn selectors_list<L: SelectorsListRecipe>(
+        mut self,
+        selectors_list: impl Into<CssSelectorsList<L>>,
+    ) -> Self {
+        self.selectors_list = selectors_list.into().selectors;
         self
     }
 
-    pub fn declarations_block(
-        mut self,
-        declarations_block: impl Into<CssDeclarationsBlock>,
-    ) -> Self {
+    pub fn declarations_block(mut self, declarations_block: impl Into<Bake>) -> Self {
         self.declarations_block = declarations_block.into();
         self
     }
 
-    pub fn push_selector(mut self, selector: impl Into<CssComplexSelector>) -> Self {
-        self.selectors_list = self.selectors_list.push(selector.into());
+    pub fn push_selector(mut self, selector: impl FastWritable) -> Self {
+        self.selectors_list.fold_in_with(", ", selector);
         self
     }
 
     pub fn push_property(mut self, declaration: impl Into<CssDeclaration>) -> Self {
-        self.declarations_block = self.declarations_block.push(declaration.into());
+        self.declarations_block.fold_in_ws(declaration.into());
         self
     }
 }
 
-impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for CssRule {
+impl<S: Into<CssSelectorsList>, D: Into<Bake>> From<(S, D)> for CssRule {
     fn from((css_selectors_list, css_declarations_block): (S, D)) -> Self {
         Self {
-            selectors_list: css_selectors_list.into(),
+            selectors_list: css_selectors_list.into().selectors,
             declarations_block: css_declarations_block.into(),
             ..Default::default()
         }
@@ -116,7 +115,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_rule = rule!("p", ("color", "rebeccapurple"));
+/// let css_rule = rule!("p", declaration!("color", "rebeccapurple"));
 ///
 /// assert_eq!(css_rule.bake(), "p { color: rebeccapurple; }");
 /// ```
@@ -126,7 +125,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 ///
 /// let css_rule = rule!()
 ///     .selectors_list("p")
-///     .declarations_block(("color", "rgb(102, 51, 153)"));
+///     .push_property(("color", "rgb(102, 51, 153)"));
 ///
 /// assert_eq!(css_rule.bake(), "p { color: rgb(102, 51, 153); }");
 /// ```
@@ -136,7 +135,7 @@ impl<S: Into<CssSelectorsList>, D: Into<CssDeclarationsBlock>> From<(S, D)> for 
 ///
 /// let css_rule = rule!(
 ///     ":root",
-///     [
+///     declarations_block![
 ///         ("--base-100", "oklch(93% 0.076 100.4)"),
 ///         ("--base-200", "oklch(90% 0.086 100.4)"),
 ///     ]

@@ -35,9 +35,3 @@ impl<R: TextIndentRecipe> From<CssTextIndent<R>> for CssDeclaration {
         Self::new("text-indent", css_text_indent.bake_recipe().content)
     }
 }
-
-impl<R: TextIndentRecipe> From<CssTextIndent<R>> for CssDeclarationsBlock {
-    fn from(css_text_indent: CssTextIndent<R>) -> Self {
-        Self::new().push(css_text_indent)
-    }
-}

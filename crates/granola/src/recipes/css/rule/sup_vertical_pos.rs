@@ -21,11 +21,11 @@ use crate::prelude::*;
 pub struct SupVerticalPos;
 
 impl RuleRecipe for SupVerticalPos {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("sup");
+    fn selectors_list_recipe() -> Bake {
+        "sup".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(CssTop::new().content("-0.5em"));
+    fn declarations_block_recipe() -> Bake {
+        CssTop::new().content("-0.5em").into()
     }
 }

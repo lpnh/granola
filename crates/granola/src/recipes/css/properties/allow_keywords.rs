@@ -20,7 +20,7 @@ pub struct AllowKeywords;
 impl InterpolateSizeRecipe for AllowKeywords {
     recipe_boilerplate!(InterpolateSizeRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "allow-keywords".into();
+    fn content_recipe() -> Self::Content {
+        "allow-keywords".into()
     }
 }

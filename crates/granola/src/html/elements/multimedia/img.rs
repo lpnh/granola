@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -60,14 +60,11 @@ pub struct HtmlImg<R: ImgRecipe = ()> {
 }
 
 impl HtmlImg {
-    pub fn from_src_alt(
-        src: impl Into<Cow<'static, str>>,
-        alt: impl Into<Cow<'static, str>>,
-    ) -> Self {
+    pub fn from_src_alt(src: impl Into<Bake>, alt: impl Into<Bake>) -> Self {
         Self::new().src(src).alt(alt)
     }
 
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -97,19 +94,19 @@ impl HtmlImg {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ImgAttrs {
-    pub src: Option<Cow<'static, str>>,
-    pub alt: Option<Cow<'static, str>>,
-    pub srcset: Option<Cow<'static, str>>,
-    pub sizes: Option<Cow<'static, str>>,
+    pub src: Option<Bake>,
+    pub alt: Option<Bake>,
+    pub srcset: Option<Bake>,
+    pub sizes: Option<Bake>,
     pub width: Option<u32>,
     pub height: Option<u32>,
-    pub loading: Option<Cow<'static, str>>,
-    pub decoding: Option<Cow<'static, str>>,
-    pub crossorigin: Option<Cow<'static, str>>,
-    pub elementtiming: Option<Cow<'static, str>>,
-    pub fetchpriority: Option<Cow<'static, str>>,
-    pub referrerpolicy: Option<Cow<'static, str>>,
-    pub usemap: Option<Cow<'static, str>>,
+    pub loading: Option<Bake>,
+    pub decoding: Option<Bake>,
+    pub crossorigin: Option<Bake>,
+    pub elementtiming: Option<Bake>,
+    pub fetchpriority: Option<Bake>,
+    pub referrerpolicy: Option<Bake>,
+    pub usemap: Option<Bake>,
     pub ismap: bool,
 }
 
@@ -119,7 +116,7 @@ pub trait HasImgAttrs: Sized {
     /// Replacement text for use when images are not available.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#alt)
-    fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn alt(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().alt = Some(value.into());
         self
     }
@@ -127,7 +124,7 @@ pub trait HasImgAttrs: Sized {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn crossorigin(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().crossorigin = Some(value.into());
         self
     }
@@ -135,7 +132,7 @@ pub trait HasImgAttrs: Sized {
     /// Decoding hint to use when processing this image for presentation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#decoding)
-    fn decoding(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn decoding(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().decoding = Some(value.into());
         self
     }
@@ -143,7 +140,7 @@ pub trait HasImgAttrs: Sized {
     /// Marks the image for observation by the `PerformanceElementTiming` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/elementtiming)
-    fn elementtiming(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn elementtiming(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().elementtiming = Some(value.into());
         self
     }
@@ -151,7 +148,7 @@ pub trait HasImgAttrs: Sized {
     /// Sets the priority for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)
-    fn fetchpriority(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn fetchpriority(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().fetchpriority = Some(value.into());
         self
     }
@@ -175,7 +172,7 @@ pub trait HasImgAttrs: Sized {
     /// Used when determining loading deferral.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#loading)
-    fn loading(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn loading(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().loading = Some(value.into());
         self
     }
@@ -183,7 +180,7 @@ pub trait HasImgAttrs: Sized {
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#referrerpolicy)
-    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn referrerpolicy(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
@@ -191,7 +188,7 @@ pub trait HasImgAttrs: Sized {
     /// Image sizes for different page layouts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#sizes)
-    fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn sizes(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().sizes = Some(value.into());
         self
     }
@@ -199,7 +196,7 @@ pub trait HasImgAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().src = Some(value.into());
         self
     }
@@ -208,7 +205,7 @@ pub trait HasImgAttrs: Sized {
     /// small monitors, etc.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#srcset)
-    fn srcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn srcset(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().srcset = Some(value.into());
         self
     }
@@ -224,7 +221,7 @@ pub trait HasImgAttrs: Sized {
     /// Name of image map to use.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#usemap)
-    fn usemap(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn usemap(mut self, value: impl Into<Bake>) -> Self {
         self.img_attrs_mut().usemap = Some(value.into());
         self
     }

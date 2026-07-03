@@ -22,14 +22,11 @@ use crate::{prelude::*, recipes::*};
 pub struct AllHeadingsFontReset;
 
 impl RuleRecipe for AllHeadingsFontReset {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        AllHeadings::selectors_recipe(&mut selectors_list.selectors);
+    fn selectors_list_recipe() -> Bake {
+        AllHeadings::selectors_recipe()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssFontSize::from(Inherit).into(),
-            CssFontWeight::from(Inherit).into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![CssFontSize::from(Inherit), CssFontWeight::from(Inherit),]
     }
 }

@@ -53,9 +53,3 @@ impl<R: MarginRecipe> From<CssMargin<R>> for CssDeclaration {
         Self::new("margin", css_margin.bake_recipe().content)
     }
 }
-
-impl<R: MarginRecipe> From<CssMargin<R>> for CssDeclarationsBlock {
-    fn from(css_margin: CssMargin<R>) -> Self {
-        Self::new().push(css_margin)
-    }
-}

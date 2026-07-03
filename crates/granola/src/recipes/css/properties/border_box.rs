@@ -17,7 +17,7 @@ pub struct BorderBox;
 impl BoxSizingRecipe for BorderBox {
     recipe_boilerplate!(BoxSizingRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "border-box".into();
+    fn content_recipe() -> Self::Content {
+        "border-box".into()
     }
 }

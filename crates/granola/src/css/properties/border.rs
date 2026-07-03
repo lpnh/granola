@@ -67,7 +67,7 @@ pub use border_width::*;
 // mod border_top_right_radius;
 // mod border_top_style;
 
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
@@ -100,7 +100,7 @@ pub struct CssBorder<R: BorderRecipe = ()> {
 }
 
 impl<R: BorderRecipe<Content = Bake>> CssBorder<R> {
-    pub fn fold_in(mut self, value: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, value: impl FastWritable) -> Self {
         self.content.fold_in_ws(value);
         self
     }
@@ -109,11 +109,5 @@ impl<R: BorderRecipe<Content = Bake>> CssBorder<R> {
 impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclaration {
     fn from(css_border: CssBorder<R>) -> Self {
         Self::new("border", css_border.bake_recipe().content)
-    }
-}
-
-impl<R: BorderRecipe> From<CssBorder<R>> for CssDeclarationsBlock {
-    fn from(css_border: CssBorder<R>) -> Self {
-        Self::new().push(css_border)
     }
 }

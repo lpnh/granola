@@ -17,7 +17,7 @@ pub struct MethodDialog;
 impl FormRecipe for MethodDialog {
     recipe_boilerplate!(FormRecipe);
 
-    fn specific_attrs_recipe(form_attrs: &mut FormAttrs) {
-        form_attrs.method(FormMethod::Dialog);
+    fn specific_attrs_recipe() -> FormAttrs {
+        FormAttrs::default().method(FormMethod::Dialog)
     }
 }

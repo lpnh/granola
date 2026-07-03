@@ -21,11 +21,11 @@ use crate::{prelude::*, recipes::*};
 pub struct SummaryDisplay;
 
 impl RuleRecipe for SummaryDisplay {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("summary");
+    fn selectors_list_recipe() -> Bake {
+        "summary".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(CssDisplay::from(ListItem));
+    fn declarations_block_recipe() -> Bake {
+        CssDisplay::from(ListItem).into()
     }
 }

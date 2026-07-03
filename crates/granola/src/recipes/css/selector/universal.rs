@@ -17,7 +17,7 @@ use crate::prelude::*;
 pub struct Universal;
 
 impl TypeSelectorRecipe for Universal {
-    fn selector_recipe(selector: &mut Cow<'static, str>) {
-        *selector = "*".into();
+    fn selector_recipe() -> Cow<'static, str> {
+        "*".into()
     }
 }

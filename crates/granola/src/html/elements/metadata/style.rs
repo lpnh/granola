@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -18,11 +18,14 @@ use crate::{filters, prelude::*};
 /// ```
 ///
 /// ```rust
-/// use granola::prelude::*;
+/// use granola::{macros::*, prelude::*};
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list("p")
-///     .declarations_block([("color", "violet"), ("font-weight", "lighter")]);
+///     .declarations_block(declarations_block![
+///         ("color", "violet"),
+///         ("font-weight", "lighter"),
+///     ]);
 ///
 /// let style = HtmlStyle::new().content(css_rule);
 ///
@@ -69,8 +72,8 @@ pub struct HtmlStyle<R: StyleRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct StyleAttrs {
-    pub blocking: Option<Cow<'static, str>>,
-    pub media: Option<Cow<'static, str>>,
+    pub blocking: Option<Bake>,
+    pub media: Option<Bake>,
 }
 
 pub trait HasStyleAttrs: Sized {
@@ -79,7 +82,7 @@ pub trait HasStyleAttrs: Sized {
     /// Whether the element is potentially render-blocking.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#blocking)
-    fn blocking(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn blocking(mut self, value: impl Into<Bake>) -> Self {
         self.style_attrs_mut().blocking = Some(value.into());
         self
     }
@@ -87,7 +90,7 @@ pub trait HasStyleAttrs: Sized {
     /// Applicable media.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/style#media)
-    fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn media(mut self, value: impl Into<Bake>) -> Self {
         self.style_attrs_mut().media = Some(value.into());
         self
     }
@@ -126,7 +129,10 @@ impl<R: StyleRecipe> HasStyleAttrs for HtmlStyle<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let css_rule = rule!("p", [("color", "violet"), ("font-weight", "lighter")]);
+/// let css_rule = rule!(
+///     "p",
+///     declarations_block![("color", "violet"), ("font-weight", "lighter")]
+/// );
 ///
 /// let style = style!(css_rule);
 ///

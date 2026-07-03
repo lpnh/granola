@@ -35,9 +35,3 @@ impl<R: PaddingBlockRecipe> From<CssPaddingBlock<R>> for CssDeclaration {
         Self::new("padding-block", css_padding_block.bake_recipe().content)
     }
 }
-
-impl<R: PaddingBlockRecipe> From<CssPaddingBlock<R>> for CssDeclarationsBlock {
-    fn from(css_padding_block: CssPaddingBlock<R>) -> Self {
-        Self::new().push(css_padding_block)
-    }
-}

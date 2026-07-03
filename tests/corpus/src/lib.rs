@@ -1,4 +1,4 @@
-use granola::{homemade::*, prelude::*, recipes::*};
+use granola::{homemade::*, macros::*, prelude::*, recipes::*};
 
 pub fn a() -> HtmlA {
     HtmlA::new().content("docs").href("https://askama.rs")
@@ -721,7 +721,8 @@ pub fn strong() -> HtmlStrong {
 pub fn style() -> HtmlStyle {
     let css_rule = CssRule::new()
         .selectors_list("p")
-        .declarations_block([("color", "violet"), ("font-weight", "lighter")]);
+        .push_property(("color", "violet"))
+        .push_property(("font-weight", "lighter"));
 
     HtmlStyle::new().content(css_rule)
 }
@@ -918,10 +919,8 @@ pub fn declaration() -> CssDeclaration {
     CssDeclaration::new("color", "rebeccapurple")
 }
 
-pub fn declarations_block() -> CssDeclarationsBlock {
-    CssDeclarationsBlock::new()
-        .push(("color", "violet"))
-        .push(("font-weight", "lighter"))
+pub fn declarations_block() -> Bake {
+    declarations_block![("color", "violet"), ("font-weight", "lighter")]
 }
 
 pub fn rule() -> CssRule {
@@ -929,11 +928,10 @@ pub fn rule() -> CssRule {
     let css_selector_list = CssSelectorsList::new().push(css_selector);
 
     let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
-    let css_declarations_block = CssDeclarationsBlock::new().push(css_declaration);
 
     CssRule::new()
         .selectors_list(css_selector_list)
-        .declarations_block(css_declarations_block)
+        .declarations_block(css_declaration)
 }
 
 pub fn stylesheet() -> CssStylesheet {
@@ -943,7 +941,7 @@ pub fn stylesheet() -> CssStylesheet {
 
     let rule = CssRule::new()
         .selectors_list("p")
-        .declarations_block(("color", "rebeccapurple"));
+        .push_property(("color", "rebeccapurple"));
 
     CssStylesheet::new().push(at_rule).push(rule)
 }
@@ -982,7 +980,8 @@ pub fn document_homemade() -> HtmlDocument<Homemade> {
 
     let css_rule = CssRule::new()
         .selectors_list("body")
-        .declarations_block([("height", "100vh"), ("margin", "0")]);
+        .push_property(("height", "100vh"))
+        .push_property(("margin", "0"));
     let style = HtmlStyle::new().content(css_rule);
 
     let body = HtmlBody::new().content("Hello, world!");

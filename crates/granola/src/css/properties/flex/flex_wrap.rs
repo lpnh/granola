@@ -35,9 +35,3 @@ impl<R: FlexWrapRecipe> From<CssFlexWrap<R>> for CssDeclaration {
         Self::new("flex-wrap", css_flex_wrap.bake_recipe().content)
     }
 }
-
-impl<R: FlexWrapRecipe> From<CssFlexWrap<R>> for CssDeclarationsBlock {
-    fn from(css_flex_wrap: CssFlexWrap<R>) -> Self {
-        Self::new().push(css_flex_wrap)
-    }
-}

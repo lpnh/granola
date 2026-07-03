@@ -35,9 +35,3 @@ impl<R: OverflowWrapRecipe> From<CssOverflowWrap<R>> for CssDeclaration {
         Self::new("overflow-wrap", css_overflow_wrap.bake_recipe().content)
     }
 }
-
-impl<R: OverflowWrapRecipe> From<CssOverflowWrap<R>> for CssDeclarationsBlock {
-    fn from(css_overflow_wrap: CssOverflowWrap<R>) -> Self {
-        Self::new().push(css_overflow_wrap)
-    }
-}

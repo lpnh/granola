@@ -49,63 +49,63 @@ pub struct None;
 impl BorderRecipe for None {
     recipe_boilerplate!(BorderRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl DisplayRecipe for None {
     recipe_boilerplate!(DisplayRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl BoxShadowRecipe for None {
     recipe_boilerplate!(BoxShadowRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl ListStyleRecipe for None {
     recipe_boilerplate!(ListStyleRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl TextDecorationRecipe for None {
     recipe_boilerplate!(TextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl TextSizeAdjustRecipe for None {
     recipe_boilerplate!(TextSizeAdjustRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl WebkitTextSizeAdjustRecipe for None {
     recipe_boilerplate!(WebkitTextSizeAdjustRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }
 
 impl WebkitTextDecorationRecipe for None {
     recipe_boilerplate!(WebkitTextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "none".into();
+    fn content_recipe() -> Self::Content {
+        "none".into()
     }
 }

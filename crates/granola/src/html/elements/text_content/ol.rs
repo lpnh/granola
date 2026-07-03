@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -77,7 +77,7 @@ pub struct HtmlOl<R: OlRecipe = ()> {
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OlAttrs {
     pub start: Option<i32>,
-    pub list_type: Option<Cow<'static, str>>,
+    pub list_type: Option<Bake>,
     pub reversed: bool,
 }
 
@@ -103,7 +103,7 @@ pub trait HasOlAttrs: Sized {
     /// Kind of list marker.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ol#type)
-    fn list_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn list_type(mut self, value: impl Into<Bake>) -> Self {
         self.ol_attrs_mut().list_type = Some(value.into());
         self
     }

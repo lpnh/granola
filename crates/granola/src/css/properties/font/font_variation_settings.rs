@@ -41,9 +41,3 @@ impl<R: FontVariationSettingsRecipe> From<CssFontVariationSettings<R>> for CssDe
         )
     }
 }
-
-impl<R: FontVariationSettingsRecipe> From<CssFontVariationSettings<R>> for CssDeclarationsBlock {
-    fn from(css_font_variation_settings: CssFontVariationSettings<R>) -> Self {
-        Self::new().push(css_font_variation_settings)
-    }
-}

@@ -24,16 +24,16 @@ use crate::{prelude::*, recipes::*};
 pub struct UniversalReset;
 
 impl RuleRecipe for UniversalReset {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        UniversalSelectorsExt::selectors_recipe(&mut selectors_list.selectors);
+    fn selectors_list_recipe() -> Bake {
+        UniversalSelectorsExt::selectors_recipe()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssBoxSizing::from(BorderBox).into(),
-            CssMargin::new().content("0").into(),
-            CssPadding::new().content("0").into(),
-            CssBorder::new().fold_in("0").fold_in("solid").into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssBoxSizing::from(BorderBox),
+            CssMargin::new().content("0"),
+            CssPadding::new().content("0"),
+            CssBorder::new().fold_in("0").fold_in("solid"),
+        ]
     }
 }

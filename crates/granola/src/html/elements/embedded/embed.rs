@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -58,7 +58,7 @@ pub struct HtmlEmbed<R: EmbedRecipe = ()> {
 }
 
 impl HtmlEmbed {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -78,8 +78,8 @@ impl HtmlEmbed {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct EmbedAttrs {
-    pub mime_type: Option<Cow<'static, str>>,
-    pub src: Option<Cow<'static, str>>,
+    pub mime_type: Option<Bake>,
+    pub src: Option<Bake>,
     pub width: Option<u32>,
     pub height: Option<u32>,
 }
@@ -98,7 +98,7 @@ pub trait HasEmbedAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.embed_attrs_mut().src = Some(value.into());
         self
     }
@@ -108,7 +108,7 @@ pub trait HasEmbedAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/embed#type)
     ///
     /// See [`MimeType`]
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn mime_type(mut self, value: impl Into<Bake>) -> Self {
         self.embed_attrs_mut().mime_type = Some(value.into());
         self
     }

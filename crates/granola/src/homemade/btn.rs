@@ -115,106 +115,87 @@ pub struct Btn;
 impl ButtonRecipe for Btn {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("btn");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("btn")
     }
 }
 
 impl ButtonRecipe for BtnPrimary {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("btn-primary");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("btn-primary")
     }
 }
 
 impl ButtonRecipe for BtnGhost {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("btn-ghost");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("btn-ghost")
     }
 }
 
 impl ButtonRecipe for BtnSquare {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("btn-square");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("btn-square")
     }
 }
 
 impl StylesheetRecipe for Btn {
-    fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.extend([
-            CssRule::from(Btn).into(),
-            CssRule::from(BtnHover).into(),
-            CssRule::from(BtnActive).into(),
-            CssRule::from(BtnFocusVisible).into(),
-            CssRule::from(BtnPrimary).into(),
-            CssRule::from(BtnGhost).into(),
-            CssRule::from(BtnSquare).into(),
-        ])
+    fn statements_recipe() -> Bake {
+        bake_ws![
+            CssRule::from(Btn),
+            CssRule::from(BtnHover),
+            CssRule::from(BtnActive),
+            CssRule::from(BtnFocusVisible),
+            CssRule::from(BtnPrimary),
+            CssRule::from(BtnGhost),
+            CssRule::from(BtnSquare),
+        ]
     }
 }
 
 impl SimpleSelectorRecipe for Btn {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn".into();
+    fn selector_recipe() -> Bake {
+        ".btn".into()
     }
 }
 
 impl RuleRecipe for Btn {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(CssSimpleSelector::<Self>::from_cookbook());
+    fn selectors_list_recipe() -> Bake {
+        CssSimpleSelector::<Self>::from_cookbook().into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssDisplay::new().fold_in("inline").fold_in("flex").into(),
-            CssAlignItems::from(Center).into(),
-            CssJustifyContent::from(Center).into(),
-            CssPadding::new().content("0.6em 1.2em").into(),
-            CssHeight::new()
-                .content(CssFnVar::new().custom_property(BTN_SIZE))
-                .into(),
-            CssFontSize::new().content("0.875rem").into(),
-            CssFontWeight::new().content("500").into(),
-            CssLineHeight::new().content("1.25rem").into(),
-            CssTextDecoration::from(None).into(),
-            CssWhiteSpace::from(Nowrap).into(),
-            CssBorder::new().content("1px solid").into(),
-            CssBorderColor::new()
-                .content(CssFnVar::new().custom_property(BTN_BORDER))
-                .into(),
-            CssBorderRadius::new().content("0.5em").into(),
-            CssBackgroundColor::new()
-                .content(CssFnVar::new().custom_property(BTN_BG))
-                .into(),
-            CssColor::new()
-                .content(CssFnVar::new().custom_property(BTN_FG))
-                .into(),
-            CssCursor::from(Pointer).into(),
-            CssTransition::new()
-                .content("background-color 150ms ease")
-                .into(),
-            CssCustomProperty::new()
-                .name("btn-size")
-                .value("2.5rem")
-                .into(),
-            CssCustomProperty::from(BtnBg)
-                .value(btn_color_or_surface())
-                .into(),
-            CssCustomProperty::from(BtnBorder)
-                .value(color_mix_darken(
-                    CssFnVar::new().custom_property(BTN_BG),
-                    "5%",
-                ))
-                .into(),
-            CssCustomProperty::from(BtnFg)
-                .value(CssFnVar::from(ColorText))
-                .into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssDisplay::new().fold_in("inline").fold_in("flex"),
+            CssAlignItems::from(Center),
+            CssJustifyContent::from(Center),
+            CssPadding::new().content("0.6em 1.2em"),
+            CssHeight::new().content(CssFnVar::new().custom_property(BTN_SIZE)),
+            CssFontSize::new().content("0.875rem"),
+            CssFontWeight::new().content("500"),
+            CssLineHeight::new().content("1.25rem"),
+            CssTextDecoration::from(None),
+            CssWhiteSpace::from(Nowrap),
+            CssBorder::new().content("1px solid"),
+            CssBorderColor::new().content(CssFnVar::new().custom_property(BTN_BORDER)),
+            CssBorderRadius::new().content("0.5em"),
+            CssBackgroundColor::new().content(CssFnVar::new().custom_property(BTN_BG)),
+            CssColor::new().content(CssFnVar::new().custom_property(BTN_FG)),
+            CssCursor::from(Pointer),
+            CssTransition::new().content("background-color 150ms ease"),
+            CssCustomProperty::new().name("btn-size").value("2.5rem"),
+            CssCustomProperty::from(BtnBg).value(btn_color_or_surface()),
+            CssCustomProperty::from(BtnBorder).value(color_mix_darken(
+                CssFnVar::new().custom_property(BTN_BG),
+                "5%",
+            )),
+            CssCustomProperty::from(BtnFg).value(CssFnVar::from(ColorText)),
+        ]
     }
 }
 
@@ -242,24 +223,24 @@ impl RuleRecipe for Btn {
 pub struct BtnHover;
 
 impl SimpleSelectorRecipe for BtnHover {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn:hover".into();
+    fn selector_recipe() -> Bake {
+        ".btn:hover".into()
     }
 }
 
 impl RuleRecipe for BtnHover {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(CssSimpleSelector::<Self>::from_cookbook());
+    fn selectors_list_recipe() -> Bake {
+        CssSimpleSelector::<Self>::from_cookbook().into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(
-            CssCustomProperty::from(BtnBg).value(
+    fn declarations_block_recipe() -> Bake {
+        CssCustomProperty::from(BtnBg)
+            .value(
                 CssFnVar::new()
                     .custom_property(BTN_HOVER_BG)
                     .fallback(color_mix_darken(btn_color_or_surface(), "7%")),
-            ),
-        );
+            )
+            .into()
     }
 }
 
@@ -292,34 +273,30 @@ impl RuleRecipe for BtnHover {
 pub struct BtnActive;
 
 impl SimpleSelectorRecipe for BtnActive {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn:active".into();
+    fn selector_recipe() -> Bake {
+        ".btn:active".into()
     }
 }
 
 impl RuleRecipe for BtnActive {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
+    fn selectors_list_recipe() -> Bake {
+        CssSimpleSelector::<Self>::from_cookbook().into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![
-            CssCustomProperty::from(BtnBg)
-                .value(
-                    CssFnVar::new()
-                        .custom_property(BTN_ACTIVE_BG)
-                        .fallback(color_mix_darken(btn_color_or_surface(), "5%")),
-                )
-                .into(),
-            CssCustomProperty::from(BtnBorder)
-                .value(
-                    CssFnVar::new()
-                        .custom_property(BTN_ACTIVE_BORDER)
-                        .fallback(color_mix_darken(btn_color_or_surface(), "7%")),
-                )
-                .into(),
-            CssTransform::new().content("scale(0.97)").into(),
-        ];
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssCustomProperty::from(BtnBg).value(
+                CssFnVar::new()
+                    .custom_property(BTN_ACTIVE_BG)
+                    .fallback(color_mix_darken(btn_color_or_surface(), "5%")),
+            ),
+            CssCustomProperty::from(BtnBorder).value(
+                CssFnVar::new()
+                    .custom_property(BTN_ACTIVE_BORDER)
+                    .fallback(color_mix_darken(btn_color_or_surface(), "7%")),
+            ),
+            CssTransform::new().content("scale(0.97)"),
+        ]
     }
 }
 
@@ -347,23 +324,23 @@ impl RuleRecipe for BtnActive {
 pub struct BtnFocusVisible;
 
 impl SimpleSelectorRecipe for BtnFocusVisible {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn:focus-visible".into();
+    fn selector_recipe() -> Bake {
+        ".btn:focus-visible".into()
     }
 }
 
 impl RuleRecipe for BtnFocusVisible {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        *selectors_list = CssSimpleSelector::<Self>::from_cookbook().into();
+    fn selectors_list_recipe() -> Bake {
+        CssSimpleSelector::<Self>::from_cookbook().into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.declarations = vec![
-            CssOutlineWidth::new().content("2px").into(),
-            CssOutlineStyle::from(Solid).into(),
-            CssOutlineColor::new().content(btn_color_or_text()).into(),
-            CssOutlineOffset::new().content("2px").into(),
-        ];
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssOutlineWidth::new().content("2px"),
+            CssOutlineStyle::from(Solid),
+            CssOutlineColor::new().content(btn_color_or_text()),
+            CssOutlineOffset::new().content("2px"),
+        ]
     }
 }
 
@@ -389,26 +366,23 @@ impl RuleRecipe for BtnFocusVisible {
 pub struct BtnPrimary;
 
 impl RuleRecipe for BtnPrimary {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(CssSimpleSelector::<Self>::from_cookbook());
+    fn selectors_list_recipe() -> Bake {
+        CssSimpleSelector::<Self>::from_cookbook().into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
             CssCustomProperty::new()
                 .name(BTN_COLOR)
-                .value(CssFnVar::from(ColorPrimary))
-                .into(),
-            CssCustomProperty::from(BtnFg)
-                .value(CssFnVar::from(ColorPrimaryText))
-                .into(),
-        ]);
+                .value(CssFnVar::from(ColorPrimary)),
+            CssCustomProperty::from(BtnFg).value(CssFnVar::from(ColorPrimaryText)),
+        ]
     }
 }
 
 impl SimpleSelectorRecipe for BtnPrimary {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn-primary".into();
+    fn selector_recipe() -> Bake {
+        ".btn-primary".into()
     }
 }
 
@@ -446,34 +420,31 @@ impl SimpleSelectorRecipe for BtnPrimary {
 pub struct BtnGhost;
 
 impl RuleRecipe for BtnGhost {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(CssSimpleSelector::<Self>::from_cookbook());
+    fn selectors_list_recipe() -> Bake {
+        bake![CssSimpleSelector::<Self>::from_cookbook()]
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssColor::new().content(btn_color_or_text()).into(),
-            CssCustomProperty::from(BtnBg).value("#0000").into(),
-            CssCustomProperty::from(BtnBorder).value("#0000").into(),
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssColor::new().content(btn_color_or_text()),
+            CssCustomProperty::from(BtnBg).value("#0000"),
+            CssCustomProperty::from(BtnBorder).value("#0000"),
             CssCustomProperty::new()
                 .name(BTN_HOVER_BG)
-                .value(color_mix_fade("10%"))
-                .into(),
+                .value(color_mix_fade("10%")),
             CssCustomProperty::new()
                 .name("btn-active-bg")
-                .value(color_mix_fade("20%"))
-                .into(),
+                .value(color_mix_fade("20%")),
             CssCustomProperty::new()
                 .name(BTN_ACTIVE_BORDER)
                 .value("#0000")
-                .into(),
-        ]);
+        ]
     }
 }
 
 impl SimpleSelectorRecipe for BtnGhost {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn-ghost".into();
+    fn selector_recipe() -> Bake {
+        ".btn-ghost".into()
     }
 }
 
@@ -499,20 +470,21 @@ impl SimpleSelectorRecipe for BtnGhost {
 pub struct BtnSquare;
 
 impl RuleRecipe for BtnSquare {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(CssSimpleSelector::<Self>::from_cookbook());
+    fn selectors_list_recipe() -> Bake {
+        bake![CssSimpleSelector::<Self>::from_cookbook()]
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block
-            .push_mut(CssPadding::new().content("0"))
-            .push_mut(CssWidth::new().content(CssFnVar::new().custom_property(BTN_SIZE)));
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssPadding::new().content("0"),
+            CssWidth::new().content(CssFnVar::new().custom_property(BTN_SIZE)),
+        ]
     }
 }
 
 impl SimpleSelectorRecipe for BtnSquare {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = ".btn-square".into();
+    fn selector_recipe() -> Bake {
+        ".btn-square".into()
     }
 }
 
@@ -531,8 +503,8 @@ impl SimpleSelectorRecipe for BtnSquare {
 pub struct BtnBg;
 
 impl CustomPropertyRecipe for BtnBg {
-    fn name_recipe(name: &mut Bake) {
-        *name = BTN_BG.into();
+    fn name_recipe() -> Bake {
+        BTN_BG.into()
     }
 }
 
@@ -551,8 +523,8 @@ impl CustomPropertyRecipe for BtnBg {
 pub struct BtnFg;
 
 impl CustomPropertyRecipe for BtnFg {
-    fn name_recipe(name: &mut Bake) {
-        *name = BTN_FG.into();
+    fn name_recipe() -> Bake {
+        BTN_FG.into()
     }
 }
 
@@ -571,8 +543,8 @@ impl CustomPropertyRecipe for BtnFg {
 pub struct BtnBorder;
 
 impl CustomPropertyRecipe for BtnBorder {
-    fn name_recipe(name: &mut Bake) {
-        *name = BTN_BORDER.into();
+    fn name_recipe() -> Bake {
+        BTN_BORDER.into()
     }
 }
 

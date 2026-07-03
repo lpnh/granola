@@ -17,15 +17,15 @@ pub struct Underline;
 impl TextDecorationRecipe for Underline {
     recipe_boilerplate!(TextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "underline".into();
+    fn content_recipe() -> Self::Content {
+        "underline".into()
     }
 }
 
 impl WebkitTextDecorationRecipe for Underline {
     recipe_boilerplate!(WebkitTextDecorationRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "underline".into();
+    fn content_recipe() -> Self::Content {
+        "underline".into()
     }
 }

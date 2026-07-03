@@ -35,9 +35,3 @@ impl<R: BorderCollapseRecipe> From<CssBorderCollapse<R>> for CssDeclaration {
         Self::new("border-collapse", css_border_collapse.bake_recipe().content)
     }
 }
-
-impl<R: BorderCollapseRecipe> From<CssBorderCollapse<R>> for CssDeclarationsBlock {
-    fn from(css_border_collapse: CssBorderCollapse<R>) -> Self {
-        Self::new().push(css_border_collapse)
-    }
-}

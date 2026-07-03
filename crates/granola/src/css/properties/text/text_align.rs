@@ -35,9 +35,3 @@ impl<R: TextAlignRecipe> From<CssTextAlign<R>> for CssDeclaration {
         Self::new("text-align", css_text_align.bake_recipe().content)
     }
 }
-
-impl<R: TextAlignRecipe> From<CssTextAlign<R>> for CssDeclarationsBlock {
-    fn from(css_text_align: CssTextAlign<R>) -> Self {
-        Self::new().push(css_text_align)
-    }
-}

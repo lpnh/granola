@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -66,7 +66,7 @@ pub struct HtmlTd<R: TdRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TdAttrs {
-    pub headers: Option<Cow<'static, str>>,
+    pub headers: Option<Bake>,
     pub colspan: Option<u32>,
     pub rowspan: Option<u32>,
 }
@@ -85,7 +85,7 @@ pub trait HasTdAttrs: Sized {
     /// The header cells for this cell.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/td#headers)
-    fn headers(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn headers(mut self, value: impl Into<Bake>) -> Self {
         self.td_attrs_mut().headers = Some(value.into());
         self
     }

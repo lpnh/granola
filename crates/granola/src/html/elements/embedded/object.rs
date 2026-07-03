@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -76,12 +76,12 @@ pub struct HtmlObject<R: ObjectRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ObjectAttrs {
-    pub mime_type: Option<Cow<'static, str>>,
-    pub data: Option<Cow<'static, str>>,
+    pub mime_type: Option<Bake>,
+    pub data: Option<Bake>,
     pub width: Option<u32>,
     pub height: Option<u32>,
-    pub form: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
+    pub form: Option<Bake>,
+    pub name: Option<Bake>,
 }
 
 pub trait HasObjectAttrs: Sized {
@@ -90,7 +90,7 @@ pub trait HasObjectAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#data)
-    fn data(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn data(mut self, value: impl Into<Bake>) -> Self {
         self.object_attrs_mut().data = Some(value.into());
         self
     }
@@ -98,7 +98,7 @@ pub trait HasObjectAttrs: Sized {
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn form(mut self, value: impl Into<Bake>) -> Self {
         self.object_attrs_mut().form = Some(value.into());
         self
     }
@@ -114,7 +114,7 @@ pub trait HasObjectAttrs: Sized {
     /// Name of content navigable.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.object_attrs_mut().name = Some(value.into());
         self
     }
@@ -124,7 +124,7 @@ pub trait HasObjectAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#type)
     ///
     /// See [`MimeType`]
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn mime_type(mut self, value: impl Into<Bake>) -> Self {
         self.object_attrs_mut().mime_type = Some(value.into());
         self
     }

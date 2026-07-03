@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -53,7 +53,7 @@ pub struct HtmlOption<R: OptionRecipe = ()> {
 }
 
 impl HtmlOption {
-    pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_value(value: impl Into<Bake>) -> Self {
         Self::new().value(value)
     }
 }
@@ -73,8 +73,8 @@ impl HtmlOption {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OptionAttrs {
-    pub label: Option<Cow<'static, str>>,
-    pub value: Option<Cow<'static, str>>,
+    pub label: Option<Bake>,
+    pub value: Option<Bake>,
     pub disabled: bool,
     pub selected: bool,
 }
@@ -93,7 +93,7 @@ pub trait HasOptionAttrs: Sized {
     /// User-visible label.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#label)
-    fn label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn label(mut self, value: impl Into<Bake>) -> Self {
         self.option_attrs_mut().label = Some(value.into());
         self
     }
@@ -109,7 +109,7 @@ pub trait HasOptionAttrs: Sized {
     /// Value to be used for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/option#value)
-    fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn value(mut self, value: impl Into<Bake>) -> Self {
         self.option_attrs_mut().value = Some(value.into());
         self
     }

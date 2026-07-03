@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -61,7 +61,7 @@ pub struct HtmlSlot<R: SlotRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SlotAttrs {
-    pub name: Option<Cow<'static, str>>,
+    pub name: Option<Bake>,
 }
 
 pub trait HasSlotAttrs: Sized {
@@ -70,7 +70,7 @@ pub trait HasSlotAttrs: Sized {
     /// Name of shadow tree slot.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/slot#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.slot_attrs_mut().name = Some(value.into());
         self
     }

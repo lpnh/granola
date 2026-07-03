@@ -28,23 +28,23 @@ pub struct Auto;
 impl HeightRecipe for Auto {
     recipe_boilerplate!(HeightRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "auto".into();
+    fn content_recipe() -> Self::Content {
+        "auto".into()
     }
 }
 
 impl TextDecorationSkipInkRecipe for Auto {
     recipe_boilerplate!(TextDecorationSkipInkRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "auto".into();
+    fn content_recipe() -> Self::Content {
+        "auto".into()
     }
 }
 
 impl OutlineRecipe for Auto {
     recipe_boilerplate!(OutlineRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "auto".into();
+    fn content_recipe() -> Self::Content {
+        "auto".into()
     }
 }

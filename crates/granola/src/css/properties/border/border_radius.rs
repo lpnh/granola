@@ -35,9 +35,3 @@ impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclaration {
         Self::new("border-radius", css_border_radius.bake_recipe().content)
     }
 }
-
-impl<R: BorderRadiusRecipe> From<CssBorderRadius<R>> for CssDeclarationsBlock {
-    fn from(css_border_radius: CssBorderRadius<R>) -> Self {
-        Self::new().push(css_border_radius)
-    }
-}

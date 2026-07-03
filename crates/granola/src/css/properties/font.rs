@@ -48,9 +48,3 @@ impl<R: FontRecipe> From<CssFont<R>> for CssDeclaration {
         Self::new("font", css_font.bake_recipe().content)
     }
 }
-
-impl<R: FontRecipe> From<CssFont<R>> for CssDeclarationsBlock {
-    fn from(css_font: CssFont<R>) -> Self {
-        Self::new().push(css_font)
-    }
-}

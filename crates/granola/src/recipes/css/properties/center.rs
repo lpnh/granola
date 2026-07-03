@@ -25,23 +25,23 @@ pub struct Center;
 impl AlignItemsRecipe for Center {
     recipe_boilerplate!(AlignItemsRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "center".into();
+    fn content_recipe() -> Self::Content {
+        "center".into()
     }
 }
 
 impl JustifyContentRecipe for Center {
     recipe_boilerplate!(JustifyContentRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "center".into();
+    fn content_recipe() -> Self::Content {
+        "center".into()
     }
 }
 
 impl TextAlignRecipe for Center {
     recipe_boilerplate!(TextAlignRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "center".into();
+    fn content_recipe() -> Self::Content {
+        "center".into()
     }
 }

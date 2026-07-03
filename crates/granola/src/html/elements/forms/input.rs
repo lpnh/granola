@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -70,15 +70,15 @@ pub struct HtmlInput<R: InputRecipe = ()> {
 }
 
 impl HtmlInput {
-    pub fn from_name(name: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_name(name: impl Into<Bake>) -> Self {
         Self::new().name(name)
     }
 
-    pub fn from_value(value: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_value(value: impl Into<Bake>) -> Self {
         Self::new().value(value)
     }
 
-    pub fn from_type(input_type: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_type(input_type: impl Into<Bake>) -> Self {
         Self::new().input_type(input_type)
     }
 }
@@ -128,62 +128,62 @@ impl HtmlInput {
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct InputAttrs {
     /// Available for all input types.
-    pub input_type: Option<Cow<'static, str>>,
+    pub input_type: Option<Bake>,
     /// Available for all input types.
-    pub name: Option<Cow<'static, str>>,
+    pub name: Option<Bake>,
     /// Available for all input types.
-    pub form: Option<Cow<'static, str>>,
+    pub form: Option<Bake>,
     /// Available for all input types except image.
-    pub value: Option<Cow<'static, str>>,
+    pub value: Option<Bake>,
     /// Available for all input types except checkbox, radio, and button.
-    pub autocomplete: Option<Cow<'static, str>>,
+    pub autocomplete: Option<Bake>,
     /// Available for all input types except hidden, password, checkbox, radio,
     /// and button.
-    pub list: Option<Cow<'static, str>>,
+    pub list: Option<Bake>,
     /// Available for text, search, url, tel, email, password, and number input
     /// types.
-    pub placeholder: Option<Cow<'static, str>>,
+    pub placeholder: Option<Bake>,
     /// Available for date, month, week, time, datetime-local, number, and range
     /// input types.
-    pub min: Option<Cow<'static, str>>,
+    pub min: Option<Bake>,
     /// Available for date, month, week, time, datetime-local, number, and range
     /// input types.
-    pub max: Option<Cow<'static, str>>,
+    pub max: Option<Bake>,
     /// Available for date, month, week, time, datetime-local, number, and range
     /// input types.
-    pub step: Option<Cow<'static, str>>,
+    pub step: Option<Bake>,
     /// Available for text, search, url, tel, email, and password input types.
     pub minlength: Option<u32>,
     /// Available for text, search, url, tel, email, and password input types.
     pub maxlength: Option<u32>,
     /// Available for text, search, url, tel, email, and password input types.
-    pub pattern: Option<Cow<'static, str>>,
+    pub pattern: Option<Bake>,
     /// Available for text, search, url, tel, email, and password input types.
     pub size: Option<u32>,
     /// Available for hidden, text, search, url, tel, and email input types.
-    pub dirname: Option<Cow<'static, str>>,
+    pub dirname: Option<Bake>,
     /// Available for the image and submit input types.
-    pub formaction: Option<Cow<'static, str>>,
+    pub formaction: Option<Bake>,
     /// Available for the image and submit input types.
-    pub formenctype: Option<Cow<'static, str>>,
+    pub formenctype: Option<Bake>,
     /// Available for the image and submit input types.
-    pub formmethod: Option<Cow<'static, str>>,
+    pub formmethod: Option<Bake>,
     /// Available for the image and submit input types.
-    pub formtarget: Option<Cow<'static, str>>,
+    pub formtarget: Option<Bake>,
     /// Available for the button input type.
-    pub popovertarget: Option<Cow<'static, str>>,
+    pub popovertarget: Option<Bake>,
     /// Available for the button input type.
-    pub popovertargetaction: Option<Cow<'static, str>>,
+    pub popovertargetaction: Option<Bake>,
     /// Available for the image input type.
-    pub src: Option<Cow<'static, str>>,
+    pub src: Option<Bake>,
     /// Available for the image input type.
-    pub alt: Option<Cow<'static, str>>,
+    pub alt: Option<Bake>,
     /// Available for the image input type.
     pub width: Option<u32>,
     /// Available for the image input type.
     pub height: Option<u32>,
     /// Available for the file input type.
-    pub accept: Option<Cow<'static, str>>,
+    pub accept: Option<Bake>,
     /// Available for the color input type.
     pub alpha: bool,
     /// Available for the email and file input types.
@@ -207,7 +207,7 @@ pub trait HasInputAttrs: Sized {
     /// Hint for expected file type in file upload controls.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/accept)
-    fn accept(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn accept(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().accept = Some(value.into());
         self
     }
@@ -223,7 +223,7 @@ pub trait HasInputAttrs: Sized {
     /// Replacement text for use when images are not available.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#alt)
-    fn alt(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn alt(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().alt = Some(value.into());
         self
     }
@@ -231,7 +231,7 @@ pub trait HasInputAttrs: Sized {
     /// Hint for form autofill feature.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
-    fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn autocomplete(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().autocomplete = Some(value.into());
         self
     }
@@ -252,7 +252,7 @@ pub trait HasInputAttrs: Sized {
     /// form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/dirname)
-    fn dirname(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn dirname(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().dirname = Some(value.into());
         self
     }
@@ -268,7 +268,7 @@ pub trait HasInputAttrs: Sized {
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn form(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().form = Some(value.into());
         self
     }
@@ -276,7 +276,7 @@ pub trait HasInputAttrs: Sized {
     /// URL to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#formaction)
-    fn formaction(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn formaction(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().formaction = Some(value.into());
         self
     }
@@ -284,7 +284,7 @@ pub trait HasInputAttrs: Sized {
     /// Entry list encoding type to use for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#formenctype)
-    fn formenctype(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn formenctype(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().formenctype = Some(value.into());
         self
     }
@@ -308,7 +308,7 @@ pub trait HasInputAttrs: Sized {
     /// Navigable for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#formtarget)
-    fn formtarget(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn formtarget(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().formtarget = Some(value.into());
         self
     }
@@ -324,7 +324,7 @@ pub trait HasInputAttrs: Sized {
     /// List of autocomplete options.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#list)
-    fn list(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn list(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().list = Some(value.into());
         self
     }
@@ -332,7 +332,7 @@ pub trait HasInputAttrs: Sized {
     /// Defines the greatest value in the range of permitted values.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/max)
-    fn max(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn max(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().max = Some(value.into());
         self
     }
@@ -348,7 +348,7 @@ pub trait HasInputAttrs: Sized {
     /// Defines the most negative value in the range of permitted value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/min)
-    fn min(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn min(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().min = Some(value.into());
         self
     }
@@ -373,7 +373,7 @@ pub trait HasInputAttrs: Sized {
     /// API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().name = Some(value.into());
         self
     }
@@ -381,7 +381,7 @@ pub trait HasInputAttrs: Sized {
     /// Pattern to be matched by the form control's value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/pattern)
-    fn pattern(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn pattern(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().pattern = Some(value.into());
         self
     }
@@ -389,7 +389,7 @@ pub trait HasInputAttrs: Sized {
     /// User-visible label to be placed within the form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder)
-    fn placeholder(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn placeholder(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().placeholder = Some(value.into());
         self
     }
@@ -397,7 +397,7 @@ pub trait HasInputAttrs: Sized {
     /// Targets a popover element to toggle, show, or hide.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#popovertarget)
-    fn popovertarget(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn popovertarget(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().popovertarget = Some(value.into());
         self
     }
@@ -406,7 +406,7 @@ pub trait HasInputAttrs: Sized {
     /// hidden.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#popovertargetaction)
-    fn popovertargetaction(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn popovertargetaction(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().popovertargetaction = Some(value.into());
         self
     }
@@ -438,7 +438,7 @@ pub trait HasInputAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().src = Some(value.into());
         self
     }
@@ -446,7 +446,7 @@ pub trait HasInputAttrs: Sized {
     /// Granularity to be matched by the form control's value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/step)
-    fn step(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn step(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().step = Some(value.into());
         self
     }
@@ -456,7 +456,7 @@ pub trait HasInputAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#input_types)
     ///
     /// See [`InputType`]
-    fn input_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn input_type(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().input_type = Some(value.into());
         self
     }
@@ -464,7 +464,7 @@ pub trait HasInputAttrs: Sized {
     /// Value of the form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#value)
-    fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn value(mut self, value: impl Into<Bake>) -> Self {
         self.input_attrs_mut().value = Some(value.into());
         self
     }
@@ -524,7 +524,7 @@ pub enum InputType {
     Week,
 }
 
-impl From<InputType> for Cow<'static, str> {
+impl From<InputType> for Bake {
     fn from(input_type: InputType) -> Self {
         <&'static str>::from(input_type).into()
     }

@@ -35,9 +35,3 @@ impl<R: MinHeightRecipe> From<CssMinHeight<R>> for CssDeclaration {
         Self::new("min-height", css_min_height.bake_recipe().content)
     }
 }
-
-impl<R: MinHeightRecipe> From<CssMinHeight<R>> for CssDeclarationsBlock {
-    fn from(css_min_height: CssMinHeight<R>) -> Self {
-        Self::new().push(css_min_height)
-    }
-}

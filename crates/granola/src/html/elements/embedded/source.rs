@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -53,7 +53,7 @@ pub struct HtmlSource<R: SourceRecipe = ()> {
 }
 
 impl HtmlSource {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -76,13 +76,13 @@ impl HtmlSource {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SourceAttrs {
-    pub src: Option<Cow<'static, str>>,
-    pub srcset: Option<Cow<'static, str>>,
-    pub media: Option<Cow<'static, str>>,
+    pub src: Option<Bake>,
+    pub srcset: Option<Bake>,
+    pub media: Option<Bake>,
     pub width: Option<u32>,
     pub height: Option<u32>,
-    pub sizes: Option<Cow<'static, str>>,
-    pub mime_type: Option<Cow<'static, str>>,
+    pub sizes: Option<Bake>,
+    pub mime_type: Option<Bake>,
 }
 
 pub trait HasSourceAttrs: Sized {
@@ -99,7 +99,7 @@ pub trait HasSourceAttrs: Sized {
     /// Applicable media.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#media)
-    fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn media(mut self, value: impl Into<Bake>) -> Self {
         self.source_attrs_mut().media = Some(value.into());
         self
     }
@@ -107,7 +107,7 @@ pub trait HasSourceAttrs: Sized {
     /// Image sizes for different page layouts.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#sizes)
-    fn sizes(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn sizes(mut self, value: impl Into<Bake>) -> Self {
         self.source_attrs_mut().sizes = Some(value.into());
         self
     }
@@ -115,7 +115,7 @@ pub trait HasSourceAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.source_attrs_mut().src = Some(value.into());
         self
     }
@@ -124,7 +124,7 @@ pub trait HasSourceAttrs: Sized {
     /// small monitors, etc.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/source#srcset)
-    fn srcset(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn srcset(mut self, value: impl Into<Bake>) -> Self {
         self.source_attrs_mut().srcset = Some(value.into());
         self
     }
@@ -134,7 +134,7 @@ pub trait HasSourceAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/object#type)
     ///
     /// See [`MimeType`]
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn mime_type(mut self, value: impl Into<Bake>) -> Self {
         self.source_attrs_mut().mime_type = Some(value.into());
         self
     }

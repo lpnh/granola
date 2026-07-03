@@ -35,9 +35,3 @@ impl<R: AnchorScopeRecipe> From<CssAnchorScope<R>> for CssDeclaration {
         Self::new("anchor-scope", css_anchor_scope.bake_recipe().content)
     }
 }
-
-impl<R: AnchorScopeRecipe> From<CssAnchorScope<R>> for CssDeclarationsBlock {
-    fn from(css_anchor_scope: CssAnchorScope<R>) -> Self {
-        Self::new().push(css_anchor_scope)
-    }
-}

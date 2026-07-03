@@ -17,7 +17,7 @@ pub struct Baseline;
 impl VerticalAlignRecipe for Baseline {
     recipe_boilerplate!(VerticalAlignRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "baseline".into();
+    fn content_recipe() -> Self::Content {
+        "baseline".into()
     }
 }

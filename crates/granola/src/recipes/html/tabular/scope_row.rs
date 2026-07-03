@@ -17,8 +17,8 @@ pub struct Col;
 impl ThRecipe for Col {
     recipe_boilerplate!(ThRecipe);
 
-    fn specific_attrs_recipe(th_attrs: &mut ThAttrs) {
-        th_attrs.scope("col");
+    fn specific_attrs_recipe() -> ThAttrs {
+        ThAttrs::default().scope("col")
     }
 }
 
@@ -39,7 +39,7 @@ pub struct Row;
 impl ThRecipe for Row {
     recipe_boilerplate!(ThRecipe);
 
-    fn specific_attrs_recipe(th_attrs: &mut ThAttrs) {
-        th_attrs.scope("row");
+    fn specific_attrs_recipe() -> ThAttrs {
+        ThAttrs::default().scope("row")
     }
 }

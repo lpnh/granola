@@ -35,9 +35,3 @@ impl<R: TextWrapRecipe> From<CssTextWrap<R>> for CssDeclaration {
         Self::new("text-wrap", css_text_wrap.bake_recipe().content)
     }
 }
-
-impl<R: TextWrapRecipe> From<CssTextWrap<R>> for CssDeclarationsBlock {
-    fn from(css_text_wrap: CssTextWrap<R>) -> Self {
-        Self::new().push(css_text_wrap)
-    }
-}

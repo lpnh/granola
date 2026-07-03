@@ -35,9 +35,3 @@ impl<R: FontStyleRecipe> From<CssFontStyle<R>> for CssDeclaration {
         Self::new("font-style", css_font_style.bake_recipe().content)
     }
 }
-
-impl<R: FontStyleRecipe> From<CssFontStyle<R>> for CssDeclarationsBlock {
-    fn from(css_font_style: CssFontStyle<R>) -> Self {
-        Self::new().push(css_font_style)
-    }
-}

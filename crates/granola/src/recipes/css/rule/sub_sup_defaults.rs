@@ -24,16 +24,20 @@ use crate::{prelude::*, recipes::*};
 pub struct SubSupDefaults;
 
 impl RuleRecipe for SubSupDefaults {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.extend_mut(["sub".into(), "sup".into()]);
+    fn selectors_list_recipe() -> Bake {
+        let mut selectors_list = Bake::default();
+        for selector in ["sub", "sup"] {
+            selectors_list.fold_in_with(", ", selector);
+        }
+        selectors_list
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssFontSize::new().content("75%").into(),
-            CssLineHeight::new().content("0").into(),
-            CssPosition::from(Relative).into(),
-            CssVerticalAlign::from(Baseline).into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssFontSize::new().content("75%"),
+            CssLineHeight::new().content("0"),
+            CssPosition::from(Relative),
+            CssVerticalAlign::from(Baseline),
+        ]
     }
 }

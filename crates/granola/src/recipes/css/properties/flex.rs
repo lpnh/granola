@@ -17,7 +17,7 @@ pub struct Flex;
 impl DisplayRecipe for Flex {
     recipe_boilerplate!(DisplayRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "flex".into();
+    fn content_recipe() -> Self::Content {
+        "flex".into()
     }
 }

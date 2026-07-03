@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
 use crate::{filters, prelude::*};
@@ -31,7 +31,7 @@ pub struct CssDisplay<R: DisplayRecipe = ()> {
 }
 
 impl<R: DisplayRecipe<Content = Bake>> CssDisplay<R> {
-    pub fn fold_in(mut self, value: impl Into<Bake>) -> Self {
+    pub fn fold_in(mut self, value: impl FastWritable) -> Self {
         self.content.fold_in_ws(value);
         self
     }
@@ -40,11 +40,5 @@ impl<R: DisplayRecipe<Content = Bake>> CssDisplay<R> {
 impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclaration {
     fn from(css_display: CssDisplay<R>) -> Self {
         Self::new("display", R::bake_content(css_display.content))
-    }
-}
-
-impl<R: DisplayRecipe> From<CssDisplay<R>> for CssDeclarationsBlock {
-    fn from(css_display: CssDisplay<R>) -> Self {
-        Self::new().push(css_display)
     }
 }

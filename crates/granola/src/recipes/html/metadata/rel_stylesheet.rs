@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct RelStylesheet;
 
 impl LinkRecipe for RelStylesheet {
-    fn specific_attrs_recipe(link_attrs: &mut LinkAttrs) {
-        link_attrs.rel("stylesheet");
+    fn specific_attrs_recipe() -> LinkAttrs {
+        LinkAttrs::default().rel("stylesheet")
     }
 }

@@ -15,8 +15,10 @@ use crate::{prelude::*, recipes::*};
 pub struct AllHeadingsExt;
 
 impl SelectorsListRecipe for AllHeadingsExt {
-    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
-        selectors.push("p".into());
-        AllHeadings::selectors_recipe(selectors);
+    fn selectors_recipe() -> Bake {
+        let mut selectors = Bake::default();
+        selectors.fold_in_with(", ", "p");
+        selectors.fold_in_with(", ", AllHeadings::selectors_recipe());
+        selectors
     }
 }

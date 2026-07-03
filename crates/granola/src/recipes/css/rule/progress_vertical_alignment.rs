@@ -21,11 +21,11 @@ use crate::{prelude::*, recipes::*};
 pub struct ProgressVerticalAlignment;
 
 impl RuleRecipe for ProgressVerticalAlignment {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("progress");
+    fn selectors_list_recipe() -> Bake {
+        "progress".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.push_mut(CssVerticalAlign::from(Baseline));
+    fn declarations_block_recipe() -> Bake {
+        CssVerticalAlign::from(Baseline).into()
     }
 }

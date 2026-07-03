@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -81,8 +81,8 @@ impl<R: ProgressRecipe> HtmlProgress<R> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ProgressAttrs {
-    pub max: Option<Cow<'static, str>>,
-    pub value: Option<Cow<'static, str>>,
+    pub max: Option<Bake>,
+    pub value: Option<Bake>,
 }
 
 pub trait HasProgressAttrs: Sized {

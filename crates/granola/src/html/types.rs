@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use crate::oven::Bake;
 
 /// Common media types.
 ///
@@ -240,7 +240,7 @@ pub enum MimeType {
     Zip7z,
 }
 
-impl From<MimeType> for Cow<'static, str> {
+impl From<MimeType> for Bake {
     fn from(mime_type: MimeType) -> Self {
         <&'static str>::from(mime_type).into()
     }

@@ -38,9 +38,3 @@ impl<R: MarginInlineEndRecipe> From<CssMarginInlineEnd<R>> for CssDeclaration {
         )
     }
 }
-
-impl<R: MarginInlineEndRecipe> From<CssMarginInlineEnd<R>> for CssDeclarationsBlock {
-    fn from(css_margin_inline_end: CssMarginInlineEnd<R>) -> Self {
-        Self::new().push(css_margin_inline_end)
-    }
-}

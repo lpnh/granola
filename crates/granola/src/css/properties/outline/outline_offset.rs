@@ -35,9 +35,3 @@ impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclaration {
         Self::new("outline-offset", css_outline_offset.bake_recipe().content)
     }
 }
-
-impl<R: OutlineOffsetRecipe> From<CssOutlineOffset<R>> for CssDeclarationsBlock {
-    fn from(css_outline_offset: CssOutlineOffset<R>) -> Self {
-        Self::new().push(css_outline_offset)
-    }
-}

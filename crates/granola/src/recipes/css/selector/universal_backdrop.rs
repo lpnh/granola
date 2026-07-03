@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalBackdrop;
 
 impl SimpleSelectorRecipe for UniversalBackdrop {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = "::backdrop".into();
+    fn selector_recipe() -> Bake {
+        "::backdrop".into()
     }
 }

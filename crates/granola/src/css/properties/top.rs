@@ -35,9 +35,3 @@ impl<R: TopRecipe> From<CssTop<R>> for CssDeclaration {
         Self::new("top", css_top.bake_recipe().content)
     }
 }
-
-impl<R: TopRecipe> From<CssTop<R>> for CssDeclarationsBlock {
-    fn from(css_top: CssTop<R>) -> Self {
-        Self::new().push(css_top)
-    }
-}

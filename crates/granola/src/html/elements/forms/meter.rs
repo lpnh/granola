@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -76,12 +76,12 @@ pub struct HtmlMeter<R: MeterRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct MeterAttrs {
-    pub value: Option<Cow<'static, str>>,
-    pub min: Option<Cow<'static, str>>,
-    pub max: Option<Cow<'static, str>>,
-    pub low: Option<Cow<'static, str>>,
-    pub high: Option<Cow<'static, str>>,
-    pub optimum: Option<Cow<'static, str>>,
+    pub value: Option<Bake>,
+    pub min: Option<Bake>,
+    pub max: Option<Bake>,
+    pub low: Option<Bake>,
+    pub high: Option<Bake>,
+    pub optimum: Option<Bake>,
 }
 
 impl HtmlMeter {

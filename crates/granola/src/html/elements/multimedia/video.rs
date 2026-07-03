@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -59,7 +59,7 @@ pub struct HtmlVideo<R: VideoRecipe = ()> {
 }
 
 impl HtmlVideo {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -86,12 +86,12 @@ impl HtmlVideo {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct VideoAttrs {
-    pub src: Option<Cow<'static, str>>,
-    pub poster: Option<Cow<'static, str>>,
+    pub src: Option<Bake>,
+    pub poster: Option<Bake>,
     pub width: Option<u32>,
     pub height: Option<u32>,
-    pub crossorigin: Option<Cow<'static, str>>,
-    pub preload: Option<Cow<'static, str>>,
+    pub crossorigin: Option<Bake>,
+    pub preload: Option<Bake>,
     pub autoplay: bool,
     pub controls: bool,
     pub media_loop: bool,
@@ -126,7 +126,7 @@ pub trait HasVideoAttrs: Sized {
     /// How the element handles crossorigin requests.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/crossorigin)
-    fn crossorigin(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn crossorigin(mut self, value: impl Into<Bake>) -> Self {
         self.video_attrs_mut().crossorigin = Some(value.into());
         self
     }
@@ -171,7 +171,7 @@ pub trait HasVideoAttrs: Sized {
     /// Poster frame to show prior to video playback.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#poster)
-    fn poster(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn poster(mut self, value: impl Into<Bake>) -> Self {
         self.video_attrs_mut().poster = Some(value.into());
         self
     }
@@ -179,7 +179,7 @@ pub trait HasVideoAttrs: Sized {
     /// Hints how much buffering the media resource will likely need.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#preload)
-    fn preload(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn preload(mut self, value: impl Into<Bake>) -> Self {
         self.video_attrs_mut().preload = Some(value.into());
         self
     }
@@ -187,7 +187,7 @@ pub trait HasVideoAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.video_attrs_mut().src = Some(value.into());
         self
     }

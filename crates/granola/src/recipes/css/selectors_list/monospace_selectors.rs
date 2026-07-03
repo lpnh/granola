@@ -15,7 +15,11 @@ use crate::prelude::*;
 pub struct MonospaceSelectors;
 
 impl SelectorsListRecipe for MonospaceSelectors {
-    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
-        selectors.extend(["code".into(), "kbd".into(), "samp".into(), "pre".into()]);
+    fn selectors_recipe() -> Bake {
+        let mut selectors = Bake::default();
+        for selector in ["code", "kbd", "samp", "pre"] {
+            selectors.fold_in_with(", ", selector);
+        }
+        selectors
     }
 }

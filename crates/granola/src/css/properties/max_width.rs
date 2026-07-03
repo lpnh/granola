@@ -35,9 +35,3 @@ impl<R: MaxWidthRecipe> From<CssMaxWidth<R>> for CssDeclaration {
         Self::new("max-width", css_max_width.bake_recipe().content)
     }
 }
-
-impl<R: MaxWidthRecipe> From<CssMaxWidth<R>> for CssDeclarationsBlock {
-    fn from(css_max_width: CssMaxWidth<R>) -> Self {
-        Self::new().push(css_max_width)
-    }
-}

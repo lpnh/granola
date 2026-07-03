@@ -188,24 +188,30 @@ impl TooltipContent {
 impl SpanRecipe for Tooltip {
     recipe_boilerplate!(SpanRecipe, TooltipContent);
 
-    fn content_recipe(content: &mut Self::Content) {
-        content.bubble = HtmlSpan::from(TipBubble);
+    fn content_recipe() -> Self::Content {
+        Self::Content {
+            bubble: HtmlSpan::from(TipBubble),
+            ..Default::default()
+        }
     }
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("tooltip");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("tooltip")
     }
 }
 
 impl DivRecipe for Tooltip {
     recipe_boilerplate!(DivRecipe, TooltipContent);
 
-    fn content_recipe(content: &mut Self::Content) {
-        content.bubble = HtmlSpan::from(TipBubble);
+    fn content_recipe() -> Self::Content {
+        Self::Content {
+            bubble: HtmlSpan::from(TipBubble),
+            ..Default::default()
+        }
     }
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("tooltip");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("tooltip")
     }
 }
 
@@ -250,65 +256,65 @@ impl HasPlacement for HtmlDiv<Tooltip> {
 }
 
 impl StylesheetRecipe for Tooltip {
-    fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.extend([
-            CssRule::from(Tooltip).into(),
-            CssRule::from(Tip).into(),
-            tip_trigger_hover().into(),
-            CssRule::from(TipBubble).into(),
-            bubble_tail().into(),
-            tip_bubble_reveal().into(),
+    fn statements_recipe() -> Bake {
+        bake_ws![
+            CssRule::from(Tooltip),
+            CssRule::from(Tip),
+            tip_trigger_hover(),
+            CssRule::from(TipBubble),
+            bubble_tail(),
+            tip_bubble_reveal(),
             tip_bubble_starting_style(),
-        ]);
-        statements.extend(tip_bubble_placements());
-        statements.extend(tip_bubble_tail_placements());
+            tip_bubble_placements(),
+            tip_bubble_tail_placements(),
+        ]
     }
 }
 
-fn tip_bubble_placements() -> Vec<CssStatement> {
+fn tip_bubble_placements() -> Bake {
     let top = CssRule::new()
         .selectors_list(".tooltip-top .tip-bubble")
-        .declarations_block([
-            CssDeclaration::from(CssPositionArea::new().content("top")),
-            CssMarginBottom::new().content("0.5rem").into(),
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("top"),
+            CssMarginBottom::new().content("0.5rem"),
         ]);
 
     let bottom = CssRule::new()
         .selectors_list(".tooltip-bottom .tip-bubble")
-        .declarations_block([
-            CssDeclaration::from(CssPositionArea::new().content("bottom")),
-            CssMarginBottom::new().content("0").into(),
-            CssMarginTop::new().content("0.5rem").into(),
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("bottom"),
+            CssMarginBottom::new().content("0"),
+            CssMarginTop::new().content("0.5rem"),
         ]);
 
     let left = CssRule::new()
         .selectors_list(".tooltip-left .tip-bubble")
-        .declarations_block([
-            CssDeclaration::from(CssPositionArea::new().content("left")),
-            CssMarginBottom::new().content("0").into(),
-            CssMarginRight::new().content("0.5rem").into(),
-            CssPositionTryFallbacks::new().content("flip-inline").into(),
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("left"),
+            CssMarginBottom::new().content("0"),
+            CssMarginRight::new().content("0.5rem"),
+            CssPositionTryFallbacks::new().content("flip-inline"),
         ]);
 
     let right = CssRule::new()
         .selectors_list(".tooltip-right .tip-bubble")
-        .declarations_block([
-            CssDeclaration::from(CssPositionArea::new().content("right")),
-            CssMarginBottom::new().content("0").into(),
-            CssMarginLeft::new().content("0.5rem").into(),
-            CssPositionTryFallbacks::new().content("flip-inline").into(),
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("right"),
+            CssMarginBottom::new().content("0"),
+            CssMarginLeft::new().content("0.5rem"),
+            CssPositionTryFallbacks::new().content("flip-inline"),
         ]);
 
-    vec![top.into(), bottom.into(), left.into(), right.into()]
+    bake![top, bottom, left, right]
 }
 
-fn tip_bubble_tail_placements() -> Vec<CssStatement> {
+fn tip_bubble_tail_placements() -> Bake {
     let top = CssRule::new()
         .selectors_list(".tooltip-top .tip-bubble::before")
-        .declarations_block([
-            CssDeclaration::from(CssPositionArea::new().content("top")),
-            CssMarginBottom::new().content("0.35rem").into(),
-            CssMarginTop::new().content(calc_anchor_size_block()).into(),
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("top"),
+            CssMarginBottom::new().content("0.35rem"),
+            CssMarginTop::new().content(calc_anchor_size_block()),
         ]);
 
     let bottom = CssRule::new()
@@ -319,48 +325,40 @@ fn tip_bubble_tail_placements() -> Vec<CssStatement> {
 
     let left = CssRule::new()
         .selectors_list(".tooltip-left .tip-bubble::before")
-        .declarations_block(
-            CssDeclarationsBlock::new().extend([
-                CssPositionArea::new().content("left").into(),
-                CssMarginTop::new().content("0").into(),
-                CssMarginBottom::new().content("0").into(),
-                CssMarginRight::new().content("0.35rem").into(),
-                CssMarginLeft::new()
-                    .content(calc_anchor_size_inline())
-                    .into(),
-                CssPositionTryFallbacks::new().content("flip-inline").into(),
-            ]),
-        );
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("left"),
+            CssMarginTop::new().content("0"),
+            CssMarginBottom::new().content("0"),
+            CssMarginRight::new().content("0.35rem"),
+            CssMarginLeft::new().content(calc_anchor_size_inline()),
+            CssPositionTryFallbacks::new().content("flip-inline"),
+        ]);
 
     let right = CssRule::new()
         .selectors_list(".tooltip-right .tip-bubble::before")
-        .declarations_block(
-            CssDeclarationsBlock::new().extend([
-                CssPositionArea::new().content("right").into(),
-                CssMarginTop::new().content("0").into(),
-                CssMarginBottom::new().content("0").into(),
-                CssMarginLeft::new().content("0.35rem").into(),
-                CssMarginRight::new()
-                    .content(calc_anchor_size_inline())
-                    .into(),
-                CssPositionTryFallbacks::new().content("flip-inline").into(),
-            ]),
-        );
+        .declarations_block(bake_ws![
+            CssPositionArea::new().content("right"),
+            CssMarginTop::new().content("0"),
+            CssMarginBottom::new().content("0"),
+            CssMarginLeft::new().content("0.35rem"),
+            CssMarginRight::new().content(calc_anchor_size_inline()),
+            CssPositionTryFallbacks::new().content("flip-inline"),
+        ]);
 
-    vec![top.into(), bottom.into(), left.into(), right.into()]
+    bake![top, bottom, left, right]
 }
 
 impl RuleRecipe for Tooltip {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(".tooltip");
+    fn selectors_list_recipe() -> Bake {
+        ".tooltip".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssDisplay::new().fold_in("inline").fold_in("flex").into(),
-            CssAnchorScope::new().content("all").into(),
-            CssAnchorName::new().content("--tip").into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssDisplay::new().fold_in("inline").fold_in("flex"),
+            CssAnchorScope::new().content("all"),
+            CssAnchorName::new().content("--tip"),
+        ]
     }
 }
 
@@ -384,59 +382,48 @@ pub struct Tip;
 impl ButtonRecipe for Tip {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("tip");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("tip")
     }
 
-    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-        button_attrs.button_type(ButtonType::Button);
+    fn specific_attrs_recipe() -> ButtonAttrs {
+        ButtonAttrs::default().button_type(ButtonType::Button)
     }
 }
 
 impl RuleRecipe for Tip {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(".tip");
+    fn selectors_list_recipe() -> Bake {
+        ".tip".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssDisplay::new().fold_in("inline").fold_in("flex").into(),
-            CssAlignItems::from(Center).into(),
-            CssJustifyContent::from(Center).into(),
-            CssWidth::new().content("1.15rem").into(),
-            CssHeight::new().content("1.15rem").into(),
-            CssPadding::new().content("0").into(),
-            CssBorder::new().content("1px solid").into(),
-            CssBorderColor::new()
-                .content(CssFnVar::from(ColorBorder))
-                .into(),
-            CssBorderRadius::new().content("50%").into(),
-            CssBackgroundColor::new()
-                .content(CssFnVar::from(ColorSurface))
-                .into(),
-            CssColor::new()
-                .content("color-mix(in oklab, var(--color-text) 60%, #0000)")
-                .into(),
-            CssFontSize::new().content("0.7rem").into(),
-            CssFontStyle::new().content("italic").into(),
-            CssFontWeight::new().content("700").into(),
-            CssLineHeight::new().content("1").into(),
-            CssCursor::new().content("help").into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssDisplay::new().fold_in("inline").fold_in("flex"),
+            CssAlignItems::from(Center),
+            CssJustifyContent::from(Center),
+            CssWidth::new().content("1.15rem"),
+            CssHeight::new().content("1.15rem"),
+            CssPadding::new().content("0"),
+            CssBorder::new().content("1px solid"),
+            CssBorderColor::new().content(CssFnVar::from(ColorBorder)),
+            CssBorderRadius::new().content("50%"),
+            CssBackgroundColor::new().content(CssFnVar::from(ColorSurface)),
+            CssColor::new().content("color-mix(in oklab, var(--color-text) 60%, #0000)"),
+            CssFontSize::new().content("0.7rem"),
+            CssFontStyle::new().content("italic"),
+            CssFontWeight::new().content("700"),
+            CssLineHeight::new().content("1"),
+            CssCursor::new().content("help"),
+        ]
     }
 }
 
 fn tip_trigger_hover() -> CssRule {
-    let declarations_block: [CssDeclaration; 2] = [
-        CssColor::new().content(CssFnVar::from(ColorText)).into(),
-        CssBorderColor::new()
-            .content(CssFnVar::from(ColorPrimary))
-            .into(),
-    ];
-
     CssRule::new()
-        .selectors_list([".tip:hover", ".tip:focus-visible"])
-        .declarations_block(declarations_block)
+        .push_selector(".tip:hover")
+        .push_selector(".tip:focus-visible")
+        .push_property(CssColor::new().content(CssFnVar::from(ColorText)))
+        .push_property(CssBorderColor::new().content(CssFnVar::from(ColorPrimary)))
 }
 
 /// The homemade recipe for the `tip-bubble` element.
@@ -459,68 +446,60 @@ pub struct TipBubble;
 impl SpanRecipe for TipBubble {
     recipe_boilerplate!(SpanRecipe);
 
-    fn global_attrs_recipe(global_attrs: &mut GlobalAttrs) {
-        global_attrs.class("tip-bubble").role("tooltip");
+    fn global_attrs_recipe() -> GlobalAttrs {
+        GlobalAttrs::default().class("tip-bubble").role("tooltip")
     }
 }
 
 impl RuleRecipe for TipBubble {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(".tip-bubble");
+    fn selectors_list_recipe() -> Bake {
+        ".tip-bubble".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssDisplay::from(None).into(),
-            CssOpacity::new().content("0").into(),
-            CssTransition::new()
-                .content("opacity 160ms ease, display 160ms allow-discrete")
-                .into(),
-            CssPosition::new().content("fixed").into(),
-            CssPositionAnchor::new().content("--tip").into(),
-            CssAnchorName::new().content("--tip-bubble").into(),
-            CssPositionArea::new().content("top").into(),
-            CssMarginBottom::new().content("0.5rem").into(),
-            CssPositionTryFallbacks::new().content("flip-block").into(),
-            CssWidth::new().content("max-content").into(),
-            CssMaxWidth::new().content("20rem").into(),
-            CssPadding::new().content("0.25rem 0.5rem").into(),
-            CssBorderRadius::new().content("0.5rem").into(),
-            CssBackgroundColor::new()
-                .content(CssFnVar::from(ColorText))
-                .into(),
-            CssColor::new()
-                .content(CssFnVar::from(ColorBackground))
-                .into(),
-            CssFontSize::new().content("0.8rem").into(),
-            CssFontStyle::new().content("normal").into(),
-            CssFontWeight::new().content("400").into(),
-            CssLineHeight::new().content("1.25").into(),
-            CssTextAlign::new().content("center").into(),
-            CssWhiteSpace::new().content("normal").into(),
-            CssPointerEvents::new().content("none").into(),
-            CssZIndex::new().content("2").into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssDisplay::from(None),
+            CssOpacity::new().content("0"),
+            CssTransition::new().content("opacity 160ms ease, display 160ms allow-discrete"),
+            CssPosition::new().content("fixed"),
+            CssPositionAnchor::new().content("--tip"),
+            CssAnchorName::new().content("--tip-bubble"),
+            CssPositionArea::new().content("top"),
+            CssMarginBottom::new().content("0.5rem"),
+            CssPositionTryFallbacks::new().content("flip-block"),
+            CssWidth::new().content("max-content"),
+            CssMaxWidth::new().content("20rem"),
+            CssPadding::new().content("0.25rem 0.5rem"),
+            CssBorderRadius::new().content("0.5rem"),
+            CssBackgroundColor::new().content(CssFnVar::from(ColorText)),
+            CssColor::new().content(CssFnVar::from(ColorBackground)),
+            CssFontSize::new().content("0.8rem"),
+            CssFontStyle::new().content("normal"),
+            CssFontWeight::new().content("400"),
+            CssLineHeight::new().content("1.25"),
+            CssTextAlign::new().content("center"),
+            CssWhiteSpace::new().content("normal"),
+            CssPointerEvents::new().content("none"),
+            CssZIndex::new().content("2"),
+        ]
     }
 }
 
 fn bubble_tail() -> CssRule {
-    let declarations_block = CssDeclarationsBlock::new().extend([
-        CssContent::new().content(r#""""#).into(),
-        CssZIndex::new().content("-1").into(),
-        CssPosition::new().content("fixed").into(),
-        CssPositionAnchor::new().content("--tip").into(),
-        CssPositionArea::new().content("top").into(),
-        CssWidth::new().content("0.6rem").into(),
-        CssHeight::new().content("0.6rem").into(),
-        CssBackgroundColor::new()
-            .content(CssFnVar::from(ColorText))
-            .into(),
-        CssTransform::new().content("rotate(45deg)").into(),
-        CssMarginBottom::new().content("0.35rem").into(),
-        CssMarginTop::new().content(calc_anchor_size_block()).into(),
-        CssPositionTryFallbacks::new().content("flip-block").into(),
-    ]);
+    let declarations_block = bake_ws![
+        CssContent::new().content(r#""""#),
+        CssZIndex::new().content("-1"),
+        CssPosition::new().content("fixed"),
+        CssPositionAnchor::new().content("--tip"),
+        CssPositionArea::new().content("top"),
+        CssWidth::new().content("0.6rem"),
+        CssHeight::new().content("0.6rem"),
+        CssBackgroundColor::new().content(CssFnVar::from(ColorText)),
+        CssTransform::new().content("rotate(45deg)"),
+        CssMarginBottom::new().content("0.35rem"),
+        CssMarginTop::new().content(calc_anchor_size_block()),
+        CssPositionTryFallbacks::new().content("flip-block"),
+    ];
 
     CssRule::new()
         .selectors_list(".tip-bubble::before")
@@ -529,15 +508,13 @@ fn bubble_tail() -> CssRule {
 
 fn tip_bubble_reveal() -> CssRule {
     CssRule::new()
-        .selectors_list([
-            ".tooltip:hover .tip-bubble",
-            ".tooltip:has(:focus-visible) .tip-bubble",
-        ])
+        .push_selector(".tooltip:hover .tip-bubble")
+        .push_selector(".tooltip:has(:focus-visible) .tip-bubble")
         .push_property(CssDisplay::from(Block))
         .push_property(CssOpacity::new().content("1"))
 }
 
-fn tip_bubble_starting_style() -> CssStatement {
+fn tip_bubble_starting_style() -> Bake {
     let revealed = CssRule::new()
         .selectors_list([
             ".tooltip:hover .tip-bubble",

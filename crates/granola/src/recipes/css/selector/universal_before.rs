@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalBefore;
 
 impl SimpleSelectorRecipe for UniversalBefore {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = "::before".into();
+    fn selector_recipe() -> Bake {
+        "::before".into()
     }
 }

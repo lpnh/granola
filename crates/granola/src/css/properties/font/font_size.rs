@@ -35,9 +35,3 @@ impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclaration {
         Self::new("font-size", css_font_size.bake_recipe().content)
     }
 }
-
-impl<R: FontSizeRecipe> From<CssFontSize<R>> for CssDeclarationsBlock {
-    fn from(css_font_size: CssFontSize<R>) -> Self {
-        Self::new().push(css_font_size)
-    }
-}

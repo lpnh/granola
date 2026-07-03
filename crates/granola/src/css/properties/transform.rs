@@ -39,9 +39,3 @@ impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclaration {
         Self::new("transform", css_transform.bake_recipe().content)
     }
 }
-
-impl<R: TransformRecipe> From<CssTransform<R>> for CssDeclarationsBlock {
-    fn from(css_transform: CssTransform<R>) -> Self {
-        Self::new().push(css_transform)
-    }
-}

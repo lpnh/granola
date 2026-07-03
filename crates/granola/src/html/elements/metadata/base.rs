@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -48,7 +48,7 @@ pub struct HtmlBase<R: BaseRecipe = ()> {
 }
 
 impl HtmlBase {
-    pub fn from_href(href: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_href(href: impl Into<Bake>) -> Self {
         Self::new().href(href)
     }
 }
@@ -66,8 +66,8 @@ impl HtmlBase {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct BaseAttrs {
-    pub href: Option<Cow<'static, str>>,
-    pub target: Option<Cow<'static, str>>,
+    pub href: Option<Bake>,
+    pub target: Option<Bake>,
 }
 
 pub trait HasBaseAttrs: Sized {
@@ -76,7 +76,7 @@ pub trait HasBaseAttrs: Sized {
     /// Document base URL.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#href)
-    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn href(mut self, value: impl Into<Bake>) -> Self {
         self.base_attrs_mut().href = Some(value.into());
         self
     }
@@ -84,7 +84,7 @@ pub trait HasBaseAttrs: Sized {
     /// Default navigable for hyperlink navigation and form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base#target)
-    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn target(mut self, value: impl Into<Bake>) -> Self {
         self.base_attrs_mut().target = Some(value.into());
         self
     }

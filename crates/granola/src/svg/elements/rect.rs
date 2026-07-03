@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -66,13 +66,13 @@ pub struct SvgRect<R: RectRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct RectAttrs {
-    pub x: Option<Cow<'static, str>>,
-    pub y: Option<Cow<'static, str>>,
-    pub width: Option<Cow<'static, str>>,
-    pub height: Option<Cow<'static, str>>,
-    pub rx: Option<Cow<'static, str>>,
-    pub ry: Option<Cow<'static, str>>,
-    pub path_length: Option<Cow<'static, str>>,
+    pub x: Option<Bake>,
+    pub y: Option<Bake>,
+    pub width: Option<Bake>,
+    pub height: Option<Bake>,
+    pub rx: Option<Bake>,
+    pub ry: Option<Bake>,
+    pub path_length: Option<Bake>,
 }
 
 pub trait HasRectAttrs: Sized {
@@ -81,7 +81,7 @@ pub trait HasRectAttrs: Sized {
     /// The x coordinate of the rect.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/x)
-    fn x(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn x(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().x = Some(value.into());
         self
     }
@@ -89,7 +89,7 @@ pub trait HasRectAttrs: Sized {
     /// The y coordinate of the rect.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/y)
-    fn y(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn y(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().y = Some(value.into());
         self
     }
@@ -97,7 +97,7 @@ pub trait HasRectAttrs: Sized {
     /// The width of the rect.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/width)
-    fn width(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn width(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().width = Some(value.into());
         self
     }
@@ -105,7 +105,7 @@ pub trait HasRectAttrs: Sized {
     /// The height of the rect.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/height)
-    fn height(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn height(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().height = Some(value.into());
         self
     }
@@ -113,7 +113,7 @@ pub trait HasRectAttrs: Sized {
     /// The horizontal corner radius of the rect.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/rx)
-    fn rx(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn rx(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().rx = Some(value.into());
         self
     }
@@ -121,7 +121,7 @@ pub trait HasRectAttrs: Sized {
     /// The vertical corner radius of the rect.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/ry)
-    fn ry(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn ry(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().ry = Some(value.into());
         self
     }
@@ -129,7 +129,7 @@ pub trait HasRectAttrs: Sized {
     /// The total length of the rectangle's perimeter, in user units.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/pathLength)
-    fn path_length(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn path_length(mut self, value: impl Into<Bake>) -> Self {
         self.rect_attrs_mut().path_length = Some(value.into());
         self
     }

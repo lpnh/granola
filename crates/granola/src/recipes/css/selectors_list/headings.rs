@@ -15,7 +15,12 @@ use crate::prelude::*;
 pub struct Headings;
 
 impl SelectorsListRecipe for Headings {
-    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
-        selectors.extend(["h1".into(), "h2".into(), "h3".into(), "h4".into()]);
+    fn selectors_recipe() -> Bake {
+        let mut selectors = <Bake>::default();
+        selectors.fold_in_with(", ", "h1");
+        selectors.fold_in_with(", ", "h2");
+        selectors.fold_in_with(", ", "h3");
+        selectors.fold_in_with(", ", "h4");
+        selectors
     }
 }

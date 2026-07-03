@@ -15,13 +15,11 @@ use crate::prelude::*;
 pub struct MediaSelectors;
 
 impl SelectorsListRecipe for MediaSelectors {
-    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
-        selectors.extend([
-            "canvas".into(),
-            "img".into(),
-            "picture".into(),
-            "svg".into(),
-            "video".into(),
-        ]);
+    fn selectors_recipe() -> Bake {
+        let mut selectors = Bake::default();
+        for selector in ["canvas", "img", "picture", "svg", "video"] {
+            selectors.fold_in_with(", ", selector);
+        }
+        selectors
     }
 }

@@ -17,7 +17,7 @@ pub struct Pointer;
 impl CursorRecipe for Pointer {
     recipe_boilerplate!(CursorRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "pointer".into();
+    fn content_recipe() -> Self::Content {
+        "pointer".into()
     }
 }

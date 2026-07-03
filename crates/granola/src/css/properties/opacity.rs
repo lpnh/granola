@@ -35,9 +35,3 @@ impl<R: OpacityRecipe> From<CssOpacity<R>> for CssDeclaration {
         Self::new("opacity", css_opacity.bake_recipe().content)
     }
 }
-
-impl<R: OpacityRecipe> From<CssOpacity<R>> for CssDeclarationsBlock {
-    fn from(css_opacity: CssOpacity<R>) -> Self {
-        Self::new().push(css_opacity)
-    }
-}

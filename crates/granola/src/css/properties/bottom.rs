@@ -35,9 +35,3 @@ impl<R: BottomRecipe> From<CssBottom<R>> for CssDeclaration {
         Self::new("bottom", css_bottom.bake_recipe().content)
     }
 }
-
-impl<R: BottomRecipe> From<CssBottom<R>> for CssDeclarationsBlock {
-    fn from(css_bottom: CssBottom<R>) -> Self {
-        Self::new().push(css_bottom)
-    }
-}

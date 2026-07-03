@@ -20,7 +20,7 @@ pub struct Transparent;
 impl BackgroundColorRecipe for Transparent {
     recipe_boilerplate!(BackgroundColorRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "transparent".into();
+    fn content_recipe() -> Self::Content {
+        "transparent".into()
     }
 }

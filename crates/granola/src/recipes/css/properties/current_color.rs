@@ -25,15 +25,15 @@ pub struct Currentcolor;
 impl BorderColorRecipe for Currentcolor {
     recipe_boilerplate!(BorderColorRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "currentcolor".into();
+    fn content_recipe() -> Self::Content {
+        "currentcolor".into()
     }
 }
 
 impl ColorRecipe for Currentcolor {
     recipe_boilerplate!(ColorRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "currentcolor".into();
+    fn content_recipe() -> Self::Content {
+        "currentcolor".into()
     }
 }

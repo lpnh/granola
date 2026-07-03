@@ -35,9 +35,3 @@ impl<R: PositionAreaRecipe> From<CssPositionArea<R>> for CssDeclaration {
         Self::new("position-area", css_position_area.bake_recipe().content)
     }
 }
-
-impl<R: PositionAreaRecipe> From<CssPositionArea<R>> for CssDeclarationsBlock {
-    fn from(css_position_area: CssPositionArea<R>) -> Self {
-        Self::new().push(css_position_area)
-    }
-}

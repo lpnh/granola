@@ -35,9 +35,3 @@ impl<R: LineHeightRecipe> From<CssLineHeight<R>> for CssDeclaration {
         Self::new("line-height", css_line_height.bake_recipe().content)
     }
 }
-
-impl<R: LineHeightRecipe> From<CssLineHeight<R>> for CssDeclarationsBlock {
-    fn from(css_line_height: CssLineHeight<R>) -> Self {
-        Self::new().push(css_line_height)
-    }
-}

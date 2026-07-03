@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -65,13 +65,13 @@ pub struct SvgText<R: TextRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TextAttrs {
-    pub x: Option<Cow<'static, str>>,
-    pub y: Option<Cow<'static, str>>,
-    pub dx: Option<Cow<'static, str>>,
-    pub dy: Option<Cow<'static, str>>,
-    pub rotate: Option<Cow<'static, str>>,
-    pub length_adjust: Option<Cow<'static, str>>,
-    pub text_length: Option<Cow<'static, str>>,
+    pub x: Option<Bake>,
+    pub y: Option<Bake>,
+    pub dx: Option<Bake>,
+    pub dy: Option<Bake>,
+    pub rotate: Option<Bake>,
+    pub length_adjust: Option<Bake>,
+    pub text_length: Option<Bake>,
 }
 
 pub trait HasTextAttrs: Sized {
@@ -81,7 +81,7 @@ pub trait HasTextAttrs: Sized {
     /// coordinate of each individual glyph if a list of values is provided.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/x)
-    fn x(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn x(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().x = Some(value.into());
         self
     }
@@ -90,7 +90,7 @@ pub trait HasTextAttrs: Sized {
     /// coordinate of each individual glyph if a list of values is provided.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/y)
-    fn y(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn y(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().y = Some(value.into());
         self
     }
@@ -100,7 +100,7 @@ pub trait HasTextAttrs: Sized {
     /// provided.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/dx)
-    fn dx(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn dx(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().dx = Some(value.into());
         self
     }
@@ -110,7 +110,7 @@ pub trait HasTextAttrs: Sized {
     /// provided.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/dy)
-    fn dy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn dy(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().dy = Some(value.into());
         self
     }
@@ -118,7 +118,7 @@ pub trait HasTextAttrs: Sized {
     /// Rotates orientation of each individual glyph.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/rotate)
-    fn rotate(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn rotate(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().rotate = Some(value.into());
         self
     }
@@ -127,7 +127,7 @@ pub trait HasTextAttrs: Sized {
     /// `textLength` attribute.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/lengthAdjust)
-    fn length_adjust(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn length_adjust(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().length_adjust = Some(value.into());
         self
     }
@@ -135,7 +135,7 @@ pub trait HasTextAttrs: Sized {
     /// A width that the text should be scaled to fit.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/textLength)
-    fn text_length(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn text_length(mut self, value: impl Into<Bake>) -> Self {
         self.text_attrs_mut().text_length = Some(value.into());
         self
     }

@@ -260,7 +260,7 @@ fn css_snippets() -> &'static [Snippet] {
         snippet!(stylesheet => bake),
         snippet!(rule => bake),
         snippet!(at_rule => bake),
-        snippet!(declarations_block => bake),
+        snippet!(declarations_block => macro),
         snippet!(selectors_list => bake),
         snippet!(declaration => bake),
         snippet!(type_selector => bake),

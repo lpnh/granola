@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -79,16 +79,16 @@ pub struct HtmlTextarea<R: TextareaRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TextareaAttrs {
-    pub autocomplete: Option<Cow<'static, str>>,
+    pub autocomplete: Option<Bake>,
     pub cols: Option<u32>,
-    pub dirname: Option<Cow<'static, str>>,
-    pub form: Option<Cow<'static, str>>,
+    pub dirname: Option<Bake>,
+    pub form: Option<Bake>,
     pub maxlength: Option<u32>,
     pub minlength: Option<u32>,
-    pub name: Option<Cow<'static, str>>,
-    pub placeholder: Option<Cow<'static, str>>,
+    pub name: Option<Bake>,
+    pub placeholder: Option<Bake>,
     pub rows: Option<u32>,
-    pub wrap: Option<Cow<'static, str>>,
+    pub wrap: Option<Bake>,
     pub disabled: bool,
     pub readonly: bool,
     pub required: bool,
@@ -100,7 +100,7 @@ pub trait HasTextareaAttrs: Sized {
     /// Hint for form autofill feature.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)
-    fn autocomplete(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn autocomplete(mut self, value: impl Into<Bake>) -> Self {
         self.textarea_attrs_mut().autocomplete = Some(value.into());
         self
     }
@@ -117,7 +117,7 @@ pub trait HasTextareaAttrs: Sized {
     /// form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/dirname)
-    fn dirname(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn dirname(mut self, value: impl Into<Bake>) -> Self {
         self.textarea_attrs_mut().dirname = Some(value.into());
         self
     }
@@ -133,7 +133,7 @@ pub trait HasTextareaAttrs: Sized {
     /// Associates the element with a form element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/form)
-    fn form(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn form(mut self, value: impl Into<Bake>) -> Self {
         self.textarea_attrs_mut().form = Some(value.into());
         self
     }
@@ -158,7 +158,7 @@ pub trait HasTextareaAttrs: Sized {
     /// `form.elements` API.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.textarea_attrs_mut().name = Some(value.into());
         self
     }
@@ -166,7 +166,7 @@ pub trait HasTextareaAttrs: Sized {
     /// User-visible label to be placed within the form control.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder)
-    fn placeholder(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn placeholder(mut self, value: impl Into<Bake>) -> Self {
         self.textarea_attrs_mut().placeholder = Some(value.into());
         self
     }
@@ -198,7 +198,7 @@ pub trait HasTextareaAttrs: Sized {
     /// How the value of the form control is to be wrapped for form submission.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#wrap)
-    fn wrap(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn wrap(mut self, value: impl Into<Bake>) -> Self {
         self.textarea_attrs_mut().wrap = Some(value.into());
         self
     }

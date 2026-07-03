@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -71,7 +71,7 @@ pub struct HtmlQ<R: QRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct QAttrs {
-    pub cite: Option<Cow<'static, str>>,
+    pub cite: Option<Bake>,
 }
 
 pub trait HasQAttrs: Sized {
@@ -80,7 +80,7 @@ pub trait HasQAttrs: Sized {
     /// Link to the source of the quotation or more information about the edit.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/q#cite)
-    fn cite(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn cite(mut self, value: impl Into<Bake>) -> Self {
         self.q_attrs_mut().cite = Some(value.into());
         self
     }

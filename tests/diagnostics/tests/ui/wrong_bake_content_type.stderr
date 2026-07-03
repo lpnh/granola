@@ -31,7 +31,6 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<&CssCursor<R>>
              From<&CssCustomProperty<R>>
              From<&CssDeclaration>
-             From<&CssDeclarationsBlock>
              From<&CssDisplay<R>>
              From<&CssFlexDirection<R>>
              From<&CssFlexWrap<R>>
@@ -83,7 +82,6 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<&CssScrollMarginBlock<R>>
              From<&CssSelectorsList<R>>
              From<&CssSimpleSelector<R>>
-             From<&CssStatement>
              From<&CssStylesheet<R>>
              From<&CssTabSize<R>>
              From<&CssTextAlign<R>>
@@ -228,6 +226,7 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<&granola::svg::Svg<R>>
              From<&str>
              From<Areas>
+             From<ButtonType>
              From<ColorSpace>
              From<Cow<'_, str>>
              From<CssAlignItems<R>>
@@ -255,7 +254,6 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<CssCursor<R>>
              From<CssCustomProperty<R>>
              From<CssDeclaration>
-             From<CssDeclarationsBlock>
              From<CssDisplay<R>>
              From<CssFlexDirection<R>>
              From<CssFlexWrap<R>>
@@ -307,7 +305,6 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<CssScrollMarginBlock<R>>
              From<CssSelectorsList<R>>
              From<CssSimpleSelector<R>>
-             From<CssStatement>
              From<CssStylesheet<R>>
              From<CssTabSize<R>>
              From<CssTextAlign<R>>
@@ -326,6 +323,7 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<CssWhiteSpace<R>>
              From<CssWidth<R>>
              From<CssZIndex<R>>
+             From<FormMethod>
              From<HomemadeHeadContent>
              From<HomemadeRootContent>
              From<HtmlA<R>>
@@ -441,8 +439,11 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<HtmlVar<R>>
              From<HtmlVideo<R>>
              From<HtmlWbr<R>>
+             From<InputType>
              From<ListItems>
+             From<MimeType>
              From<Options>
+             From<ScriptType>
              From<String>
              From<SvgPath<R>>
              From<SvgRect<R>>

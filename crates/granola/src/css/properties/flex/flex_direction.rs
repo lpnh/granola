@@ -35,9 +35,3 @@ impl<R: FlexDirectionRecipe> From<CssFlexDirection<R>> for CssDeclaration {
         Self::new("flex-direction", css_flex_direction.bake_recipe().content)
     }
 }
-
-impl<R: FlexDirectionRecipe> From<CssFlexDirection<R>> for CssDeclarationsBlock {
-    fn from(css_flex_direction: CssFlexDirection<R>) -> Self {
-        Self::new().push(css_flex_direction)
-    }
-}

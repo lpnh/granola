@@ -35,9 +35,3 @@ impl<R: BoxShadowRecipe> From<CssBoxShadow<R>> for CssDeclaration {
         Self::new("box-shadow", css_box_shadow.bake_recipe().content)
     }
 }
-
-impl<R: BoxShadowRecipe> From<CssBoxShadow<R>> for CssDeclarationsBlock {
-    fn from(css_box_shadow: CssBoxShadow<R>) -> Self {
-        Self::new().push(css_box_shadow)
-    }
-}

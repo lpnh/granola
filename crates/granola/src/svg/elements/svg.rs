@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -81,12 +81,12 @@ pub struct Svg<R: SvgRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SvgAttrs {
-    pub height: Option<Cow<'static, str>>,
-    pub preserve_aspect_ratio: Option<Cow<'static, str>>,
-    pub view_box: Option<Cow<'static, str>>,
-    pub width: Option<Cow<'static, str>>,
-    pub x: Option<Cow<'static, str>>,
-    pub y: Option<Cow<'static, str>>,
+    pub height: Option<Bake>,
+    pub preserve_aspect_ratio: Option<Bake>,
+    pub view_box: Option<Bake>,
+    pub width: Option<Bake>,
+    pub x: Option<Bake>,
+    pub y: Option<Bake>,
 }
 
 pub trait HasSvgAttrs: Sized {
@@ -95,7 +95,7 @@ pub trait HasSvgAttrs: Sized {
     /// The displayed height of the rectangular viewport.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/height)
-    fn height(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn height(mut self, value: impl Into<Bake>) -> Self {
         self.svg_attrs_mut().height = Some(value.into());
         self
     }
@@ -104,7 +104,7 @@ pub trait HasSvgAttrs: Sized {
     /// different aspect ratio.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/preserveAspectRatio)
-    fn preserve_aspect_ratio(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn preserve_aspect_ratio(mut self, value: impl Into<Bake>) -> Self {
         self.svg_attrs_mut().preserve_aspect_ratio = Some(value.into());
         self
     }
@@ -112,7 +112,7 @@ pub trait HasSvgAttrs: Sized {
     /// The SVG viewport coordinates for the current `svg` fragment.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/viewBox)
-    fn view_box(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn view_box(mut self, value: impl Into<Bake>) -> Self {
         self.svg_attrs_mut().view_box = Some(value.into());
         self
     }
@@ -120,7 +120,7 @@ pub trait HasSvgAttrs: Sized {
     /// The displayed width of the rectangular viewport.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/width)
-    fn width(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn width(mut self, value: impl Into<Bake>) -> Self {
         self.svg_attrs_mut().width = Some(value.into());
         self
     }
@@ -128,7 +128,7 @@ pub trait HasSvgAttrs: Sized {
     /// The displayed x coordinate of the svg container.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/x)
-    fn x(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn x(mut self, value: impl Into<Bake>) -> Self {
         self.svg_attrs_mut().x = Some(value.into());
         self
     }
@@ -136,7 +136,7 @@ pub trait HasSvgAttrs: Sized {
     /// The displayed y coordinate of the svg container.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/y)
-    fn y(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn y(mut self, value: impl Into<Bake>) -> Self {
         self.svg_attrs_mut().y = Some(value.into());
         self
     }

@@ -17,7 +17,7 @@ pub struct Block;
 impl DisplayRecipe for Block {
     recipe_boilerplate!(DisplayRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "block".into();
+    fn content_recipe() -> Self::Content {
+        "block".into()
     }
 }

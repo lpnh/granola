@@ -17,7 +17,7 @@ pub struct ListItem;
 impl DisplayRecipe for ListItem {
     recipe_boilerplate!(DisplayRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "list-item".into();
+    fn content_recipe() -> Self::Content {
+        "list-item".into()
     }
 }

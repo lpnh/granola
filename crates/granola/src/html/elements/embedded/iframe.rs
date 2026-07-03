@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -58,7 +58,7 @@ pub struct HtmlIframe<R: IframeRecipe = ()> {
 }
 
 impl HtmlIframe {
-    pub fn from_src(src: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_src(src: impl Into<Bake>) -> Self {
         Self::new().src(src)
     }
 }
@@ -84,15 +84,15 @@ impl HtmlIframe {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct IframeAttrs {
-    pub src: Option<Cow<'static, str>>,
+    pub src: Option<Bake>,
     pub width: Option<u32>,
     pub height: Option<u32>,
-    pub allow: Option<Cow<'static, str>>,
-    pub loading: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
-    pub referrerpolicy: Option<Cow<'static, str>>,
-    pub sandbox: Option<Cow<'static, str>>,
-    pub srcdoc: Option<Cow<'static, str>>,
+    pub allow: Option<Bake>,
+    pub loading: Option<Bake>,
+    pub name: Option<Bake>,
+    pub referrerpolicy: Option<Bake>,
+    pub sandbox: Option<Bake>,
+    pub srcdoc: Option<Bake>,
     pub allowfullscreen: bool,
 }
 
@@ -102,7 +102,7 @@ pub trait HasIframeAttrs: Sized {
     /// Permissions policy to be applied to the iframe's contents.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#allow)
-    fn allow(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn allow(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().allow = Some(value.into());
         self
     }
@@ -134,7 +134,7 @@ pub trait HasIframeAttrs: Sized {
     /// Used when determining loading deferral.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#loading)
-    fn loading(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn loading(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().loading = Some(value.into());
         self
     }
@@ -142,7 +142,7 @@ pub trait HasIframeAttrs: Sized {
     /// Name of content navigable.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().name = Some(value.into());
         self
     }
@@ -154,7 +154,7 @@ pub trait HasIframeAttrs: Sized {
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#referrerpolicy)
-    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn referrerpolicy(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
@@ -162,7 +162,7 @@ pub trait HasIframeAttrs: Sized {
     /// Security rules for nested content.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox)
-    fn sandbox(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn sandbox(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().sandbox = Some(value.into());
         self
     }
@@ -170,7 +170,7 @@ pub trait HasIframeAttrs: Sized {
     /// Address of the resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#src)
-    fn src(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn src(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().src = Some(value.into());
         self
     }
@@ -178,7 +178,7 @@ pub trait HasIframeAttrs: Sized {
     /// A document to render in the iframe.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#srcdoc)
-    fn srcdoc(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn srcdoc(mut self, value: impl Into<Bake>) -> Self {
         self.iframe_attrs_mut().srcdoc = Some(value.into());
         self
     }

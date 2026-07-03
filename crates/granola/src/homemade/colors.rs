@@ -28,27 +28,27 @@ use crate::prelude::*;
 pub struct Colors;
 
 impl StylesheetRecipe for Colors {
-    fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.push(CssRule::from(Colors).into());
+    fn statements_recipe() -> Bake {
+        CssRule::from(Colors).into()
     }
 }
 
 impl RuleRecipe for Colors {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut(":root");
+    fn selectors_list_recipe() -> Bake {
+        ":root".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssCustomProperty::from(ColorBackground).into(),
-            CssCustomProperty::from(ColorSurface).into(),
-            CssCustomProperty::from(ColorBorder).into(),
-            CssCustomProperty::from(ColorText).into(),
-            CssCustomProperty::from(ColorPrimary).into(),
-            CssCustomProperty::from(ColorPrimaryText).into(),
-            CssCustomProperty::from(ColorError).into(),
-            CssCustomProperty::from(ColorSuccess).into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssCustomProperty::from(ColorBackground),
+            CssCustomProperty::from(ColorSurface),
+            CssCustomProperty::from(ColorBorder),
+            CssCustomProperty::from(ColorText),
+            CssCustomProperty::from(ColorPrimary),
+            CssCustomProperty::from(ColorPrimaryText),
+            CssCustomProperty::from(ColorError),
+            CssCustomProperty::from(ColorSuccess),
+        ]
     }
 }
 
@@ -75,18 +75,18 @@ impl RuleRecipe for Colors {
 pub struct ColorBackground;
 
 impl CustomPropertyRecipe for ColorBackground {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-background".into();
+    fn name_recipe() -> Bake {
+        "color-background".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorBackground {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-background".into();
+    fn custom_property_recipe() -> Bake {
+        "color-background".into()
     }
 }
 
@@ -113,18 +113,18 @@ impl FnVarRecipe for ColorBackground {
 pub struct ColorSurface;
 
 impl CustomPropertyRecipe for ColorSurface {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-surface".into();
+    fn name_recipe() -> Bake {
+        "color-surface".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorSurface {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-surface".into();
+    fn custom_property_recipe() -> Bake {
+        "color-surface".into()
     }
 }
 
@@ -151,18 +151,18 @@ impl FnVarRecipe for ColorSurface {
 pub struct ColorBorder;
 
 impl CustomPropertyRecipe for ColorBorder {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-border".into();
+    fn name_recipe() -> Bake {
+        "color-border".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorBorder {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-border".into();
+    fn custom_property_recipe() -> Bake {
+        "color-border".into()
     }
 }
 
@@ -189,18 +189,18 @@ impl FnVarRecipe for ColorBorder {
 pub struct ColorText;
 
 impl CustomPropertyRecipe for ColorText {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-text".into();
+    fn name_recipe() -> Bake {
+        "color-text".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorText {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-text".into();
+    fn custom_property_recipe() -> Bake {
+        "color-text".into()
     }
 }
 
@@ -227,18 +227,18 @@ impl FnVarRecipe for ColorText {
 pub struct ColorPrimary;
 
 impl CustomPropertyRecipe for ColorPrimary {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-primary".into();
+    fn name_recipe() -> Bake {
+        "color-primary".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorPrimary {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-primary".into();
+    fn custom_property_recipe() -> Bake {
+        "color-primary".into()
     }
 }
 
@@ -265,18 +265,18 @@ impl FnVarRecipe for ColorPrimary {
 pub struct ColorPrimaryText;
 
 impl CustomPropertyRecipe for ColorPrimaryText {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-primary-text".into();
+    fn name_recipe() -> Bake {
+        "color-primary-text".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorPrimaryText {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-primary-text".into();
+    fn custom_property_recipe() -> Bake {
+        "color-primary-text".into()
     }
 }
 
@@ -303,18 +303,18 @@ impl FnVarRecipe for ColorPrimaryText {
 pub struct ColorError;
 
 impl CustomPropertyRecipe for ColorError {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-error".into();
+    fn name_recipe() -> Bake {
+        "color-error".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorError {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-error".into();
+    fn custom_property_recipe() -> Bake {
+        "color-error".into()
     }
 }
 
@@ -341,17 +341,17 @@ impl FnVarRecipe for ColorError {
 pub struct ColorSuccess;
 
 impl CustomPropertyRecipe for ColorSuccess {
-    fn name_recipe(name: &mut Bake) {
-        *name = "color-success".into();
+    fn name_recipe() -> Bake {
+        "color-success".into()
     }
 
-    fn value_recipe(value: &mut Bake) {
-        *value = "initial".into();
+    fn value_recipe() -> Bake {
+        "initial".into()
     }
 }
 
 impl FnVarRecipe for ColorSuccess {
-    fn custom_property_recipe(custom_property: &mut Bake) {
-        *custom_property = "color-success".into();
+    fn custom_property_recipe() -> Bake {
+        "color-success".into()
     }
 }

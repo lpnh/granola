@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
-    use granola::{homemade::*, prelude::*};
+    use granola::{homemade::*, macros::*, prelude::*};
 
     fn page_stylesheet() -> CssStylesheet {
         CssStylesheet::new()
             .push_rule((
                 "body",
-                [
+                declarations_block![
                     ("margin", "0"),
                     ("font-family", "system-ui, sans-serif"),
                     ("color", "#1a1a1a"),
@@ -14,7 +14,7 @@ mod tests {
             ))
             .push_rule((
                 ".hero",
-                [
+                declarations_block![
                     ("padding", "4rem 1rem"),
                     ("text-align", "center"),
                     ("background", "linear-gradient(135deg, #f6d365, #fda085)"),
@@ -22,7 +22,7 @@ mod tests {
             ))
             .push_rule((
                 "nav a",
-                [("margin-right", "1rem"), ("text-decoration", "none")],
+                declarations_block![("margin-right", "1rem"), ("text-decoration", "none")],
             ))
             .push(
                 CssAtRule::new()
@@ -31,10 +31,8 @@ mod tests {
                     .block(
                         CssRule::new()
                             .selectors_list(".menu")
-                            .declarations_block([
-                                ("display", "grid"),
-                                ("grid-template-columns", "1fr 1fr"),
-                            ])
+                            .push_property(("display", "grid"))
+                            .push_property(("grid-template-columns", "1fr 1fr"))
                             .bake(),
                     ),
             )

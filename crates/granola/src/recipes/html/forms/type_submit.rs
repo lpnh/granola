@@ -19,13 +19,13 @@ pub struct TypeSubmit;
 impl ButtonRecipe for TypeSubmit {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-        button_attrs.button_type(ButtonType::Submit);
+    fn specific_attrs_recipe() -> ButtonAttrs {
+        ButtonAttrs::default().button_type(ButtonType::Submit)
     }
 }
 
 impl InputRecipe for TypeSubmit {
-    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
-        input_attrs.input_type(InputType::Submit);
+    fn specific_attrs_recipe() -> InputAttrs {
+        InputAttrs::default().input_type(InputType::Submit)
     }
 }

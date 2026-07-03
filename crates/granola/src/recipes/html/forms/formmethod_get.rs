@@ -23,13 +23,13 @@ pub struct FormmethodGet;
 impl ButtonRecipe for FormmethodGet {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-        button_attrs.formmethod(FormMethod::Get);
+    fn specific_attrs_recipe() -> ButtonAttrs {
+        ButtonAttrs::default().formmethod(FormMethod::Get)
     }
 }
 
 impl InputRecipe for FormmethodGet {
-    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
-        input_attrs.formmethod(FormMethod::Get);
+    fn specific_attrs_recipe() -> InputAttrs {
+        InputAttrs::default().formmethod(FormMethod::Get)
     }
 }

@@ -38,9 +38,3 @@ impl<R: BorderTopWidthRecipe> From<CssBorderTopWidth<R>> for CssDeclaration {
         )
     }
 }
-
-impl<R: BorderTopWidthRecipe> From<CssBorderTopWidth<R>> for CssDeclarationsBlock {
-    fn from(css_border_top_width: CssBorderTopWidth<R>) -> Self {
-        Self::new().push(css_border_top_width)
-    }
-}

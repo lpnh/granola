@@ -35,9 +35,3 @@ impl<R: PositionAnchorRecipe> From<CssPositionAnchor<R>> for CssDeclaration {
         Self::new("position-anchor", css_position_anchor.bake_recipe().content)
     }
 }
-
-impl<R: PositionAnchorRecipe> From<CssPositionAnchor<R>> for CssDeclarationsBlock {
-    fn from(css_position_anchor: CssPositionAnchor<R>) -> Self {
-        Self::new().push(css_position_anchor)
-    }
-}

@@ -41,9 +41,3 @@ impl<R: PositionTryFallbacksRecipe> From<CssPositionTryFallbacks<R>> for CssDecl
         )
     }
 }
-
-impl<R: PositionTryFallbacksRecipe> From<CssPositionTryFallbacks<R>> for CssDeclarationsBlock {
-    fn from(css_position_try_fallbacks: CssPositionTryFallbacks<R>) -> Self {
-        Self::new().push(css_position_try_fallbacks)
-    }
-}

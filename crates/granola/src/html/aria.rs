@@ -1,8 +1,7 @@
 use askama::Template;
 use indexmap::IndexMap;
-use std::borrow::Cow;
 
-use crate::filters;
+use crate::{filters, prelude::*};
 
 /// The global ARIA attributes.
 ///
@@ -47,24 +46,24 @@ use crate::filters;
 pub struct GlobalAriaAttrs {
     pub aria_atomic: bool,
     pub aria_busy: bool,
-    pub aria_controls: Option<Cow<'static, str>>,
-    pub aria_current: Option<Cow<'static, str>>,
-    pub aria_describedby: Option<Cow<'static, str>>,
-    pub aria_description: Option<Cow<'static, str>>,
-    pub aria_details: Option<Cow<'static, str>>,
+    pub aria_controls: Option<Bake>,
+    pub aria_current: Option<Bake>,
+    pub aria_describedby: Option<Bake>,
+    pub aria_description: Option<Bake>,
+    pub aria_details: Option<Bake>,
     pub aria_disabled: bool,
-    pub aria_errormessage: Option<Cow<'static, str>>,
-    pub aria_flowto: Option<Cow<'static, str>>,
-    pub aria_haspopup: Option<Cow<'static, str>>,
+    pub aria_errormessage: Option<Bake>,
+    pub aria_flowto: Option<Bake>,
+    pub aria_haspopup: Option<Bake>,
     pub aria_hidden: bool,
-    pub aria_invalid: Option<Cow<'static, str>>,
-    pub aria_keyshortcuts: Option<Cow<'static, str>>,
-    pub aria_label: Option<Cow<'static, str>>,
-    pub aria_labelledby: Option<Cow<'static, str>>,
-    pub aria_live: Option<Cow<'static, str>>,
-    pub aria_owns: Option<Cow<'static, str>>,
-    pub aria_relevant: Option<Cow<'static, str>>,
-    pub aria_roledescription: Option<Cow<'static, str>>,
+    pub aria_invalid: Option<Bake>,
+    pub aria_keyshortcuts: Option<Bake>,
+    pub aria_label: Option<Bake>,
+    pub aria_labelledby: Option<Bake>,
+    pub aria_live: Option<Bake>,
+    pub aria_owns: Option<Bake>,
+    pub aria_relevant: Option<Bake>,
+    pub aria_roledescription: Option<Bake>,
 }
 
 pub trait HasGlobalAriaAttrs: Sized {
@@ -95,7 +94,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// controlled by the element on which this attribute is set.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-controls)
-    fn aria_controls(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_controls(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_controls = Some(value.into());
         self
     }
@@ -104,7 +103,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// container or set of related elements.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current)
-    fn aria_current(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_current(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_current = Some(value.into());
         self
     }
@@ -113,7 +112,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// the attribute is set.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby)
-    fn aria_describedby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_describedby(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_describedby = Some(value.into());
         self
     }
@@ -121,7 +120,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// Defines a string value that describes or annotates the current element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-description)
-    fn aria_description(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_description(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_description = Some(value.into());
         self
     }
@@ -130,7 +129,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// related to the object.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-details)
-    fn aria_details(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_details(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_details = Some(value.into());
         self
     }
@@ -148,7 +147,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// the object.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-errormessage)
-    fn aria_errormessage(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_errormessage(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_errormessage = Some(value.into());
         self
     }
@@ -159,7 +158,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// discretion.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-flowto)
-    fn aria_flowto(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_flowto(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_flowto = Some(value.into());
         self
     }
@@ -168,7 +167,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// can be triggered by the element on which the attribute is set.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-haspopup)
-    fn aria_haspopup(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_haspopup(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_haspopup = Some(value.into());
         self
     }
@@ -185,7 +184,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// the application.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)
-    fn aria_invalid(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_invalid(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_invalid = Some(value.into());
         self
     }
@@ -194,7 +193,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// or give focus to an element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-keyshortcuts)
-    fn aria_keyshortcuts(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_keyshortcuts(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_keyshortcuts = Some(value.into());
         self
     }
@@ -203,7 +202,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// the element's role does not prohibit naming.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label)
-    fn aria_label(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_label(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_label = Some(value.into());
         self
     }
@@ -212,7 +211,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// applied to.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby)
-    fn aria_labelledby(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_labelledby(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_labelledby = Some(value.into());
         self
     }
@@ -222,7 +221,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// from the live region.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-live)
-    fn aria_live(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_live(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_live = Some(value.into());
         self
     }
@@ -233,7 +232,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// the relationship.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-owns)
-    fn aria_owns(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_owns(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_owns = Some(value.into());
         self
     }
@@ -242,7 +241,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// accessibility tree within a live region is modified.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-relevant)
-    fn aria_relevant(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_relevant(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_relevant = Some(value.into());
         self
     }
@@ -251,7 +250,7 @@ pub trait HasGlobalAriaAttrs: Sized {
     /// an element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-roledescription)
-    fn aria_roledescription(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn aria_roledescription(mut self, value: impl Into<Bake>) -> Self {
         self.global_aria_attrs_mut().aria_roledescription = Some(value.into());
         self
     }
@@ -279,15 +278,11 @@ impl HasGlobalAriaAttrs for &mut GlobalAriaAttrs {
 #[derive(Debug, Clone, PartialEq, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SpecificAriaAttrs {
-    map: IndexMap<Cow<'static, str>, Cow<'static, str>>,
+    map: IndexMap<Bake, Bake>,
 }
 
 impl SpecificAriaAttrs {
-    pub fn add_aria(
-        mut self,
-        key: impl Into<Cow<'static, str>>,
-        value: impl Into<Cow<'static, str>>,
-    ) -> Self {
+    pub fn add_aria(mut self, key: impl Into<Bake>, value: impl Into<Bake>) -> Self {
         self.map.insert(key.into(), value.into());
         self
     }

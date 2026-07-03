@@ -18,7 +18,7 @@ use crate::prelude::*;
 pub struct NameRobots;
 
 impl MetaRecipe for NameRobots {
-    fn specific_attrs_recipe(meta_attrs: &mut MetaAttrs) {
-        meta_attrs.name("robots");
+    fn specific_attrs_recipe() -> MetaAttrs {
+        MetaAttrs::default().name("robots")
     }
 }

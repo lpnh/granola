@@ -107,134 +107,118 @@ use crate::{prelude::*, recipes::*};
 pub struct ModernNormalize;
 
 impl StylesheetRecipe for ModernNormalize {
-    fn statements_recipe(statements: &mut Vec<CssStatement>) {
-        statements.extend([
-            CssRule::from(BoxSizingReset).into(),
+    fn statements_recipe() -> Bake {
+        bake_ws![
+            CssRule::from(BoxSizingReset),
             html_defaults(),
             body_defaults(),
-            CssRule::from(BStrongFontWeight).into(),
+            CssRule::from(BStrongFontWeight),
             monospace_defaults(),
-            CssRule::from(SmallFontSize).into(),
-            CssRule::from(SubSupDefaults).into(),
-            CssRule::from(SubVerticalPos).into(),
-            CssRule::from(SupVerticalPos).into(),
+            CssRule::from(SmallFontSize),
+            CssRule::from(SubSupDefaults),
+            CssRule::from(SubVerticalPos),
+            CssRule::from(SupVerticalPos),
             table_border_color(),
             forms_defaults(),
             button_appearance(),
             legend_padding(),
-            CssRule::from(ProgressVerticalAlignment).into(),
-            CssRule::from(SpinButtonHeight).into(),
+            CssRule::from(ProgressVerticalAlignment),
+            CssRule::from(SpinButtonHeight),
             search_appearance(),
-            CssRule::from(SearchDecorationAppearance).into(),
+            CssRule::from(SearchDecorationAppearance),
             file_upload_button(),
-            CssRule::from(SummaryDisplay).into(),
-        ]);
+            CssRule::from(SummaryDisplay),
+        ]
     }
 }
 
-fn html_defaults() -> CssStatement {
+fn html_defaults() -> CssRule {
     let default_fonts = "system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
 
-    let declarations_block: [CssDeclaration; 4] = [
-        CssFontFamily::new().content(default_fonts).into(),
-        CssLineHeight::new().content("1.15").into(),
-        CssWebkitTextSizeAdjust::new().content("100%").into(),
-        CssTabSize::new().content("4").into(),
+    let declarations_block = bake_ws![
+        CssFontFamily::new().content(default_fonts),
+        CssLineHeight::new().content("1.15"),
+        CssWebkitTextSizeAdjust::new().content("100%"),
+        CssTabSize::new().content("4"),
     ];
 
     CssRule::new()
         .selectors_list("html")
         .declarations_block(declarations_block)
-        .into()
 }
 
-fn body_defaults() -> CssStatement {
+fn body_defaults() -> CssRule {
     CssRule::new()
         .push_selector("body")
         .push_property(CssMargin::new().content("0"))
-        .into()
 }
 
-fn monospace_defaults() -> CssStatement {
+fn monospace_defaults() -> CssRule {
     let default_fonts =
         "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace";
 
-    let selectors_list = CssSelectorsList::from(MonospaceSelectors).bake_recipe();
-    let declarations_block: [CssDeclaration; 2] = [
-        CssFontFamily::new().content(default_fonts).into(),
-        CssFontSize::new().content("1em").into(),
-    ];
+    let selectors_list = CssSelectorsList::from(MonospaceSelectors);
 
     CssRule::new()
         .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-        .into()
+        .push_property(CssFontFamily::new().content(default_fonts))
+        .push_property(CssFontSize::new().content("1em"))
 }
 
-fn table_border_color() -> CssStatement {
+fn table_border_color() -> CssRule {
     CssRule::new()
         .selectors_list("table")
         .declarations_block(CssBorderColor::from(Currentcolor))
-        .into()
 }
 
-fn forms_defaults() -> CssStatement {
-    let selectors_list = CssSelectorsList::from(FormControlsExt).bake_recipe();
-    let declarations_block: [CssDeclaration; 4] = [
-        CssFontFamily::from(Inherit).into(),
-        CssFontSize::new().content("100%").into(),
-        CssLineHeight::new().content("1.15").into(),
-        CssMargin::new().content("0").into(),
+fn forms_defaults() -> CssRule {
+    let selectors_list = CssSelectorsList::from(FormControlsExt);
+    let declarations_block = bake_ws![
+        CssFontFamily::from(Inherit),
+        CssFontSize::new().content("100%"),
+        CssLineHeight::new().content("1.15"),
+        CssMargin::new().content("0"),
     ];
 
     CssRule::new()
         .selectors_list(selectors_list)
         .declarations_block(declarations_block)
-        .into()
 }
 
-fn button_appearance() -> CssStatement {
-    let selectors_list = [
+fn button_appearance() -> CssRule {
+    let selectors_list = CssSelectorsList::from([
         "button",
         r#"[type="button"]"#,
         r#"[type="reset"]"#,
         r#"[type="submit"]"#,
-    ];
-    let declarations_block = ("-webkit-appearance", "button");
+    ]);
+    let declarations_block = CssDeclaration::from(("-webkit-appearance", "button"));
 
     CssRule::new()
         .selectors_list(selectors_list)
         .declarations_block(declarations_block)
-        .into()
 }
 
-fn legend_padding() -> CssStatement {
+fn legend_padding() -> CssRule {
     CssRule::new()
         .selectors_list("legend")
         .declarations_block(CssPadding::new().content("0"))
-        .into()
 }
 
-fn search_appearance() -> CssStatement {
-    let declarations_block: [CssDeclaration; 2] = [
-        ("-webkit-appearance", "textfield").into(),
-        CssOutlineOffset::new().content("-2px").into(),
-    ];
-
+fn search_appearance() -> CssRule {
     CssRule::new()
         .selectors_list(r#"[type="search"]"#)
-        .declarations_block(declarations_block)
-        .into()
+        .push_property(CssDeclaration::from(("-webkit-appearance", "textfield")))
+        .push_property(CssOutlineOffset::new().content("-2px"))
 }
 
-fn file_upload_button() -> CssStatement {
-    let declarations_block: [CssDeclaration; 2] = [
-        ("-webkit-appearance", "button").into(),
-        CssFont::from(Inherit).into(),
+fn file_upload_button() -> CssRule {
+    let declarations_block = bake_ws![
+        CssDeclaration::from(("-webkit-appearance", "button")),
+        CssFont::from(Inherit),
     ];
 
     CssRule::new()
         .selectors_list("::-webkit-file-upload-button")
         .declarations_block(declarations_block)
-        .into()
 }

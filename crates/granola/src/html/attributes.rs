@@ -95,6 +95,12 @@ pub struct GlobalAttrs {
     pub itemscope: bool,
 }
 
+impl HasGlobalAttrs for GlobalAttrs {
+    fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
+        self
+    }
+}
+
 impl HasGlobalAttrs for &mut GlobalAttrs {
     fn global_attrs_mut(&mut self) -> &mut GlobalAttrs {
         self

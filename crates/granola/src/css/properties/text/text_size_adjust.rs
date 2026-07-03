@@ -38,9 +38,3 @@ impl<R: TextSizeAdjustRecipe> From<CssTextSizeAdjust<R>> for CssDeclaration {
         )
     }
 }
-
-impl<R: TextSizeAdjustRecipe> From<CssTextSizeAdjust<R>> for CssDeclarationsBlock {
-    fn from(css_text_size_adjust: CssTextSizeAdjust<R>) -> Self {
-        Self::new().push(css_text_size_adjust)
-    }
-}

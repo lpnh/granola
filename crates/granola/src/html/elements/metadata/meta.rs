@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -51,7 +51,7 @@ pub struct HtmlMeta<R: MetaRecipe = ()> {
 }
 
 impl HtmlMeta {
-    pub fn from_content(content: impl Into<Cow<'static, str>>) -> Self {
+    pub fn from_content(content: impl Into<Bake>) -> Self {
         Self::new().content(content)
     }
 }
@@ -72,11 +72,11 @@ impl HtmlMeta {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct MetaAttrs {
-    pub charset: Option<Cow<'static, str>>,
-    pub content: Option<Cow<'static, str>>,
-    pub http_equiv: Option<Cow<'static, str>>,
-    pub media: Option<Cow<'static, str>>,
-    pub name: Option<Cow<'static, str>>,
+    pub charset: Option<Bake>,
+    pub content: Option<Bake>,
+    pub http_equiv: Option<Bake>,
+    pub media: Option<Bake>,
+    pub name: Option<Bake>,
 }
 
 pub trait HasMetaAttrs: Sized {
@@ -96,7 +96,7 @@ pub trait HasMetaAttrs: Sized {
     /// Value of the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/content)
-    fn content(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn content(mut self, value: impl Into<Bake>) -> Self {
         self.media_attrs_mut().content = Some(value.into());
         self
     }
@@ -104,7 +104,7 @@ pub trait HasMetaAttrs: Sized {
     /// Pragma directive.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/http-equiv)
-    fn http_equiv(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn http_equiv(mut self, value: impl Into<Bake>) -> Self {
         self.media_attrs_mut().http_equiv = Some(value.into());
         self
     }
@@ -112,7 +112,7 @@ pub trait HasMetaAttrs: Sized {
     /// Applicable media.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta#media)
-    fn media(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn media(mut self, value: impl Into<Bake>) -> Self {
         self.media_attrs_mut().media = Some(value.into());
         self
     }
@@ -120,7 +120,7 @@ pub trait HasMetaAttrs: Sized {
     /// Metadata name.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.media_attrs_mut().name = Some(value.into());
         self
     }

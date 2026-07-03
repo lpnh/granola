@@ -15,7 +15,7 @@ pub struct FillCurrentColor;
 impl SvgRecipe for FillCurrentColor {
     recipe_boilerplate!(SvgRecipe);
 
-    fn paint_attrs_recipe(paint_attrs: &mut PaintAttrs) {
-        paint_attrs.fill("currentColor");
+    fn paint_attrs_recipe() -> PaintAttrs {
+        PaintAttrs::default().fill("currentColor")
     }
 }

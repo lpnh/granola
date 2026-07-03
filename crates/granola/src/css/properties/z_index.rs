@@ -35,9 +35,3 @@ impl<R: ZIndexRecipe> From<CssZIndex<R>> for CssDeclaration {
         Self::new("z-index", css_z_index.bake_recipe().content)
     }
 }
-
-impl<R: ZIndexRecipe> From<CssZIndex<R>> for CssDeclarationsBlock {
-    fn from(css_z_index: CssZIndex<R>) -> Self {
-        Self::new().push(css_z_index)
-    }
-}

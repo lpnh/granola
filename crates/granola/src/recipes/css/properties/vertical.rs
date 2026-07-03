@@ -17,7 +17,7 @@ pub struct Vertical;
 impl ResizeRecipe for Vertical {
     recipe_boilerplate!(ResizeRecipe);
 
-    fn content_recipe(content: &mut Self::Content) {
-        *content = "vertical".into();
+    fn content_recipe() -> Self::Content {
+        "vertical".into()
     }
 }

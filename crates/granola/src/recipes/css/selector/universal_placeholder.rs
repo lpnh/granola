@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalPlaceholder;
 
 impl SimpleSelectorRecipe for UniversalPlaceholder {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = "::placeholder".into();
+    fn selector_recipe() -> Bake {
+        "::placeholder".into()
     }
 }

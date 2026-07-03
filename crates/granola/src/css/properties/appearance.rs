@@ -35,9 +35,3 @@ impl<R: AppearanceRecipe> From<CssAppearance<R>> for CssDeclaration {
         Self::new("appearance", css_appearance.bake_recipe().content)
     }
 }
-
-impl<R: AppearanceRecipe> From<CssAppearance<R>> for CssDeclarationsBlock {
-    fn from(css_appearance: CssAppearance<R>) -> Self {
-        Self::new().push(css_appearance)
-    }
-}

@@ -35,9 +35,3 @@ impl<R: PointerEventsRecipe> From<CssPointerEvents<R>> for CssDeclaration {
         Self::new("pointer-events", css_pointer_events.bake_recipe().content)
     }
 }
-
-impl<R: PointerEventsRecipe> From<CssPointerEvents<R>> for CssDeclarationsBlock {
-    fn from(css_pointer_events: CssPointerEvents<R>) -> Self {
-        Self::new().push(css_pointer_events)
-    }
-}

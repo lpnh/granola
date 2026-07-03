@@ -18,13 +18,11 @@ use crate::prelude::*;
 pub struct FormControlsExt;
 
 impl SelectorsListRecipe for FormControlsExt {
-    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
-        selectors.extend([
-            "button".into(),
-            "input".into(),
-            "optgroup".into(),
-            "select".into(),
-            "textarea".into(),
-        ]);
+    fn selectors_recipe() -> Bake {
+        let mut selectors = Bake::default();
+        for selector in ["button", "input", "optgroup", "select", "textarea"] {
+            selectors.fold_in_with(", ", selector);
+        }
+        selectors
     }
 }

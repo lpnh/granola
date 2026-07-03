@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -64,7 +64,7 @@ pub struct HtmlData<R: DataRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct DataAttrs {
-    pub value: Option<Cow<'static, str>>,
+    pub value: Option<Bake>,
 }
 
 pub trait HasDataAttrs: Sized {
@@ -73,7 +73,7 @@ pub trait HasDataAttrs: Sized {
     /// Machine-readable value.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data#value)
-    fn value(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn value(mut self, value: impl Into<Bake>) -> Self {
         self.data_attrs_mut().value = Some(value.into());
         self
     }

@@ -23,15 +23,15 @@ use crate::{prelude::*, recipes::*};
 pub struct HrReset;
 
 impl RuleRecipe for HrReset {
-    fn selectors_list_recipe(selectors_list: &mut CssSelectorsList) {
-        selectors_list.push_mut("hr");
+    fn selectors_list_recipe() -> Bake {
+        "hr".into()
     }
 
-    fn declarations_block_recipe(declarations_block: &mut CssDeclarationsBlock) {
-        declarations_block.extend_mut([
-            CssHeight::new().content("0").into(),
-            CssColor::from(Inherit).into(),
-            CssBorderTopWidth::new().content("1px").into(),
-        ]);
+    fn declarations_block_recipe() -> Bake {
+        bake_ws![
+            CssHeight::new().content("0"),
+            CssColor::from(Inherit),
+            CssBorderTopWidth::new().content("1px"),
+        ]
     }
 }

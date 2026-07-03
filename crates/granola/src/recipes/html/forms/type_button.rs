@@ -19,13 +19,13 @@ pub struct TypeButton;
 impl ButtonRecipe for TypeButton {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-        button_attrs.button_type(ButtonType::Button);
+    fn specific_attrs_recipe() -> ButtonAttrs {
+        ButtonAttrs::default().button_type(ButtonType::Button)
     }
 }
 
 impl InputRecipe for TypeButton {
-    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
-        input_attrs.input_type(InputType::Button);
+    fn specific_attrs_recipe() -> InputAttrs {
+        InputAttrs::default().input_type(InputType::Button)
     }
 }

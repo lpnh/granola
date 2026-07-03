@@ -35,9 +35,3 @@ impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclaration {
         Self::new("white-space", css_white_space.bake_recipe().content)
     }
 }
-
-impl<R: WhiteSpaceRecipe> From<CssWhiteSpace<R>> for CssDeclarationsBlock {
-    fn from(css_white_space: CssWhiteSpace<R>) -> Self {
-        Self::new().push(css_white_space)
-    }
-}

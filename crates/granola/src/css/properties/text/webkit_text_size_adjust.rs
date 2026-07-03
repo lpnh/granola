@@ -38,9 +38,3 @@ impl<R: WebkitTextSizeAdjustRecipe> From<CssWebkitTextSizeAdjust<R>> for CssDecl
         )
     }
 }
-
-impl<R: WebkitTextSizeAdjustRecipe> From<CssWebkitTextSizeAdjust<R>> for CssDeclarationsBlock {
-    fn from(css_webkit_text_size_adjust: CssWebkitTextSizeAdjust<R>) -> Self {
-        Self::new().push(css_webkit_text_size_adjust)
-    }
-}

@@ -35,9 +35,3 @@ impl<R: BorderRecipe> From<CssBorderStyle<R>> for CssDeclaration {
         Self::new("border-style", css_border_style.bake_recipe().content)
     }
 }
-
-impl<R: BorderRecipe> From<CssBorderStyle<R>> for CssDeclarationsBlock {
-    fn from(css_border_style: CssBorderStyle<R>) -> Self {
-        Self::new().push(css_border_style)
-    }
-}

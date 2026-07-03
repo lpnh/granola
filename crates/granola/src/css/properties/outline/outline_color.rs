@@ -35,9 +35,3 @@ impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssDeclaration {
         Self::new("outline-color", css_outline_color.bake_recipe().content)
     }
 }
-
-impl<R: OutlineColorRecipe> From<CssOutlineColor<R>> for CssDeclarationsBlock {
-    fn from(css_outline_color: CssOutlineColor<R>) -> Self {
-        Self::new().push(css_outline_color)
-    }
-}

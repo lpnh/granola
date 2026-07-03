@@ -15,7 +15,7 @@ use crate::prelude::*;
 pub struct UniversalAfter;
 
 impl SimpleSelectorRecipe for UniversalAfter {
-    fn selector_recipe(selector: &mut Bake) {
-        *selector = "::after".into();
+    fn selector_recipe() -> Bake {
+        "::after".into()
     }
 }

@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -74,15 +74,15 @@ pub struct HtmlA<R: ARecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AAttrs {
-    pub href: Option<Cow<'static, str>>,
-    pub target: Option<Cow<'static, str>>,
-    pub download: Option<Cow<'static, str>>,
-    pub hreflang: Option<Cow<'static, str>>,
-    pub lang: Option<Cow<'static, str>>,
-    pub ping: Option<Cow<'static, str>>,
-    pub referrerpolicy: Option<Cow<'static, str>>,
-    pub rel: Option<Cow<'static, str>>,
-    pub mime_type: Option<Cow<'static, str>>,
+    pub href: Option<Bake>,
+    pub target: Option<Bake>,
+    pub download: Option<Bake>,
+    pub hreflang: Option<Bake>,
+    pub lang: Option<Bake>,
+    pub ping: Option<Bake>,
+    pub referrerpolicy: Option<Bake>,
+    pub rel: Option<Bake>,
+    pub mime_type: Option<Bake>,
 }
 
 pub trait HasAAttrs: Sized {
@@ -92,7 +92,7 @@ pub trait HasAAttrs: Sized {
     /// filename if so.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#download)
-    fn download(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn download(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().download = Some(value.into());
         self
     }
@@ -100,7 +100,7 @@ pub trait HasAAttrs: Sized {
     /// Address of the hyperlink.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#href)
-    fn href(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn href(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().href = Some(value.into());
         self
     }
@@ -108,7 +108,7 @@ pub trait HasAAttrs: Sized {
     /// Language of the linked resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#hreflang)
-    fn hreflang(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn hreflang(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().hreflang = Some(value.into());
         self
     }
@@ -116,7 +116,7 @@ pub trait HasAAttrs: Sized {
     /// URLs to ping.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#ping)
-    fn ping(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn ping(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().ping = Some(value.into());
         self
     }
@@ -124,7 +124,7 @@ pub trait HasAAttrs: Sized {
     /// Referrer policy for fetches initiated by the element.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#referrerpolicy)
-    fn referrerpolicy(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn referrerpolicy(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().referrerpolicy = Some(value.into());
         self
     }
@@ -133,7 +133,7 @@ pub trait HasAAttrs: Sized {
     /// hyperlink and the destination resource.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel)
-    fn rel(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn rel(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().rel = Some(value.into());
         self
     }
@@ -141,7 +141,7 @@ pub trait HasAAttrs: Sized {
     /// Navigable for hyperlink navigation.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target)
-    fn target(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn target(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().target = Some(value.into());
         self
     }
@@ -151,7 +151,7 @@ pub trait HasAAttrs: Sized {
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#type)
     ///
     /// See [`MimeType`]
-    fn mime_type(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn mime_type(mut self, value: impl Into<Bake>) -> Self {
         self.a_attrs_mut().mime_type = Some(value.into());
         self
     }

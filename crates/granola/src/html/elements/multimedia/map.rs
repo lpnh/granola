@@ -1,5 +1,5 @@
 use askama::Template;
-use std::{borrow::Cow, fmt::Debug, marker::PhantomData};
+use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
 
@@ -95,7 +95,7 @@ pub struct HtmlMap<R: MapRecipe = ()> {
 #[derive(Debug, Clone, Default, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct MapAttrs {
-    pub name: Option<Cow<'static, str>>,
+    pub name: Option<Bake>,
 }
 
 pub trait HasMapAttrs: Sized {
@@ -104,7 +104,7 @@ pub trait HasMapAttrs: Sized {
     /// Name of image map to reference from the usemap attribute.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/map#name)
-    fn name(mut self, value: impl Into<Cow<'static, str>>) -> Self {
+    fn name(mut self, value: impl Into<Bake>) -> Self {
         self.map_attrs_mut().name = Some(value.into());
         self
     }

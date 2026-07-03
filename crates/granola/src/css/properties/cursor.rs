@@ -35,9 +35,3 @@ impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclaration {
         Self::new("cursor", css_cursor.bake_recipe().content)
     }
 }
-
-impl<R: CursorRecipe> From<CssCursor<R>> for CssDeclarationsBlock {
-    fn from(css_cursor: CssCursor<R>) -> Self {
-        Self::new().push(css_cursor)
-    }
-}

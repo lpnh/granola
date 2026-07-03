@@ -38,9 +38,3 @@ impl<R: BackgroundRecipe> From<CssBackground<R>> for CssDeclaration {
         Self::new("background", css_background.bake_recipe().content)
     }
 }
-
-impl<R: BackgroundRecipe> From<CssBackground<R>> for CssDeclarationsBlock {
-    fn from(css_background: CssBackground<R>) -> Self {
-        Self::new().push(css_background)
-    }
-}

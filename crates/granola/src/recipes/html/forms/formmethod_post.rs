@@ -25,13 +25,13 @@ pub struct FormmethodPost;
 impl ButtonRecipe for FormmethodPost {
     recipe_boilerplate!(ButtonRecipe);
 
-    fn specific_attrs_recipe(button_attrs: &mut ButtonAttrs) {
-        button_attrs.formmethod(FormMethod::Post);
+    fn specific_attrs_recipe() -> ButtonAttrs {
+        ButtonAttrs::default().formmethod(FormMethod::Post)
     }
 }
 
 impl InputRecipe for FormmethodPost {
-    fn specific_attrs_recipe(input_attrs: &mut InputAttrs) {
-        input_attrs.formmethod(FormMethod::Post);
+    fn specific_attrs_recipe() -> InputAttrs {
+        InputAttrs::default().formmethod(FormMethod::Post)
     }
 }

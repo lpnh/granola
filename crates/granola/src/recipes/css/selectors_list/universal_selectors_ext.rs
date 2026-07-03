@@ -19,11 +19,10 @@ use crate::{prelude::*, recipes::*};
 pub struct UniversalSelectorsExt;
 
 impl SelectorsListRecipe for UniversalSelectorsExt {
-    fn selectors_recipe(selectors: &mut Vec<CssComplexSelector>) {
-        UniversalSelectors::selectors_recipe(selectors);
-        selectors.extend([
-            CssSimpleSelector::from(UniversalBackdrop).into(),
-            CssSimpleSelector::from(UniversalFileSelectorButton).into(),
-        ])
+    fn selectors_recipe() -> Bake {
+        let mut selectors = UniversalSelectors::selectors_recipe();
+        selectors.fold_in_with(", ", CssSimpleSelector::from(UniversalBackdrop));
+        selectors.fold_in_with(", ", CssSimpleSelector::from(UniversalFileSelectorButton));
+        selectors
     }
 }
