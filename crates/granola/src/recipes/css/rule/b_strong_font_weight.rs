@@ -26,6 +26,6 @@ impl RuleRecipe for BStrongFontWeight {
     }
 
     fn declarations_block_recipe() -> Bake {
-        CssFontWeight::from(Bolder).into()
+        CssDeclaration::from(FontWeight).content("bolder").into()
     }
 }

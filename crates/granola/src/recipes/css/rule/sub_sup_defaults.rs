@@ -30,10 +30,10 @@ impl RuleRecipe for SubSupDefaults {
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssFontSize::new().content("75%"),
-            CssLineHeight::new().content("0"),
-            CssPosition::from(Relative),
-            CssVerticalAlign::from(Baseline),
+            CssDeclaration::from(FontSize).content("75%"),
+            CssDeclaration::from(LineHeight).content("0"),
+            CssDeclaration::from(Position).content("relative"),
+            CssDeclaration::from(VerticalAlign).content("baseline"),
         ]
     }
 }

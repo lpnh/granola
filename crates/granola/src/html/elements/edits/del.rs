@@ -143,10 +143,6 @@ macro_rules! del {
         $crate::html::HtmlDel::new()
     };
 
-    ($recipe:path $(,)?) => {
-        $crate::html::HtmlDel::<$recipe>::from_cookbook()
-    };
-
     ($content:expr $(,)?) => {
         $crate::html::HtmlDel::new().content($content)
     };

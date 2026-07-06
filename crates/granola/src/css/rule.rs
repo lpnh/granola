@@ -24,7 +24,9 @@ use crate::prelude::*;
 ///
 /// let css_selector = CssSimpleSelector::new().selector("p");
 ///
-/// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+/// let css_declaration = CssDeclaration::new()
+///     .property("color")
+///     .content("rgb(102, 51, 153)");
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list(css_selector)
@@ -88,7 +90,10 @@ impl<R: RuleRecipe> CssRule<R> {
         self
     }
 
-    pub fn push_property(mut self, declaration: impl Into<CssDeclaration>) -> Self {
+    pub fn push_property<D: DeclarationRecipe>(
+        mut self,
+        declaration: impl Into<CssDeclaration<D>>,
+    ) -> Self {
         self.declarations_block.fold_in_ws(declaration.into());
         self
     }

@@ -1,11 +1,11 @@
 mod at_rule;
 pub use at_rule::*;
-mod declarations;
-pub use declarations::*;
+mod custom_property;
+pub use custom_property::*;
+mod declaration;
+pub use declaration::*;
 mod functions;
 pub use functions::*;
-mod properties;
-pub use properties::*;
 mod rule;
 pub use rule::*;
 mod selectors;

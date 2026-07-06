@@ -83,6 +83,7 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             }
         }
 
+        #[diagnostic::do_not_recommend]
         impl #impl_generics From<&#name #ty_generics> for ::granola::oven::Bake
         #where_clause
         {

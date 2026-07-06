@@ -27,6 +27,9 @@ impl RuleRecipe for AllHeadingsFontReset {
     }
 
     fn declarations_block_recipe() -> Bake {
-        bake_ws![CssFontSize::from(Inherit), CssFontWeight::from(Inherit),]
+        bake_ws![
+            CssDeclaration::from(FontSize).inherit(),
+            CssDeclaration::from(FontWeight).inherit(),
+        ]
     }
 }

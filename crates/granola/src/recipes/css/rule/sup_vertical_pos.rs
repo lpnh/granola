@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use granola::{prelude::*, recipes::*};
 
 /// The `sup { top: -0.5em }` rule recipe.
 ///
@@ -26,6 +26,6 @@ impl RuleRecipe for SupVerticalPos {
     }
 
     fn declarations_block_recipe() -> Bake {
-        CssTop::new().content("-0.5em").into()
+        CssDeclaration::from(Top).content("-0.5em").into()
     }
 }

@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use granola::{prelude::*, recipes::*};
 
 /// The `small { font-size: 80% }` rule recipe.
 ///
@@ -26,6 +26,6 @@ impl RuleRecipe for SmallFontSize {
     }
 
     fn declarations_block_recipe() -> Bake {
-        CssFontSize::new().content("80%").into()
+        CssDeclaration::from(FontSize).content("80%").into()
     }
 }

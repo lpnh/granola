@@ -27,6 +27,6 @@ impl RuleRecipe for SpinButtonHeight {
     }
 
     fn declarations_block_recipe() -> Bake {
-        CssHeight::from(Auto).into()
+        CssDeclaration::from(Height).content("auto").into()
     }
 }

@@ -29,9 +29,9 @@ impl RuleRecipe for AnchorInherit {
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssColor::from(Inherit),
-            CssWebkitTextDecoration::from(Inherit),
-            CssTextDecoration::from(Inherit),
+            CssDeclaration::from(Color).inherit(),
+            CssDeclaration::from(WebkitTextDecoration).inherit(),
+            CssDeclaration::from(TextDecoration).inherit(),
         ]
     }
 }

@@ -1,23 +1,9 @@
-use crate::prelude::*;
+mod flex_direction;
+pub use flex_direction::*;
+mod flex_wrap;
+pub use flex_wrap::*;
 
-/// The `flex` property value recipe.
-///
-/// # Example
-///
-/// ```rust
-/// use granola::{prelude::*, recipes::*};
-///
-/// let css_display = CssDisplay::from(Flex);
-///
-/// assert_eq!(css_display.bake(), "display: flex;");
-/// ```
-#[derive(Default, Debug, Clone, PartialEq)]
-pub struct Flex;
-
-impl DisplayRecipe for Flex {
-    recipe_boilerplate!(DisplayRecipe);
-
-    fn content_recipe() -> Self::Content {
-        "flex".into()
-    }
-}
+// flex_basis
+// flex_flow
+// flex_grow
+// flex_shrink

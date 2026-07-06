@@ -87,8 +87,8 @@ impl StylesheetRecipe for AndyBell {
 fn text_size_adjust_reset() -> CssRule {
     let declarations_block = bake_ws![
         CssDeclaration::from(("-moz-text-size-adjust", "none")),
-        CssWebkitTextSizeAdjust::from(None),
-        CssTextSizeAdjust::from(None),
+        CssDeclaration::from(WebkitTextSizeAdjust).content("none"),
+        CssDeclaration::from(TextSizeAdjust).content("none"),
     ];
 
     CssRule::new()
@@ -112,19 +112,19 @@ fn default_margin_reset() -> CssRule {
 
     CssRule::new()
         .selectors_list(selectors_list)
-        .declarations_block(CssMarginBlockEnd::new().content("0"))
+        .declarations_block(CssDeclaration::from(MarginBlockEnd).content("0"))
 }
 
 fn list_style_reset() -> CssRule {
     CssRule::new()
         .selectors_list(bake_comma!["ul[role='list']", "ol[role='list']"])
-        .declarations_block(CssListStyle::from(None))
+        .declarations_block(CssDeclaration::from(ListStyle).content("none"))
 }
 
 fn body_defaults() -> CssRule {
     let declarations_block = bake_ws![
-        CssMinHeight::new().content("100vh"),
-        CssLineHeight::new().content("1.5"),
+        CssDeclaration::from(MinHeight).content("100vh"),
+        CssDeclaration::from(LineHeight).content("1.5"),
     ];
 
     CssRule::new()
@@ -135,15 +135,18 @@ fn body_defaults() -> CssRule {
 fn headings_and_forms_line_height() -> CssRule<Headings> {
     CssRule::from(Headings)
         .push_selectors_list(bake_comma!["button", "input", "label"])
-        .declarations_block(CssLineHeight::new().content("1.1"))
+        .declarations_block(CssDeclaration::from(LineHeight).content("1.1"))
 }
 
 fn headings_text_wrap() -> CssRule<Headings> {
-    CssRule::from(Headings).declarations_block(CssTextWrap::from(Balance))
+    CssRule::from(Headings).declarations_block(CssDeclaration::from(TextWrap).content("balance"))
 }
 
 fn images_width_and_display() -> CssRule {
-    let declarations_block = bake_ws![CssMaxWidth::new().content("100%"), CssDisplay::from(Block),];
+    let declarations_block = bake_ws![
+        CssDeclaration::from(MaxWidth).content("100%"),
+        CssDeclaration::from(Display).content("block")
+    ];
 
     CssRule::new()
         .selectors_list(bake_comma!["img", "picture"])
@@ -151,7 +154,10 @@ fn images_width_and_display() -> CssRule {
 }
 
 fn form_controls_font_inherit() -> CssRule<FormControls> {
-    let declarations_block = bake_ws![CssFontFamily::from(Inherit), CssFontSize::from(Inherit),];
+    let declarations_block = bake_ws![
+        CssDeclaration::from(FontFamily).inherit(),
+        CssDeclaration::from(FontSize).inherit(),
+    ];
 
     CssRule::from(FormControls).declarations_block(declarations_block)
 }
@@ -159,11 +165,11 @@ fn form_controls_font_inherit() -> CssRule<FormControls> {
 fn textarea_min_height() -> CssRule {
     CssRule::new()
         .selectors_list("textarea:not([rows])")
-        .declarations_block(CssMinHeight::new().content("10em"))
+        .declarations_block(CssDeclaration::from(MinHeight).content("10em"))
 }
 
 fn target_scroll_margin() -> CssRule {
     CssRule::new()
         .selectors_list(":target")
-        .declarations_block(CssScrollMarginBlock::new().content("5ex"))
+        .declarations_block(CssDeclaration::from(ScrollMarginBlock).content("5ex"))
 }

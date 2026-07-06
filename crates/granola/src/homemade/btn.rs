@@ -166,35 +166,35 @@ impl SimpleSelectorRecipe for Btn {
 
 impl RuleRecipe for Btn {
     fn selectors_list_recipe() -> Bake {
-        CssSimpleSelector::<Self>::from_cookbook().into()
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssDisplay::new().fold_in("inline").fold_in("flex"),
-            CssAlignItems::from(Center),
-            CssJustifyContent::from(Center),
-            CssPadding::new().content("0.6em 1.2em"),
-            CssHeight::new().content(CssFnVar::new().custom_property(BTN_SIZE)),
-            CssFontSize::new().content("0.875rem"),
-            CssFontWeight::new().content("500"),
-            CssLineHeight::new().content("1.25rem"),
-            CssTextDecoration::from(None),
-            CssWhiteSpace::from(Nowrap),
-            CssBorder::new().content("1px solid"),
-            CssBorderColor::new().content(CssFnVar::new().custom_property(BTN_BORDER)),
-            CssBorderRadius::new().content("0.5em"),
-            CssBackgroundColor::new().content(CssFnVar::new().custom_property(BTN_BG)),
-            CssColor::new().content(CssFnVar::new().custom_property(BTN_FG)),
-            CssCursor::from(Pointer),
-            CssTransition::new().content("background-color 150ms ease"),
-            CssCustomProperty::new().name("btn-size").value("2.5rem"),
-            CssCustomProperty::from(BtnBg).value(btn_color_or_surface()),
-            CssCustomProperty::from(BtnBorder).value(color_mix_darken(
+            CssDeclaration::from(Display).content("inline flex"),
+            CssDeclaration::from(AlignItems).content("center"),
+            CssDeclaration::from(JustifyContent).content("center"),
+            CssDeclaration::from(Padding).content("0.6em 1.2em"),
+            CssDeclaration::from(Height).content(CssFnVar::new().custom_property(BTN_SIZE)),
+            CssDeclaration::from(FontSize).content("0.875rem"),
+            CssDeclaration::from(FontWeight).content("500"),
+            CssDeclaration::from(LineHeight).content("1.25rem"),
+            CssDeclaration::from(TextDecoration).content("none"),
+            CssDeclaration::from(WhiteSpace).content("nowrap"),
+            CssDeclaration::from(Border).content("1px solid"),
+            CssDeclaration::from(BorderColor).content(CssFnVar::new().custom_property(BTN_BORDER)),
+            CssDeclaration::from(BorderRadius).content("0.5em"),
+            CssDeclaration::from(BackgroundColor).content(CssFnVar::new().custom_property(BTN_BG)),
+            CssDeclaration::from(Color).content(CssFnVar::new().custom_property(BTN_FG)),
+            CssDeclaration::from(Cursor).content("pointer"),
+            CssDeclaration::from(Transition).content("background-color 150ms ease"),
+            CssDeclaration::from(BtnSize).content("2.5rem"),
+            CssDeclaration::from(BtnBg).content(btn_color_or_surface()),
+            CssDeclaration::from(BtnBorder).content(color_mix_darken(
                 CssFnVar::new().custom_property(BTN_BG),
-                "5%",
+                "5%"
             )),
-            CssCustomProperty::from(BtnFg).value(CssFnVar::from(ColorText)),
+            CssDeclaration::from(BtnFg).content(CssFnVar::from(ColorText)),
         ]
     }
 }
@@ -204,7 +204,7 @@ impl RuleRecipe for Btn {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let rule = CssRule::from(BtnHover);
 ///
@@ -230,12 +230,12 @@ impl SimpleSelectorRecipe for BtnHover {
 
 impl RuleRecipe for BtnHover {
     fn selectors_list_recipe() -> Bake {
-        CssSimpleSelector::<Self>::from_cookbook().into()
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
-        CssCustomProperty::from(BtnBg)
-            .value(
+        CssDeclaration::from(BtnBg)
+            .content(
                 CssFnVar::new()
                     .custom_property(BTN_HOVER_BG)
                     .fallback(color_mix_darken(btn_color_or_surface(), "7%")),
@@ -249,7 +249,7 @@ impl RuleRecipe for BtnHover {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let rule = CssRule::from(BtnActive);
 ///
@@ -280,22 +280,22 @@ impl SimpleSelectorRecipe for BtnActive {
 
 impl RuleRecipe for BtnActive {
     fn selectors_list_recipe() -> Bake {
-        CssSimpleSelector::<Self>::from_cookbook().into()
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssCustomProperty::from(BtnBg).value(
+            CssDeclaration::from(BtnBg).content(
                 CssFnVar::new()
                     .custom_property(BTN_ACTIVE_BG)
                     .fallback(color_mix_darken(btn_color_or_surface(), "5%")),
             ),
-            CssCustomProperty::from(BtnBorder).value(
+            CssDeclaration::from(BtnBorder).content(
                 CssFnVar::new()
                     .custom_property(BTN_ACTIVE_BORDER)
                     .fallback(color_mix_darken(btn_color_or_surface(), "7%")),
             ),
-            CssTransform::new().content("scale(0.97)"),
+            CssDeclaration::from(Transform).content("scale(0.97)"),
         ]
     }
 }
@@ -305,7 +305,7 @@ impl RuleRecipe for BtnActive {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let rule = CssRule::from(BtnFocusVisible);
 ///
@@ -331,15 +331,15 @@ impl SimpleSelectorRecipe for BtnFocusVisible {
 
 impl RuleRecipe for BtnFocusVisible {
     fn selectors_list_recipe() -> Bake {
-        CssSimpleSelector::<Self>::from_cookbook().into()
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssOutlineWidth::new().content("2px"),
-            CssOutlineStyle::from(Solid),
-            CssOutlineColor::new().content(btn_color_or_text()),
-            CssOutlineOffset::new().content("2px"),
+            CssDeclaration::from(OutlineWidth).content("2px"),
+            CssDeclaration::from(OutlineStyle).content("solid"),
+            CssDeclaration::from(OutlineColor).content(btn_color_or_text()),
+            CssDeclaration::from(OutlineOffset).content("2px"),
         ]
     }
 }
@@ -367,15 +367,13 @@ pub struct BtnPrimary;
 
 impl RuleRecipe for BtnPrimary {
     fn selectors_list_recipe() -> Bake {
-        CssSimpleSelector::<Self>::from_cookbook().into()
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssCustomProperty::new()
-                .name(BTN_COLOR)
-                .value(CssFnVar::from(ColorPrimary)),
-            CssCustomProperty::from(BtnFg).value(CssFnVar::from(ColorPrimaryText)),
+            CssDeclaration::from(BtnColor).content(CssFnVar::from(ColorPrimary)),
+            CssDeclaration::from(BtnFg).content(CssFnVar::from(ColorPrimaryText)),
         ]
     }
 }
@@ -391,7 +389,7 @@ impl SimpleSelectorRecipe for BtnPrimary {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let rule = CssRule::from(BtnGhost);
 ///
@@ -421,23 +419,17 @@ pub struct BtnGhost;
 
 impl RuleRecipe for BtnGhost {
     fn selectors_list_recipe() -> Bake {
-        bake![CssSimpleSelector::<Self>::from_cookbook()]
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssColor::new().content(btn_color_or_text()),
-            CssCustomProperty::from(BtnBg).value("#0000"),
-            CssCustomProperty::from(BtnBorder).value("#0000"),
-            CssCustomProperty::new()
-                .name(BTN_HOVER_BG)
-                .value(color_mix_fade("10%")),
-            CssCustomProperty::new()
-                .name("btn-active-bg")
-                .value(color_mix_fade("20%")),
-            CssCustomProperty::new()
-                .name(BTN_ACTIVE_BORDER)
-                .value("#0000")
+            CssDeclaration::from(Color).content(btn_color_or_text()),
+            CssDeclaration::from(BtnBg).content("#0000"),
+            CssDeclaration::from(BtnBorder).content("#0000"),
+            CssDeclaration::from(BtnHoverBg).content(color_mix_fade("10%")),
+            CssDeclaration::from(BtnActiveBg).content(color_mix_fade("20%")),
+            CssDeclaration::from(BtnActiveBorder).content("#0000"),
         ]
     }
 }
@@ -453,7 +445,7 @@ impl SimpleSelectorRecipe for BtnGhost {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let rule = CssRule::from(BtnSquare);
 ///
@@ -471,13 +463,13 @@ pub struct BtnSquare;
 
 impl RuleRecipe for BtnSquare {
     fn selectors_list_recipe() -> Bake {
-        bake![CssSimpleSelector::<Self>::from_cookbook()]
+        CssSimpleSelector::from(Self).into()
     }
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssPadding::new().content("0"),
-            CssWidth::new().content(CssFnVar::new().custom_property(BTN_SIZE)),
+            CssDeclaration::from(Padding).content("0"),
+            CssDeclaration::from(Width).content(CssFnVar::new().custom_property(BTN_SIZE)),
         ]
     }
 }
@@ -493,9 +485,9 @@ impl SimpleSelectorRecipe for BtnSquare {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnBg).value("#0000");
+/// let custom_property = CssDeclaration::from(BtnBg).content("#0000");
 ///
 /// assert_eq!(custom_property.bake(), "--btn-bg: #0000;");
 /// ```
@@ -508,14 +500,22 @@ impl CustomPropertyRecipe for BtnBg {
     }
 }
 
+impl DeclarationRecipe for BtnBg {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
 /// The homemade recipe for the `btn-fg` custom property.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnFg).value("initial");
+/// let custom_property = CssDeclaration::from(BtnFg).initial();
 ///
 /// assert_eq!(custom_property.bake(), "--btn-fg: initial;");
 /// ```
@@ -528,14 +528,22 @@ impl CustomPropertyRecipe for BtnFg {
     }
 }
 
+impl DeclarationRecipe for BtnFg {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
 /// The homemade recipe for the `btn-border` custom property.
 ///
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
-/// let custom_property = CssCustomProperty::from(BtnBorder).value("initial");
+/// let custom_property = CssDeclaration::from(BtnBorder).initial();
 ///
 /// assert_eq!(custom_property.bake(), "--btn-border: initial;");
 /// ```
@@ -545,6 +553,154 @@ pub struct BtnBorder;
 impl CustomPropertyRecipe for BtnBorder {
     fn name_recipe() -> Bake {
         BTN_BORDER.into()
+    }
+}
+
+impl DeclarationRecipe for BtnBorder {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
+/// The homemade recipe for the `btn-size` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*, recipes::*};
+///
+/// let custom_property = CssDeclaration::from(BtnSize).content("2.5rem");
+///
+/// assert_eq!(custom_property.bake(), "--btn-size: 2.5rem;");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct BtnSize;
+
+impl CustomPropertyRecipe for BtnSize {
+    fn name_recipe() -> Bake {
+        BTN_SIZE.into()
+    }
+}
+
+impl DeclarationRecipe for BtnSize {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
+/// The homemade recipe for the `btn-color` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*, recipes::*};
+///
+/// let custom_property = CssDeclaration::from(BtnColor).initial();
+///
+/// assert_eq!(custom_property.bake(), "--btn-color: initial;");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct BtnColor;
+
+impl CustomPropertyRecipe for BtnColor {
+    fn name_recipe() -> Bake {
+        BTN_COLOR.into()
+    }
+}
+
+impl DeclarationRecipe for BtnColor {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
+/// The homemade recipe for the `btn-hover-bg` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*, recipes::*};
+///
+/// let custom_property = CssDeclaration::from(BtnHoverBg).initial();
+///
+/// assert_eq!(custom_property.bake(), "--btn-hover-bg: initial;");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct BtnHoverBg;
+
+impl CustomPropertyRecipe for BtnHoverBg {
+    fn name_recipe() -> Bake {
+        BTN_HOVER_BG.into()
+    }
+}
+
+impl DeclarationRecipe for BtnHoverBg {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
+/// The homemade recipe for the `btn-active-bg` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*, recipes::*};
+///
+/// let custom_property = CssDeclaration::from(BtnActiveBg).initial();
+///
+/// assert_eq!(custom_property.bake(), "--btn-active-bg: initial;");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct BtnActiveBg;
+
+impl CustomPropertyRecipe for BtnActiveBg {
+    fn name_recipe() -> Bake {
+        BTN_ACTIVE_BG.into()
+    }
+}
+
+impl DeclarationRecipe for BtnActiveBg {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+}
+
+/// The homemade recipe for the `btn-active-border` custom property.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{homemade::*, prelude::*, recipes::*};
+///
+/// let custom_property = CssDeclaration::from(BtnActiveBorder).initial();
+///
+/// assert_eq!(custom_property.bake(), "--btn-active-border: initial;");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct BtnActiveBorder;
+
+impl CustomPropertyRecipe for BtnActiveBorder {
+    fn name_recipe() -> Bake {
+        BTN_ACTIVE_BORDER.into()
+    }
+}
+
+impl DeclarationRecipe for BtnActiveBorder {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
     }
 }
 

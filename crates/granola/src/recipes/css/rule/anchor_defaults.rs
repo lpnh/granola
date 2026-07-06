@@ -28,8 +28,8 @@ impl RuleRecipe for AnchorDefaults {
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssTextDecorationSkipInk::from(Auto),
-            CssColor::from(Currentcolor),
+            CssDeclaration::from(TextDecorationSkipInk).content("auto"),
+            CssDeclaration::from(Color).content("currentcolor"),
         ]
     }
 }

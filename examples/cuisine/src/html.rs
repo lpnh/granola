@@ -1,4 +1,4 @@
-use granola::{homemade::*, macros::*, prelude::*};
+use granola::{homemade::*, macros::*, prelude::*, recipes::*};
 
 use crate::{css::Stylesheet, handlers::Reset, snippets::snippets, utils::Palette};
 
@@ -80,10 +80,13 @@ fn palette_style(palette: Palette) -> HtmlStyle {
     let css_rule = rule!(
         ":root",
         declarations_block![
-            CssCustomProperty::from(ColorBackground).value(palette.color_background),
-            CssCustomProperty::from(ColorSurface).value(palette.color_surface),
-            CssCustomProperty::from(ColorBorder).value(palette.color_border),
-            CssCustomProperty::from(ColorText).value(palette.color_text),
+            (
+                CssCustomProperty::from(ColorBackground),
+                palette.color_background
+            ),
+            (CssCustomProperty::from(ColorSurface), palette.color_surface),
+            (CssCustomProperty::from(ColorBorder), palette.color_border),
+            (CssCustomProperty::from(ColorText), palette.color_text),
         ]
     );
 
@@ -144,7 +147,7 @@ fn swatch_div(name: &str, value: &str) -> HtmlDiv {
     let square = div!()
         .class("square")
         .style(format!("background: var(--color-{name});"));
-    let name = p!(name.to_string()).style(CssFontSize::new().content("0.9rem"));
+    let name = p!(name.to_string()).style(CssDeclaration::from(FontSize).content("0.9rem"));
     let val = code!(value.to_string());
 
     div!(square, name, val).class("swatch")

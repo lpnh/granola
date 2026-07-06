@@ -40,14 +40,14 @@ impl RuleRecipe for Colors {
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssCustomProperty::from(ColorBackground),
-            CssCustomProperty::from(ColorSurface),
-            CssCustomProperty::from(ColorBorder),
-            CssCustomProperty::from(ColorText),
-            CssCustomProperty::from(ColorPrimary),
-            CssCustomProperty::from(ColorPrimaryText),
-            CssCustomProperty::from(ColorError),
-            CssCustomProperty::from(ColorSuccess),
+            CssDeclaration::from(ColorBackground),
+            CssDeclaration::from(ColorSurface),
+            CssDeclaration::from(ColorBorder),
+            CssDeclaration::from(ColorText),
+            CssDeclaration::from(ColorPrimary),
+            CssDeclaration::from(ColorPrimaryText),
+            CssDeclaration::from(ColorError),
+            CssDeclaration::from(ColorSuccess),
         ]
     }
 }
@@ -57,11 +57,11 @@ impl RuleRecipe for Colors {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorBackground);
 ///
-/// assert_eq!(custom_property.bake(), "--color-background: initial;");
+/// assert_eq!(custom_property.bake(), "--color-background");
 /// ```
 ///
 /// ```rust
@@ -74,13 +74,21 @@ impl RuleRecipe for Colors {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorBackground;
 
+impl DeclarationRecipe for ColorBackground {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorBackground {
     fn name_recipe() -> Bake {
         "color-background".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -95,11 +103,11 @@ impl FnVarRecipe for ColorBackground {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorSurface);
 ///
-/// assert_eq!(custom_property.bake(), "--color-surface: initial;");
+/// assert_eq!(custom_property.bake(), "--color-surface");
 /// ```
 ///
 /// ```rust
@@ -112,13 +120,21 @@ impl FnVarRecipe for ColorBackground {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorSurface;
 
+impl DeclarationRecipe for ColorSurface {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorSurface {
     fn name_recipe() -> Bake {
         "color-surface".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -133,11 +149,11 @@ impl FnVarRecipe for ColorSurface {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorBorder);
 ///
-/// assert_eq!(custom_property.bake(), "--color-border: initial;");
+/// assert_eq!(custom_property.bake(), "--color-border");
 /// ```
 ///
 /// ```rust
@@ -150,13 +166,21 @@ impl FnVarRecipe for ColorSurface {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorBorder;
 
+impl DeclarationRecipe for ColorBorder {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorBorder {
     fn name_recipe() -> Bake {
         "color-border".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -171,11 +195,11 @@ impl FnVarRecipe for ColorBorder {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorText);
 ///
-/// assert_eq!(custom_property.bake(), "--color-text: initial;");
+/// assert_eq!(custom_property.bake(), "--color-text");
 /// ```
 ///
 /// ```rust
@@ -188,13 +212,21 @@ impl FnVarRecipe for ColorBorder {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorText;
 
+impl DeclarationRecipe for ColorText {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorText {
     fn name_recipe() -> Bake {
         "color-text".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -209,11 +241,11 @@ impl FnVarRecipe for ColorText {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorPrimary);
 ///
-/// assert_eq!(custom_property.bake(), "--color-primary: initial;");
+/// assert_eq!(custom_property.bake(), "--color-primary");
 /// ```
 ///
 /// ```rust
@@ -226,13 +258,21 @@ impl FnVarRecipe for ColorText {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorPrimary;
 
+impl DeclarationRecipe for ColorPrimary {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorPrimary {
     fn name_recipe() -> Bake {
         "color-primary".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -247,11 +287,11 @@ impl FnVarRecipe for ColorPrimary {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorPrimaryText);
 ///
-/// assert_eq!(custom_property.bake(), "--color-primary-text: initial;");
+/// assert_eq!(custom_property.bake(), "--color-primary-text");
 /// ```
 ///
 /// ```rust
@@ -264,13 +304,21 @@ impl FnVarRecipe for ColorPrimary {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorPrimaryText;
 
+impl DeclarationRecipe for ColorPrimaryText {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorPrimaryText {
     fn name_recipe() -> Bake {
         "color-primary-text".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -285,11 +333,11 @@ impl FnVarRecipe for ColorPrimaryText {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorError);
 ///
-/// assert_eq!(custom_property.bake(), "--color-error: initial;");
+/// assert_eq!(custom_property.bake(), "--color-error");
 /// ```
 ///
 /// ```rust
@@ -302,13 +350,21 @@ impl FnVarRecipe for ColorPrimaryText {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorError;
 
+impl DeclarationRecipe for ColorError {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorError {
     fn name_recipe() -> Bake {
         "color-error".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 
@@ -323,11 +379,11 @@ impl FnVarRecipe for ColorError {
 /// # Example
 ///
 /// ```rust
-/// use granola::{homemade::*, prelude::*};
+/// use granola::{homemade::*, prelude::*, recipes::*};
 ///
 /// let custom_property = CssCustomProperty::from(ColorSuccess);
 ///
-/// assert_eq!(custom_property.bake(), "--color-success: initial;");
+/// assert_eq!(custom_property.bake(), "--color-success");
 /// ```
 ///
 /// ```rust
@@ -340,13 +396,21 @@ impl FnVarRecipe for ColorError {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct ColorSuccess;
 
+impl DeclarationRecipe for ColorSuccess {
+    recipe_boilerplate!(DeclarationRecipe);
+
+    fn property_recipe() -> Bake {
+        CssCustomProperty::from(Self).into()
+    }
+
+    fn content_recipe() -> Self::Content {
+        "initial".into()
+    }
+}
+
 impl CustomPropertyRecipe for ColorSuccess {
     fn name_recipe() -> Bake {
         "color-success".into()
-    }
-
-    fn value_recipe() -> Bake {
-        "initial".into()
     }
 }
 

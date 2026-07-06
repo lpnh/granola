@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use granola::{prelude::*, recipes::*};
 
 /// The `sub { bottom: -0.25em }` rule recipe.
 ///
@@ -26,6 +26,6 @@ impl RuleRecipe for SubVerticalPos {
     }
 
     fn declarations_block_recipe() -> Bake {
-        CssBottom::new().content("-0.25em").into()
+        CssDeclaration::from(Bottom).content("-0.25em").into()
     }
 }

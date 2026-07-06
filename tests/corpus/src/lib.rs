@@ -916,7 +916,7 @@ pub fn at_rule() -> CssAtRule {
 }
 
 pub fn declaration() -> CssDeclaration {
-    CssDeclaration::new("color", "rebeccapurple")
+    CssDeclaration::from(("color", "rebeccapurple"))
 }
 
 pub fn declarations_block() -> Bake {
@@ -926,7 +926,7 @@ pub fn declarations_block() -> Bake {
 pub fn rule() -> CssRule {
     let css_selector = CssSimpleSelector::new().selector("p");
 
-    let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
+    let css_declaration = CssDeclaration::from(("color", "rgb(102, 51, 153)"));
 
     CssRule::new()
         .selectors_list(css_selector)

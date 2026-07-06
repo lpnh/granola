@@ -29,9 +29,9 @@ impl RuleRecipe for HrReset {
 
     fn declarations_block_recipe() -> Bake {
         bake_ws![
-            CssHeight::new().content("0"),
-            CssColor::from(Inherit),
-            CssBorderTopWidth::new().content("1px"),
+            CssDeclaration::from(Height).content("0"),
+            CssDeclaration::from(Color).inherit(),
+            CssDeclaration::from(BorderTopWidth).content("1px"),
         ]
     }
 }

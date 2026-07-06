@@ -127,7 +127,7 @@ impl StylesheetRecipe for ModernNormalize {
             search_appearance(),
             CssRule::from(SearchDecorationAppearance),
             file_upload_button(),
-            CssRule::from(SummaryDisplay),
+            CssRule::from(SummaryDisplayListItem),
         ]
     }
 }
@@ -136,10 +136,10 @@ fn html_defaults() -> CssRule {
     let default_fonts = "system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
 
     let declarations_block = bake_ws![
-        CssFontFamily::new().content(default_fonts),
-        CssLineHeight::new().content("1.15"),
-        CssWebkitTextSizeAdjust::new().content("100%"),
-        CssTabSize::new().content("4"),
+        CssDeclaration::from(FontFamily).content(default_fonts),
+        CssDeclaration::from(LineHeight).content("1.15"),
+        CssDeclaration::from(WebkitTextSizeAdjust).content("100%"),
+        CssDeclaration::from(TabSize).content("4"),
     ];
 
     CssRule::new()
@@ -150,7 +150,7 @@ fn html_defaults() -> CssRule {
 fn body_defaults() -> CssRule {
     CssRule::new()
         .push_selector("body")
-        .push_property(CssMargin::new().content("0"))
+        .push_property(CssDeclaration::from(Margin).content("0"))
 }
 
 fn monospace_defaults() -> CssRule<MonospaceSelectors> {
@@ -158,22 +158,22 @@ fn monospace_defaults() -> CssRule<MonospaceSelectors> {
         "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace";
 
     CssRule::from(MonospaceSelectors)
-        .push_property(CssFontFamily::new().content(default_fonts))
-        .push_property(CssFontSize::new().content("1em"))
+        .push_property(CssDeclaration::from(FontFamily).content(default_fonts))
+        .push_property(CssDeclaration::from(FontSize).content("1em"))
 }
 
 fn table_border_color() -> CssRule {
     CssRule::new()
         .selectors_list("table")
-        .declarations_block(CssBorderColor::from(Currentcolor))
+        .declarations_block(CssDeclaration::from(BorderColor).content("currentcolor"))
 }
 
 fn forms_defaults() -> CssRule<FormControlsExt> {
     let declarations_block = bake_ws![
-        CssFontFamily::from(Inherit),
-        CssFontSize::new().content("100%"),
-        CssLineHeight::new().content("1.15"),
-        CssMargin::new().content("0"),
+        CssDeclaration::from(FontFamily).inherit(),
+        CssDeclaration::from(FontSize).content("100%"),
+        CssDeclaration::from(LineHeight).content("1.15"),
+        CssDeclaration::from(Margin).content("0"),
     ];
 
     CssRule::from(FormControlsExt).declarations_block(declarations_block)
@@ -196,20 +196,20 @@ fn button_appearance() -> CssRule {
 fn legend_padding() -> CssRule {
     CssRule::new()
         .selectors_list("legend")
-        .declarations_block(CssPadding::new().content("0"))
+        .declarations_block(CssDeclaration::from(Padding).content("0"))
 }
 
 fn search_appearance() -> CssRule {
     CssRule::new()
         .selectors_list(r#"[type="search"]"#)
         .push_property(CssDeclaration::from(("-webkit-appearance", "textfield")))
-        .push_property(CssOutlineOffset::new().content("-2px"))
+        .push_property(CssDeclaration::from(OutlineOffset).content("-2px"))
 }
 
 fn file_upload_button() -> CssRule {
     let declarations_block = bake_ws![
         CssDeclaration::from(("-webkit-appearance", "button")),
-        CssFont::from(Inherit),
+        CssDeclaration::from(Font).inherit(),
     ];
 
     CssRule::new()
