@@ -27,18 +27,15 @@ fn paragraphs() -> HtmlDiv {
     ];
     let p2 = p![
         "Another paragraph with a ",
-        strong!("strong"),
-        ", ",
-        b!("bold"),
-        ", ",
-        code!("code"),
-        ", ",
-        small!("small"),
-        ", ",
-        sub!("sub"),
-        ", ",
-        sup!("sup"),
-        ", and an ",
+        bake_comma![
+            strong!("strong"),
+            b!("bold"),
+            code!("code"),
+            small!("small"),
+            sub!("sub"),
+            sup!("sup"),
+            "and an ",
+        ],
         abbr!("abbr").title("abbreviation"),
         " elements.",
     ];

@@ -23,11 +23,7 @@ pub struct SpinButtonHeight;
 
 impl RuleRecipe for SpinButtonHeight {
     fn selectors_list_recipe() -> Bake {
-        let mut selectors_list = Bake::default();
-        for selector in ["::-webkit-inner-spin-button", "::-webkit-outer-spin-button"] {
-            selectors_list.fold_in_with(", ", selector);
-        }
-        selectors_list
+        bake_comma!["::-webkit-inner-spin-button", "::-webkit-outer-spin-button"]
     }
 
     fn declarations_block_recipe() -> Bake {

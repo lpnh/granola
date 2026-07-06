@@ -925,12 +925,11 @@ pub fn declarations_block() -> Bake {
 
 pub fn rule() -> CssRule {
     let css_selector = CssSimpleSelector::new().selector("p");
-    let css_selector_list = CssSelectorsList::new().push(css_selector);
 
     let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
 
     CssRule::new()
-        .selectors_list(css_selector_list)
+        .selectors_list(css_selector)
         .declarations_block(css_declaration)
 }
 
@@ -964,10 +963,8 @@ pub fn complex_selector() -> CssComplexSelector {
     CssComplexSelector::new().first("form").child("input")
 }
 
-pub fn selectors_list() -> CssSelectorsList {
-    let selector = CssSimpleSelector::new().selector("p");
-
-    CssSelectorsList::new().push(selector)
+pub fn selectors_list() -> Bake {
+    CssSimpleSelector::new().selector("p").into()
 }
 
 pub fn stylesheet_preflight() -> CssStylesheet<Preflight> {

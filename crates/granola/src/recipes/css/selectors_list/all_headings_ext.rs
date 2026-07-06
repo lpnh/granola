@@ -7,18 +7,15 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list = CssSelectorsList::from(AllHeadingsExt);
+/// let rule = CssRule::from(AllHeadingsExt);
 ///
-/// assert_eq!(selectors_list.bake(), "p, h1, h2, h3, h4, h5, h6");
+/// assert_eq!(rule.selectors_list, "p, h1, h2, h3, h4, h5, h6");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct AllHeadingsExt;
 
-impl SelectorsListRecipe for AllHeadingsExt {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = Bake::default();
-        selectors.fold_in_with(", ", "p");
-        selectors.fold_in_with(", ", AllHeadings::selectors_recipe());
-        selectors
+impl RuleRecipe for AllHeadingsExt {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma!["p", AllHeadings::selectors_list_recipe()]
     }
 }

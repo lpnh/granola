@@ -516,7 +516,7 @@ fn tip_bubble_reveal() -> CssRule {
 
 fn tip_bubble_starting_style() -> Bake {
     let revealed = CssRule::new()
-        .selectors_list([
+        .selectors_list(bake_comma![
             ".tooltip:hover .tip-bubble",
             ".tooltip:has(:focus-visible) .tip-bubble",
         ])

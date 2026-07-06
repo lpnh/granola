@@ -7,18 +7,19 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let list = CssSelectorsList::from(UniversalSelectors);
+/// let rule = CssRule::from(UniversalSelectors);
 ///
-/// assert_eq!(list.bake(), "*, ::after, ::before");
+/// assert_eq!(rule.selectors_list, "*, ::after, ::before");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct UniversalSelectors;
 
-impl SelectorsListRecipe for UniversalSelectors {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = bake![CssTypeSelector::from(Universal)];
-        selectors.fold_in_with(", ", CssSimpleSelector::from(UniversalAfter));
-        selectors.fold_in_with(", ", CssSimpleSelector::from(UniversalBefore));
-        selectors
+impl RuleRecipe for UniversalSelectors {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma![
+            CssTypeSelector::from(Universal),
+            CssSimpleSelector::from(UniversalAfter),
+            CssSimpleSelector::from(UniversalBefore),
+        ]
     }
 }

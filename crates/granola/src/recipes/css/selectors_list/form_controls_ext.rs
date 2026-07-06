@@ -7,22 +7,18 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list = CssSelectorsList::from(FormControlsExt);
+/// let rule = CssRule::from(FormControlsExt);
 ///
 /// assert_eq!(
-///     selectors_list.bake(),
+///     rule.selectors_list,
 ///     "button, input, optgroup, select, textarea"
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct FormControlsExt;
 
-impl SelectorsListRecipe for FormControlsExt {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = Bake::default();
-        for selector in ["button", "input", "optgroup", "select", "textarea"] {
-            selectors.fold_in_with(", ", selector);
-        }
-        selectors
+impl RuleRecipe for FormControlsExt {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma!["button", "input", "optgroup", "select", "textarea"]
     }
 }

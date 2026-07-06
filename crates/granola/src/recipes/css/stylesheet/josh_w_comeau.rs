@@ -102,28 +102,20 @@ fn body_defaults() -> CssRule {
         .declarations_block(declarations_block)
 }
 
-fn media_defaults() -> CssRule {
-    let selectors_list = CssSelectorsList::from(MediaSelectors);
-
-    CssRule::new()
-        .selectors_list(selectors_list)
+fn media_defaults() -> CssRule<MediaSelectors> {
+    CssRule::from(MediaSelectors)
         .push_property(CssDisplay::from(Block))
         .push_property(CssMaxWidth::new().content("100%"))
 }
 
-fn form_controls_font_inherit() -> CssRule {
-    let selectors_list = CssSelectorsList::from(FormControls).bake_recipe();
+fn form_controls_font_inherit() -> CssRule<FormControls> {
     let declarations_block = CssFont::from(Inherit);
 
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+    CssRule::from(FormControls).declarations_block(declarations_block)
 }
 
-fn text_overflow_reset() -> CssRule {
-    CssRule::new()
-        .selectors_list(CssSelectorsList::from(AllHeadingsExt))
-        .declarations_block(CssOverflowWrap::from(BreakWord))
+fn text_overflow_reset() -> CssRule<AllHeadingsExt> {
+    CssRule::from(AllHeadingsExt).declarations_block(CssOverflowWrap::from(BreakWord))
 }
 
 fn paragraph_text_wrap() -> CssRule {
@@ -132,14 +124,12 @@ fn paragraph_text_wrap() -> CssRule {
         .declarations_block(CssTextWrap::from(Pretty))
 }
 
-fn headings_text_wrap() -> CssRule {
-    CssRule::new()
-        .selectors_list(CssSelectorsList::from(AllHeadings))
-        .declarations_block(CssTextWrap::from(Balance))
+fn headings_text_wrap() -> CssRule<AllHeadings> {
+    CssRule::from(AllHeadings).declarations_block(CssTextWrap::from(Balance))
 }
 
 fn root_stacking_context() -> CssRule {
     CssRule::new()
-        .selectors_list(["#root", "#__next"])
+        .selectors_list(bake_comma!["#root", "#__next"])
         .declarations_block(CssIsolation::from(Isolate))
 }

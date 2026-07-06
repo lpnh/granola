@@ -18,14 +18,14 @@ pub mod pretty;
 
 pub mod prelude {
     pub use super::{Granola, Recipe, css::*, html::*, oven::Bake, recipes, svg::*};
-    pub use crate::{bake, bake_ws, recipe_boilerplate};
+    pub use crate::{bake, bake_comma, bake_ws, recipe_boilerplate};
 }
 
 pub mod macros {
     // css
     pub use crate::{
         at_rule, complex_selector, compound_selector, declaration, declarations_block, rule,
-        selectors_list, simple_selector, stylesheet, type_selector,
+        simple_selector, stylesheet, type_selector,
     };
     // html
     pub use crate::{

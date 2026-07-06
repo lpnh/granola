@@ -22,11 +22,7 @@ pub struct BStrongFontWeight;
 
 impl RuleRecipe for BStrongFontWeight {
     fn selectors_list_recipe() -> Bake {
-        let mut selectors_list = Bake::default();
-        for selector in ["b", "strong"] {
-            selectors_list.fold_in_with(", ", selector);
-        }
-        selectors_list
+        bake_comma!["b", "strong"]
     }
 
     fn declarations_block_recipe() -> Bake {

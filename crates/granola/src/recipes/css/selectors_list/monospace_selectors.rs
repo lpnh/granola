@@ -7,19 +7,15 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list = CssSelectorsList::from(MonospaceSelectors);
+/// let rule = CssRule::from(MonospaceSelectors);
 ///
-/// assert_eq!(selectors_list.bake(), "code, kbd, samp, pre");
+/// assert_eq!(rule.selectors_list, "code, kbd, samp, pre");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct MonospaceSelectors;
 
-impl SelectorsListRecipe for MonospaceSelectors {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = Bake::default();
-        for selector in ["code", "kbd", "samp", "pre"] {
-            selectors.fold_in_with(", ", selector);
-        }
-        selectors
+impl RuleRecipe for MonospaceSelectors {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma!["code", "kbd", "samp", "pre"]
     }
 }

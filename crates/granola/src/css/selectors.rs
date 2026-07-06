@@ -4,8 +4,6 @@ mod complex_selector;
 pub use complex_selector::*;
 mod compound_selector;
 pub use compound_selector::*;
-mod selectors_list;
-pub use selectors_list::*;
 mod simple_selector;
 pub use simple_selector::*;
 mod type_selector;

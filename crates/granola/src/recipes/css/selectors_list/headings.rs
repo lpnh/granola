@@ -7,20 +7,15 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list = CssSelectorsList::from(Headings);
+/// let rule = CssRule::from(Headings);
 ///
-/// assert_eq!(selectors_list.bake(), "h1, h2, h3, h4");
+/// assert_eq!(rule.selectors_list, "h1, h2, h3, h4");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Headings;
 
-impl SelectorsListRecipe for Headings {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = <Bake>::default();
-        selectors.fold_in_with(", ", "h1");
-        selectors.fold_in_with(", ", "h2");
-        selectors.fold_in_with(", ", "h3");
-        selectors.fold_in_with(", ", "h4");
-        selectors
+impl RuleRecipe for Headings {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma!["h1", "h2", "h3", "h4"]
     }
 }

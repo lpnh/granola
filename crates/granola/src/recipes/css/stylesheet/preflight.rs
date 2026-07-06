@@ -254,7 +254,7 @@ fn html_host_defaults() -> CssRule {
   'Noto Color Emoji'
 )";
 
-    let selectors_list = CssSelectorsList::from(["html", ":host"]);
+    let selectors_list = bake_comma!["html", ":host"];
     let declarations_block = bake_ws![
         CssLineHeight::new().content("1.5"),
         CssWebkitTextSizeAdjust::new().content("100%"),
@@ -287,7 +287,7 @@ fn abbr_text_decoration() -> CssRule {
         .declarations_block(declarations_block)
 }
 
-fn monospace_defaults() -> CssRule {
+fn monospace_defaults() -> CssRule<MonospaceSelectors> {
     let mono_font_family = "--theme(
   --default-mono-font-family,
   ui-monospace,
@@ -300,7 +300,6 @@ fn monospace_defaults() -> CssRule {
   monospace
 )";
 
-    let selectors_list = CssSelectorsList::from(MonospaceSelectors).bake_recipe();
     let declarations_block = bake_ws![
         CssFontFamily::new().content(mono_font_family),
         CssFontFeatureSettings::new()
@@ -310,9 +309,7 @@ fn monospace_defaults() -> CssRule {
         CssFontSize::new().content("1em"),
     ];
 
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+    CssRule::from(MonospaceSelectors).declarations_block(declarations_block)
 }
 
 fn table_reset() -> CssRule {
@@ -336,12 +333,12 @@ fn moz_focusring_outline() -> CssRule {
 
 fn list_reset() -> CssRule {
     CssRule::new()
-        .selectors_list(["ol", "ul", "menu"])
+        .selectors_list(bake_comma!["ol", "ul", "menu"])
         .declarations_block(CssListStyle::from(None))
 }
 
 fn replaced_element_display() -> CssRule {
-    let selectors_list = [
+    let selectors_list = bake_comma![
         "img", "svg", "video", "canvas", "audio", "iframe", "embed", "object",
     ];
     let declarations_block = bake_ws![CssDisplay::from(Block), CssVerticalAlign::from(Middle)];
@@ -353,17 +350,14 @@ fn replaced_element_display() -> CssRule {
 
 fn replaced_element_sizing() -> CssRule {
     CssRule::new()
-        .selectors_list(["img", "video"])
+        .selectors_list(bake_comma!["img", "video"])
         .declarations_block(bake_ws![
             CssMaxWidth::new().content("100%"),
             CssHeight::from(Auto)
         ])
 }
 
-fn form_controls_reset() -> CssRule {
-    let selectors_list = CssSelectorsList::from(FormControlsExt)
-        .push(CssSimpleSelector::from(UniversalFileSelectorButton))
-        .bake_recipe();
+fn form_controls_reset() -> CssRule<FormControlsExt> {
     let declarations_block = bake_ws![
         CssFont::from(Inherit),
         CssFontFeatureSettings::from(Inherit),
@@ -375,8 +369,8 @@ fn form_controls_reset() -> CssRule {
         CssOpacity::new().content("1"),
     ];
 
-    CssRule::new()
-        .selectors_list(selectors_list)
+    CssRule::from(FormControlsExt)
+        .push_selector(CssSimpleSelector::from(UniversalFileSelectorButton))
         .declarations_block(declarations_block)
 }
 
@@ -463,7 +457,7 @@ fn datetime_edit_fields_wrapper() -> CssRule {
 
 fn datetime_edit_padding_block() -> CssRule {
     CssRule::new()
-        .selectors_list([
+        .selectors_list(bake_comma![
             "::-webkit-datetime-edit",
             "::-webkit-datetime-edit-year-field",
             "::-webkit-datetime-edit-month-field",
@@ -491,7 +485,7 @@ fn moz_ui_invalid_box_shadow() -> CssRule {
 
 fn button_appearance() -> CssRule {
     CssRule::new()
-        .selectors_list([
+        .selectors_list(bake_comma![
             "button",
             "input:where([type='button'], [type='reset'], [type='submit'])",
             "::file-selector-button",

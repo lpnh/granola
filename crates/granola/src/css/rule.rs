@@ -23,12 +23,11 @@ use crate::prelude::*;
 /// use granola::prelude::*;
 ///
 /// let css_selector = CssSimpleSelector::new().selector("p");
-/// let css_selector_list = CssSelectorsList::new().push(css_selector);
 ///
 /// let css_declaration = CssDeclaration::new("color", "rgb(102, 51, 153)");
 ///
 /// let css_rule = CssRule::new()
-///     .selectors_list(css_selector_list)
+///     .selectors_list(css_selector)
 ///     .declarations_block(css_declaration);
 ///
 /// assert_eq!(css_rule.bake(), "p { color: rgb(102, 51, 153); }");
@@ -74,11 +73,8 @@ pub struct CssRule<R: RuleRecipe = ()> {
 }
 
 impl<R: RuleRecipe> CssRule<R> {
-    pub fn selectors_list<L: SelectorsListRecipe>(
-        mut self,
-        selectors_list: impl Into<CssSelectorsList<L>>,
-    ) -> Self {
-        self.selectors_list = selectors_list.into().selectors;
+    pub fn selectors_list(mut self, selectors_list: impl Into<Bake>) -> Self {
+        self.selectors_list = selectors_list.into();
         self
     }
 
@@ -96,12 +92,17 @@ impl<R: RuleRecipe> CssRule<R> {
         self.declarations_block.fold_in_ws(declaration.into());
         self
     }
+
+    pub fn push_selectors_list(mut self, selectors_list: impl FastWritable) -> Self {
+        self.selectors_list.fold_in_with(", ", selectors_list);
+        self
+    }
 }
 
-impl<S: Into<CssSelectorsList>, D: Into<Bake>> From<(S, D)> for CssRule {
+impl<S: Into<Bake>, D: Into<Bake>> From<(S, D)> for CssRule {
     fn from((css_selectors_list, css_declarations_block): (S, D)) -> Self {
         Self {
-            selectors_list: css_selectors_list.into().selectors,
+            selectors_list: css_selectors_list.into(),
             declarations_block: css_declarations_block.into(),
             ..Default::default()
         }

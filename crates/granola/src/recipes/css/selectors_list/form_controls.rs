@@ -7,19 +7,15 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let selectors_list = CssSelectorsList::from(FormControls);
+/// let rule = CssRule::from(FormControls);
 ///
-/// assert_eq!(selectors_list.bake(), "button, input, select, textarea");
+/// assert_eq!(rule.selectors_list, "button, input, select, textarea");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct FormControls;
 
-impl SelectorsListRecipe for FormControls {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = Bake::default();
-        for selector in ["button", "input", "select", "textarea"] {
-            selectors.fold_in_with(", ", selector);
-        }
-        selectors
+impl RuleRecipe for FormControls {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma!["button", "input", "select", "textarea"]
     }
 }

@@ -25,7 +25,7 @@ pub struct UniversalReset;
 
 impl RuleRecipe for UniversalReset {
     fn selectors_list_recipe() -> Bake {
-        UniversalSelectorsExt::selectors_recipe()
+        UniversalSelectorsExt::selectors_list_recipe()
     }
 
     fn declarations_block_recipe() -> Bake {

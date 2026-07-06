@@ -260,6 +260,26 @@ macro_rules! bake_ws {
     };
 }
 
+/// Creates [`Bake`] by concatenating [`Template`],
+/// string-like values, and primitives, freely mixed, separated by a comma and a
+/// single space.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::prelude::*;
+///
+/// let headings = bake_comma!["h1", "h2", "h3", "h4"];
+///
+/// assert_eq!(headings, "h1, h2, h3, h4");
+/// ```
+#[macro_export]
+macro_rules! bake_comma {
+    ($first:expr $(, $rest:expr)* $(,)?) => {
+        $crate::bake!($first $(, ", ", $rest)*)
+    };
+}
+
 /// Defines `type Content` and `bake_content`.
 ///
 /// `recipe_boilerplate!(R)` sets `Content` to `R`'s default content type.
@@ -460,5 +480,37 @@ mod oven_tests {
         let span = HtmlSpan::new().content("bar");
 
         assert_eq!(bake_ws!["foo", span, 42], "foo <span>bar</span> 42");
+    }
+
+    #[test]
+    fn bake_comma_1() {
+        assert_eq!(bake_comma![""], "");
+    }
+
+    #[test]
+    fn bake_comma_2() {
+        assert_eq!(bake_comma!["single\nitem"], "single\nitem");
+    }
+
+    #[test]
+    fn bake_comma_3() {
+        assert_eq!(bake_comma!["hello", "world"], "hello, world");
+    }
+
+    #[test]
+    fn bake_comma_4() {
+        assert_eq!(
+            bake_comma!["halloween", "hello world"],
+            "halloween, hello world"
+        );
+    }
+
+    #[test]
+    fn bake_comma_5() {
+        use crate::prelude::HtmlSpan;
+
+        let span = HtmlSpan::new().content("bar");
+
+        assert_eq!(bake_comma!["foo", span, 42], "foo, <span>bar</span>, 42");
     }
 }

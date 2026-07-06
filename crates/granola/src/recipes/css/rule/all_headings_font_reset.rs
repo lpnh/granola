@@ -23,7 +23,7 @@ pub struct AllHeadingsFontReset;
 
 impl RuleRecipe for AllHeadingsFontReset {
     fn selectors_list_recipe() -> Bake {
-        AllHeadings::selectors_recipe()
+        AllHeadings::selectors_list_recipe()
     }
 
     fn declarations_block_recipe() -> Bake {

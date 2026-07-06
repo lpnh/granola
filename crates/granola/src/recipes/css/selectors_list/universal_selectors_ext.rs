@@ -8,21 +8,22 @@ use crate::{prelude::*, recipes::*};
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let list = CssSelectorsList::from(UniversalSelectorsExt);
+/// let rule = CssRule::from(UniversalSelectorsExt);
 ///
 /// assert_eq!(
-///     list.bake(),
+///     rule.selectors_list,
 ///     "*, ::after, ::before, ::backdrop, ::file-selector-button"
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct UniversalSelectorsExt;
 
-impl SelectorsListRecipe for UniversalSelectorsExt {
-    fn selectors_recipe() -> Bake {
-        let mut selectors = UniversalSelectors::selectors_recipe();
-        selectors.fold_in_with(", ", CssSimpleSelector::from(UniversalBackdrop));
-        selectors.fold_in_with(", ", CssSimpleSelector::from(UniversalFileSelectorButton));
-        selectors
+impl RuleRecipe for UniversalSelectorsExt {
+    fn selectors_list_recipe() -> Bake {
+        bake_comma![
+            UniversalSelectors::selectors_list_recipe(),
+            CssSimpleSelector::from(UniversalBackdrop),
+            CssSimpleSelector::from(UniversalFileSelectorButton),
+        ]
     }
 }

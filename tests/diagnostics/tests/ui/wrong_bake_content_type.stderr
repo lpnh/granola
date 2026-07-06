@@ -80,7 +80,6 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<&CssResize<R>>
              From<&CssRule<R>>
              From<&CssScrollMarginBlock<R>>
-             From<&CssSelectorsList<R>>
              From<&CssSimpleSelector<R>>
              From<&CssStylesheet<R>>
              From<&CssTabSize<R>>
@@ -303,7 +302,6 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<CssResize<R>>
              From<CssRule<R>>
              From<CssScrollMarginBlock<R>>
-             From<CssSelectorsList<R>>
              From<CssSimpleSelector<R>>
              From<CssStylesheet<R>>
              From<CssTabSize<R>>

@@ -153,14 +153,11 @@ fn body_defaults() -> CssRule {
         .push_property(CssMargin::new().content("0"))
 }
 
-fn monospace_defaults() -> CssRule {
+fn monospace_defaults() -> CssRule<MonospaceSelectors> {
     let default_fonts =
         "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace";
 
-    let selectors_list = CssSelectorsList::from(MonospaceSelectors);
-
-    CssRule::new()
-        .selectors_list(selectors_list)
+    CssRule::from(MonospaceSelectors)
         .push_property(CssFontFamily::new().content(default_fonts))
         .push_property(CssFontSize::new().content("1em"))
 }
@@ -171,8 +168,7 @@ fn table_border_color() -> CssRule {
         .declarations_block(CssBorderColor::from(Currentcolor))
 }
 
-fn forms_defaults() -> CssRule {
-    let selectors_list = CssSelectorsList::from(FormControlsExt);
+fn forms_defaults() -> CssRule<FormControlsExt> {
     let declarations_block = bake_ws![
         CssFontFamily::from(Inherit),
         CssFontSize::new().content("100%"),
@@ -180,18 +176,16 @@ fn forms_defaults() -> CssRule {
         CssMargin::new().content("0"),
     ];
 
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+    CssRule::from(FormControlsExt).declarations_block(declarations_block)
 }
 
 fn button_appearance() -> CssRule {
-    let selectors_list = CssSelectorsList::from([
+    let selectors_list = bake_comma![
         "button",
         r#"[type="button"]"#,
         r#"[type="reset"]"#,
         r#"[type="submit"]"#,
-    ]);
+    ];
     let declarations_block = CssDeclaration::from(("-webkit-appearance", "button"));
 
     CssRule::new()

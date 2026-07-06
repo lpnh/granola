@@ -22,7 +22,7 @@ pub struct BoxSizingReset;
 
 impl RuleRecipe for BoxSizingReset {
     fn selectors_list_recipe() -> Bake {
-        UniversalSelectors::selectors_recipe()
+        UniversalSelectors::selectors_list_recipe()
     }
 
     fn declarations_block_recipe() -> Bake {

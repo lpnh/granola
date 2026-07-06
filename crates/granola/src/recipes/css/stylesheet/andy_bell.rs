@@ -85,7 +85,6 @@ impl StylesheetRecipe for AndyBell {
 }
 
 fn text_size_adjust_reset() -> CssRule {
-    let selectors_list = "html";
     let declarations_block = bake_ws![
         CssDeclaration::from(("-moz-text-size-adjust", "none")),
         CssWebkitTextSizeAdjust::from(None),
@@ -93,12 +92,12 @@ fn text_size_adjust_reset() -> CssRule {
     ];
 
     CssRule::new()
-        .selectors_list(selectors_list)
+        .selectors_list("html")
         .declarations_block(declarations_block)
 }
 
 fn default_margin_reset() -> CssRule {
-    let selectors_list = CssSelectorsList::from([
+    let selectors_list = bake_comma![
         "body",
         "h1",
         "h2",
@@ -109,73 +108,52 @@ fn default_margin_reset() -> CssRule {
         "blockquote",
         "dl",
         "dd",
-    ]);
-    let declarations_block = CssMarginBlockEnd::new().content("0");
+    ];
 
     CssRule::new()
         .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .declarations_block(CssMarginBlockEnd::new().content("0"))
 }
 
 fn list_style_reset() -> CssRule {
-    let selectors_list = CssSelectorsList::from(["ul[role='list']", "ol[role='list']"]);
-    let declarations_block = CssListStyle::from(None);
-
     CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+        .selectors_list(bake_comma!["ul[role='list']", "ol[role='list']"])
+        .declarations_block(CssListStyle::from(None))
 }
 
 fn body_defaults() -> CssRule {
-    let selectors_list = "body";
     let declarations_block = bake_ws![
         CssMinHeight::new().content("100vh"),
         CssLineHeight::new().content("1.5"),
     ];
 
     CssRule::new()
-        .selectors_list(selectors_list)
+        .selectors_list("body")
         .declarations_block(declarations_block)
 }
 
-fn headings_and_forms_line_height() -> CssRule {
-    let selectors_list = CssSelectorsList::from(Headings)
-        .push("button")
-        .push("input")
-        .push("label")
-        .bake_recipe();
-    let declarations_block = CssLineHeight::new().content("1.1");
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+fn headings_and_forms_line_height() -> CssRule<Headings> {
+    CssRule::from(Headings)
+        .push_selectors_list(bake_comma!["button", "input", "label"])
+        .declarations_block(CssLineHeight::new().content("1.1"))
 }
 
-fn headings_text_wrap() -> CssRule {
-    let selectors_list = CssSelectorsList::from(Headings).bake_recipe();
-    let declarations_block = CssTextWrap::from(Balance);
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+fn headings_text_wrap() -> CssRule<Headings> {
+    CssRule::from(Headings).declarations_block(CssTextWrap::from(Balance))
 }
 
 fn images_width_and_display() -> CssRule {
-    let selectors_list = CssSelectorsList::from(["img", "picture"]);
     let declarations_block = bake_ws![CssMaxWidth::new().content("100%"), CssDisplay::from(Block),];
 
     CssRule::new()
-        .selectors_list(selectors_list)
+        .selectors_list(bake_comma!["img", "picture"])
         .declarations_block(declarations_block)
 }
 
-fn form_controls_font_inherit() -> CssRule {
-    let selectors_list = CssSelectorsList::from(FormControls).bake_recipe();
+fn form_controls_font_inherit() -> CssRule<FormControls> {
     let declarations_block = bake_ws![CssFontFamily::from(Inherit), CssFontSize::from(Inherit),];
 
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
+    CssRule::from(FormControls).declarations_block(declarations_block)
 }
 
 fn textarea_min_height() -> CssRule {

@@ -25,11 +25,7 @@ pub struct SubSupDefaults;
 
 impl RuleRecipe for SubSupDefaults {
     fn selectors_list_recipe() -> Bake {
-        let mut selectors_list = Bake::default();
-        for selector in ["sub", "sup"] {
-            selectors_list.fold_in_with(", ", selector);
-        }
-        selectors_list
+        bake_comma!["sub", "sup"]
     }
 
     fn declarations_block_recipe() -> Bake {
