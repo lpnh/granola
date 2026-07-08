@@ -92,9 +92,7 @@ impl StylesheetRecipe for AndyBell {
                     "dd",
                 ])
                 .push_property((MarginBlockEnd, "0")),
-            CssRule::new()
-                .selectors_list(bake_comma!["ul[role='list']", "ol[role='list']"])
-                .push_property((ListStyle, "none")),
+            CssRule::from(ListReset),
             CssRule::new()
                 .selectors_list("body")
                 .content(declarations_block![

@@ -25,6 +25,9 @@ use crate::{homemade::*, prelude::*, recipes::*};
 ///   text-decoration-skip-ink: auto;
 ///   color: currentcolor;
 /// }
+/// ul[role="list"], ol[role="list"] {
+///   list-style: none;
+/// }
 /// .btn {
 ///   display: inline flex;
 ///   align-items: center;
@@ -230,6 +233,7 @@ impl StylesheetRecipe for Garnish {
         bake_ws![
             CssRule::from(Colors),
             CssRule::from(AnchorDefaults),
+            CssRule::from(ListReset),
             CssStylesheet::from(Btn),
             CssStylesheet::from(Tooltip),
         ]
