@@ -21,11 +21,13 @@ use granola::{prelude::*, recipes::*};
 pub struct SummaryDisplayListItem;
 
 impl RuleRecipe for SummaryDisplayListItem {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         "summary".into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         CssDeclaration::from(Display).content("list-item").into()
     }
 }

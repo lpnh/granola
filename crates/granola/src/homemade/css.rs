@@ -224,11 +224,14 @@ use crate::{homemade::*, prelude::*, recipes::*};
 pub struct Garnish;
 
 impl StylesheetRecipe for Garnish {
-    fn statements_recipe() -> Bake {
-        let mut statements = bake![CssRule::from(Colors)];
-        statements.fold_in_ws(CssRule::from(AnchorDefaults));
-        statements.fold_in(Btn::statements_recipe());
-        statements.fold_in(Tooltip::statements_recipe());
-        statements
+    recipe_boilerplate!(StylesheetRecipe);
+
+    fn content_recipe() -> Self::Content {
+        bake_ws![
+            CssRule::from(Colors),
+            CssRule::from(AnchorDefaults),
+            CssStylesheet::from(Btn),
+            CssStylesheet::from(Tooltip),
+        ]
     }
 }

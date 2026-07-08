@@ -32,8 +32,7 @@ mod tests {
                         CssRule::new()
                             .selectors_list(".menu")
                             .push_property(("display", "grid"))
-                            .push_property(("grid-template-columns", "1fr 1fr"))
-                            .bake(),
+                            .push_property(("grid-template-columns", "1fr 1fr")),
                     ),
             )
     }

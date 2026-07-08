@@ -930,7 +930,7 @@ pub fn rule() -> CssRule {
 
     CssRule::new()
         .selectors_list(css_selector)
-        .declarations_block(css_declaration)
+        .content(css_declaration)
 }
 
 pub fn stylesheet() -> CssStylesheet {

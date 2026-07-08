@@ -2,7 +2,7 @@
 //! Source: https://piccalil.li/blog/a-more-modern-css-reset/
 //! Licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
 
-use crate::{prelude::*, recipes::*};
+use crate::{macros::declarations_block, prelude::*, recipes::*};
 
 /// The "(more) Modern CSS Reset" stylesheet recipe.
 ///
@@ -66,110 +66,59 @@ use crate::{prelude::*, recipes::*};
 pub struct AndyBell;
 
 impl StylesheetRecipe for AndyBell {
-    fn statements_recipe() -> Bake {
+    recipe_boilerplate!(StylesheetRecipe);
+
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssRule::from(BoxSizingReset),
-            text_size_adjust_reset(),
-            default_margin_reset(),
-            list_style_reset(),
-            body_defaults(),
-            headings_and_forms_line_height(),
-            headings_text_wrap(),
+            CssRule::new()
+                .selectors_list("html")
+                .content(declarations_block![
+                    ("-moz-text-size-adjust", "none"),
+                    (WebkitTextSizeAdjust, "none"),
+                    (TextSizeAdjust, "none"),
+                ]),
+            CssRule::new()
+                .selectors_list(bake_comma![
+                    "body",
+                    "h1",
+                    "h2",
+                    "h3",
+                    "h4",
+                    "p",
+                    "figure",
+                    "blockquote",
+                    "dl",
+                    "dd",
+                ])
+                .push_property((MarginBlockEnd, "0")),
+            CssRule::new()
+                .selectors_list(bake_comma!["ul[role='list']", "ol[role='list']"])
+                .push_property((ListStyle, "none")),
+            CssRule::new()
+                .selectors_list("body")
+                .content(declarations_block![
+                    (MinHeight, "100vh"),
+                    (LineHeight, "1.5")
+                ]),
+            CssRule::from(Headings)
+                .push_selectors_list(bake_comma!["button", "input", "label"])
+                .push_property((LineHeight, "1.1")),
+            CssRule::from(Headings).push_property((TextWrap, "balance")),
             CssRule::from(AnchorDefaults),
-            images_width_and_display(),
-            form_controls_font_inherit(),
-            textarea_min_height(),
-            target_scroll_margin(),
+            CssRule::new()
+                .selectors_list(bake_comma!["img", "picture"])
+                .content(declarations_block![(MaxWidth, "100%"), (Display, "block")]),
+            CssRule::from(FormControls).content(declarations_block![
+                (FontFamily, "inherit"),
+                (FontSize, "inherit")
+            ]),
+            CssRule::new()
+                .selectors_list("textarea:not([rows])")
+                .push_property((MinHeight, "10em")),
+            CssRule::new()
+                .selectors_list(":target")
+                .push_property((ScrollMarginBlock, "5ex")),
         ]
     }
-}
-
-fn text_size_adjust_reset() -> CssRule {
-    let declarations_block = bake_ws![
-        CssDeclaration::from(("-moz-text-size-adjust", "none")),
-        CssDeclaration::from(WebkitTextSizeAdjust).content("none"),
-        CssDeclaration::from(TextSizeAdjust).content("none"),
-    ];
-
-    CssRule::new()
-        .selectors_list("html")
-        .declarations_block(declarations_block)
-}
-
-fn default_margin_reset() -> CssRule {
-    let selectors_list = bake_comma![
-        "body",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "p",
-        "figure",
-        "blockquote",
-        "dl",
-        "dd",
-    ];
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(CssDeclaration::from(MarginBlockEnd).content("0"))
-}
-
-fn list_style_reset() -> CssRule {
-    CssRule::new()
-        .selectors_list(bake_comma!["ul[role='list']", "ol[role='list']"])
-        .declarations_block(CssDeclaration::from(ListStyle).content("none"))
-}
-
-fn body_defaults() -> CssRule {
-    let declarations_block = bake_ws![
-        CssDeclaration::from(MinHeight).content("100vh"),
-        CssDeclaration::from(LineHeight).content("1.5"),
-    ];
-
-    CssRule::new()
-        .selectors_list("body")
-        .declarations_block(declarations_block)
-}
-
-fn headings_and_forms_line_height() -> CssRule<Headings> {
-    CssRule::from(Headings)
-        .push_selectors_list(bake_comma!["button", "input", "label"])
-        .declarations_block(CssDeclaration::from(LineHeight).content("1.1"))
-}
-
-fn headings_text_wrap() -> CssRule<Headings> {
-    CssRule::from(Headings).declarations_block(CssDeclaration::from(TextWrap).content("balance"))
-}
-
-fn images_width_and_display() -> CssRule {
-    let declarations_block = bake_ws![
-        CssDeclaration::from(MaxWidth).content("100%"),
-        CssDeclaration::from(Display).content("block")
-    ];
-
-    CssRule::new()
-        .selectors_list(bake_comma!["img", "picture"])
-        .declarations_block(declarations_block)
-}
-
-fn form_controls_font_inherit() -> CssRule<FormControls> {
-    let declarations_block = bake_ws![
-        CssDeclaration::from(FontFamily).inherit(),
-        CssDeclaration::from(FontSize).inherit(),
-    ];
-
-    CssRule::from(FormControls).declarations_block(declarations_block)
-}
-
-fn textarea_min_height() -> CssRule {
-    CssRule::new()
-        .selectors_list("textarea:not([rows])")
-        .declarations_block(CssDeclaration::from(MinHeight).content("10em"))
-}
-
-fn target_scroll_margin() -> CssRule {
-    CssRule::new()
-        .selectors_list(":target")
-        .declarations_block(CssDeclaration::from(ScrollMarginBlock).content("5ex"))
 }

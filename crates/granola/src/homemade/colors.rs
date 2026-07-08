@@ -28,17 +28,21 @@ use crate::prelude::*;
 pub struct Colors;
 
 impl StylesheetRecipe for Colors {
-    fn statements_recipe() -> Bake {
+    recipe_boilerplate!(StylesheetRecipe);
+
+    fn content_recipe() -> Self::Content {
         CssRule::from(Colors).into()
     }
 }
 
 impl RuleRecipe for Colors {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         ":root".into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(ColorBackground),
             CssDeclaration::from(ColorSurface),

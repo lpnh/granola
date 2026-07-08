@@ -1,7 +1,7 @@
 use askama::{FastWritable, Template};
 use std::marker::PhantomData;
 
-use crate::prelude::*;
+use crate::{filters, prelude::*};
 
 /// The CSS ruleset.
 ///
@@ -30,7 +30,7 @@ use crate::prelude::*;
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list(css_selector)
-///     .declarations_block(css_declaration);
+///     .content(css_declaration);
 ///
 /// assert_eq!(css_rule.bake(), "p { color: rgb(102, 51, 153); }");
 /// ```
@@ -47,7 +47,7 @@ use crate::prelude::*;
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list(css_selector)
-///     .declarations_block(css_declarations_block);
+///     .content(css_declarations_block);
 ///
 /// assert_eq!(
 ///     css_rule.bake_pretty(),
@@ -62,31 +62,29 @@ use crate::prelude::*;
 /// # Askama template
 ///
 /// ```askama
-/// {{ selectors_list }} { {{ declarations_block }} }
+/// {{ selectors_list }} { {{ content | kirei }} }
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[granola(format = css)]
-#[recipe(name = RuleRecipe)]
+#[recipe(name = RuleRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssRule<R: RuleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub selectors_list: Bake,
-    pub declarations_block: Bake,
+    pub content: R::Content,
 }
 
-impl<R: RuleRecipe> CssRule<R> {
+impl<R: RuleRecipe<Content = Bake>> CssRule<R> {
     pub fn selectors_list(mut self, selectors_list: impl Into<Bake>) -> Self {
         self.selectors_list = selectors_list.into();
         self
     }
 
-    pub fn declarations_block(mut self, declarations_block: impl Into<Bake>) -> Self {
-        self.declarations_block = declarations_block.into();
-        self
-    }
-
-    pub fn push_selector(mut self, selector: impl FastWritable) -> Self {
-        self.selectors_list.fold_in_with(", ", selector);
+    pub fn push_selector<S: SimpleSelectorRecipe>(
+        mut self,
+        selector: impl Into<CssSimpleSelector<S>>,
+    ) -> Self {
+        self.selectors_list.fold_in_with(", ", selector.into());
         self
     }
 
@@ -94,7 +92,7 @@ impl<R: RuleRecipe> CssRule<R> {
         mut self,
         declaration: impl Into<CssDeclaration<D>>,
     ) -> Self {
-        self.declarations_block.fold_in_ws(declaration.into());
+        self.content.fold_in_ws(declaration.into());
         self
     }
 
@@ -105,10 +103,10 @@ impl<R: RuleRecipe> CssRule<R> {
 }
 
 impl<S: Into<Bake>, D: Into<Bake>> From<(S, D)> for CssRule {
-    fn from((css_selectors_list, css_declarations_block): (S, D)) -> Self {
+    fn from((selectors_list, declarations_block): (S, D)) -> Self {
         Self {
-            selectors_list: css_selectors_list.into(),
-            declarations_block: css_declarations_block.into(),
+            selectors_list: selectors_list.into(),
+            content: declarations_block.into(),
             ..Default::default()
         }
     }
@@ -162,8 +160,13 @@ macro_rules! rule {
         $crate::css::CssRule::new()
     };
     ($sel:expr, $decl:expr $(,)?) => {
-        $crate::css::CssRule::new()
-            .selectors_list($sel)
-            .declarations_block($decl)
+        $crate::css::CssRule::from(($sel, $decl))
+    };
+}
+
+#[macro_export]
+macro_rules! rules {
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::bake_ws![$crate::css::CssRule::from($first) $(, $crate::css::CssRule::from($rest))*]
     };
 }

@@ -181,4 +181,26 @@ mod tests_recipe {
         let baked_baz_content: Bake = baked_baz.content;
         assert_eq!(baked_baz_content, "<b>baz</b>");
     }
+
+    #[test]
+    fn from_recipe_and_content() {
+        use granola::recipes::Background;
+
+        #[derive(Default, Debug, Clone)]
+        struct Counter;
+
+        impl ButtonRecipe for Counter {
+            recipe_boilerplate!(ButtonRecipe);
+
+            fn specific_attrs_recipe() -> ButtonAttrs {
+                ButtonAttrs::default().button_type(ButtonType::Button)
+            }
+        }
+
+        let button = HtmlButton::from((Counter, "reset"));
+        assert_eq!(button.bake(), r#"<button type="button">reset</button>"#);
+
+        let css_declaration = CssDeclaration::from((Background, "none"));
+        assert_eq!(css_declaration.bake(), "background: none;");
+    }
 }

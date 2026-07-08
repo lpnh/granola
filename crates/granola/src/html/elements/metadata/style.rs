@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list("p")
-///     .declarations_block(declarations_block![
+///     .content(declarations_block![
 ///         ("color", "violet"),
 ///         ("font-weight", "lighter"),
 ///     ]);

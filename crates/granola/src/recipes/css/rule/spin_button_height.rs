@@ -22,11 +22,13 @@ use crate::{prelude::*, recipes::*};
 pub struct SpinButtonHeight;
 
 impl RuleRecipe for SpinButtonHeight {
+    recipe_boilerplate!(StylesheetRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma!["::-webkit-inner-spin-button", "::-webkit-outer-spin-button"]
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         CssDeclaration::from(Height).content("auto").into()
     }
 }

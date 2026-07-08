@@ -21,11 +21,13 @@ use crate::{prelude::*, recipes::*};
 pub struct BStrongFontWeight;
 
 impl RuleRecipe for BStrongFontWeight {
+    recipe_boilerplate!(StylesheetRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma!["b", "strong"]
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         CssDeclaration::from(FontWeight).content("bolder").into()
     }
 }

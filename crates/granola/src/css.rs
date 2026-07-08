@@ -1,5 +1,7 @@
 mod at_rule;
 pub use at_rule::*;
+mod custom_function;
+pub use custom_function::*;
 mod custom_property;
 pub use custom_property::*;
 mod declaration;

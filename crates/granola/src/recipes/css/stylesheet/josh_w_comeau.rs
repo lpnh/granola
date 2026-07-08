@@ -2,7 +2,7 @@
 //! Source: https://www.joshwcomeau.com/css/custom-css-reset/
 //! Released to the public domain by the author
 
-use crate::{prelude::*, recipes::*};
+use crate::{macros::declarations_block, prelude::*, recipes::*};
 
 /// The "Custom CSS Reset" stylesheet recipe.
 ///
@@ -58,79 +58,40 @@ use crate::{prelude::*, recipes::*};
 pub struct JoshWComeau;
 
 impl StylesheetRecipe for JoshWComeau {
-    fn statements_recipe() -> Bake {
+    recipe_boilerplate!(StylesheetRecipe);
+
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssRule::from(BoxSizingReset),
-            default_margin_reset(),
-            keyword_animations(),
-            body_defaults(),
-            media_defaults(),
-            form_controls_font_inherit(),
-            text_overflow_reset(),
-            paragraph_text_wrap(),
-            headings_text_wrap(),
-            root_stacking_context(),
+            CssRule::new()
+                .selectors_list("*:not(dialog)")
+                .push_property((Margin, "0")),
+            CssAtRule::new()
+                .identifier("media")
+                .rule("(prefers-reduced-motion: no-preference)")
+                .block(
+                    CssRule::new()
+                        .selectors_list("html")
+                        .push_property((InterpolateSize, "allow-keywords")),
+                ),
+            CssRule::new()
+                .selectors_list("body")
+                .content(declarations_block![
+                    (LineHeight, "1.5"),
+                    ("-webkit-font-smoothing", "antialiased"),
+                ]),
+            CssRule::from(MediaSelectors)
+                .push_property(CssDeclaration::from(Display).content("block"))
+                .push_property(CssDeclaration::from(MaxWidth).content("100%")),
+            CssRule::from(FormControls).push_property((Font, "inherit")),
+            CssRule::from(AllHeadingsExt).push_property((OverflowWrap, "break-word")),
+            CssRule::new()
+                .selectors_list("p")
+                .push_property((TextWrap, "pretty")),
+            CssRule::from(AllHeadings).push_property((TextWrap, "balance")),
+            CssRule::new()
+                .selectors_list(bake_comma!["#root", "#__next"])
+                .push_property((Isolation, "isolate")),
         ]
     }
-}
-
-fn default_margin_reset() -> CssRule {
-    CssRule::new()
-        .selectors_list("*:not(dialog)")
-        .declarations_block(CssDeclaration::from(Margin).content("0"))
-}
-
-fn keyword_animations() -> CssAtRule {
-    let inner_rule = CssRule::new()
-        .selectors_list("html")
-        .declarations_block(CssDeclaration::from(InterpolateSize).content("allow-keywords"));
-
-    CssAtRule::new()
-        .identifier("media")
-        .rule("(prefers-reduced-motion: no-preference)")
-        .block(inner_rule)
-}
-
-fn body_defaults() -> CssRule {
-    let declarations_block = bake_ws![
-        CssDeclaration::from(LineHeight).content("1.5"),
-        CssDeclaration::from(("-webkit-font-smoothing", "antialiased")),
-    ];
-
-    CssRule::new()
-        .selectors_list("body")
-        .declarations_block(declarations_block)
-}
-
-fn media_defaults() -> CssRule<MediaSelectors> {
-    CssRule::from(MediaSelectors)
-        .push_property(CssDeclaration::from(Display).content("block"))
-        .push_property(CssDeclaration::from(MaxWidth).content("100%"))
-}
-
-fn form_controls_font_inherit() -> CssRule<FormControls> {
-    let declarations_block = CssDeclaration::from(Font).inherit();
-
-    CssRule::from(FormControls).declarations_block(declarations_block)
-}
-
-fn text_overflow_reset() -> CssRule<AllHeadingsExt> {
-    CssRule::from(AllHeadingsExt)
-        .declarations_block(CssDeclaration::from(OverflowWrap).content("break-word"))
-}
-
-fn paragraph_text_wrap() -> CssRule {
-    CssRule::new()
-        .selectors_list("p")
-        .declarations_block(CssDeclaration::from(TextWrap).content("pretty"))
-}
-
-fn headings_text_wrap() -> CssRule<AllHeadings> {
-    CssRule::from(AllHeadings).declarations_block(CssDeclaration::from(TextWrap).content("balance"))
-}
-
-fn root_stacking_context() -> CssRule {
-    CssRule::new()
-        .selectors_list(bake_comma!["#root", "#__next"])
-        .declarations_block(CssDeclaration::from(Isolation).content("isolate"))
 }

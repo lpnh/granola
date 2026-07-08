@@ -19,6 +19,8 @@ use crate::{prelude::*, recipes::*};
 pub struct UniversalSelectorsExt;
 
 impl RuleRecipe for UniversalSelectorsExt {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma![
             UniversalSelectors::selectors_list_recipe(),

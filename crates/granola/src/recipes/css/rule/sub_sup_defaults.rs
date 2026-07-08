@@ -24,11 +24,13 @@ use crate::{prelude::*, recipes::*};
 pub struct SubSupDefaults;
 
 impl RuleRecipe for SubSupDefaults {
+    recipe_boilerplate!(StylesheetRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma!["sub", "sup"]
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(FontSize).content("75%"),
             CssDeclaration::from(LineHeight).content("0"),

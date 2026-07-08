@@ -104,9 +104,7 @@ impl<P: Into<Bake>, V: Into<Bake>> From<(P, V)> for CssDeclaration {
 #[macro_export]
 macro_rules! declaration {
     ($prop:expr, $value:expr $(,)?) => {
-        $crate::css::CssDeclaration::new()
-            .property($prop)
-            .content($value)
+        $crate::css::CssDeclaration::from(($prop, $value))
     };
 }
 

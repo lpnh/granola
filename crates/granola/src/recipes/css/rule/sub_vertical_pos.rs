@@ -21,11 +21,13 @@ use granola::{prelude::*, recipes::*};
 pub struct SubVerticalPos;
 
 impl RuleRecipe for SubVerticalPos {
+    recipe_boilerplate!(StylesheetRecipe);
+
     fn selectors_list_recipe() -> Bake {
         "sub".into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         CssDeclaration::from(Bottom).content("-0.25em").into()
     }
 }

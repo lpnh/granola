@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct MonospaceSelectors;
 
 impl RuleRecipe for MonospaceSelectors {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma!["code", "kbd", "samp", "pre"]
     }

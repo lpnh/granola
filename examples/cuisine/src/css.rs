@@ -79,67 +79,56 @@ static PREFLIGHT: LazyLock<BakedStylesheet> =
     LazyLock::new(|| BakedStylesheet::new("preflight", CssStylesheet::from(Preflight)));
 
 fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
-    CssStylesheet::from(Garnish)
-        .push_rule(
+    CssStylesheet::from(Garnish).push(
+        rules![
             ("body",
             declarations_block![
-                CssDeclaration::from(BackgroundColor).content("var(--color-background)"),
-                CssDeclaration::from(Color).content("var(--color-text)"),
-                CssDeclaration::from(Display).content("flex"),
-                CssDeclaration::from(FlexDirection).content("column"),
-                CssDeclaration::from(AlignItems).content("center"),
-                CssDeclaration::from(Gap).content("2rem"),
-            ])
-        )
-        .push_rule(
+                (BackgroundColor, "var(--color-background)"),
+                (Color, "var(--color-text)"),
+                (Display, "flex"),
+                (FlexDirection, "column"),
+                (AlignItems, "center"),
+                (Gap, "2rem"),
+            ]),
             ("main",
             declarations_block![
-                CssDeclaration::from(Background).content("var(--color-surface)"),
-                CssDeclaration::from(Border).content("1px solid var(--color-border)"),
-                CssDeclaration::from(BorderRadius).content("1em"),
-                CssDeclaration::from(Padding).content("2rem"),
-                CssDeclaration::from(TextAlign).content("center"),
-            ])
-        )
-        .push_rule(
+                (Background, "var(--color-surface)"),
+                (Border, "1px solid var(--color-border)"),
+                (BorderRadius, "1em"),
+                (Padding, "2rem"),
+                (TextAlign, "center"),
+            ]),
             (".swatches",
             declarations_block![
-                CssDeclaration::from(Display).content("flex"),
-                CssDeclaration::from(Gap).content("1rem"),
-                CssDeclaration::from(JustifyContent).content("center"),
-                CssDeclaration::from(FlexWrap).content("wrap"),
-                CssDeclaration::from(Padding).content("2rem"),
-            ])
-        )
-        .push_rule(
+                (Display, "flex"),
+                (Gap, "1rem"),
+                (JustifyContent, "center"),
+                (FlexWrap, "wrap"),
+                (Padding, "2rem"),
+            ]),
             (".swatch",
             declarations_block![
-                CssDeclaration::from(Display).content("flex"),
-                CssDeclaration::from(FlexDirection).content("column"),
-                CssDeclaration::from(AlignItems).content("center"),
-                CssDeclaration::from(Gap).content("0.25rem"),
-            ])
-        )
-        .push_rule(
+                (Display, "flex"),
+                (FlexDirection, "column"),
+                (AlignItems, "center"),
+                (Gap, "0.25rem"),
+            ]),
             (".square",
             declarations_block![
-                CssDeclaration::from(BorderRadius).content(".25em"),
-                CssDeclaration::from(Width).content("64px"),
-                CssDeclaration::from(Height).content("64px"),
-                CssDeclaration::from(BoxShadow).content("0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
-            ])
-        )
-        .push_rule(
+                (BorderRadius, ".25em"),
+                (Width, "64px"),
+                (Height, "64px"),
+                (BoxShadow, "0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
+            ]),
             (
                 simple_selector!(".swatch").descendant("p"),
-                CssDeclaration::from(FontSize).content("0.75rem")
-            )
-        )
-        .push_rule(
+                declarations_block![(FontSize, "0.75rem")]
+            ),
             (".picker",
             declarations_block![
-                CssDeclaration::from(Display).content("grid"),
-                CssDeclaration::from(Gap).content("1rem"),
+                (Display, "grid"),
+                (Gap, "1rem"),
             ])
-        )
+        ]
+    )
 }

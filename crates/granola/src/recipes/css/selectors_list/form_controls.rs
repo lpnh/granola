@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct FormControls;
 
 impl RuleRecipe for FormControls {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma!["button", "input", "select", "textarea"]
     }

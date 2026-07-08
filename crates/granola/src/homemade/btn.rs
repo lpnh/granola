@@ -145,7 +145,9 @@ impl ButtonRecipe for BtnSquare {
 }
 
 impl StylesheetRecipe for Btn {
-    fn statements_recipe() -> Bake {
+    recipe_boilerplate!(StylesheetRecipe);
+
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssRule::from(Btn),
             CssRule::from(BtnHover),
@@ -165,11 +167,13 @@ impl SimpleSelectorRecipe for Btn {
 }
 
 impl RuleRecipe for Btn {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(Display).content("inline flex"),
             CssDeclaration::from(AlignItems).content("center"),
@@ -229,11 +233,13 @@ impl SimpleSelectorRecipe for BtnHover {
 }
 
 impl RuleRecipe for BtnHover {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         CssDeclaration::from(BtnBg)
             .content(
                 CssFnVar::new()
@@ -279,11 +285,13 @@ impl SimpleSelectorRecipe for BtnActive {
 }
 
 impl RuleRecipe for BtnActive {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(BtnBg).content(
                 CssFnVar::new()
@@ -330,11 +338,13 @@ impl SimpleSelectorRecipe for BtnFocusVisible {
 }
 
 impl RuleRecipe for BtnFocusVisible {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(OutlineWidth).content("2px"),
             CssDeclaration::from(OutlineStyle).content("solid"),
@@ -366,11 +376,13 @@ impl RuleRecipe for BtnFocusVisible {
 pub struct BtnPrimary;
 
 impl RuleRecipe for BtnPrimary {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(BtnColor).content(CssFnVar::from(ColorPrimary)),
             CssDeclaration::from(BtnFg).content(CssFnVar::from(ColorPrimaryText)),
@@ -418,11 +430,13 @@ impl SimpleSelectorRecipe for BtnPrimary {
 pub struct BtnGhost;
 
 impl RuleRecipe for BtnGhost {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(Color).content(btn_color_or_text()),
             CssDeclaration::from(BtnBg).content("#0000"),
@@ -462,11 +476,13 @@ impl SimpleSelectorRecipe for BtnGhost {
 pub struct BtnSquare;
 
 impl RuleRecipe for BtnSquare {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         CssSimpleSelector::from(Self).into()
     }
 
-    fn declarations_block_recipe() -> Bake {
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssDeclaration::from(Padding).content("0"),
             CssDeclaration::from(Width).content(CssFnVar::new().custom_property(BTN_SIZE)),

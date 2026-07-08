@@ -15,6 +15,8 @@ use crate::prelude::*;
 pub struct MediaSelectors;
 
 impl RuleRecipe for MediaSelectors {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma!["canvas", "img", "picture", "svg", "video"]
     }

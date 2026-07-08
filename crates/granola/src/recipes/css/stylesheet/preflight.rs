@@ -2,7 +2,7 @@
 //! Source: https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/preflight.css
 //! Licensed under MIT License (https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
 
-use crate::{prelude::*, recipes::*};
+use crate::{macros::declarations_block, prelude::*, recipes::*};
 
 /// The preflight stylesheet recipe.
 ///
@@ -200,306 +200,174 @@ use crate::{prelude::*, recipes::*};
 pub struct Preflight;
 
 impl StylesheetRecipe for Preflight {
-    fn statements_recipe() -> Bake {
+    recipe_boilerplate!(StylesheetRecipe);
+
+    fn content_recipe() -> Self::Content {
         bake_ws![
             CssRule::from(UniversalReset),
-            html_host_defaults(),
+            CssRule::new()
+                .selectors_list(bake_comma!["html", ":host"])
+                .content(declarations_block![
+                    (LineHeight, "1.5"),
+                    (WebkitTextSizeAdjust, "100%"),
+                    (TabSize, "4"),
+                    (FontFamily, CssCustomFunction::from(DefaultFontFamily)),
+                    (
+                        FontFeatureSettings,
+                        CssCustomFunction::from(DefaultFontFeatureSettings)
+                    ),
+                    (
+                        FontVariationSettings,
+                        CssCustomFunction::from(DefaultFontVariationSettings)
+                    ),
+                    ("-webkit-tap-highlight-color", "transparent"),
+                ]),
             CssRule::from(HrReset),
-            abbr_text_decoration(),
+            CssRule::new()
+                .selectors_list("abbr:where([title])")
+                .content(declarations_block![
+                    (WebkitTextDecoration, "underline dotted"),
+                    (TextDecoration, "underline dotted"),
+                ]),
             CssRule::from(AllHeadingsFontReset),
             CssRule::from(AnchorInherit),
             CssRule::from(BStrongFontWeight),
-            monospace_defaults(),
+            CssRule::from(MonospaceSelectors).content(declarations_block![
+                (FontFamily, CssCustomFunction::from(DefaultMonoFontFamily)),
+                (
+                    FontFeatureSettings,
+                    CssCustomFunction::from(DefaultMonoFontFeatureSettings)
+                ),
+                (
+                    FontVariationSettings,
+                    CssCustomFunction::from(DefaultMonoFontVariationSettings)
+                ),
+                (FontSize, "1em"),
+            ]),
             CssRule::from(SmallFontSize),
             CssRule::from(SubSupDefaults),
             CssRule::from(SubVerticalPos),
             CssRule::from(SupVerticalPos),
-            table_reset(),
-            moz_focusring_outline(),
+            CssRule::new()
+                .selectors_list("table")
+                .content(declarations_block![
+                    (TextIndent, "0"),
+                    (BorderColor, "inherit"),
+                    (BorderCollapse, "collapse"),
+                ]),
+            CssRule::new()
+                .selectors_list(":-moz-focusring")
+                .push_property((Outline, "auto")),
             CssRule::from(ProgressVerticalAlignment),
             CssRule::from(SummaryDisplayListItem),
-            list_reset(),
-            replaced_element_display(),
-            replaced_element_sizing(),
-            form_controls_reset(),
-            optgroup_font_weight(),
-            optgroup_option_indent(),
-            file_selector_button_spacing(),
-            placeholder_opacity(),
-            placeholder_color_supports(),
-            textarea_resize(),
+            CssRule::new()
+                .selectors_list(bake_comma!["ol", "ul", "menu"])
+                .push_property((ListStyle, "none")),
+            CssRule::new()
+                .selectors_list(bake_comma![
+                    "img", "svg", "video", "canvas", "audio", "iframe", "embed", "object",
+                ])
+                .content(declarations_block![
+                    (Display, "block"),
+                    (VerticalAlign, "middle")
+                ]),
+            CssRule::new()
+                .selectors_list(bake_comma!["img", "video"])
+                .content(declarations_block![(MaxWidth, "100%"), (Height, "auto")]),
+            CssRule::from(FormControlsExt)
+                .push_selector(UniversalFileSelectorButton)
+                .content(declarations_block![
+                    (Font, "inherit"),
+                    (FontFeatureSettings, "inherit"),
+                    (FontVariationSettings, "inherit"),
+                    (LetterSpacing, "inherit"),
+                    (Color, "inherit"),
+                    (BorderRadius, "0"),
+                    (BackgroundColor, "transparent"),
+                    (Opacity, "1"),
+                ]),
+            CssRule::new()
+                .selectors_list(
+                    CssSimpleSelector::new()
+                        .selector(":where(select:is([multiple], [size]))")
+                        .descendant("optgroup"),
+                )
+                .push_property((FontWeight, "bolder")),
+            CssRule::new()
+                .selectors_list(
+                    CssSimpleSelector::new()
+                        .selector(":where(select:is([multiple], [size]))")
+                        .descendant("optgroup")
+                        .descendant("option"),
+                )
+                .push_property((PaddingInlineStart, "20px")),
+            CssRule::new()
+                .push_selector(UniversalFileSelectorButton)
+                .push_property((MarginInlineEnd, "4px")),
+            CssRule::new()
+                .push_selector(UniversalPlaceholder)
+                .push_property((Opacity, "1")),
+            CssAtRule::new()
+                .identifier("supports")
+                .rule(
+                    "(not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px)"
+                )
+                .block(
+                    CssRule::new()
+                        .push_selector(UniversalPlaceholder)
+                        .push_property((
+                            Color,
+                            "color-mix(in oklab, currentcolor 50%, transparent)"
+                        )),
+                ),
+            CssRule::new()
+                .selectors_list("textarea")
+                .push_property((Resize, "vertical")),
             CssRule::from(SearchDecorationAppearance),
-            date_and_time_value(),
-            datetime_edit_display(),
-            datetime_edit_fields_wrapper(),
-            datetime_edit_padding_block(),
-            calendar_picker_indicator(),
-            moz_ui_invalid_box_shadow(),
-            button_appearance(),
+            CssRule::new()
+                .selectors_list("::-webkit-date-and-time-value")
+                .content(declarations_block![
+                    (MinHeight, "1lh"),
+                    (TextAlign, "inherit")
+                ]),
+            CssRule::new()
+                .selectors_list("::-webkit-datetime-edit")
+                .push_property((Display, "inline flex")),
+            CssRule::new()
+                .selectors_list("::-webkit-datetime-edit-fields-wrapper")
+                .push_property((Padding, "0")),
+            CssRule::new()
+                .selectors_list(bake_comma![
+                    "::-webkit-datetime-edit",
+                    "::-webkit-datetime-edit-year-field",
+                    "::-webkit-datetime-edit-month-field",
+                    "::-webkit-datetime-edit-day-field",
+                    "::-webkit-datetime-edit-hour-field",
+                    "::-webkit-datetime-edit-minute-field",
+                    "::-webkit-datetime-edit-second-field",
+                    "::-webkit-datetime-edit-millisecond-field",
+                    "::-webkit-datetime-edit-meridiem-field",
+                ])
+                .push_property((PaddingBlock, "0")),
+            CssRule::new()
+                .selectors_list("::-webkit-calendar-picker-indicator")
+                .push_property((LineHeight, "1")),
+            CssRule::new()
+                .selectors_list(":-moz-ui-invalid")
+                .push_property((BoxShadow, "none")),
+            CssRule::new()
+                .selectors_list(bake_comma![
+                    "button",
+                    "input:where([type='button'], [type='reset'], [type='submit'])",
+                    "::file-selector-button",
+                ])
+                .push_property((Appearance, "button")),
             CssRule::from(SpinButtonHeight),
-            hidden_display(),
+            CssRule::new()
+                .selectors_list("[hidden]:where(:not([hidden='until-found']))")
+                .push_property((Display, "none !important")),
         ]
     }
-}
-
-fn html_host_defaults() -> CssRule {
-    let sans_font_family = "--theme(
-  --default-font-family,
-  ui-sans-serif,
-  system-ui,
-  sans-serif,
-  'Apple Color Emoji',
-  'Segoe UI Emoji',
-  'Segoe UI Symbol',
-  'Noto Color Emoji'
-)";
-
-    let selectors_list = bake_comma!["html", ":host"];
-    let declarations_block = bake_ws![
-        CssDeclaration::from(LineHeight).content("1.5"),
-        CssDeclaration::from(WebkitTextSizeAdjust).content("100%"),
-        CssDeclaration::from(TabSize).content("4"),
-        CssDeclaration::from(FontFamily).content(sans_font_family),
-        CssDeclaration::from(FontFeatureSettings)
-            .content("--theme(--default-font-feature-settings, normal)"),
-        CssDeclaration::from(FontVariationSettings)
-            .content("--theme(--default-font-variation-settings, normal)"),
-        CssDeclaration::from(("-webkit-tap-highlight-color", "transparent")),
-    ];
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn abbr_text_decoration() -> CssRule {
-    let selectors_list = "abbr:where([title])";
-    let declarations_block = bake_ws![
-        CssDeclaration::from(WebkitTextDecoration).content(bake_ws!["underline", "dotted"]),
-        CssDeclaration::from(TextDecoration).content(bake_ws!["underline", "dotted"]),
-    ];
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn monospace_defaults() -> CssRule<MonospaceSelectors> {
-    let mono_font_family = "--theme(
-  --default-mono-font-family,
-  ui-monospace,
-  SFMono-Regular,
-  Menlo,
-  Monaco,
-  Consolas,
-  'Liberation Mono',
-  'Courier New',
-  monospace
-)";
-
-    let declarations_block = bake_ws![
-        CssDeclaration::from(FontFamily).content(mono_font_family),
-        CssDeclaration::from(FontFeatureSettings)
-            .content("--theme(--default-mono-font-feature-settings, normal)"),
-        CssDeclaration::from(FontVariationSettings)
-            .content("--theme(--default-mono-font-variation-settings, normal)"),
-        CssDeclaration::from(FontSize).content("1em"),
-    ];
-
-    CssRule::from(MonospaceSelectors).declarations_block(declarations_block)
-}
-
-fn table_reset() -> CssRule {
-    let selectors_list = "table";
-    let declarations_block = bake_ws![
-        CssDeclaration::from(TextIndent).content("0"),
-        CssDeclaration::from(BorderColor).inherit(),
-        CssDeclaration::from(BorderCollapse).content("collapse"),
-    ];
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn moz_focusring_outline() -> CssRule {
-    CssRule::new()
-        .selectors_list(":-moz-focusring")
-        .declarations_block(CssDeclaration::from(Outline).content("auto"))
-}
-
-fn list_reset() -> CssRule {
-    CssRule::new()
-        .selectors_list(bake_comma!["ol", "ul", "menu"])
-        .declarations_block(CssDeclaration::from(ListStyle).content("none"))
-}
-
-fn replaced_element_display() -> CssRule {
-    let selectors_list = bake_comma![
-        "img", "svg", "video", "canvas", "audio", "iframe", "embed", "object",
-    ];
-    let declarations_block = bake_ws![
-        CssDeclaration::from(Display).content("block"),
-        CssDeclaration::from(VerticalAlign).content("middle")
-    ];
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn replaced_element_sizing() -> CssRule {
-    CssRule::new()
-        .selectors_list(bake_comma!["img", "video"])
-        .declarations_block(bake_ws![
-            CssDeclaration::from(MaxWidth).content("100%"),
-            CssDeclaration::from(Height).content("auto")
-        ])
-}
-
-fn form_controls_reset() -> CssRule<FormControlsExt> {
-    let declarations_block = bake_ws![
-        CssDeclaration::from(Font).inherit(),
-        CssDeclaration::from(FontFeatureSettings).inherit(),
-        CssDeclaration::from(FontVariationSettings).inherit(),
-        CssDeclaration::from(LetterSpacing).inherit(),
-        CssDeclaration::from(Color).inherit(),
-        CssDeclaration::from(BorderRadius).content("0"),
-        CssDeclaration::from(BackgroundColor).content("transparent"),
-        CssDeclaration::from(Opacity).content("1"),
-    ];
-
-    CssRule::from(FormControlsExt)
-        .push_selector(CssSimpleSelector::from(UniversalFileSelectorButton))
-        .declarations_block(declarations_block)
-}
-
-fn optgroup_font_weight() -> CssRule {
-    let selectors_list = CssSimpleSelector::new()
-        .selector(":where(select:is([multiple], [size]))")
-        .descendant("optgroup");
-    let declarations_block = CssDeclaration::from(FontWeight)
-        .content("bolder")
-        .bake_recipe();
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn optgroup_option_indent() -> CssRule {
-    let selectors_list = CssSimpleSelector::new()
-        .selector(":where(select:is([multiple], [size]))")
-        .descendant("optgroup")
-        .descendant("option");
-    let declarations_block = CssDeclaration::from(PaddingInlineStart).content("20px");
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn file_selector_button_spacing() -> CssRule {
-    CssRule::new()
-        .selectors_list(CssSimpleSelector::from(UniversalFileSelectorButton))
-        .declarations_block(CssDeclaration::from(MarginInlineEnd).content("4px"))
-}
-
-fn placeholder_opacity() -> CssRule {
-    CssRule::new()
-        .selectors_list(CssSimpleSelector::from(UniversalPlaceholder))
-        .declarations_block(CssDeclaration::from(Opacity).content("1"))
-}
-
-fn placeholder_color_supports() -> CssAtRule {
-    let condition = "(not (-webkit-appearance: -apple-pay-button)) or
-  (contain-intrinsic-size: 1px)";
-
-    let placeholder = CssRule::new()
-        .selectors_list(CssSimpleSelector::from(UniversalPlaceholder))
-        .declarations_block(
-            CssDeclaration::from(Color)
-                .content("color-mix(in oklab, currentcolor 50%, transparent)"),
-        );
-
-    CssAtRule::new()
-        .identifier("supports")
-        .rule(condition)
-        .block(placeholder)
-}
-
-fn textarea_resize() -> CssRule {
-    CssRule::new()
-        .selectors_list("textarea")
-        .declarations_block(CssDeclaration::from(Resize).content("vertical"))
-}
-
-fn date_and_time_value() -> CssRule {
-    let selectors_list = "::-webkit-date-and-time-value";
-    let declarations_block = bake_ws![
-        CssDeclaration::from(MinHeight).content("1lh"),
-        CssDeclaration::from(TextAlign).inherit(),
-    ];
-
-    CssRule::new()
-        .selectors_list(selectors_list)
-        .declarations_block(declarations_block)
-}
-
-fn datetime_edit_display() -> CssRule {
-    CssRule::new()
-        .selectors_list("::-webkit-datetime-edit")
-        .declarations_block(CssDeclaration::from(Display).content("inline flex"))
-}
-
-fn datetime_edit_fields_wrapper() -> CssRule {
-    CssRule::new()
-        .selectors_list("::-webkit-datetime-edit-fields-wrapper")
-        .declarations_block(CssDeclaration::from(Padding).content("0"))
-}
-
-fn datetime_edit_padding_block() -> CssRule {
-    CssRule::new()
-        .selectors_list(bake_comma![
-            "::-webkit-datetime-edit",
-            "::-webkit-datetime-edit-year-field",
-            "::-webkit-datetime-edit-month-field",
-            "::-webkit-datetime-edit-day-field",
-            "::-webkit-datetime-edit-hour-field",
-            "::-webkit-datetime-edit-minute-field",
-            "::-webkit-datetime-edit-second-field",
-            "::-webkit-datetime-edit-millisecond-field",
-            "::-webkit-datetime-edit-meridiem-field",
-        ])
-        .declarations_block(CssDeclaration::from(PaddingBlock).content("0"))
-}
-
-fn calendar_picker_indicator() -> CssRule {
-    CssRule::new()
-        .selectors_list("::-webkit-calendar-picker-indicator")
-        .declarations_block(CssDeclaration::from(LineHeight).content("1"))
-}
-
-fn moz_ui_invalid_box_shadow() -> CssRule {
-    CssRule::new()
-        .selectors_list(":-moz-ui-invalid")
-        .declarations_block(CssDeclaration::from(BoxShadow).content("none"))
-}
-
-fn button_appearance() -> CssRule {
-    CssRule::new()
-        .selectors_list(bake_comma![
-            "button",
-            "input:where([type='button'], [type='reset'], [type='submit'])",
-            "::file-selector-button",
-        ])
-        .declarations_block(CssDeclaration::from(Appearance).content("button"))
-}
-
-fn hidden_display() -> CssRule {
-    CssRule::new()
-        .selectors_list("[hidden]:where(:not([hidden='until-found']))")
-        .declarations_block(CssDeclaration::from(Display).content("none").important())
 }
 
 /// The recipe for the default sans-serif font family.
@@ -509,12 +377,9 @@ fn hidden_display() -> CssRule {
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let custom_property = CssDeclaration::from(DefaultFontFamily);
+/// let custom_property = CssCustomProperty::from(DefaultFontFamily);
 ///
-/// assert_eq!(
-///     custom_property.bake(),
-///     "--default-font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';"
-/// );
+/// assert_eq!(custom_property.bake(), "--default-font-family");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct DefaultFontFamily;
@@ -525,15 +390,16 @@ impl CustomPropertyRecipe for DefaultFontFamily {
     }
 }
 
-impl DeclarationRecipe for DefaultFontFamily {
+impl CustomFunctionRecipe for DefaultFontFamily {
     recipe_boilerplate!(DeclarationRecipe);
 
-    fn property_recipe() -> Bake {
-        CssCustomProperty::from(Self).into()
+    fn name_recipe() -> Bake {
+        Theme::name_recipe()
     }
 
     fn content_recipe() -> Self::Content {
         bake_comma![
+            CssCustomProperty::from(Self),
             "ui-sans-serif",
             "system-ui",
             "sans-serif",
@@ -552,12 +418,9 @@ impl DeclarationRecipe for DefaultFontFamily {
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let custom_property = CssDeclaration::from(DefaultFontFeatureSettings);
+/// let custom_property = CssCustomProperty::from(DefaultFontFeatureSettings);
 ///
-/// assert_eq!(
-///     custom_property.bake(),
-///     "--default-font-feature-settings: normal;"
-/// );
+/// assert_eq!(custom_property.bake(), "--default-font-feature-settings");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct DefaultFontFeatureSettings;
@@ -568,15 +431,15 @@ impl CustomPropertyRecipe for DefaultFontFeatureSettings {
     }
 }
 
-impl DeclarationRecipe for DefaultFontFeatureSettings {
+impl CustomFunctionRecipe for DefaultFontFeatureSettings {
     recipe_boilerplate!(DeclarationRecipe);
 
-    fn property_recipe() -> Bake {
-        CssCustomProperty::from(Self).into()
+    fn name_recipe() -> Bake {
+        Theme::name_recipe()
     }
 
     fn content_recipe() -> Self::Content {
-        "normal".into()
+        bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
 
@@ -587,12 +450,9 @@ impl DeclarationRecipe for DefaultFontFeatureSettings {
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let custom_property = CssDeclaration::from(DefaultFontVariationSettings);
+/// let custom_property = CssCustomProperty::from(DefaultFontVariationSettings);
 ///
-/// assert_eq!(
-///     custom_property.bake(),
-///     "--default-font-variation-settings: normal;"
-/// );
+/// assert_eq!(custom_property.bake(), "--default-font-variation-settings");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct DefaultFontVariationSettings;
@@ -603,15 +463,15 @@ impl CustomPropertyRecipe for DefaultFontVariationSettings {
     }
 }
 
-impl DeclarationRecipe for DefaultFontVariationSettings {
+impl CustomFunctionRecipe for DefaultFontVariationSettings {
     recipe_boilerplate!(DeclarationRecipe);
 
-    fn property_recipe() -> Bake {
-        CssCustomProperty::from(Self).into()
+    fn name_recipe() -> Bake {
+        Theme::name_recipe()
     }
 
     fn content_recipe() -> Self::Content {
-        "normal".into()
+        bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
 
@@ -622,12 +482,9 @@ impl DeclarationRecipe for DefaultFontVariationSettings {
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let custom_property = CssDeclaration::from(DefaultMonoFontFamily);
+/// let custom_property = CssCustomProperty::from(DefaultMonoFontFamily);
 ///
-/// assert_eq!(
-///     custom_property.bake(),
-///     "--default-mono-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"
-/// );
+/// assert_eq!(custom_property.bake(), "--default-mono-font-family");
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct DefaultMonoFontFamily;
@@ -638,15 +495,16 @@ impl CustomPropertyRecipe for DefaultMonoFontFamily {
     }
 }
 
-impl DeclarationRecipe for DefaultMonoFontFamily {
+impl CustomFunctionRecipe for DefaultMonoFontFamily {
     recipe_boilerplate!(DeclarationRecipe);
 
-    fn property_recipe() -> Bake {
-        CssCustomProperty::from(Self).into()
+    fn name_recipe() -> Bake {
+        Theme::name_recipe()
     }
 
     fn content_recipe() -> Self::Content {
         bake_comma![
+            CssCustomProperty::from(Self),
             "ui-monospace",
             "SFMono-Regular",
             "Menlo",
@@ -666,11 +524,11 @@ impl DeclarationRecipe for DefaultMonoFontFamily {
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let custom_property = CssDeclaration::from(DefaultMonoFontFeatureSettings);
+/// let custom_property = CssCustomProperty::from(DefaultMonoFontFeatureSettings);
 ///
 /// assert_eq!(
 ///     custom_property.bake(),
-///     "--default-mono-font-feature-settings: normal;"
+///     "--default-mono-font-feature-settings"
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -682,15 +540,15 @@ impl CustomPropertyRecipe for DefaultMonoFontFeatureSettings {
     }
 }
 
-impl DeclarationRecipe for DefaultMonoFontFeatureSettings {
+impl CustomFunctionRecipe for DefaultMonoFontFeatureSettings {
     recipe_boilerplate!(DeclarationRecipe);
 
-    fn property_recipe() -> Bake {
-        CssCustomProperty::from(Self).into()
+    fn name_recipe() -> Bake {
+        Theme::name_recipe()
     }
 
     fn content_recipe() -> Self::Content {
-        "normal".into()
+        bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
 
@@ -701,11 +559,11 @@ impl DeclarationRecipe for DefaultMonoFontFeatureSettings {
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let custom_property = CssDeclaration::from(DefaultMonoFontVariationSettings);
+/// let custom_property = CssCustomProperty::from(DefaultMonoFontVariationSettings);
 ///
 /// assert_eq!(
 ///     custom_property.bake(),
-///     "--default-mono-font-variation-settings: normal;"
+///     "--default-mono-font-variation-settings"
 /// );
 /// ```
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -717,14 +575,36 @@ impl CustomPropertyRecipe for DefaultMonoFontVariationSettings {
     }
 }
 
-impl DeclarationRecipe for DefaultMonoFontVariationSettings {
+impl CustomFunctionRecipe for DefaultMonoFontVariationSettings {
     recipe_boilerplate!(DeclarationRecipe);
 
-    fn property_recipe() -> Bake {
-        CssCustomProperty::from(Self).into()
+    fn name_recipe() -> Bake {
+        Theme::name_recipe()
     }
 
     fn content_recipe() -> Self::Content {
-        "normal".into()
+        bake_comma![CssCustomProperty::from(Self), "normal"]
+    }
+}
+
+/// The CSS `--theme(...)` custom function.
+///
+/// # Example
+///
+/// ```rust
+/// use granola::{prelude::*, recipes::*};
+///
+/// let custom_function = CssCustomFunction::from(Theme);
+///
+/// assert_eq!(custom_function.bake(), "--theme()");
+/// ```
+#[derive(Default, Debug, Clone, PartialEq)]
+pub struct Theme;
+
+impl CustomFunctionRecipe for Theme {
+    recipe_boilerplate!(CustomFunctionRecipe);
+
+    fn name_recipe() -> Bake {
+        "theme".into()
     }
 }

@@ -15,6 +15,8 @@ use crate::{prelude::*, recipes::*};
 pub struct UniversalSelectors;
 
 impl RuleRecipe for UniversalSelectors {
+    recipe_boilerplate!(RuleRecipe);
+
     fn selectors_list_recipe() -> Bake {
         bake_comma![
             CssTypeSelector::from(Universal),

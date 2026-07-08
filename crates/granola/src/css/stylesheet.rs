@@ -33,33 +33,32 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// {{ statements | kirei }}
+/// {{ content | kirei }}
 /// ```
 #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
 #[granola(format = css)]
-#[recipe(name = StylesheetRecipe)]
+#[recipe(name = StylesheetRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssStylesheet<R: StylesheetRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub statements: Bake,
+    pub content: R::Content,
 }
 
-impl<R: StylesheetRecipe> CssStylesheet<R> {
+impl<R: StylesheetRecipe<Content = Bake>> CssStylesheet<R> {
     pub fn push(mut self, statement: impl FastWritable) -> Self {
-        self.statements.fold_in_ws(statement);
+        self.content.fold_in_ws(statement);
         self
     }
 
-    pub fn push_rule(mut self, rule: impl Into<CssRule>) -> Self {
-        self = self.push(rule.into());
-        self
+    pub fn push_rule(self, rule: impl Into<CssRule>) -> Self {
+        self.push(rule.into())
     }
 }
 
 impl<R: RuleRecipe> From<CssRule<R>> for CssStylesheet {
     fn from(rule: CssRule<R>) -> Self {
         Self {
-            statements: Bake::new(&rule),
+            content: rule.into(),
             ..Default::default()
         }
     }
@@ -68,7 +67,7 @@ impl<R: RuleRecipe> From<CssRule<R>> for CssStylesheet {
 impl<R: AtRuleRecipe> From<CssAtRule<R>> for CssStylesheet {
     fn from(at_rule: CssAtRule<R>) -> Self {
         Self {
-            statements: Bake::new(&at_rule),
+            content: at_rule.into(),
             ..Default::default()
         }
     }
@@ -96,9 +95,10 @@ macro_rules! stylesheet {
     () => {
         $crate::css::CssStylesheet::new()
     };
-    ($($statement:expr),+ $(,)?) => {{
-        let mut css_stylesheet = $crate::css::CssStylesheet::new();
-        css_stylesheet.statements = $crate::bake_ws![$($statement),+];
-        css_stylesheet
-    }};
+    ($content:expr $(,)?) => {
+        $crate::css::CssStylesheet::new().content($content)
+    };
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::css::CssStylesheet::new().content($crate::bake_ws![$first $(, $rest)*])
+    };
 }

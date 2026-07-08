@@ -136,20 +136,22 @@ impl Parse for RecipeArgs {
 /// Derive macro for recipes.
 ///
 /// For a struct `Foo<R>`, it generates:
-///
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
-///   and an impl for `()` (the baked, no-op recipe);
+///   and an impl for `()` (the baked, no-op recipe)
 /// - the `new` and `from_cookbook` constructors, plus a `From<R>` impl
-///   (`Foo::from(recipe)`);
-/// - a `bake_recipe` method lowering `Foo<R>` to `Foo<()>`.
+///   (`Foo::from(recipe)`)
+/// - a `bake_recipe` method lowering `Foo<R>` to `Foo<()>`
 ///
-/// Some field names add more:
-/// - `content` (with `#[recipe(content = T)]`): a `Content` associated type, a
-///   `content(content)` builder method, and a required `bake_content` method
-///   mapping `Content` back into the default content type `T`.
+/// With `content`:
+/// - a `Content` associated type, a `content(content)` builder method
+/// - a required `bake_content` method mapping `Content` back into the default
+///   content type `T`
+/// - a `From<(R, impl Into<R::Content>)>` impl (`Foo::from((recipe, content))`)
+///
+/// And also the matching `Has*` impl for:
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
 ///   `event_handlers`, `global_svg_attrs`, `paint_attrs`, `shape_attrs`,
-///   `text_content_attrs`: the matching `Has*` impl.
+///   `text_content_attrs`
 #[proc_macro_derive(Recipe, attributes(recipe))]
 pub fn recipe_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -397,6 +399,21 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
+    let from_recipe_and_content = if has_content {
+        quote! {
+            impl<#type_param: #trait_name, __IntoContent: ::std::convert::Into<#type_param::Content>>
+                ::std::convert::From<(#type_param, __IntoContent)>
+                for #struct_name #ty_generics #where_clause
+            {
+                fn from((_recipe, content): (#type_param, __IntoContent)) -> Self {
+                    Self::from_cookbook().content(content)
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+
     // `new`: empty constructor, only on `#struct_name<()>`.
     let new_method = quote! {
         pub fn new() -> Self {
@@ -457,6 +474,8 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 Self::from_cookbook()
             }
         }
+
+        #from_recipe_and_content
 
         impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
             /// Converts this element into its recipe-free form, replacing
