@@ -47,7 +47,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</colgroup>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = ColgroupRecipe, content = TableColumns)]
 pub struct HtmlColgroup<R: ColgroupRecipe = ()> {
@@ -69,7 +69,7 @@ pub struct HtmlColgroup<R: ColgroupRecipe = ()> {
 /// ```askama
 /// {{- span | bake_attr("span") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ColgroupAttrs {
     pub span: Option<u32>,

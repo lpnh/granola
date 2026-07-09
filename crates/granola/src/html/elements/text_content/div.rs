@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -51,7 +51,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</div>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = DivRecipe, content = Bake)]
 pub struct HtmlDiv<R: DivRecipe = ()> {
@@ -64,6 +64,13 @@ pub struct HtmlDiv<R: DivRecipe = ()> {
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,
     pub event_handlers: EventHandlers,
+}
+
+impl<R: DivRecipe<Content = Bake>> HtmlDiv<R> {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
+        self.content.fold_in(content);
+        self
+    }
 }
 
 /// Shorthand for `HtmlDiv`.

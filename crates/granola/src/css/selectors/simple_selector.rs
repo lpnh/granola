@@ -22,7 +22,7 @@ use crate::prelude::*;
 /// ```askama
 /// {{ selector }}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = SimpleSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSimpleSelector<R: SimpleSelectorRecipe = ()> {

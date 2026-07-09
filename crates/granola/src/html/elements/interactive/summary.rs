@@ -38,7 +38,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</summary>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = SummaryRecipe, content = Bake)]
 pub struct HtmlSummary<R: SummaryRecipe = ()> {

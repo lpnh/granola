@@ -2,7 +2,7 @@
 //! Source: https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/preflight.css
 //! Licensed under MIT License (https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
 
-use crate::{macros::declarations_block, prelude::*, recipes::*};
+use crate::{macros::*, prelude::*, recipes::*};
 
 /// The preflight stylesheet recipe.
 ///
@@ -205,9 +205,9 @@ impl StylesheetRecipe for Preflight {
     fn content_recipe() -> Self::Content {
         bake_ws![
             CssRule::from(UniversalReset),
-            CssRule::new()
-                .selectors_list(bake_comma!["html", ":host"])
-                .content(declarations_block![
+            rule!(
+                bake_comma!["html", ":host"],
+                declarations_block![
                     (LineHeight, "1.5"),
                     (WebkitTextSizeAdjust, "100%"),
                     (TabSize, "4"),
@@ -221,62 +221,66 @@ impl StylesheetRecipe for Preflight {
                         CssCustomFunction::from(DefaultFontVariationSettings)
                     ),
                     ("-webkit-tap-highlight-color", "transparent"),
-                ]),
+                ]
+            ),
             CssRule::from(HrReset),
-            CssRule::new()
-                .selectors_list("abbr:where([title])")
-                .content(declarations_block![
+            rule!(
+                "abbr:where([title])",
+                declarations_block![
                     (WebkitTextDecoration, "underline dotted"),
                     (TextDecoration, "underline dotted"),
-                ]),
+                ]
+            ),
             CssRule::from(AllHeadingsFontReset),
             CssRule::from(AnchorInherit),
             CssRule::from(BStrongFontWeight),
-            CssRule::from(MonospaceSelectors).content(declarations_block![
-                (FontFamily, CssCustomFunction::from(DefaultMonoFontFamily)),
-                (
-                    FontFeatureSettings,
-                    CssCustomFunction::from(DefaultMonoFontFeatureSettings)
-                ),
-                (
-                    FontVariationSettings,
-                    CssCustomFunction::from(DefaultMonoFontVariationSettings)
-                ),
-                (FontSize, "1em"),
-            ]),
+            CssRule::from((
+                MonospaceSelectors,
+                declarations_block![
+                    (FontFamily, CssCustomFunction::from(DefaultMonoFontFamily)),
+                    (
+                        FontFeatureSettings,
+                        CssCustomFunction::from(DefaultMonoFontFeatureSettings)
+                    ),
+                    (
+                        FontVariationSettings,
+                        CssCustomFunction::from(DefaultMonoFontVariationSettings)
+                    ),
+                    (FontSize, "1em"),
+                ]
+            )),
             CssRule::from(SmallFontSize),
             CssRule::from(SubSupDefaults),
             CssRule::from(SubVerticalPos),
             CssRule::from(SupVerticalPos),
-            CssRule::new()
-                .selectors_list("table")
-                .content(declarations_block![
+            rule!(
+                "table",
+                declarations_block![
                     (TextIndent, "0"),
                     (BorderColor, "inherit"),
                     (BorderCollapse, "collapse"),
-                ]),
-            CssRule::new()
-                .selectors_list(":-moz-focusring")
-                .push_property((Outline, "auto")),
+                ]
+            ),
+            rule!(":-moz-focusring", declaration!(Outline, "auto")),
             CssRule::from(ProgressVerticalAlignment),
             CssRule::from(SummaryDisplayListItem),
-            CssRule::new()
-                .selectors_list(bake_comma!["ol", "ul", "menu"])
-                .push_property((ListStyle, "none")),
-            CssRule::new()
-                .selectors_list(bake_comma![
+            rule!(
+                bake_comma!["ol", "ul", "menu"],
+                declaration!(ListStyle, "none")
+            ),
+            rule!(
+                bake_comma![
                     "img", "svg", "video", "canvas", "audio", "iframe", "embed", "object",
-                ])
-                .content(declarations_block![
-                    (Display, "block"),
-                    (VerticalAlign, "middle")
-                ]),
-            CssRule::new()
-                .selectors_list(bake_comma!["img", "video"])
-                .content(declarations_block![(MaxWidth, "100%"), (Height, "auto")]),
-            CssRule::from(FormControlsExt)
-                .push_selector(UniversalFileSelectorButton)
-                .content(declarations_block![
+                ],
+                declarations_block![(Display, "block"), (VerticalAlign, "middle")]
+            ),
+            rule!(
+                bake_comma!["img", "video"],
+                declarations_block![(MaxWidth, "100%"), (Height, "auto")]
+            ),
+            CssRule::from((
+                FormControlsExt,
+                declarations_block![
                     (Font, "inherit"),
                     (FontFeatureSettings, "inherit"),
                     (FontVariationSettings, "inherit"),
@@ -285,22 +289,22 @@ impl StylesheetRecipe for Preflight {
                     (BorderRadius, "0"),
                     (BackgroundColor, "transparent"),
                     (Opacity, "1"),
-                ]),
-            CssRule::new()
-                .selectors_list(
-                    CssSimpleSelector::new()
-                        .selector(":where(select:is([multiple], [size]))")
-                        .descendant("optgroup"),
-                )
-                .push_property((FontWeight, "bolder")),
-            CssRule::new()
-                .selectors_list(
-                    CssSimpleSelector::new()
-                        .selector(":where(select:is([multiple], [size]))")
-                        .descendant("optgroup")
-                        .descendant("option"),
-                )
-                .push_property((PaddingInlineStart, "20px")),
+                ]
+            ))
+            .push_selector(UniversalFileSelectorButton),
+            rule!(
+                CssSimpleSelector::new()
+                    .selector(":where(select:is([multiple], [size]))")
+                    .descendant("optgroup"),
+                declaration!(FontWeight, "bolder")
+            ),
+            rule!(
+                CssSimpleSelector::new()
+                    .selector(":where(select:is([multiple], [size]))")
+                    .descendant("optgroup")
+                    .descendant("option"),
+                declaration!(PaddingInlineStart, "20px")
+            ),
             CssRule::new()
                 .push_selector(UniversalFileSelectorButton)
                 .push_property((MarginInlineEnd, "4px")),
@@ -320,24 +324,22 @@ impl StylesheetRecipe for Preflight {
                             "color-mix(in oklab, currentcolor 50%, transparent)"
                         )),
                 ),
-            CssRule::new()
-                .selectors_list("textarea")
-                .push_property((Resize, "vertical")),
+            rule!("textarea", declaration!(Resize, "vertical")),
             CssRule::from(SearchDecorationAppearance),
-            CssRule::new()
-                .selectors_list("::-webkit-date-and-time-value")
-                .content(declarations_block![
-                    (MinHeight, "1lh"),
-                    (TextAlign, "inherit")
-                ]),
-            CssRule::new()
-                .selectors_list("::-webkit-datetime-edit")
-                .push_property((Display, "inline flex")),
-            CssRule::new()
-                .selectors_list("::-webkit-datetime-edit-fields-wrapper")
-                .push_property((Padding, "0")),
-            CssRule::new()
-                .selectors_list(bake_comma![
+            rule!(
+                "::-webkit-date-and-time-value",
+                declarations_block![(MinHeight, "1lh"), (TextAlign, "inherit")]
+            ),
+            rule!(
+                "::-webkit-datetime-edit",
+                declaration!(Display, "inline flex")
+            ),
+            rule!(
+                "::-webkit-datetime-edit-fields-wrapper",
+                declaration!(Padding, "0")
+            ),
+            rule!(
+                bake_comma![
                     "::-webkit-datetime-edit",
                     "::-webkit-datetime-edit-year-field",
                     "::-webkit-datetime-edit-month-field",
@@ -347,25 +349,27 @@ impl StylesheetRecipe for Preflight {
                     "::-webkit-datetime-edit-second-field",
                     "::-webkit-datetime-edit-millisecond-field",
                     "::-webkit-datetime-edit-meridiem-field",
-                ])
-                .push_property((PaddingBlock, "0")),
-            CssRule::new()
-                .selectors_list("::-webkit-calendar-picker-indicator")
-                .push_property((LineHeight, "1")),
-            CssRule::new()
-                .selectors_list(":-moz-ui-invalid")
-                .push_property((BoxShadow, "none")),
-            CssRule::new()
-                .selectors_list(bake_comma![
+                ],
+                declaration!(PaddingBlock, "0")
+            ),
+            rule!(
+                "::-webkit-calendar-picker-indicator",
+                declaration!(LineHeight, "1")
+            ),
+            rule!(":-moz-ui-invalid", declaration!(BoxShadow, "none")),
+            rule!(
+                bake_comma![
                     "button",
                     "input:where([type='button'], [type='reset'], [type='submit'])",
                     "::file-selector-button",
-                ])
-                .push_property((Appearance, "button")),
+                ],
+                declaration!(Appearance, "button")
+            ),
             CssRule::from(SpinButtonHeight),
-            CssRule::new()
-                .selectors_list("[hidden]:where(:not([hidden='until-found']))")
-                .push_property((Display, "none !important")),
+            rule!(
+                "[hidden]:where(:not([hidden='until-found']))",
+                declaration!(Display, "none !important")
+            ),
         ]
     }
 }

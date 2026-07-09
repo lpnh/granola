@@ -44,7 +44,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</details>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = DetailsRecipe, content = Bake)]
 pub struct HtmlDetails<R: DetailsRecipe = ()> {
@@ -74,7 +74,7 @@ impl<R: DetailsRecipe<Content = Bake>> HtmlDetails<R> {
 /// {{- name | bake_attr("name") -}}
 /// {{- open | bake_bool_attr("open") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct DetailsAttrs {
     pub name: Option<Bake>,

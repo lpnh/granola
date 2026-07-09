@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</h3>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = H3Recipe, content = Bake)]
 pub struct HtmlH3<R: H3Recipe = ()> {

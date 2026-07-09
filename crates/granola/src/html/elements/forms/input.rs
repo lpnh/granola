@@ -41,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = InputRecipe)]
 pub struct HtmlInput<R: InputRecipe = ()> {
@@ -124,7 +124,7 @@ impl HtmlInput {
 /// {{- required | bake_bool_attr("required") -}}
 /// {{- disabled | bake_bool_attr("disabled") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct InputAttrs {
     /// Available for all input types.

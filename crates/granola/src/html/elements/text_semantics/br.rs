@@ -42,7 +42,7 @@ use crate::prelude::*;
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = BrRecipe)]
 pub struct HtmlBr<R: BrRecipe = ()> {

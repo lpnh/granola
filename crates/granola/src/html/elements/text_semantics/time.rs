@@ -41,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</time>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = TimeRecipe, content = Bake)]
 pub struct HtmlTime<R: TimeRecipe = ()> {
@@ -66,7 +66,7 @@ pub struct HtmlTime<R: TimeRecipe = ()> {
 /// ```askama
 /// {{- datetime | bake_attr("datetime") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TimeAttrs {
     pub datetime: Option<Bake>,

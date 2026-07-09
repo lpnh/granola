@@ -36,7 +36,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</script>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = ScriptRecipe, content = Bake)]
 pub struct HtmlScript<R: ScriptRecipe = ()> {
@@ -73,7 +73,7 @@ impl HtmlScript {
 /// {{- defer | bake_bool_attr("defer") -}}
 /// {{- nomodule | bake_bool_attr("nomodule") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ScriptAttrs {
     pub script_type: Option<Bake>,

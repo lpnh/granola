@@ -35,7 +35,7 @@ use crate::{filters, prelude::*};
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = BaseRecipe)]
 pub struct HtmlBase<R: BaseRecipe = ()> {
@@ -63,7 +63,7 @@ impl HtmlBase {
 /// {{- href | bake_attr("href") -}}
 /// {{- target | bake_attr("target") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct BaseAttrs {
     pub href: Option<Bake>,

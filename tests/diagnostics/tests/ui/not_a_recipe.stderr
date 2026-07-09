@@ -76,8 +76,8 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
 note: required by a bound in `granola::html::HtmlButton::<R>::from_cookbook`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
   |
-  | #[derive(Debug, Clone, Default, Template, Granola, Recipe)]
-  |                                                    ------ required by a bound in this associated function
+  | #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
+  |                                                               ------ required by a bound in this associated function
   | #[template(ext = "html", in_doc = true, escape = "none")]
   | #[recipe(name = ButtonRecipe, content = Bake)]
   |                 ^^^^^^^^^^^^ required by this bound in `HtmlButton::<R>::from_cookbook`

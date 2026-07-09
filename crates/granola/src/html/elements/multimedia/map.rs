@@ -70,7 +70,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</map>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = MapRecipe, content = Areas)]
 pub struct HtmlMap<R: MapRecipe = ()> {
@@ -92,7 +92,7 @@ pub struct HtmlMap<R: MapRecipe = ()> {
 /// ```askama
 /// {{- name | bake_attr("name") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct MapAttrs {
     pub name: Option<Bake>,

@@ -35,7 +35,7 @@ use crate::{filters, prelude::*};
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = LinkRecipe)]
 pub struct HtmlLink<R: LinkRecipe = ()> {
@@ -70,7 +70,7 @@ pub struct HtmlLink<R: LinkRecipe = ()> {
 /// {{- mime_type | bake_attr("type") -}}
 /// {{- disabled | bake_bool_attr("defer") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct LinkAttrs {
     pub preload_as: Option<Bake>,

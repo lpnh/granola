@@ -1,4 +1,4 @@
-use askama::Template;
+use askama::{FastWritable, Template};
 use std::{fmt::Debug, marker::PhantomData};
 
 use crate::{filters, prelude::*};
@@ -39,7 +39,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</li>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = LiRecipe, content = Bake)]
 pub struct HtmlLi<R: LiRecipe = ()> {
@@ -56,6 +56,13 @@ pub struct HtmlLi<R: LiRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
+impl<R: LiRecipe<Content = Bake>> HtmlLi<R> {
+    pub fn fold_in(mut self, content: impl FastWritable) -> Self {
+        self.content.fold_in(content);
+        self
+    }
+}
+
 /// The HTML `<li>` element specific attributes.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/li#attributes)
@@ -65,7 +72,7 @@ pub struct HtmlLi<R: LiRecipe = ()> {
 /// ```askama
 /// {{- value | bake_attr("value") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct LiAttrs {
     value: Option<u32>,

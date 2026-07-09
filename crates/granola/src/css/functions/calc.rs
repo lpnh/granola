@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 /// ```askama
 /// calc({{ expression | kirei }})
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = FnCalcRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnCalc<R: FnCalcRecipe = ()> {

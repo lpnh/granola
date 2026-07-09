@@ -45,7 +45,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</ol>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = OlRecipe, content = ListItems)]
 pub struct HtmlOl<R: OlRecipe = ()> {
@@ -73,7 +73,7 @@ pub struct HtmlOl<R: OlRecipe = ()> {
 /// {{- list_type | bake_attr("type") -}}
 /// {{- reversed | bake_bool_attr("reversed") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OlAttrs {
     pub start: Option<i32>,

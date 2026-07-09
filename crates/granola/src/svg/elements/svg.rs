@@ -51,7 +51,7 @@ use crate::{filters, prelude::*};
 ///   {{- text_content_attrs -}}
 /// >{{ content | kirei }}</svg>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = SvgRecipe, content = Bake)]
 pub struct Svg<R: SvgRecipe = ()> {
@@ -78,7 +78,7 @@ pub struct Svg<R: SvgRecipe = ()> {
 /// {{- x | bake_attr("x") -}}
 /// {{- y | bake_attr("y") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SvgAttrs {
     pub height: Option<Bake>,

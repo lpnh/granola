@@ -25,7 +25,7 @@ use crate::prelude::*;
 /// {%- endif -%}
 /// {{ selector }}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = TypeSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTypeSelector<R: TypeSelectorRecipe = ()> {

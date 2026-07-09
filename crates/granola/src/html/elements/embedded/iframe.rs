@@ -41,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</iframe>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = IframeRecipe, content = Bake)]
 pub struct HtmlIframe<R: IframeRecipe = ()> {
@@ -81,7 +81,7 @@ impl HtmlIframe {
 /// {{- srcdoc | bake_attr("srcdoc") -}}
 /// {{- allowfullscreen | bake_bool_attr("allowfullscreen") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct IframeAttrs {
     pub src: Option<Bake>,

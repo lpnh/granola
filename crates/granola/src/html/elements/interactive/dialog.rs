@@ -53,7 +53,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</dialog>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = DialogRecipe, content = Bake)]
 pub struct HtmlDialog<R: DialogRecipe = ()> {
@@ -86,7 +86,7 @@ impl<R: DialogRecipe<Content = Bake>> HtmlDialog<R> {
 /// {{- closedby | bake_attr("closedby") -}}
 /// {{- open | bake_bool_attr("open") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct DialogAttrs {
     pub closedby: Option<Bake>,

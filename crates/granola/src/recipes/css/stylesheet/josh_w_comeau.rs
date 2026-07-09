@@ -2,7 +2,7 @@
 //! Source: https://www.joshwcomeau.com/css/custom-css-reset/
 //! Released to the public domain by the author
 
-use crate::{macros::declarations_block, prelude::*, recipes::*};
+use crate::{macros::*, prelude::*, recipes::*};
 
 /// The "Custom CSS Reset" stylesheet recipe.
 ///
@@ -63,35 +63,33 @@ impl StylesheetRecipe for JoshWComeau {
     fn content_recipe() -> Self::Content {
         bake_ws![
             CssRule::from(BoxSizingReset),
-            CssRule::new()
-                .selectors_list("*:not(dialog)")
-                .push_property((Margin, "0")),
+            rule!("*:not(dialog)", declaration!(Margin, "0")),
             CssAtRule::new()
                 .identifier("media")
                 .rule("(prefers-reduced-motion: no-preference)")
-                .block(
-                    CssRule::new()
-                        .selectors_list("html")
-                        .push_property((InterpolateSize, "allow-keywords")),
-                ),
-            CssRule::new()
-                .selectors_list("body")
-                .content(declarations_block![
+                .block(rule!(
+                    "html",
+                    declaration!(InterpolateSize, "allow-keywords")
+                )),
+            rule!(
+                "body",
+                declarations_block![
                     (LineHeight, "1.5"),
                     ("-webkit-font-smoothing", "antialiased"),
-                ]),
-            CssRule::from(MediaSelectors)
-                .push_property(CssDeclaration::from(Display).content("block"))
-                .push_property(CssDeclaration::from(MaxWidth).content("100%")),
-            CssRule::from(FormControls).push_property((Font, "inherit")),
-            CssRule::from(AllHeadingsExt).push_property((OverflowWrap, "break-word")),
-            CssRule::new()
-                .selectors_list("p")
-                .push_property((TextWrap, "pretty")),
-            CssRule::from(AllHeadings).push_property((TextWrap, "balance")),
-            CssRule::new()
-                .selectors_list(bake_comma!["#root", "#__next"])
-                .push_property((Isolation, "isolate")),
+                ]
+            ),
+            CssRule::from((
+                MediaSelectors,
+                declarations_block![(Display, "block"), (MaxWidth, "100%")]
+            )),
+            CssRule::from((FormControls, declaration!(Font, "inherit"))),
+            CssRule::from((AllHeadingsExt, declaration!(OverflowWrap, "break-word"))),
+            rule!("p", declaration!(TextWrap, "pretty")),
+            CssRule::from((AllHeadings, declaration!(TextWrap, "balance"))),
+            rule!(
+                bake_comma!["#root", "#__next"],
+                declaration!(Isolation, "isolate")
+            ),
         ]
     }
 }

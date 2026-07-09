@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</output>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = OutputRecipe, content = Bake)]
 pub struct HtmlOutput<R: OutputRecipe = ()> {
@@ -69,7 +69,7 @@ pub struct HtmlOutput<R: OutputRecipe = ()> {
 /// {{- for_id | bake_attr("for") -}}
 /// {{- form | bake_attr("form") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OutputAttrs {
     pub name: Option<Bake>,

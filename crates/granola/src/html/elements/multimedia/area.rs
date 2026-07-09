@@ -48,7 +48,7 @@ use crate::{filters, prelude::*};
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = AreaRecipe)]
 pub struct HtmlArea<R: AreaRecipe = ()> {
@@ -89,7 +89,7 @@ impl HtmlArea {
 /// {{- rel | bake_attr("rel") -}}
 /// {{- target | bake_attr("target") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AreaAttrs {
     pub shape: Option<Bake>,

@@ -39,7 +39,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</option>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = OptionRecipe, content = Bake)]
 pub struct HtmlOption<R: OptionRecipe = ()> {
@@ -70,7 +70,7 @@ impl HtmlOption {
 /// {{- disabled | bake_bool_attr("disabled") -}}
 /// {{- selected | bake_bool_attr("selected") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct OptionAttrs {
     pub label: Option<Bake>,

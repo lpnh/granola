@@ -134,7 +134,7 @@ impl HtmlRecipe for Homemade {
 ///     {{ b }}
 /// {%- endif -%}
 /// ```
-#[derive(Default, Debug, Clone, Template, Granola)]
+#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct HomemadeRootContent {
     pub head: HtmlHead<Homemade>,
@@ -243,7 +243,7 @@ impl HtmlRoot<Homemade> {
 ///     {{ s }}
 /// {%- endfor -%}
 /// ```
-#[derive(Default, Debug, Clone, Template, Granola)]
+#[derive(Default, Debug, Clone, PartialEq, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct HomemadeHeadContent {
     pub meta: Vec<HtmlMeta>,

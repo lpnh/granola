@@ -35,7 +35,7 @@ use crate::{filters, prelude::*};
 ///   {{- text_content_attrs -}}
 /// >{{ content | kirei }}</text>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = TextRecipe, content = Bake)]
 pub struct SvgText<R: TextRecipe = ()> {
@@ -62,7 +62,7 @@ pub struct SvgText<R: TextRecipe = ()> {
 /// {{- length_adjust | bake_attr("lengthAdjust") -}}
 /// {{- text_length | bake_attr("textLength") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TextAttrs {
     pub x: Option<Bake>,

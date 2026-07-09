@@ -46,7 +46,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</meter>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = MeterRecipe, content = Bake)]
 pub struct HtmlMeter<R: MeterRecipe = ()> {
@@ -73,7 +73,7 @@ pub struct HtmlMeter<R: MeterRecipe = ()> {
 /// {{- high | bake_attr("high") -}}
 /// {{- optimum | bake_attr("optimum") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct MeterAttrs {
     pub value: Option<Bake>,

@@ -24,7 +24,7 @@ use crate::{filters, prelude::*};
 ///     {%- if let Some(f) = fallback %}, {{ f }}{% endif -%}
 /// )
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = FnVarRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnVar<R: FnVarRecipe = ()> {

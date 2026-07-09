@@ -40,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = SourceRecipe)]
 pub struct HtmlSource<R: SourceRecipe = ()> {
@@ -73,7 +73,7 @@ impl HtmlSource {
 /// {{- sizes | bake_attr("sizes") -}}
 /// {{- mime_type | bake_attr("type") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SourceAttrs {
     pub src: Option<Bake>,

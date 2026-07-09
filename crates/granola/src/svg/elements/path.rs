@@ -47,7 +47,7 @@ use crate::{filters, prelude::*};
 ///   {{- paint_attrs -}}
 ///   {{- shape_attrs }} />
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = PathRecipe)]
 pub struct SvgPath<R: PathRecipe = ()> {
@@ -68,7 +68,7 @@ pub struct SvgPath<R: PathRecipe = ()> {
 /// {{- d | bake_attr("d") -}}
 /// {{- path_length | bake_attr("pathLength") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct PathAttrs {
     pub d: Option<Bake>,

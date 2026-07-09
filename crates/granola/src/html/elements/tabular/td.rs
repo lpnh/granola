@@ -36,7 +36,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</td>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = TdRecipe, content = Bake)]
 pub struct HtmlTd<R: TdRecipe = ()> {
@@ -63,7 +63,7 @@ pub struct HtmlTd<R: TdRecipe = ()> {
 /// {{- colspan | bake_attr("colspan") -}}
 /// {{- rowspan | bake_attr("rowspan") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TdAttrs {
     pub headers: Option<Bake>,

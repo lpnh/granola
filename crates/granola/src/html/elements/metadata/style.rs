@@ -46,9 +46,9 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</style>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = StyleRecipe, content = CssStylesheet)]
+#[recipe(name = StyleRecipe, content = Bake)]
 pub struct HtmlStyle<R: StyleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
@@ -69,7 +69,7 @@ pub struct HtmlStyle<R: StyleRecipe = ()> {
 /// {{- blocking | bake_attr("blocking") -}}
 /// {{- media | bake_attr("media") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct StyleAttrs {
     pub blocking: Option<Bake>,

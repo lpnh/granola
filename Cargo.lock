@@ -21,7 +21,7 @@ dependencies = [
 name = "alloc"
 version = "0.0.1"
 dependencies = [
- "corpus",
+ "fixtures",
  "granola",
  "insta",
 ]
@@ -313,17 +313,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "corpus"
-version = "0.0.1"
-dependencies = [
- "granola",
-]
-
-[[package]]
 name = "cpu"
 version = "0.0.1"
 dependencies = [
- "corpus",
+ "fixtures",
  "granola",
  "gungraun",
 ]
@@ -444,6 +437,13 @@ name = "find-msvc-tools"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5baebc0774151f905a1a2cc41989300b1e6fbb29aff0ceffa1064fdd3088d582"
+
+[[package]]
+name = "fixtures"
+version = "0.0.1"
+dependencies = [
+ "granola",
+]
 
 [[package]]
 name = "flate2"
@@ -853,6 +853,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "oats_and_ends"
+version = "0.0.1"
+dependencies = [
+ "axum",
+ "fixtures",
+ "granola",
+ "tokio",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -880,7 +890,7 @@ checksum = "19f132c84eca552bf34cab8ec81f1c1dcc229b811638f9d283dceabe58c5569e"
 name = "pretty"
 version = "0.0.1"
 dependencies = [
- "corpus",
+ "fixtures",
  "granola",
  "insta",
 ]

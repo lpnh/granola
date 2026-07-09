@@ -7,7 +7,7 @@ repository.workspace = true
 publish = false
 
 [dependencies]
-corpus = { path = "../corpus" }
+fixtures = { path = "../fixtures" }
 granola = { path = "../../crates/granola", features = ["pretty"] }
 
 [lints]

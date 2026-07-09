@@ -59,7 +59,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</template>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = TemplateRecipe, content = Bake)]
 pub struct HtmlTemplate<R: TemplateRecipe = ()> {
@@ -86,7 +86,7 @@ pub struct HtmlTemplate<R: TemplateRecipe = ()> {
 /// {{- shadowrootdelegatesfocus | bake_bool_attr("shadowrootdelegatesfocus") -}}
 /// {{- shadowrootserializable | bake_bool_attr("shadowrootserializable") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TemplateAttrs {
     pub shadowrootmode: Option<Bake>,

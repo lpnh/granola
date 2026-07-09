@@ -55,7 +55,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</canvas>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = CanvasRecipe, content = Bake)]
 pub struct HtmlCanvas<R: CanvasRecipe = ()> {
@@ -81,7 +81,7 @@ pub struct HtmlCanvas<R: CanvasRecipe = ()> {
 /// {{- width | bake_attr("width") -}}
 /// {{- height | bake_attr("height") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CanvasAttrs {
     pub width: Option<u32>,

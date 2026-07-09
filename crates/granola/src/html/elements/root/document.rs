@@ -36,10 +36,49 @@ use crate::{filters, prelude::*};
 /// {{- HtmlDoctype::new() -}}
 /// {{- content | kirei -}}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = HtmlDocumentRecipe, content = HtmlRoot)]
 pub struct HtmlDocument<R: HtmlDocumentRecipe = ()> {
     _recipe: PhantomData<R>,
     pub content: R::Content,
+}
+
+/// Shorthand for `HtmlDocument`.
+///
+/// # Example
+///
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let html_document = html_document!();
+///
+/// assert_eq!(html_document.bake(), r#"<!doctype html><html></html>"#);
+/// ```
+///
+/// ```rust
+/// use granola::{macros::*, prelude::*};
+///
+/// let body = body!().content("Hello, world!");
+///
+/// let html_document = html_document!().content(body);
+///
+/// assert_eq!(
+///     html_document.bake(),
+///     r#"<!doctype html><html><body>Hello, world!</body></html>"#
+/// );
+/// ```
+#[macro_export]
+macro_rules! html_document {
+    () => {
+        $crate::html::HtmlDocument::new()
+    };
+    ($content:expr $(,)?) => {
+        $crate::html::HtmlDocument::new().content($content)
+    };
+    ($first:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::html::HtmlDocument::new().content($crate::bake![$first $(, $rest)*])
+    };
+
 }

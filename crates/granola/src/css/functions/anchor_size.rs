@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 /// ```askama
 /// anchor-size({{ value | kirei }})
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = FnAnchorSizeRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnAnchorSize<R: FnAnchorSizeRecipe = ()> {

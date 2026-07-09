@@ -43,7 +43,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</object>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = ObjectRecipe, content = Bake)]
 pub struct HtmlObject<R: ObjectRecipe = ()> {
@@ -73,7 +73,7 @@ pub struct HtmlObject<R: ObjectRecipe = ()> {
 /// {{- form | bake_attr("form") -}}
 /// {{- name | bake_attr("name") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ObjectAttrs {
     pub mime_type: Option<Bake>,

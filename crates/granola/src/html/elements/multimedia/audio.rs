@@ -39,7 +39,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</audio>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = AudioRecipe, content = Bake)]
 pub struct HtmlAudio<R: AudioRecipe = ()> {
@@ -76,7 +76,7 @@ impl HtmlAudio {
 /// {{- media_loop | bake_bool_attr("loop") -}}
 /// {{- muted | bake_bool_attr("muted") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct AudioAttrs {
     pub crossorigin: Option<Bake>,

@@ -54,7 +54,7 @@ use crate::prelude::*;
 /// {%- else %};
 /// {%- endif -%}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[granola(format = css)]
 #[recipe(name = AtRuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]

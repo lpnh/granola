@@ -24,7 +24,7 @@ use crate::{filters, prelude::*};
 /// ```askama
 /// {{ property }}: {{ content | kirei }};
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = DeclarationRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssDeclaration<R: DeclarationRecipe = ()> {

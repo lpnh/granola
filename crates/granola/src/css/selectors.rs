@@ -16,7 +16,7 @@ use crate::prelude::*;
 /// A CSS combinator.
 ///
 /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Combinators)
-#[derive(Debug, Clone, Template, Granola)]
+#[derive(Debug, Clone, PartialEq, Template, Granola)]
 #[template(ext = "html")]
 pub enum CssCombinator {
     /// The descendant combinator: " " (single space)

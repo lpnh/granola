@@ -44,7 +44,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</label>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = LabelRecipe, content = Bake)]
 pub struct HtmlLabel<R: LabelRecipe = ()> {
@@ -73,7 +73,7 @@ impl<R: LabelRecipe<Content = Bake>> HtmlLabel<R> {
 /// ```askama
 /// {{- for_id | bake_attr("for") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct LabelAttrs {
     pub for_id: Option<Bake>,

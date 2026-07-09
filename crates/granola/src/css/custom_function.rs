@@ -27,7 +27,7 @@ use crate::{filters, prelude::*};
 /// ```askama
 /// --{{ name }}({{ content | kirei }})
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = CustomFunctionRecipe, content = Bake)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssCustomFunction<R: CustomFunctionRecipe = ()> {

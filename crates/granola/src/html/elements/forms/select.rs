@@ -49,7 +49,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</select>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = SelectRecipe, content = Bake)]
 pub struct HtmlSelect<R: SelectRecipe = ()> {
@@ -87,7 +87,7 @@ impl<R: SelectRecipe<Content = Bake>> HtmlSelect<R> {
 /// {{- multiple | bake_bool_attr("multiple") -}}
 /// {{- required | bake_bool_attr("required") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct SelectAttrs {
     autocomplete: Option<Bake>,

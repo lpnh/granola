@@ -36,7 +36,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</th>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = ThRecipe, content = Bake)]
 pub struct HtmlTh<R: ThRecipe = ()> {
@@ -65,7 +65,7 @@ pub struct HtmlTh<R: ThRecipe = ()> {
 /// {{- rowspan | bake_attr("rowspan") -}}
 /// {{- scope | bake_attr("scope") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ThAttrs {
     abbr: Option<Bake>,

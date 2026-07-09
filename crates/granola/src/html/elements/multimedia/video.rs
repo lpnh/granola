@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</video>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = VideoRecipe, content = Bake)]
 pub struct HtmlVideo<R: VideoRecipe = ()> {
@@ -83,7 +83,7 @@ impl HtmlVideo {
 /// {{- muted | bake_bool_attr("muted") -}}
 /// {{- playsinline | bake_bool_attr("playsinline") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct VideoAttrs {
     pub src: Option<Bake>,

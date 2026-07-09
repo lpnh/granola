@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</button>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = ButtonRecipe, content = Bake)]
 pub struct HtmlButton<R: ButtonRecipe = ()> {
@@ -81,7 +81,7 @@ pub struct HtmlButton<R: ButtonRecipe = ()> {
 /// {{- formnovalidate | bake_bool_attr("formnovalidate") -}}
 /// {{- disabled | bake_bool_attr("disabled") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct ButtonAttrs {
     pub button_type: Option<Bake>,

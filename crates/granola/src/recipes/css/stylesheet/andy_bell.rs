@@ -2,7 +2,7 @@
 //! Source: https://piccalil.li/blog/a-more-modern-css-reset/
 //! Licensed under CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
 
-use crate::{macros::declarations_block, prelude::*, recipes::*};
+use crate::{macros::*, prelude::*, recipes::*};
 
 /// The "(more) Modern CSS Reset" stylesheet recipe.
 ///
@@ -69,17 +69,18 @@ impl StylesheetRecipe for AndyBell {
     recipe_boilerplate!(StylesheetRecipe);
 
     fn content_recipe() -> Self::Content {
-        bake_ws![
-            CssRule::from(BoxSizingReset),
-            CssRule::new()
-                .selectors_list("html")
-                .content(declarations_block![
+        rules![
+            BoxSizingReset,
+            rule!(
+                "html",
+                declarations_block![
                     ("-moz-text-size-adjust", "none"),
                     (WebkitTextSizeAdjust, "none"),
                     (TextSizeAdjust, "none"),
-                ]),
-            CssRule::new()
-                .selectors_list(bake_comma![
+                ]
+            ),
+            rule!(
+                bake_comma![
                     "body",
                     "h1",
                     "h2",
@@ -90,33 +91,28 @@ impl StylesheetRecipe for AndyBell {
                     "blockquote",
                     "dl",
                     "dd",
-                ])
-                .push_property((MarginBlockEnd, "0")),
-            CssRule::from(ListReset),
-            CssRule::new()
-                .selectors_list("body")
-                .content(declarations_block![
-                    (MinHeight, "100vh"),
-                    (LineHeight, "1.5")
-                ]),
-            CssRule::from(Headings)
-                .push_selectors_list(bake_comma!["button", "input", "label"])
-                .push_property((LineHeight, "1.1")),
-            CssRule::from(Headings).push_property((TextWrap, "balance")),
-            CssRule::from(AnchorDefaults),
-            CssRule::new()
-                .selectors_list(bake_comma!["img", "picture"])
-                .content(declarations_block![(MaxWidth, "100%"), (Display, "block")]),
-            CssRule::from(FormControls).content(declarations_block![
-                (FontFamily, "inherit"),
-                (FontSize, "inherit")
-            ]),
-            CssRule::new()
-                .selectors_list("textarea:not([rows])")
-                .push_property((MinHeight, "10em")),
-            CssRule::new()
-                .selectors_list(":target")
-                .push_property((ScrollMarginBlock, "5ex")),
+                ],
+                declaration!(MarginBlockEnd, "0")
+            ),
+            ListReset,
+            rule!(
+                "body",
+                declarations_block![(MinHeight, "100vh"), (LineHeight, "1.5")]
+            ),
+            CssRule::from((Headings, declaration!(LineHeight, "1.1")))
+                .push_selectors_list(bake_comma!["button", "input", "label"]),
+            (Headings, declaration!(TextWrap, "balance")),
+            AnchorDefaults,
+            rule!(
+                bake_comma!["img", "picture"],
+                declarations_block![(MaxWidth, "100%"), (Display, "block")]
+            ),
+            (
+                FormControls,
+                declarations_block![(FontFamily, "inherit"), (FontSize, "inherit")]
+            ),
+            rule!("textarea:not([rows])", declaration!(MinHeight, "10em")),
+            rule!(":target", declaration!(ScrollMarginBlock, "5ex")),
         ]
     }
 }

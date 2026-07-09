@@ -25,7 +25,7 @@ use crate::prelude::*;
 /// {{ combinator }}{{ compound }}
 /// {%- endfor -%}
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(name = ComplexSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssComplexSelector<R: ComplexSelectorRecipe = ()> {

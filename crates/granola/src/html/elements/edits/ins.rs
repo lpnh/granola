@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</ins>
 /// ```
-#[derive(Debug, Clone, Default, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = InsRecipe, content = Bake)]
 pub struct HtmlIns<R: InsRecipe = ()> {
@@ -68,7 +68,7 @@ pub struct HtmlIns<R: InsRecipe = ()> {
 /// {{- datetime | bake_attr("datetime") -}}
 /// {{- cite | bake_attr("cite") -}}
 /// ```
-#[derive(Debug, Clone, Default, Template)]
+#[derive(Debug, Clone, Default, PartialEq, Template)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct InsAttrs {
     pub datetime: Option<Bake>,
