@@ -10,13 +10,13 @@ publish = false
 askama = { workspace = true }
 axum = "0.8.9"
 granola = { path = "../../crates/granola" }
-http = "1.4.1"
+http = "1.4.2"
 mime = "0.3.17"
 seahash = "4.1.0"
 serde = { version = "1.0.228", features = ["derive"] }
 strum = { workspace = true }
 tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread"] }
-tower-http = { version = "0.6.11", features = ["compression-full"] }
+tower-http = { version = "0.7.0", features = ["compression-full"] }
 
 [lints]
 workspace = true

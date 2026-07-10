@@ -11,7 +11,7 @@ fixtures = { path = "../fixtures" }
 granola = { path = "../../crates/granola" }
 
 [dev-dependencies]
-gungraun = { version = "0.19.3", features = ["cachegrind"] }
+gungraun = { version = "0.19.4", features = ["cachegrind"] }
 
 [lints]
 workspace = true
