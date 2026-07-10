@@ -2,6 +2,8 @@ mod margin_block_end;
 pub use margin_block_end::*;
 mod margin_bottom;
 pub use margin_bottom::*;
+mod margin_inline;
+pub use margin_inline::*;
 mod margin_inline_end;
 pub use margin_inline_end::*;
 mod margin_left;
@@ -13,7 +15,6 @@ pub use margin_top::*;
 
 // margin_block
 // margin_block_start
-// margin_inline
 // margin_inline_start
 
 use crate::prelude::*;

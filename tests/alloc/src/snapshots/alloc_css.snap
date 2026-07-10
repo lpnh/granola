@@ -3,6 +3,6 @@ source: tests/alloc/src/lib.rs
 ---
              snippet  allocs     churn      peak
              -------  ------     -----      ----
-        css_standard     675     93697     20675
-          css_macros     600    102165     41694
-         css_recipes     600    102165     41694
+        css_standard     669    101976     20670
+          css_macros     604    102689     32354
+         css_recipes     607    103087     32472

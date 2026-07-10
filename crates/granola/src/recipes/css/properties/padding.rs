@@ -2,6 +2,8 @@ mod padding_block;
 pub use padding_block::*;
 mod padding_bottom;
 pub use padding_bottom::*;
+mod padding_inline;
+pub use padding_inline::*;
 mod padding_inline_start;
 pub use padding_inline_start::*;
 mod padding_top;
@@ -9,7 +11,6 @@ pub use padding_top::*;
 
 // mod padding_block-end;
 // mod padding_block-start;
-// mod padding_inline;
 // mod padding_inline-end;
 // mod padding_left;
 // mod padding_right;

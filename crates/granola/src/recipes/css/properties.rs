@@ -42,6 +42,8 @@ mod isolation;
 pub use isolation::*;
 mod justify;
 pub use justify::*;
+mod left;
+pub use left::*;
 mod letter_spacing;
 pub use letter_spacing::*;
 mod line;

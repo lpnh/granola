@@ -2,6 +2,8 @@ mod anchor_size;
 pub use anchor_size::*;
 mod calc;
 pub use calc::*;
+mod clamp;
+pub use clamp::*;
 mod color_mix;
 pub use color_mix::*;
 mod var;

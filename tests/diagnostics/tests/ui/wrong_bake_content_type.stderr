@@ -19,6 +19,7 @@ error[E0277]: the trait bound `Bake: From<Celsius>` is not satisfied
              From<CssDeclaration<R>>
              From<CssFnAnchorSize<R>>
              From<CssFnCalc<R>>
+             From<CssFnClamp<R>>
              From<CssFnColorMix<R>>
              From<CssFnVar<R>>
              From<CssRule<R>>

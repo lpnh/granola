@@ -12,6 +12,8 @@ mod text_size_adjust;
 pub use text_size_adjust::*;
 mod text_transform;
 pub use text_transform::*;
+mod text_underline_offset;
+pub use text_underline_offset::*;
 mod text_wrap;
 pub use text_wrap::*;
 mod webkit_text_decoration;

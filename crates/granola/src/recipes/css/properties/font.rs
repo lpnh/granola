@@ -6,6 +6,8 @@ mod font_size;
 pub use font_size::*;
 mod font_style;
 pub use font_style::*;
+mod font_variant_numeric;
+pub use font_variant_numeric::*;
 mod font_variation_settings;
 pub use font_variation_settings::*;
 mod font_weight;

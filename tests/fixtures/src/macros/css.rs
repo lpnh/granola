@@ -8,10 +8,10 @@ pub fn style() -> CssStylesheet {
 struct OatsAndEndsMacros;
 
 impl StylesheetRecipe for OatsAndEndsMacros {
-    recipe_boilerplate!(StylesheetRecipe);
+    recipe_boilerplate!(StylesheetRecipe, CssStylesheet);
 
     fn content_recipe() -> Self::Content {
-        bake_ws![
+        stylesheet![
             CssStylesheet::from(AndyBell),
             palette(),
             palette_dark(),
@@ -81,8 +81,8 @@ fn selection_tint() -> CssFnColorMix {
         .color("transparent")
 }
 
-fn typography() -> Bake {
-    bake_ws![
+fn typography() -> CssStylesheet {
+    stylesheet![
         rule!(
             "body",
             declarations_block![
@@ -100,7 +100,13 @@ fn typography() -> Bake {
         )),
         rule!(
             "h1",
-            declaration!(FontSize, "clamp(2rem, 1.5rem + 2vw, 3.25rem)")
+            declaration!(
+                FontSize,
+                CssFnClamp::new()
+                    .min("2rem")
+                    .val("1.5rem + 2vw")
+                    .max("3.25rem")
+            )
         ),
         rule!("h2", declaration!(FontSize, "1.75rem")),
         rule!("h3", declaration!(FontSize, "1.25rem")),
@@ -120,7 +126,7 @@ fn typography() -> Bake {
             "main a:not(.btn), .footer-inner a",
             declarations_block![
                 (Color, CssFnVar::from(ColorPrimary)),
-                ("text-underline-offset", "0.15em"),
+                (TextUnderlineOffset, "0.15em"),
             ]
         ),
         rule!(
@@ -130,34 +136,35 @@ fn typography() -> Bake {
     ]
 }
 
-fn layout() -> Bake {
-    bake_ws![
+fn layout() -> CssStylesheet {
+    stylesheet![
         rule!(
             ".wrap",
             declarations_block![
                 (MaxWidth, "68rem"),
-                ("margin-inline", "auto"),
-                ("padding-inline", "clamp(1rem, 4vw, 2.5rem)"),
+                (MarginInline, "auto"),
+                (
+                    PaddingInline,
+                    CssFnClamp::new().min("1rem").val("4vw").max("2.5rem"),
+                ),
             ]
         ),
         rule!(".section", declaration!(PaddingBlock, "3rem")),
-        Bake::from(
-            CssAtRule::new()
-                .identifier("media")
-                .rule("(prefers-reduced-motion: no-preference)")
-                .block(rule!("html", declaration!("scroll-behavior", "smooth"))),
-        ),
+        at_rule!()
+            .identifier("media")
+            .rule("(prefers-reduced-motion: no-preference)")
+            .block(rule!("html", declaration!(ScrollBehavior, "smooth"))),
     ]
 }
 
-fn skip_link() -> Bake {
-    bake_ws![
+fn skip_link() -> CssStylesheet {
+    stylesheet![
         rule!(
             ".skip-link",
             declarations_block![
                 (Position, "absolute"),
                 (Top, "-3rem"),
-                ("left", "1rem"),
+                (Left, "1rem"),
                 (Padding, "0.5em 1em"),
                 (BorderRadius, "0.35em"),
                 (BackgroundColor, CssFnVar::from(ColorText)),
@@ -171,8 +178,8 @@ fn skip_link() -> Bake {
     ]
 }
 
-fn site_header() -> Bake {
-    bake_ws![
+fn site_header() -> CssStylesheet {
+    stylesheet![
         rule!(
             ".site-header",
             declarations_block![
@@ -228,8 +235,8 @@ fn site_header() -> Bake {
     ]
 }
 
-fn hero() -> Bake {
-    bake_ws![
+fn hero() -> CssStylesheet {
+    stylesheet![
         rule!(
             ".hero",
             declarations_block![(PaddingBlock, "4rem 3rem"), (TextAlign, "center")]
@@ -248,21 +255,19 @@ fn hero() -> Bake {
     ]
 }
 
-fn menu() -> Bake {
-    bake_ws![
+fn menu() -> CssStylesheet {
+    stylesheet![
         rule!(
             ".menu-groups",
             declarations_block![(Display, "grid"), (Gap, "3rem"), (MarginTop, "2rem")]
         ),
-        Bake::from(
-            CssAtRule::new()
-                .identifier("media")
-                .rule("(min-width: 720px)")
-                .block(rule!(
-                    ".menu-groups",
-                    declaration!(GridTemplateColumns, "1fr 1fr")
-                )),
-        ),
+        at_rule!()
+            .identifier("media")
+            .rule("(min-width: 720px)")
+            .block(rule!(
+                ".menu-groups",
+                declaration!(GridTemplateColumns, "1fr 1fr")
+            )),
         rule!(
             ".menu-group h3",
             declarations_block![
@@ -304,7 +309,7 @@ fn menu() -> Bake {
         rule!(
             ".menu-item-desc",
             declarations_block![
-                ("flex-basis", "100%"),
+                (FlexBasis, "100%"),
                 (Color, muted_text()),
                 (FontSize, "0.9rem"),
             ]
@@ -312,8 +317,8 @@ fn menu() -> Bake {
     ]
 }
 
-fn hours() -> Bake {
-    bake_ws![
+fn hours() -> CssStylesheet {
+    stylesheet![
         rule!(
             "table",
             declarations_block![
@@ -337,14 +342,14 @@ fn hours() -> Bake {
                 (Padding, "0.6rem 1rem 0.6rem 0"),
                 (BorderBottom, "1px solid"),
                 (BorderColor, CssFnVar::from(ColorBorder)),
-                ("font-variant-numeric", "tabular-nums"),
+                (FontVariantNumeric, "tabular-nums"),
             ]
         ),
     ]
 }
 
-fn visit() -> Bake {
-    bake_ws![
+fn visit() -> CssStylesheet {
+    stylesheet![
         rule!(
             "#visit address",
             declarations_block![
@@ -365,8 +370,8 @@ fn visit() -> Bake {
     ]
 }
 
-fn newsletter() -> Bake {
-    bake_ws![
+fn newsletter() -> CssStylesheet {
+    stylesheet![
         rule!(
             "#newsletter form",
             declarations_block![
@@ -414,8 +419,8 @@ fn newsletter() -> Bake {
     ]
 }
 
-fn site_footer() -> Bake {
-    bake_ws![
+fn site_footer() -> CssStylesheet {
+    stylesheet![
         rule!(
             ".site-footer",
             declarations_block![
