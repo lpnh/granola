@@ -1,0 +1,19 @@
+[package]
+name = "granola-scanner"
+version.workspace = true
+description = "Safelist scanner for granola DaisyUI components"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+granola = { path = "../granola" }
+ignore = "0.4"
+proc-macro2 = "1"
+syn = { version = "3", features = ["full", "visit"] }
+
+[build-dependencies]
+granola = { path = "../granola" }
+
+[lints]
+workspace = true

@@ -1,0 +1,15 @@
+error: cannot find macro `btn` in this scope
+ --> tests/ui/scanner_daisyui_module_macro.rs:4:5
+  |
+4 |     btn!("Continue");
+  |     ^^^
+  |
+note: `btn` is imported here, but it is a module, not a macro
+ --> tests/ui/scanner_daisyui_module_macro.rs:1:5
+  |
+1 | use granola::daisyui::btn;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+help: consider importing this macro
+  |
+1 + use granola::btn;
+  |

@@ -41,7 +41,7 @@ use crate::{filters, prelude::*};
 ///   {{- custom_data_attrs -}}
 ///   {{- event_handlers }} />
 /// ```
-#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = InputRecipe)]
 pub struct HtmlInput<R: InputRecipe = ()> {

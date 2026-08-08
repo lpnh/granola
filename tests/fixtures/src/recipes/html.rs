@@ -16,7 +16,7 @@ pub fn page() -> HtmlDocument<Homemade> {
         .name("theme-color")
         .content("#1c140d")
         .media("(prefers-color-scheme: dark)");
-    let favicon = link!().rel("icon").href(FAVICON);
+    let favicon = html_link!().rel("icon").href(FAVICON);
     let title = title!("Oats &amp; Ends Café");
     let style = style!(super::style());
 

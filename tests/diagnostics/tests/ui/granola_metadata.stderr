@@ -1,0 +1,11 @@
+error: unknown formatter `xml`, expected `html` or `css`
+ --> tests/ui/granola_metadata.rs:4:11
+  |
+4 | #[granola(format = xml)]
+  |           ^^^^^^^^^^^^
+
+error: duplicate `format` option in #[granola(...)]
+ --> tests/ui/granola_metadata.rs:8:26
+  |
+8 | #[granola(format = html, format = css)]
+  |                          ^^^^^^

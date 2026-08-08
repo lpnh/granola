@@ -1,0 +1,5 @@
+error[E0433]: cannot find module or crate `other` in this scope
+ --> tests/ui/scanner_unrelated_macro.rs:2:5
+  |
+2 |     other::btn!("Continue");
+  |     ^^^^^ use of unresolved module or unlinked crate `other`

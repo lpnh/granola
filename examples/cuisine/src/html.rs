@@ -1,4 +1,4 @@
-use granola::{homemade::*, macros::*, prelude::*, recipes::*};
+use granola::{daisyui::btn, homemade::*, macros::*, prelude::*};
 
 use crate::{css::Stylesheet, handlers::Reset, snippets::snippets, utils::Palette};
 
@@ -6,18 +6,18 @@ pub fn home_page(palette: Palette) -> HtmlDocument<Homemade> {
     let menu = nav![
         h2!("What's On the Menu"),
         p!(
-            a!("Palette").href("/palette"),
+            link!("Palette").href("/palette"),
             " - generate a color palette",
         ),
         p!(
-            a!("Resets").href("/reset"),
+            link!("Resets").href("/reset"),
             " - compare CSS reset stylesheets",
         ),
     ];
 
     page(
         "cuisine example",
-        body!(header!(h1!("cuisine")), main!(menu)),
+        body!(header!(h1!("cuisine")), main_card(menu)),
     )
     .push_link(Stylesheet::Cuisine.link())
     .push_style(palette_style(palette))
@@ -25,12 +25,12 @@ pub fn home_page(palette: Palette) -> HtmlDocument<Homemade> {
 
 pub fn palette_page(palette: Palette) -> HtmlDocument<Homemade> {
     let swatches = div!(
-        swatch_div("background", &palette.color_background),
-        swatch_div("surface", &palette.color_surface),
-        swatch_div("border", &palette.color_border),
-        swatch_div("text", &palette.color_text),
+        swatch_div("base-100", &palette.base_100),
+        swatch_div("base-200", &palette.base_200),
+        swatch_div("base-300", &palette.base_300),
+        swatch_div("base-content", &palette.base_content),
     )
-    .class("swatches");
+    .class("flex flex-wrap justify-center gap-4 p-4 sm:p-8");
 
     example_page(
         "palette - cuisine example",
@@ -61,7 +61,11 @@ fn page(title: &'static str, body: HtmlBody) -> HtmlDocument<Homemade> {
     HtmlDocument::from(Homemade)
         .lang("en")
         .push_title(title!(title))
-        .body(body)
+        .body(body.class("flex flex-col items-center gap-8"))
+}
+
+fn main_card(content: impl Into<Bake>) -> HtmlMain {
+    main!(content).class("bg-base-200 border border-base-300 rounded-box p-4 sm:p-8 text-center")
 }
 
 fn example_page(
@@ -72,29 +76,40 @@ fn example_page(
 ) -> HtmlDocument<Homemade> {
     page(
         title,
-        body!(header!(back_link(), h1!(heading)), picker, main!(content)),
+        body!(
+            header!(back_link(), h1!(heading)),
+            picker,
+            main_card(content)
+        ),
     )
 }
 
+/// Overrides the base colors of the active daisyUI theme.
+///
+/// daisyUI declares its themes inside `@layer base`. This rule is unlayered, so
+/// it outranks every theme block regardless of selector specificity, including
+/// the built-in dark theme behind `prefers-color-scheme`.
 fn palette_style(palette: Palette) -> HtmlStyle {
     let css_rule = rule!(
         ":root",
         declarations_block![
-            (
-                CssCustomProperty::from(ColorBackground),
-                palette.color_background
-            ),
-            (CssCustomProperty::from(ColorSurface), palette.color_surface),
-            (CssCustomProperty::from(ColorBorder), palette.color_border),
-            (CssCustomProperty::from(ColorText), palette.color_text),
+            ("color-scheme", palette.color_scheme()),
+            (base_color("100"), palette.base_100),
+            (base_color("200"), palette.base_200),
+            (base_color("300"), palette.base_300),
+            (base_color("content"), palette.base_content),
         ]
     );
 
     style!(css_rule)
 }
 
+fn base_color(shade: &str) -> CssCustomProperty {
+    CssCustomProperty::new().name(format!("color-base-{shade}"))
+}
+
 fn back_link() -> HtmlNav {
-    nav!(a!("← demos").href("/"))
+    nav!(link!("← demos").href("/"))
 }
 
 fn reset_picker(current: Reset) -> HtmlForm {
@@ -131,24 +146,25 @@ fn palette_picker(palette_source: &str) -> HtmlForm {
             "Select a color: ",
             input!()
                 .id("select-palette")
+                .class("input bg-base-content")
                 .input_type(InputType::Color)
                 .name("bg_color")
                 .value(palette_source.to_string()),
         )
         .for_id("select-palette"),
-        HtmlButton::from(Btn).content("Update"),
+        HtmlButton::from(btn::Btn).content("Update"),
     )
-    .class("picker")
+    .class("grid gap-4")
     .method(FormMethod::Post)
     .action("/palette_endpoint")
 }
 
 fn swatch_div(name: &str, value: &str) -> HtmlDiv {
     let square = div!()
-        .class("square")
-        .style(format!("background: var(--color-{name});"));
-    let name = p!(name.to_string()).style(CssDeclaration::from(FontSize).content("0.9rem"));
+        .class("size-16 rounded-field shadow-sm")
+        .css_style(format!("background: var(--color-{name});"));
+    let name = p!(name.to_string()).class("text-xs");
     let val = code!(value.to_string());
 
-    div!(square, name, val).class("swatch")
+    div!(square, name, val).class("flex flex-col items-center gap-1")
 }

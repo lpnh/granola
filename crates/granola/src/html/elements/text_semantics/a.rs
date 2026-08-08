@@ -36,7 +36,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</a>
 /// ```
-#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = ARecipe, content = Bake)]
 pub struct HtmlA<R: ARecipe = ()> {

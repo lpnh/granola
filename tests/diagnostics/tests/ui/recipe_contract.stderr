@@ -1,0 +1,35 @@
+error: `Recipe` only supports structs with named fields
+ --> tests/ui/recipe_contract.rs:7:16
+  |
+7 | struct Tuple<R>(PhantomData<R>);
+  |                ^^^^^^^^^^^^^^^^
+
+error: `Recipe` only supports structs
+  --> tests/ui/recipe_contract.rs:11:6
+   |
+11 | enum NotAStruct<R> {
+   |      ^^^^^^^^^^
+
+error: the first field must be `_recipe: PhantomData<R>`
+  --> tests/ui/recipe_contract.rs:18:5
+   |
+18 |     marker: PhantomData<R>,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+error: the `_recipe` field must have type `PhantomData<R>`
+  --> tests/ui/recipe_contract.rs:24:14
+   |
+24 |     _recipe: (),
+   |              ^^
+
+error: #[recipe(content = ...)] requires a `content` field
+  --> tests/ui/recipe_contract.rs:29:1
+   |
+29 | #[recipe(name = ContentRecipe, content = String)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: `Recipe` supports exactly one type parameter, the recipe parameter
+  --> tests/ui/recipe_contract.rs:36:20
+   |
+36 | struct ExtraGeneric<'a, R> {
+   |                    ^^^^^^^

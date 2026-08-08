@@ -1,0 +1,11 @@
+error: missing #[recipe(...)] attribute
+ --> tests/ui/daisyui_requires_recipe_metadata.rs:4:8
+  |
+4 | struct MissingRecipe<R>(R);
+  |        ^^^^^^^^^^^^^
+
+error: `name` is required in #[recipe(name = ...)]
+ --> tests/ui/daisyui_requires_recipe_metadata.rs:7:1
+  |
+7 | #[recipe(content = ())]
+  | ^^^^^^^^^^^^^^^^^^^^^^^

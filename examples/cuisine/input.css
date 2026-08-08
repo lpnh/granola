@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@source not "./dependencies/tailwindcss";
+@source not "./dependencies/daisyui{,*}.mjs";
+
+@plugin "./dependencies/daisyui.mjs";
+@source "./granola/safelist";

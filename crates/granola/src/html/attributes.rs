@@ -339,7 +339,7 @@ pub trait HasGlobalAttrs: Sized {
     /// Presentational and formatting instructions.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/style)
-    fn style(mut self, value: impl Into<Bake>) -> Self {
+    fn css_style(mut self, value: impl Into<Bake>) -> Self {
         let new = value.into();
         let ga = self.global_attrs_mut();
         ga.style = Some(match ga.style.take() {

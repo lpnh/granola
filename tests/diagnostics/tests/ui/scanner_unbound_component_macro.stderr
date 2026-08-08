@@ -1,0 +1,10 @@
+error: cannot find macro `btn` in this scope
+ --> tests/ui/scanner_unbound_component_macro.rs:2:5
+  |
+2 |     btn!("Continue");
+  |     ^^^
+  |
+help: consider importing this macro
+  |
+1 + use granola::btn;
+  |

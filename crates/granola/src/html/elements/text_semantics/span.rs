@@ -40,7 +40,7 @@ use crate::{filters, prelude::*};
 ///   {{- event_handlers -}}
 /// >{{ content | kirei }}</span>
 /// ```
-#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
+#[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 #[recipe(name = SpanRecipe, content = Bake)]
 pub struct HtmlSpan<R: SpanRecipe = ()> {

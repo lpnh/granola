@@ -254,7 +254,7 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let link = link!().id("external_resource_link");
+/// let link = html_link!().id("external_resource_link");
 ///
 /// assert_eq!(link.bake(), r#"<link id="external_resource_link" />"#);
 /// ```
@@ -262,12 +262,12 @@ impl<R: LinkRecipe> HasLinkAttrs for HtmlLink<R> {
 /// ```rust
 /// use granola::{macros::*, prelude::*};
 ///
-/// let link = link!().href("fancy.css").rel("stylesheet");
+/// let link = html_link!().href("fancy.css").rel("stylesheet");
 ///
 /// assert_eq!(link.bake(), r#"<link href="fancy.css" rel="stylesheet" />"#);
 /// ```
 #[macro_export]
-macro_rules! link {
+macro_rules! html_link {
     () => {
         $crate::html::HtmlLink::new()
     };

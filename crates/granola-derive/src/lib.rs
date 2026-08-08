@@ -1,10 +1,12 @@
 use proc_macro::TokenStream;
-use proc_macro2::Span;
+use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{
-    DeriveInput, Ident, Token, Type,
+    Data, DeriveInput, Field, Fields, GenericParam, Ident, Token, Type,
     parse::{Parse, ParseStream},
     parse_macro_input,
+    punctuated::Punctuated,
+    spanned::Spanned,
 };
 
 /// Derive macro for templates.
@@ -16,16 +18,29 @@ use syn::{
 #[proc_macro_derive(Granola, attributes(granola))]
 pub fn granola_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
+
+    granola_derive_impl(&input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+
+fn granola_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     let name = &input.ident;
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
 
     let mut pretty_fn = quote! { ::granola::pretty::pretty };
+    let mut has_format = false;
     for attr in &input.attrs {
         if !attr.path().is_ident("granola") {
             continue;
         }
         attr.parse_nested_meta(|meta| {
             if meta.path.is_ident("format") {
+                if has_format {
+                    return Err(meta.error("duplicate `format` option in #[granola(...)]"));
+                }
+                has_format = true;
+
                 let format: Ident = meta.value()?.parse()?;
                 pretty_fn = match format.to_string().as_str() {
                     "html" => quote! { ::granola::pretty::pretty },
@@ -40,8 +55,7 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             } else {
                 Err(meta.error("unknown `granola` option, expected `format`"))
             }
-        })
-        .expect("failed to parse #[granola(...)]");
+        })?;
     }
 
     let bake_pretty = if cfg!(feature = "pretty") {
@@ -60,7 +74,7 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    quote! {
+    Ok(quote! {
         impl #impl_generics #name #ty_generics #where_clause {
             /// Renders the template into a new [`String`].
             ///
@@ -69,13 +83,13 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
             /// Panics if [`askama::Template::render`] returns an error. See
             /// [`askama::Error`].
             pub fn bake(&self) -> ::std::string::String {
-                self.render().unwrap()
+                ::askama::Template::render(self).unwrap()
             }
 
             #bake_pretty
         }
 
-        impl #impl_generics From<#name #ty_generics> for ::granola::oven::Bake
+        impl #impl_generics ::std::convert::From<#name #ty_generics> for ::granola::oven::Bake
         #where_clause
         {
             fn from(c: #name #ty_generics) -> Self {
@@ -84,23 +98,28 @@ pub fn granola_derive(input: TokenStream) -> TokenStream {
         }
 
         #[diagnostic::do_not_recommend]
-        impl #impl_generics From<&#name #ty_generics> for ::granola::oven::Bake
+        impl #impl_generics ::std::convert::From<&#name #ty_generics> for ::granola::oven::Bake
         #where_clause
         {
             fn from(c: &#name #ty_generics) -> Self {
                 ::granola::oven::Bake::new(c)
             }
         }
-    }
-    .into()
+    })
 }
 
 struct RecipeArgs {
     recipe_name: Ident,
     content_type: Option<Type>,
+    attr_span: Span,
 }
 
-impl Parse for RecipeArgs {
+struct ParsedRecipeArgs {
+    recipe_name: Option<Ident>,
+    content_type: Option<Type>,
+}
+
+impl Parse for ParsedRecipeArgs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let mut recipe_name: Option<Ident> = None;
         let mut content_type: Option<Type> = None;
@@ -111,8 +130,18 @@ impl Parse for RecipeArgs {
             input.parse::<Token![=]>()?;
 
             match key.to_string().as_str() {
-                "name" => recipe_name = Some(input.parse()?),
-                "content" => content_type = Some(input.parse()?),
+                "name" => {
+                    if recipe_name.is_some() {
+                        return Err(syn::Error::new(key_span, "duplicate `name` key"));
+                    }
+                    recipe_name = Some(input.parse()?);
+                }
+                "content" => {
+                    if content_type.is_some() {
+                        return Err(syn::Error::new(key_span, "duplicate `content` key"));
+                    }
+                    content_type = Some(input.parse()?);
+                }
                 _ => return Err(syn::Error::new(key_span, format!("unknown key `{key}`"))),
             }
 
@@ -121,19 +150,264 @@ impl Parse for RecipeArgs {
             }
         }
 
-        Ok(RecipeArgs {
-            recipe_name: recipe_name.ok_or_else(|| {
-                syn::Error::new(
-                    Span::call_site(),
-                    "`name` is required in #[recipe(name = ...)]",
-                )
-            })?,
+        Ok(Self {
+            recipe_name,
             content_type,
         })
     }
 }
 
+fn parse_recipe_args(input: &DeriveInput) -> syn::Result<RecipeArgs> {
+    let mut recipe_attrs = input
+        .attrs
+        .iter()
+        .filter(|attr| attr.path().is_ident("recipe"));
+    let recipe_attr = recipe_attrs
+        .next()
+        .ok_or_else(|| syn::Error::new_spanned(&input.ident, "missing #[recipe(...)] attribute"))?;
+    if let Some(duplicate) = recipe_attrs.next() {
+        return Err(syn::Error::new_spanned(
+            duplicate,
+            "duplicate #[recipe(...)] attribute",
+        ));
+    }
+
+    let args: ParsedRecipeArgs = recipe_attr.parse_args()?;
+    let recipe_name = args.recipe_name.ok_or_else(|| {
+        syn::Error::new_spanned(recipe_attr, "`name` is required in #[recipe(name = ...)]")
+    })?;
+
+    Ok(RecipeArgs {
+        recipe_name,
+        content_type: args.content_type,
+        attr_span: recipe_attr.span(),
+    })
+}
+
+fn recipe_type_parameter(input: &DeriveInput, derive_name: &str) -> syn::Result<Ident> {
+    input
+        .generics
+        .type_params()
+        .next()
+        .map(|parameter| parameter.ident.clone())
+        .ok_or_else(|| {
+            syn::Error::new_spanned(
+                &input.ident,
+                format!("`{derive_name}` requires a recipe type parameter"),
+            )
+        })
+}
+
+fn recipe_type_parameter_for_recipe(input: &DeriveInput) -> syn::Result<Ident> {
+    let mut parameters = input.generics.params.iter();
+    let first = parameters.next();
+
+    match (first, parameters.next()) {
+        (Some(GenericParam::Type(parameter)), None) => Ok(parameter.ident.clone()),
+        (None, _) => Err(syn::Error::new_spanned(
+            &input.ident,
+            "`Recipe` requires one recipe type parameter",
+        )),
+        _ => Err(syn::Error::new_spanned(
+            &input.generics,
+            "`Recipe` supports exactly one type parameter, the recipe parameter",
+        )),
+    }
+}
+
+fn recipe_impl_generics(
+    input: &DeriveInput,
+    recipe_type_param: &Ident,
+    recipe_trait: &Ident,
+) -> syn::Generics {
+    let mut generics = input.generics.clone();
+
+    for parameter in &mut generics.params {
+        if let GenericParam::Type(parameter) = parameter
+            && parameter.ident == *recipe_type_param
+        {
+            parameter.bounds.push(syn::parse_quote!(#recipe_trait));
+            break;
+        }
+    }
+
+    generics
+}
+
+fn recipe_named_fields(input: &DeriveInput) -> syn::Result<&Punctuated<Field, Token![,]>> {
+    match &input.data {
+        Data::Struct(data) => match &data.fields {
+            Fields::Named(fields) => Ok(&fields.named),
+            Fields::Unnamed(fields) => Err(syn::Error::new_spanned(
+                fields,
+                "`Recipe` only supports structs with named fields",
+            )),
+            Fields::Unit => Err(syn::Error::new_spanned(
+                &input.ident,
+                "`Recipe` only supports structs with named fields",
+            )),
+        },
+        _ => Err(syn::Error::new_spanned(
+            &input.ident,
+            "`Recipe` only supports structs",
+        )),
+    }
+}
+
+fn is_phantom_data_of(ty: &Type, type_param: &Ident) -> bool {
+    let Type::Path(type_path) = ty else {
+        return false;
+    };
+    let Some(segment) = type_path.path.segments.last() else {
+        return false;
+    };
+    if segment.ident != "PhantomData" {
+        return false;
+    }
+    let syn::PathArguments::AngleBracketed(arguments) = &segment.arguments else {
+        return false;
+    };
+    let Some(syn::GenericArgument::Type(Type::Path(argument))) = arguments.args.first() else {
+        return false;
+    };
+
+    arguments.args.len() == 1 && argument.qself.is_none() && argument.path.is_ident(type_param)
+}
+
+fn validate_recipe_layout(
+    named_fields: &Punctuated<Field, Token![,]>,
+    recipe_type_param: &Ident,
+    args: &RecipeArgs,
+) -> syn::Result<()> {
+    let first = named_fields.first().ok_or_else(|| {
+        syn::Error::new(
+            args.attr_span,
+            "`Recipe` requires an `_recipe: PhantomData<R>` field",
+        )
+    })?;
+    if first.ident.as_ref().is_none_or(|ident| ident != "_recipe") {
+        return Err(syn::Error::new_spanned(
+            first,
+            "the first field must be `_recipe: PhantomData<R>`",
+        ));
+    }
+    if !is_phantom_data_of(&first.ty, recipe_type_param) {
+        return Err(syn::Error::new_spanned(
+            &first.ty,
+            "the `_recipe` field must have type `PhantomData<R>`",
+        ));
+    }
+    if args.content_type.is_some()
+        && !named_fields
+            .iter()
+            .any(|field| field.ident.as_ref().is_some_and(|ident| ident == "content"))
+    {
+        return Err(syn::Error::new(
+            args.attr_span,
+            "#[recipe(content = ...)] requires a `content` field",
+        ));
+    }
+
+    Ok(())
+}
+
+/// Derive macro for daisyUI capabilities on recipe-backed elements.
+#[proc_macro_derive(DaisyUI, attributes(recipe))]
+pub fn daisyui_derive(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+
+    daisyui_derive_impl(&input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+
+fn daisyui_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
+    parse_recipe_args(input)?;
+    let recipe_type_param = recipe_type_parameter(input, "DaisyUI")?;
+
+    const CAPABILITIES: [(&str, &str, &str, &str); 7] = [
+        ("HasStyle", "DaisyUIStyle", "ComponentStyle", "Style"),
+        (
+            "HasBehavior",
+            "DaisyUIBehavior",
+            "ComponentBehavior",
+            "Behavior",
+        ),
+        ("HasColor", "DaisyUIColor", "ComponentColor", "Color"),
+        ("HasSize", "DaisyUISize", "ComponentSize", "Size"),
+        (
+            "HasPlacement",
+            "DaisyUIPlacement",
+            "ComponentPlacement",
+            "Placement",
+        ),
+        (
+            "HasDirection",
+            "DaisyUIDirection",
+            "ComponentDirection",
+            "Direction",
+        ),
+        (
+            "HasModifier",
+            "DaisyUIModifier",
+            "ComponentModifier",
+            "Modifier",
+        ),
+    ];
+
+    let capability_impls = CAPABILITIES.map(
+        |(marker_trait, capability_trait, capability_type, marker_type)| {
+            let marker_trait = format_ident!("{marker_trait}");
+            let capability_trait = format_ident!("{capability_trait}");
+            daisyui_capability_impl(
+                input,
+                &recipe_type_param,
+                quote!(::granola::daisyui::#marker_trait),
+                quote!(::granola::daisyui::#capability_trait),
+                format_ident!("{capability_type}"),
+                format_ident!("{marker_type}"),
+            )
+        },
+    );
+
+    Ok(quote! {
+        #(#capability_impls)*
+    })
+}
+
+fn daisyui_capability_impl(
+    input: &DeriveInput,
+    recipe_type_param: &Ident,
+    marker_trait: TokenStream2,
+    capability_trait: TokenStream2,
+    capability_type: Ident,
+    marker_type: Ident,
+) -> TokenStream2 {
+    let struct_name = &input.ident;
+    let mut generics = input.generics.clone();
+
+    for parameter in &mut generics.params {
+        if let GenericParam::Type(parameter) = parameter
+            && parameter.ident == *recipe_type_param
+        {
+            parameter.bounds.push(syn::parse_quote!(#marker_trait));
+            break;
+        }
+    }
+
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
+    quote! {
+        impl #impl_generics #capability_trait for #struct_name #ty_generics #where_clause {
+            type #capability_type = <#recipe_type_param as #marker_trait>::#marker_type;
+        }
+    }
+}
+
 /// Derive macro for recipes.
+///
+/// Requires a named-field struct with exactly one type parameter, the recipe
+/// parameter, and a leading `_recipe: PhantomData<R>` field.
 ///
 /// For a struct `Foo<R>`, it generates:
 /// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
@@ -155,42 +429,32 @@ impl Parse for RecipeArgs {
 #[proc_macro_derive(Recipe, attributes(recipe))]
 pub fn recipe_derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
+
+    recipe_derive_impl(&input)
+        .unwrap_or_else(syn::Error::into_compile_error)
+        .into()
+}
+
+fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     let struct_name = &input.ident;
 
-    let recipe_attr = input
-        .attrs
-        .iter()
-        .find(|a| a.path().is_ident("recipe"))
-        .expect("missing #[recipe(...)] attribute");
-    let args: RecipeArgs = recipe_attr
-        .parse_args()
-        .expect("failed to parse #[recipe(...)]");
+    let args = parse_recipe_args(input)?;
 
     let trait_name = &args.recipe_name;
-    let default_content_type = args.content_type;
+    let default_content_type = args.content_type.as_ref();
     let has_content = default_content_type.is_some();
 
-    let type_param = input
-        .generics
-        .type_params()
-        .next()
-        .expect("Recipe requires a type parameter")
-        .ident
-        .clone();
-    let (_, ty_generics, where_clause) = input.generics.split_for_impl();
+    let type_param = recipe_type_parameter_for_recipe(input)?;
+    let named_fields = recipe_named_fields(input)?;
+    validate_recipe_layout(named_fields, &type_param, &args)?;
 
-    let named_fields = match &input.data {
-        syn::Data::Struct(data) => match &data.fields {
-            syn::Fields::Named(f) => &f.named,
-            _ => panic!("Recipe only supports named fields"),
-        },
-        _ => panic!("Recipe only supports structs"),
-    };
-
-    let first = named_fields.first().expect("struct has no fields");
-    if first.ident.as_ref().map(|i| i != "_recipe").unwrap_or(true) {
-        panic!("first field must be `_recipe: PhantomData<...>`");
-    }
+    let recipe_generics = recipe_impl_generics(input, &type_param, trait_name);
+    let (impl_generics, ty_generics, where_clause) = recipe_generics.split_for_impl();
+    let mut content_generics = recipe_generics.clone();
+    content_generics.params.push(syn::parse_quote!(
+        __IntoContent: ::std::convert::Into<#type_param::Content>
+    ));
+    let (content_impl_generics, _, content_where_clause) = content_generics.split_for_impl();
 
     // Every field except the leading `_recipe` marker and `content` (threaded
     // separately below). These drive the per-field recipe hooks.
@@ -202,7 +466,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
     let field_idents: Vec<Ident> = other_fields
         .iter()
-        .map(|f| f.ident.clone().unwrap())
+        .filter_map(|field| field.ident.clone())
         .collect();
     let field_types: Vec<&Type> = other_fields.iter().map(|f| &f.ty).collect();
     let method_names: Vec<Ident> = field_idents
@@ -219,7 +483,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     // `bake_content` is emitted required (no default body) so a recipe that
     // overrides `type Content` must supply the map-back itself, surfacing the
     // gap on the author's own impl rather than downstream at `bake_recipe`.
-    let trait_content = if let Some(ref content_type) = default_content_type {
+    let trait_content = if let Some(content_type) = default_content_type {
         quote! {
             type Content:
                 ::askama::FastWritable
@@ -243,7 +507,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
 
     // `()` impl: default content type, identity bake-back.
-    let unit_content = if let Some(ref content_type) = default_content_type {
+    let unit_content = if let Some(content_type) = default_content_type {
         quote! {
             type Content = #content_type;
 
@@ -294,7 +558,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     // HTML
     let global_attrs_impl = if has_field("global_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::html::HasGlobalAttrs
+            impl #impl_generics ::granola::html::HasGlobalAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn global_attrs_mut(&mut self) -> &mut ::granola::html::GlobalAttrs {
@@ -307,7 +571,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let global_aria_attrs_impl = if has_field("global_aria_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::html::HasGlobalAriaAttrs
+            impl #impl_generics ::granola::html::HasGlobalAriaAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn global_aria_attrs_mut(&mut self) -> &mut ::granola::html::GlobalAriaAttrs {
@@ -320,7 +584,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let custom_data_attrs_impl = if has_field("custom_data_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::html::HasCustomDataAttrs
+            impl #impl_generics ::granola::html::HasCustomDataAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn custom_data_attrs_mut(&mut self) -> &mut ::granola::html::CustomDataAttrs {
@@ -333,7 +597,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let event_handlers_impl = if has_field("event_handlers") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::html::HasEventHandlers
+            impl #impl_generics ::granola::html::HasEventHandlers
                 for #struct_name #ty_generics #where_clause
             {
                 fn event_handlers_mut(&mut self) -> &mut ::granola::html::EventHandlers {
@@ -348,7 +612,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     // SVG
     let global_svg_attrs_impl = if has_field("global_svg_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::svg::HasGlobalSvgAttrs
+            impl #impl_generics ::granola::svg::HasGlobalSvgAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn global_svg_attrs_mut(&mut self) -> &mut ::granola::svg::GlobalSvgAttrs {
@@ -361,7 +625,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let paint_attrs_impl = if has_field("paint_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::svg::HasPaintAttrs
+            impl #impl_generics ::granola::svg::HasPaintAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn paint_attrs_mut(&mut self) -> &mut ::granola::svg::PaintAttrs {
@@ -374,7 +638,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let shape_attrs_impl = if has_field("shape_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::svg::HasShapeAttrs
+            impl #impl_generics ::granola::svg::HasShapeAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn shape_attrs_mut(&mut self) -> &mut ::granola::svg::ShapeAttrs {
@@ -387,7 +651,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
     };
     let text_content_attrs_impl = if has_field("text_content_attrs") {
         quote! {
-            impl<#type_param: #trait_name> ::granola::svg::HasTextContentAttrs
+            impl #impl_generics ::granola::svg::HasTextContentAttrs
                 for #struct_name #ty_generics #where_clause
             {
                 fn text_content_attrs_mut(&mut self) -> &mut ::granola::svg::TextContentAttrs {
@@ -401,9 +665,9 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
     let from_recipe_and_content = if has_content {
         quote! {
-            impl<#type_param: #trait_name, __IntoContent: ::std::convert::Into<#type_param::Content>>
+            impl #content_impl_generics
                 ::std::convert::From<(#type_param, __IntoContent)>
-                for #struct_name #ty_generics #where_clause
+                for #struct_name #ty_generics #content_where_clause
             {
                 fn from((_recipe, content): (#type_param, __IntoContent)) -> Self {
                     Self::from_cookbook().content(content)
@@ -423,7 +687,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
         }
     };
 
-    quote! {
+    Ok(quote! {
         pub trait #trait_name:
             ::std::default::Default
             + ::std::clone::Clone
@@ -454,7 +718,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             #new_method
         }
 
-        impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
+        impl #impl_generics #struct_name #ty_generics #where_clause {
             #content_method
 
             pub fn from_cookbook() -> Self {
@@ -467,7 +731,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<#type_param: #trait_name> ::std::convert::From<#type_param>
+        impl #impl_generics ::std::convert::From<#type_param>
             for #struct_name #ty_generics #where_clause
         {
             fn from(_recipe: #type_param) -> Self {
@@ -477,7 +741,7 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 
         #from_recipe_and_content
 
-        impl<#type_param: #trait_name> #struct_name #ty_generics #where_clause {
+        impl #impl_generics #struct_name #ty_generics #where_clause {
             /// Converts this element into its recipe-free form, replacing
             /// the recipe type parameter with its default.
             pub fn bake_recipe(self) -> #struct_name<()> {
@@ -488,6 +752,5 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
                 }
             }
         }
-    }
-    .into()
+    })
 }

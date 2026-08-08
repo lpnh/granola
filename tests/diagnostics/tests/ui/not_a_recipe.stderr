@@ -11,13 +11,13 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
   | ^^^^^^^^^^^^^^^^^
   = help: the following other types implement trait `ButtonRecipe`:
             ()
-            Btn
             BtnGhost
             BtnPrimary
             BtnSquare
             FormmethodDialog
             FormmethodGet
             FormmethodPost
+            Tip
           and $N others
 note: required by a bound in `granola::html::HtmlButton`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
@@ -38,13 +38,13 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
   | ^^^^^^^^^^^^^^^^^
   = help: the following other types implement trait `ButtonRecipe`:
             ()
-            Btn
             BtnGhost
             BtnPrimary
             BtnSquare
             FormmethodDialog
             FormmethodGet
             FormmethodPost
+            Tip
           and $N others
 note: required by a bound in `granola::html::HtmlButton`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
@@ -65,19 +65,19 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
   | ^^^^^^^^^^^^^^^^^
   = help: the following other types implement trait `ButtonRecipe`:
             ()
-            Btn
             BtnGhost
             BtnPrimary
             BtnSquare
             FormmethodDialog
             FormmethodGet
             FormmethodPost
+            Tip
           and $N others
 note: required by a bound in `granola::html::HtmlButton::<R>::from_cookbook`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
   |
-  | #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
+  | #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
   |                                                               ------ required by a bound in this associated function
-  | #[template(ext = "html", in_doc = true, escape = "none")]
-  | #[recipe(name = ButtonRecipe, content = Bake)]
-  |                 ^^^^^^^^^^^^ required by this bound in `HtmlButton::<R>::from_cookbook`
+...
+  | pub struct HtmlButton<R: ButtonRecipe = ()> {
+  |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton::<R>::from_cookbook`

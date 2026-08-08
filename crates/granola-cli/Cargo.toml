@@ -1,0 +1,17 @@
+[package]
+name = "granola-cli"
+version.workspace = true
+description = "CLI tooling for granola's Tailwind CSS + daisyUI workflow"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "granola"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+
+[lints]
+workspace = true

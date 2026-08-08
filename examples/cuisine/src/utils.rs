@@ -1,15 +1,30 @@
 use std::str::FromStr;
 
+/// A generated daisyUI base color scale.
+///
+/// The base colors are the ones daisyUI uses for the bulk of a page: `base-100`
+/// for blank backgrounds, `base-200` and `base-300` for successive elevation,
+/// and `base-content` for foreground text.
 #[derive(Clone)]
 pub struct Palette {
     pub source: String,
-    pub color_background: String,
-    pub color_surface: String,
-    pub color_border: String,
-    pub color_text: String,
+    pub base_100: String,
+    pub base_200: String,
+    pub base_300: String,
+    pub base_content: String,
+    is_dark: bool,
 }
 
 impl Palette {
+    /// The `color-scheme` matching the generated colors.
+    ///
+    /// daisyUI declares this per theme. Replacing the theme's base colors at
+    /// runtime leaves it stale, so it has to be replaced alongside them to keep
+    /// browser-provided UI in step.
+    pub fn color_scheme(&self) -> &'static str {
+        if self.is_dark { "dark" } else { "light" }
+    }
+
     pub fn from_hex(hex: &str) -> Option<Self> {
         let base_srgb: sRGB = hex.parse().ok()?;
         let base_linear_rgb = LinearRGB::from(base_srgb);
@@ -26,25 +41,26 @@ impl Palette {
 
         Some(Self {
             source: hex.to_string(),
-            color_background: base_oklch.to_css(),
-            color_surface: Oklch {
+            base_100: base_oklch.to_css(),
+            base_200: Oklch {
                 l: (base_oklch.l + step).clamp(0.0, 1.0),
                 c: base_oklch.c + 0.01,
                 h: base_oklch.h,
             }
             .to_css(),
-            color_border: Oklch {
+            base_300: Oklch {
                 l: (base_oklch.l + step * 2.0).clamp(0.0, 1.0),
                 c: base_oklch.c + 0.02,
                 h: base_oklch.h,
             }
             .to_css(),
-            color_text: Oklch {
+            base_content: Oklch {
                 l: if is_dark { 0.93 } else { 0.15 },
                 c: base_oklch.c * 0.5,
                 h: base_oklch.h,
             }
             .to_css(),
+            is_dark,
         })
     }
 }

@@ -248,10 +248,10 @@ impl HtmlDiv<Tooltip> {
     }
 }
 
-impl HasPlacement for HtmlSpan<Tooltip> {
+impl HasTooltipPlacement for HtmlSpan<Tooltip> {
     const COMPONENT_PREFIX: &'static str = "tooltip";
 }
-impl HasPlacement for HtmlDiv<Tooltip> {
+impl HasTooltipPlacement for HtmlDiv<Tooltip> {
     const COMPONENT_PREFIX: &'static str = "tooltip";
 }
 
@@ -564,7 +564,7 @@ fn tip_bubble_starting_style() -> Bake {
 ///     r#"<div class="tooltip tooltip-left"><span class="tip-bubble" role="tooltip"></span></div>"#
 /// );
 /// ```
-pub trait HasPlacement: HasGlobalAttrs + Sized {
+pub trait HasTooltipPlacement: HasGlobalAttrs + Sized {
     const COMPONENT_PREFIX: &'static str;
 
     fn placement(self, placement: Placement) -> Self {

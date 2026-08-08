@@ -1,0 +1,10 @@
+error[E0433]: cannot find type `HtmlButton` in this scope
+ --> tests/ui/scanner_missing_html_button.rs:4:18
+  |
+4 |     let button = HtmlButton::from(Btn);
+  |                  ^^^^^^^^^^ use of undeclared type `HtmlButton`
+  |
+help: consider importing this struct
+  |
+1 + use granola::prelude::HtmlButton;
+  |

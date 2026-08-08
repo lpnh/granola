@@ -1,7 +1,8 @@
+use std::borrow::Cow;
 use std::sync::LazyLock;
 use strum::IntoEnumIterator;
 
-use granola::{homemade::Garnish, macros::*, prelude::*, recipes::*};
+use granola::{prelude::*, recipes::*};
 
 /// A stylesheet paired with its content-hashed URL.
 ///
@@ -12,14 +13,13 @@ use granola::{homemade::Garnish, macros::*, prelude::*, recipes::*};
 ///
 /// See: [Cache Busting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching#cache_busting)
 struct BakedStylesheet {
-    body: String,
+    body: Cow<'static, str>,
     url: String,
 }
 
 impl BakedStylesheet {
-    fn new<R: StylesheetRecipe>(name: &str, baked_stylesheet: CssStylesheet<R>) -> Self {
-        let body = baked_stylesheet.bake();
-
+    fn new(name: &str, body: impl Into<Cow<'static, str>>) -> Self {
+        let body = body.into();
         let url = format!("/static/{name}.{:016x}.css", seahash::hash(body.as_bytes()));
 
         Self { body, url }
@@ -67,68 +67,17 @@ impl Stylesheet {
 }
 
 static CUISINE: LazyLock<BakedStylesheet> =
-    LazyLock::new(|| BakedStylesheet::new("cuisine", cuisine_stylesheet()));
+    LazyLock::new(|| BakedStylesheet::new("cuisine", include_str!("../output.css")));
 static ANDY_BELL: LazyLock<BakedStylesheet> =
-    LazyLock::new(|| BakedStylesheet::new("andy_bell", CssStylesheet::from(AndyBell)));
-static JOSH_W_COMEAU: LazyLock<BakedStylesheet> =
-    LazyLock::new(|| BakedStylesheet::new("josh_w_comeau", CssStylesheet::from(JoshWComeau)));
+    LazyLock::new(|| BakedStylesheet::new("andy_bell", CssStylesheet::from(AndyBell).bake()));
+static JOSH_W_COMEAU: LazyLock<BakedStylesheet> = LazyLock::new(|| {
+    BakedStylesheet::new("josh_w_comeau", CssStylesheet::from(JoshWComeau).bake())
+});
 static MODERN_NORMALIZE: LazyLock<BakedStylesheet> = LazyLock::new(|| {
-    BakedStylesheet::new("modern_normalize", CssStylesheet::from(ModernNormalize))
+    BakedStylesheet::new(
+        "modern_normalize",
+        CssStylesheet::from(ModernNormalize).bake(),
+    )
 });
 static PREFLIGHT: LazyLock<BakedStylesheet> =
-    LazyLock::new(|| BakedStylesheet::new("preflight", CssStylesheet::from(Preflight)));
-
-fn cuisine_stylesheet() -> CssStylesheet<Garnish> {
-    CssStylesheet::from(Garnish).push(
-        rules![
-            ("body",
-            declarations_block![
-                (BackgroundColor, "var(--color-background)"),
-                (Color, "var(--color-text)"),
-                (Display, "flex"),
-                (FlexDirection, "column"),
-                (AlignItems, "center"),
-                (Gap, "2rem"),
-            ]),
-            ("main",
-            declarations_block![
-                (Background, "var(--color-surface)"),
-                (Border, "1px solid var(--color-border)"),
-                (BorderRadius, "1em"),
-                (Padding, "2rem"),
-                (TextAlign, "center"),
-            ]),
-            (".swatches",
-            declarations_block![
-                (Display, "flex"),
-                (Gap, "1rem"),
-                (JustifyContent, "center"),
-                (FlexWrap, "wrap"),
-                (Padding, "2rem"),
-            ]),
-            (".swatch",
-            declarations_block![
-                (Display, "flex"),
-                (FlexDirection, "column"),
-                (AlignItems, "center"),
-                (Gap, "0.25rem"),
-            ]),
-            (".square",
-            declarations_block![
-                (BorderRadius, ".25em"),
-                (Width, "64px"),
-                (Height, "64px"),
-                (BoxShadow, "0 0 0 1px color-mix(in oklab, var(--color-text) 10%, #0000), 0 1px color-mix(in oklab, var(--color-text) 10%, #0000) inset, 0 -1px oklch(100% 0 0 / 0.1) inset"),
-            ]),
-            (
-                simple_selector!(".swatch").descendant("p"),
-                declarations_block![(FontSize, "0.75rem")]
-            ),
-            (".picker",
-            declarations_block![
-                (Display, "grid"),
-                (Gap, "1rem"),
-            ])
-        ]
-    )
-}
+    LazyLock::new(|| BakedStylesheet::new("preflight", CssStylesheet::from(Preflight).bake()));
