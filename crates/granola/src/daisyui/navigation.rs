@@ -1,6 +1,8 @@
 // pub mod breadcrumbs;
 // pub mod dock;
 pub mod link;
+pub use link::Link;
+// pub mod megamenu;
 // pub mod menu;
 // pub mod navbar;
 // pub mod pagination;

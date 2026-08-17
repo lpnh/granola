@@ -21,21 +21,18 @@ const GRANOLA: &str = "granola";
 const DAISYUI: &str = "daisyui";
 
 fn find_component(name: &str) -> Option<&'static Component> {
-    COMPONENTS
-        .iter()
-        .find(|c| c.module == name || c.type_name == name)
+    COMPONENTS.iter().find(|c| {
+        c.module == name || c.type_name == name || c.parts.iter().any(|p| p.type_name == name)
+    })
 }
 
 fn class_for_component_path(path: &[&str]) -> Option<&'static str> {
     match path {
         [module, rest @ ..] => {
-            if let Some(component) = find_component(module) {
-                if rest.is_empty() {
-                    return Some(component.base_class);
-                }
-                if let Some(class) = component.class_for_path(rest) {
-                    return Some(class);
-                }
+            if let Some(component) = find_component(module)
+                && let Some(class) = component.class_for_path(rest)
+            {
+                return Some(class);
             }
             COMPONENTS.iter().find_map(|c| c.class_for_path(path))
         }
@@ -46,8 +43,11 @@ fn class_for_component_path(path: &[&str]) -> Option<&'static str> {
 fn class_for_macro(name: &str) -> Option<&'static str> {
     COMPONENTS
         .iter()
-        .find(|c| c.module == name)
-        .map(|c| c.base_class)
+        .flat_map(|c| {
+            std::iter::once((c.macro_name, c.base_class))
+                .chain(c.parts.iter().map(|p| (p.macro_name, p.class_name)))
+        })
+        .find_map(|(macro_name, class_name)| (macro_name == name).then_some(class_name))
 }
 
 /// Scans one Rust source file or the Rust source files below a directory.
@@ -682,5 +682,17 @@ mod tests {
         );
         assert_eq!(class_for_macro("btn"), Some("btn"));
         assert_eq!(class_for_macro("link"), Some("link"));
+
+        assert_eq!(class_for_component_path(&["Card"]), Some("card"));
+        assert_eq!(class_for_component_path(&["card", "Card"]), Some("card"));
+        assert_eq!(
+            class_for_component_path(&["card", "CardBody"]),
+            Some("card-body")
+        );
+        assert_eq!(class_for_component_path(&["CardBody"]), Some("card-body"));
+        assert_eq!(class_for_macro("card"), Some("card"));
+        assert_eq!(class_for_macro("card_body"), Some("card-body"));
+        assert_eq!(class_for_macro("card_title"), Some("card-title"));
+        assert_eq!(class_for_macro("card_actions"), Some("card-actions"));
     }
 }

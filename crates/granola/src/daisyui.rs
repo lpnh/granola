@@ -16,8 +16,17 @@ pub use traits::*;
 pub struct Component {
     pub module: &'static str,     // (e.g. `"btn"`, `"link"`)
     pub type_name: &'static str,  // (e.g. `"Btn"`, `"Link"`)
+    pub macro_name: &'static str, // (e.g. `"btn"`, `"link"`)
     pub base_class: &'static str, // (e.g. `"btn"`, `"link"`)
+    pub parts: &'static [ComponentPart],
     pub categories: &'static [ComponentCategory],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ComponentPart {
+    pub type_name: &'static str,  // (e.g. `"CardBody"`, `"CardTitle"`)
+    pub macro_name: &'static str, // (e.g. `"card_body"`, `"card_title"`)
+    pub class_name: &'static str, // (e.g. `"card-body"`, `"card-title"`)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -36,7 +45,12 @@ impl Component {
     // Resolves a path relative to this component.
     pub fn class_for_path(&self, path: &[&str]) -> Option<&'static str> {
         match path {
-            [type_name] if *type_name == self.type_name => Some(self.base_class),
+            [name] if *name == self.type_name || *name == self.module => Some(self.base_class),
+            [part_name] => self
+                .parts
+                .iter()
+                .find(|p| p.type_name == *part_name)
+                .map(|p| p.class_name),
             [category, variant] => {
                 let cat = self.categories.iter().find(|c| c.name == *category)?;
                 let var = cat.variants.iter().find(|v| v.variant == *variant)?;
@@ -93,24 +107,24 @@ macro_rules! define_daisyui_category {
 
     // Shared category presets
     ($component:ident, $base:literal, Color) => {
-        define_daisyui_category!($component, Color, $base, {
-            Neutral => "neutral",
-            Primary => "primary",
-            Secondary => "secondary",
-            Accent => "accent",
-            Info => "info",
-            Success => "success",
-            Warning => "warning",
-            Error => "error",
+        define_daisyui_category!($component, Color, {
+            Neutral => concat!($base, "-neutral"),
+            Primary => concat!($base, "-primary"),
+            Secondary => concat!($base, "-secondary"),
+            Accent => concat!($base, "-accent"),
+            Info => concat!($base, "-info"),
+            Success => concat!($base, "-success"),
+            Warning => concat!($base, "-warning"),
+            Error => concat!($base, "-error"),
         });
     };
     ($component:ident, $base:literal, Size) => {
-        define_daisyui_category!($component, Size, $base, {
-            Xs => "xs",
-            Sm => "sm",
-            Md => "md",
-            Lg => "lg",
-            Xl => "xl",
+        define_daisyui_category!($component, Size, {
+            Xs => concat!($base, "-xs"),
+            Sm => concat!($base, "-sm"),
+            Md => concat!($base, "-md"),
+            Lg => concat!($base, "-lg"),
+            Xl => concat!($base, "-xl"),
         });
     };
     ($component:ident, $base:literal, $category:ident) => {
@@ -122,7 +136,7 @@ macro_rules! define_daisyui_category {
     };
 
     // Component category definition
-    ($component:ident, $category:ident, $base:literal, { $($variant:ident => $suffix:literal),+ $(,)? }) => {
+    ($component:ident, $category:ident, { $($variant:ident => $class_name:expr),+ $(,)? }) => {
         #[derive(Debug, Clone, Copy, PartialEq, Eq)]
         pub enum $category {
             $($variant),+
@@ -133,7 +147,7 @@ macro_rules! define_daisyui_category {
             pub const VARIANTS: &[$crate::daisyui::ComponentVariant] = &[
                 $($crate::daisyui::ComponentVariant {
                     variant: stringify!($variant),
-                    class_name: concat!($base, "-", $suffix),
+                    class_name: $class_name,
                 }),+
             ];
             pub const CATEGORY: $crate::daisyui::ComponentCategory = $crate::daisyui::ComponentCategory {
@@ -155,11 +169,14 @@ macro_rules! define_daisyui_category {
 macro_rules! daisyui_component {
     (
         $component:ident {
+            module: $module:literal;
+            macro: $macro_name:literal;
             base: $base:literal;
+            parts: [$( $part:ident { macro: $part_macro:literal, class: $part_class:literal } ),* $(,)?];
             shared: [$( $shared_category:ident ),* $(,)?];
             $(
                 $category:ident {
-                    $($variant:ident => $suffix:literal),+ $(,)?
+                    $($variant:ident => $class_name:expr),+ $(,)?
                 }
             )*
         }
@@ -167,12 +184,20 @@ macro_rules! daisyui_component {
         pub(crate) const BASE_CLASS: &str = $base;
 
         $(define_daisyui_category!($component, $base, $shared_category);)*
-        $(define_daisyui_category!($component, $category, $base, { $($variant => $suffix),+ });)*
+        $(define_daisyui_category!($component, $category, { $($variant => $class_name),+ });)*
 
         pub const COMPONENT: $crate::daisyui::Component = $crate::daisyui::Component {
-            module: $base,
+            module: $module,
             type_name: stringify!($component),
+            macro_name: $macro_name,
             base_class: BASE_CLASS,
+            parts: &[
+                $($crate::daisyui::ComponentPart {
+                    type_name: stringify!($part),
+                    macro_name: $part_macro,
+                    class_name: $part_class,
+                },)*
+            ],
             categories: &[
                 $($shared_category::CATEGORY,)*
                 $($category::CATEGORY,)*
@@ -182,12 +207,12 @@ macro_rules! daisyui_component {
 }
 
 mod actions;
+mod data_display;
 mod navigation;
 
-pub use actions::btn;
-pub use actions::btn::Btn;
-pub use navigation::link;
-pub use navigation::link::Link;
+pub use actions::*;
+pub use data_display::*;
+pub use navigation::*;
 
 #[cfg(test)]
 mod tests {
@@ -222,6 +247,18 @@ mod tests {
             link.bake(),
             r#"<a class="link link-primary link-hover"></a>"#
         );
+
+        let card = HtmlDiv::from(Card)
+            .size(card::Size::Sm)
+            .style(card::Style::Border)
+            .modifier(card::Modifier::Side);
+        assert_eq!(
+            card.bake(),
+            r#"<div class="card card-sm card-border card-side"></div>"#
+        );
+
+        let card_img = HtmlDiv::from(Card).modifier(card::Modifier::ImageFull);
+        assert_eq!(card_img.bake(), r#"<div class="card image-full"></div>"#);
 
         assert_eq!(HtmlInput::from(Btn).bake(), r#"<input class="btn" />"#);
         assert_eq!(

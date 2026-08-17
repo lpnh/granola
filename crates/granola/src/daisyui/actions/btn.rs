@@ -42,22 +42,25 @@ pub struct Btn;
 
 daisyui_component! {
     Btn {
+        module: "btn";
+        macro: "btn";
         base: "btn";
+        parts: [];
         shared: [Color, Size];
         Style {
-            Outline => "outline",
-            Dash => "dash",
-            Soft => "soft",
-            Ghost => "ghost",
-            Link => "link",
+            Outline => "btn-outline",
+            Dash => "btn-dash",
+            Soft => "btn-soft",
+            Ghost => "btn-ghost",
+            Link => "btn-link",
         }
         Modifier {
-            Wide => "wide",
-            Block => "block",
-            Square => "square",
-            Circle => "circle",
-            Active => "active",
-            Disabled => "disabled",
+            Wide => "btn-wide",
+            Block => "btn-block",
+            Square => "btn-square",
+            Circle => "btn-circle",
+            Active => "btn-active",
+            Disabled => "btn-disabled",
         }
     }
 }

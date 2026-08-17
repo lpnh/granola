@@ -25,10 +25,13 @@ pub struct Link;
 
 daisyui_component! {
     Link {
+        module: "link";
+        macro: "link";
         base: "link";
+        parts: [];
         shared: [Color];
         Modifier {
-            Hover => "hover",
+            Hover => "link-hover",
         }
     }
 }

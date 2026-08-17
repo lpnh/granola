@@ -45,5 +45,5 @@ pub mod macros {
     // svg
     pub use crate::{path, rect, svg, text};
     // daisyUI
-    pub use crate::{btn, link};
+    pub use crate::{btn, card, card_actions, card_body, card_title, link};
 }
