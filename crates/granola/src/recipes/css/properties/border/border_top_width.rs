@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BorderTopWidth;
 
 impl DeclarationRecipe for BorderTopWidth {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-top-width".into()
     }

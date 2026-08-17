@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct AspectRatio;
 
 impl DeclarationRecipe for AspectRatio {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "aspect-ratio".into()
     }

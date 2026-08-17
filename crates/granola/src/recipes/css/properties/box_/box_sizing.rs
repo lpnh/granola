@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BoxSizing;
 
 impl DeclarationRecipe for BoxSizing {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "box-sizing".into()
     }

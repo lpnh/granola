@@ -26,7 +26,7 @@ use crate::prelude::*;
 /// {{ selector }}
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = TypeSelectorRecipe)]
+#[recipe(TypeSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssTypeSelector<R: TypeSelectorRecipe = ()> {
     _recipe: PhantomData<R>,

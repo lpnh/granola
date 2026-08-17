@@ -37,10 +37,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = H1Recipe, content = Bake)]
+#[recipe(H1Recipe)]
 pub struct HtmlH1<R: H1Recipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// tab, presentation or none

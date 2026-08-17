@@ -51,17 +51,17 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = PictureRecipe, content = Bake)]
+#[recipe(PictureRecipe)]
 pub struct HtmlPicture<R: PictureRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,
     pub event_handlers: EventHandlers,
 }
 
-impl<R: PictureRecipe<Content = Bake>> HtmlPicture<R> {
+impl<R: PictureRecipe> HtmlPicture<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

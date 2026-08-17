@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Width;
 
 impl DeclarationRecipe for Width {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "width".into()
     }

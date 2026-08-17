@@ -21,13 +21,11 @@ use crate::{prelude::*, recipes::*};
 pub struct ListReset;
 
 impl RuleRecipe for ListReset {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         bake_comma![r#"ul[role="list"]"#, r#"ol[role="list"]"#]
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from(ListStyle).content("none").into()
     }
 }

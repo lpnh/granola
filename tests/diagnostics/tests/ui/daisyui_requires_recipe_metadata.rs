@@ -4,7 +4,6 @@ use granola::DaisyUI;
 struct MissingRecipe<R>(R);
 
 #[derive(DaisyUI)]
-#[recipe(content = ())]
 struct MalformedRecipe<R>(R);
 
 fn main() {}

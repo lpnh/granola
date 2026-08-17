@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct PositionAnchor;
 
 impl DeclarationRecipe for PositionAnchor {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "position-anchor".into()
     }

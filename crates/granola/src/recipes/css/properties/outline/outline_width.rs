@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct OutlineWidth;
 
 impl DeclarationRecipe for OutlineWidth {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "outline-width".into()
     }

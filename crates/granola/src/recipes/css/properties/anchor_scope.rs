@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct AnchorScope;
 
 impl DeclarationRecipe for AnchorScope {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "anchor-scope".into()
     }

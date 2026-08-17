@@ -22,13 +22,11 @@ use crate::{prelude::*, recipes::*};
 pub struct AnchorDefaults;
 
 impl RuleRecipe for AnchorDefaults {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "a:not([class])".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from(TextDecorationSkipInk).content("auto"),
             CssDeclaration::from(Color).content("currentcolor"),

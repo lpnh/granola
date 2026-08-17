@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Appearance;
 
 impl DeclarationRecipe for Appearance {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "appearance".into()
     }

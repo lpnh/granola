@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TabSize;
 
 impl DeclarationRecipe for TabSize {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "tab-size".into()
     }

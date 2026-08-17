@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct AlignItems;
 
 impl DeclarationRecipe for AlignItems {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "align-items".into()
     }

@@ -32,8 +32,6 @@ use crate::prelude::*;
 pub struct Font;
 
 impl DeclarationRecipe for Font {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font".into()
     }

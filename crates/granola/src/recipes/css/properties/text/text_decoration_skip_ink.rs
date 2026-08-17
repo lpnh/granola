@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct TextDecorationSkipInk;
 
 impl DeclarationRecipe for TextDecorationSkipInk {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-decoration-skip-ink".into()
     }

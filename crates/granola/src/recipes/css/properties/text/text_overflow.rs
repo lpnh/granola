@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextOverflow;
 
 impl DeclarationRecipe for TextOverflow {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-overflow".into()
     }

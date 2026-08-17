@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FontFamily;
 
 impl DeclarationRecipe for FontFamily {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font-family".into()
     }

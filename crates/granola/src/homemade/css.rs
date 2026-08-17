@@ -227,9 +227,7 @@ use crate::{homemade::*, prelude::*, recipes::*};
 pub struct Garnish;
 
 impl StylesheetRecipe for Garnish {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(Colors),
             CssRule::from(AnchorDefaults),

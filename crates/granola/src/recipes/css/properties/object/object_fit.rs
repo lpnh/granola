@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct ObjectFit;
 
 impl DeclarationRecipe for ObjectFit {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "object-fit".into()
     }

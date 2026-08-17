@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FontStyle;
 
 impl DeclarationRecipe for FontStyle {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font-style".into()
     }

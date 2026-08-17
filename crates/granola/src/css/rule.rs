@@ -66,15 +66,15 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[granola(format = css)]
-#[recipe(name = RuleRecipe, content = Bake)]
+#[recipe(RuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssRule<R: RuleRecipe = ()> {
     _recipe: PhantomData<R>,
     pub selectors_list: Bake,
-    pub content: R::Content,
+    pub content: Bake,
 }
 
-impl<R: RuleRecipe<Content = Bake>> CssRule<R> {
+impl<R: RuleRecipe> CssRule<R> {
     pub fn selectors_list(mut self, selectors_list: impl Into<Bake>) -> Self {
         self.selectors_list = selectors_list.into();
         self

@@ -49,7 +49,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = PathRecipe)]
+#[recipe(PathRecipe)]
 pub struct SvgPath<R: PathRecipe = ()> {
     _recipe: PhantomData<R>,
     pub global_svg_attrs: GlobalSvgAttrs,

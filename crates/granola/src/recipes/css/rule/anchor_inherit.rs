@@ -23,13 +23,11 @@ use crate::{prelude::*, recipes::*};
 pub struct AnchorInherit;
 
 impl RuleRecipe for AnchorInherit {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "a".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from(Color).inherit(),
             CssDeclaration::from(WebkitTextDecoration).inherit(),

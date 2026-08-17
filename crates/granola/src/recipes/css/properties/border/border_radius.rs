@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BorderRadius;
 
 impl DeclarationRecipe for BorderRadius {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-radius".into()
     }

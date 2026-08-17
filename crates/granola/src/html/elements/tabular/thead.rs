@@ -45,10 +45,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TheadRecipe, content = TableRows)]
+#[recipe(TheadRecipe)]
 pub struct HtmlThead<R: TheadRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// any

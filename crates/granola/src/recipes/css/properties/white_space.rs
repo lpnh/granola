@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct WhiteSpace;
 
 impl DeclarationRecipe for WhiteSpace {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "white-space".into()
     }

@@ -34,8 +34,6 @@ use crate::prelude::*;
 pub struct Padding;
 
 impl DeclarationRecipe for Padding {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "padding".into()
     }

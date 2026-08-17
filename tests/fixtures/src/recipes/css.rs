@@ -8,9 +8,7 @@ pub fn style() -> CssStylesheet {
 struct OatsAndEndsRecipes;
 
 impl StylesheetRecipe for OatsAndEndsRecipes {
-    recipe_boilerplate!(StylesheetRecipe, CssStylesheet);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         stylesheet![
             CssStylesheet::from(AndyBell),
             CssStylesheet::from(Palette),
@@ -28,6 +26,7 @@ impl StylesheetRecipe for OatsAndEndsRecipes {
             CssStylesheet::from(Newsletter),
             CssStylesheet::from(SiteFooter),
         ]
+        .into()
     }
 }
 
@@ -49,21 +48,17 @@ fn selection_tint() -> CssFnColorMix {
 struct Palette;
 
 impl StylesheetRecipe for Palette {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssRule::from(Palette).into()
     }
 }
 
 impl RuleRecipe for Palette {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ":root".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((ColorBackground, "#fbf4e8")),
             CssDeclaration::from((ColorSurface, "#ffffff")),
@@ -81,9 +76,7 @@ impl RuleRecipe for Palette {
 struct PaletteDark;
 
 impl StylesheetRecipe for PaletteDark {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssAtRule::from(PaletteDark).into()
     }
 }
@@ -106,13 +99,11 @@ impl AtRuleRecipe for PaletteDark {
 struct PaletteDarkRoot;
 
 impl RuleRecipe for PaletteDarkRoot {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ":root".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((ColorBackground, "#1c140d")),
             CssDeclaration::from((ColorSurface, "#271c13")),
@@ -130,9 +121,7 @@ impl RuleRecipe for PaletteDarkRoot {
 struct Typography;
 
 impl StylesheetRecipe for Typography {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(Body),
             CssRule::from((
@@ -160,13 +149,11 @@ impl StylesheetRecipe for Typography {
 struct Body;
 
 impl RuleRecipe for Body {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "body".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((FontFamily, "system-ui, sans-serif")),
             CssDeclaration::from((Color, CssFnVar::from(ColorText))),
@@ -179,13 +166,11 @@ impl RuleRecipe for Body {
 struct H1;
 
 impl RuleRecipe for H1 {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "h1".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((
             FontSize,
             CssFnClamp::new()
@@ -201,13 +186,11 @@ impl RuleRecipe for H1 {
 struct H2;
 
 impl RuleRecipe for H2 {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "h2".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((FontSize, "1.75rem")).into()
     }
 }
@@ -216,13 +199,11 @@ impl RuleRecipe for H2 {
 struct H3;
 
 impl RuleRecipe for H3 {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "h3".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((FontSize, "1.25rem")).into()
     }
 }
@@ -231,13 +212,11 @@ impl RuleRecipe for H3 {
 struct Lede;
 
 impl RuleRecipe for Lede {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".lede".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((MaxWidth, "38rem")),
             CssDeclaration::from((FontSize, "1.125rem")),
@@ -249,13 +228,11 @@ impl RuleRecipe for Lede {
 struct Note;
 
 impl RuleRecipe for Note {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".note".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((MaxWidth, "38rem")),
             CssDeclaration::from((Color, muted_text())),
@@ -268,13 +245,11 @@ impl RuleRecipe for Note {
 struct BodyLinks;
 
 impl RuleRecipe for BodyLinks {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "main a:not(.btn), .footer-inner a".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Color, CssFnVar::from(ColorPrimary))),
             CssDeclaration::from((TextUnderlineOffset, "0.15em")),
@@ -286,13 +261,11 @@ impl RuleRecipe for BodyLinks {
 struct Selection;
 
 impl RuleRecipe for Selection {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "::selection".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((BackgroundColor, selection_tint())).into()
     }
 }
@@ -301,9 +274,7 @@ impl RuleRecipe for Selection {
 struct Layout;
 
 impl StylesheetRecipe for Layout {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(Wrap),
             CssRule::from(SectionPadding),
@@ -316,13 +287,11 @@ impl StylesheetRecipe for Layout {
 struct Wrap;
 
 impl RuleRecipe for Wrap {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".wrap".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((MaxWidth, "68rem")),
             CssDeclaration::from((MarginInline, "auto")),
@@ -338,13 +307,11 @@ impl RuleRecipe for Wrap {
 struct SectionPadding;
 
 impl RuleRecipe for SectionPadding {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".section".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((PaddingBlock, "3rem")).into()
     }
 }
@@ -370,13 +337,11 @@ impl AtRuleRecipe for ReducedMotion {
 struct ScrollBehaviorSmooth;
 
 impl RuleRecipe for ScrollBehaviorSmooth {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "html".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((ScrollBehavior, "smooth")).into()
     }
 }
@@ -385,9 +350,7 @@ impl RuleRecipe for ScrollBehaviorSmooth {
 struct SkipLink;
 
 impl StylesheetRecipe for SkipLink {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![CssRule::from(SkipLinkRule), CssRule::from(SkipLinkFocus)]
     }
 }
@@ -396,13 +359,11 @@ impl StylesheetRecipe for SkipLink {
 struct SkipLinkRule;
 
 impl RuleRecipe for SkipLinkRule {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".skip-link".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Position, "absolute")),
             CssDeclaration::from((Top, "-3rem")),
@@ -422,13 +383,11 @@ impl RuleRecipe for SkipLinkRule {
 struct SkipLinkFocus;
 
 impl RuleRecipe for SkipLinkFocus {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".skip-link:focus-visible".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((Top, "1rem")).into()
     }
 }
@@ -437,9 +396,7 @@ impl RuleRecipe for SkipLinkFocus {
 struct SiteHeader;
 
 impl StylesheetRecipe for SiteHeader {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(SiteHeaderRule),
             CssRule::from(SiteNav),
@@ -455,13 +412,11 @@ impl StylesheetRecipe for SiteHeader {
 struct SiteHeaderRule;
 
 impl RuleRecipe for SiteHeaderRule {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".site-header".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((BorderBottom, "1px solid")),
             CssDeclaration::from((BorderColor, CssFnVar::from(ColorBorder))),
@@ -477,13 +432,11 @@ impl RuleRecipe for SiteHeaderRule {
 struct SiteNav;
 
 impl RuleRecipe for SiteNav {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".site-nav".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((AlignItems, "center")),
@@ -498,13 +451,11 @@ impl RuleRecipe for SiteNav {
 struct Brand;
 
 impl RuleRecipe for Brand {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".brand".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((FontFamily, "Georgia, 'Iowan Old Style', ui-serif, serif")),
             CssDeclaration::from((FontWeight, "700")),
@@ -519,13 +470,11 @@ impl RuleRecipe for Brand {
 struct NavLinks;
 
 impl RuleRecipe for NavLinks {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".nav-links".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((AlignItems, "center")),
@@ -539,13 +488,11 @@ impl RuleRecipe for NavLinks {
 struct NavLinksAnchor;
 
 impl RuleRecipe for NavLinksAnchor {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".nav-links a:not(.btn)".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Color, CssFnVar::from(ColorText))),
             CssDeclaration::from((FontWeight, "500")),
@@ -558,13 +505,11 @@ impl RuleRecipe for NavLinksAnchor {
 struct NavLinksAnchorHover;
 
 impl RuleRecipe for NavLinksAnchorHover {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".nav-links a:not(.btn):hover".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((TextDecoration, "underline")).into()
     }
 }
@@ -573,9 +518,7 @@ impl RuleRecipe for NavLinksAnchorHover {
 struct Hero;
 
 impl StylesheetRecipe for Hero {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(HeroRule),
             CssRule::from(HeroLede),
@@ -588,13 +531,11 @@ impl StylesheetRecipe for Hero {
 struct HeroRule;
 
 impl RuleRecipe for HeroRule {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".hero".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((PaddingBlock, "4rem 3rem")),
             CssDeclaration::from((TextAlign, "center")),
@@ -606,13 +547,11 @@ impl RuleRecipe for HeroRule {
 struct HeroLede;
 
 impl RuleRecipe for HeroLede {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".hero .lede".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((MaxWidth, "none")).into()
     }
 }
@@ -621,13 +560,11 @@ impl RuleRecipe for HeroLede {
 struct HeroActions;
 
 impl RuleRecipe for HeroActions {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".hero-actions".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((JustifyContent, "center")),
@@ -642,9 +579,7 @@ impl RuleRecipe for HeroActions {
 struct Menu;
 
 impl StylesheetRecipe for Menu {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(MenuGroups),
             CssAtRule::from(MenuGroupsWide),
@@ -661,13 +596,11 @@ impl StylesheetRecipe for Menu {
 struct MenuGroups;
 
 impl RuleRecipe for MenuGroups {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-groups".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "grid")),
             CssDeclaration::from((Gap, "3rem")),
@@ -697,13 +630,11 @@ impl AtRuleRecipe for MenuGroupsWide {
 struct MenuGroupsColumns;
 
 impl RuleRecipe for MenuGroupsColumns {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-groups".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from((GridTemplateColumns, "1fr 1fr")).into()
     }
 }
@@ -712,13 +643,11 @@ impl RuleRecipe for MenuGroupsColumns {
 struct MenuGroupHeading;
 
 impl RuleRecipe for MenuGroupHeading {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-group h3".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((BorderBottom, "1px solid")),
             CssDeclaration::from((BorderColor, CssFnVar::from(ColorBorder))),
@@ -732,13 +661,11 @@ impl RuleRecipe for MenuGroupHeading {
 struct MenuList;
 
 impl RuleRecipe for MenuList {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-list".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((FlexDirection, "column")),
@@ -753,13 +680,11 @@ impl RuleRecipe for MenuList {
 struct MenuItem;
 
 impl RuleRecipe for MenuItem {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-item".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((FlexWrap, "wrap")),
@@ -774,13 +699,11 @@ impl RuleRecipe for MenuItem {
 struct MenuItemName;
 
 impl RuleRecipe for MenuItemName {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-item-name".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "inline-flex")),
             CssDeclaration::from((AlignItems, "center")),
@@ -794,13 +717,11 @@ impl RuleRecipe for MenuItemName {
 struct MenuItemDesc;
 
 impl RuleRecipe for MenuItemDesc {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".menu-item-desc".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((FlexBasis, "100%")),
             CssDeclaration::from((Color, muted_text())),
@@ -813,9 +734,7 @@ impl RuleRecipe for MenuItemDesc {
 struct Hours;
 
 impl StylesheetRecipe for Hours {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(HoursTable),
             CssRule::from(HoursCaption),
@@ -828,13 +747,11 @@ impl StylesheetRecipe for Hours {
 struct HoursTable;
 
 impl RuleRecipe for HoursTable {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "table".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Width, "100%")),
             CssDeclaration::from((BorderCollapse, "collapse")),
@@ -847,13 +764,11 @@ impl RuleRecipe for HoursTable {
 struct HoursCaption;
 
 impl RuleRecipe for HoursCaption {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "caption".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((TextAlign, "left")),
             CssDeclaration::from((FontWeight, "600")),
@@ -866,13 +781,11 @@ impl RuleRecipe for HoursCaption {
 struct HoursCells;
 
 impl RuleRecipe for HoursCells {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         bake_comma!["th", "td"]
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((TextAlign, "left")),
             CssDeclaration::from((Padding, "0.6rem 1rem 0.6rem 0")),
@@ -887,9 +800,7 @@ impl RuleRecipe for HoursCells {
 struct Visit;
 
 impl StylesheetRecipe for Visit {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![CssRule::from(VisitAddress), CssRule::from(VisitActions)]
     }
 }
@@ -898,13 +809,11 @@ impl StylesheetRecipe for Visit {
 struct VisitAddress;
 
 impl RuleRecipe for VisitAddress {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "#visit address".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((FontStyle, "normal")),
             CssDeclaration::from((LineHeight, "1.7")),
@@ -917,13 +826,11 @@ impl RuleRecipe for VisitAddress {
 struct VisitActions;
 
 impl RuleRecipe for VisitActions {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".visit-actions".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((Gap, "1rem")),
@@ -937,9 +844,7 @@ impl RuleRecipe for VisitActions {
 struct Newsletter;
 
 impl StylesheetRecipe for Newsletter {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(NewsletterForm),
             CssRule::from(Field),
@@ -954,13 +859,11 @@ impl StylesheetRecipe for Newsletter {
 struct NewsletterForm;
 
 impl RuleRecipe for NewsletterForm {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "#newsletter form".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((FlexWrap, "wrap")),
@@ -975,13 +878,11 @@ impl RuleRecipe for NewsletterForm {
 struct Field;
 
 impl RuleRecipe for Field {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".field".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((FlexDirection, "column")),
@@ -994,13 +895,11 @@ impl RuleRecipe for Field {
 struct FieldLabel;
 
 impl RuleRecipe for FieldLabel {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".field label".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((FontSize, "0.875rem")),
             CssDeclaration::from((FontWeight, "500")),
@@ -1012,13 +911,11 @@ impl RuleRecipe for FieldLabel {
 struct FieldInput;
 
 impl RuleRecipe for FieldInput {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".field input".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Padding, "0.6em 0.8em")),
             CssDeclaration::from((Border, "1px solid")),
@@ -1036,13 +933,11 @@ impl RuleRecipe for FieldInput {
 struct FieldInputFocus;
 
 impl RuleRecipe for FieldInputFocus {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".field input:focus-visible".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((OutlineWidth, "2px")),
             CssDeclaration::from((OutlineStyle, "solid")),
@@ -1056,9 +951,7 @@ impl RuleRecipe for FieldInputFocus {
 struct SiteFooter;
 
 impl StylesheetRecipe for SiteFooter {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(SiteFooterRule),
             CssRule::from(FooterInner),
@@ -1071,13 +964,11 @@ impl StylesheetRecipe for SiteFooter {
 struct SiteFooterRule;
 
 impl RuleRecipe for SiteFooterRule {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".site-footer".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((BorderTop, "1px solid")),
             CssDeclaration::from((BorderColor, CssFnVar::from(ColorBorder))),
@@ -1090,13 +981,11 @@ impl RuleRecipe for SiteFooterRule {
 struct FooterInner;
 
 impl RuleRecipe for FooterInner {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".footer-inner".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((Display, "flex")),
             CssDeclaration::from((JustifyContent, "space-between")),
@@ -1111,13 +1000,11 @@ impl RuleRecipe for FooterInner {
 struct FooterInnerAddress;
 
 impl RuleRecipe for FooterInnerAddress {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".footer-inner address".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from((FontStyle, "normal")),
             CssDeclaration::from((FontSize, "0.875rem")),

@@ -21,8 +21,6 @@ use crate::prelude::*;
 pub struct FormmethodDialog;
 
 impl ButtonRecipe for FormmethodDialog {
-    recipe_boilerplate!(ButtonRecipe);
-
     fn specific_attrs_recipe() -> ButtonAttrs {
         ButtonAttrs::default().formmethod(FormMethod::Dialog)
     }

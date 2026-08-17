@@ -28,12 +28,12 @@ use crate::{filters, prelude::*};
 /// --{{ name }}({{ content | kirei }})
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = CustomFunctionRecipe, content = Bake)]
+#[recipe(CustomFunctionRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssCustomFunction<R: CustomFunctionRecipe = ()> {
     _recipe: PhantomData<R>,
     pub name: Bake,
-    pub content: R::Content,
+    pub content: Bake,
 }
 
 impl<R: CustomFunctionRecipe> CssCustomFunction<R> {

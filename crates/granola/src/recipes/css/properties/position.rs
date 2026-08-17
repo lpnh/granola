@@ -28,8 +28,6 @@ use crate::prelude::*;
 pub struct Position;
 
 impl DeclarationRecipe for Position {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "position".into()
     }

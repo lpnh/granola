@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TypeSubmit;
 
 impl ButtonRecipe for TypeSubmit {
-    recipe_boilerplate!(ButtonRecipe);
-
     fn specific_attrs_recipe() -> ButtonAttrs {
         ButtonAttrs::default().button_type(ButtonType::Submit)
     }

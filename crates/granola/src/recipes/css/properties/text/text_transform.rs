@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextTransform;
 
 impl DeclarationRecipe for TextTransform {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-transform".into()
     }

@@ -36,8 +36,6 @@ use crate::prelude::*;
 pub struct Margin;
 
 impl DeclarationRecipe for Margin {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "margin".into()
     }

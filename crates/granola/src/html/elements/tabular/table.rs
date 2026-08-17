@@ -61,10 +61,7 @@ use crate::{filters, prelude::*};
 ///     table.bake_pretty(),
 ///     r#"<table>
 ///   <caption>Our favorites, yours to try.</caption>
-///   <colgroup>
-///     <col class="item" />
-///     <col class="description" />
-///   </colgroup>
+///   <colgroup><col class="item" /><col class="description" /></colgroup>
 ///   <thead>
 ///     <tr>
 ///       <th scope="col">Item</th>
@@ -103,10 +100,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TableRecipe, content = Bake)]
+#[recipe(TableRecipe)]
 pub struct HtmlTable<R: TableRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -116,7 +113,7 @@ pub struct HtmlTable<R: TableRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: TableRecipe<Content = Bake>> HtmlTable<R> {
+impl<R: TableRecipe> HtmlTable<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self
@@ -175,10 +172,7 @@ impl<R: TableRecipe<Content = Bake>> HtmlTable<R> {
 ///     table.bake_pretty(),
 ///     r#"<table>
 ///   <caption>Our favorites, yours to try.</caption>
-///   <colgroup>
-///     <col class="item" />
-///     <col class="description" />
-///   </colgroup>
+///   <colgroup><col class="item" /><col class="description" /></colgroup>
 ///   <thead>
 ///     <tr>
 ///       <th scope="col">Item</th>

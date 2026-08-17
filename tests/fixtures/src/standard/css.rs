@@ -8,9 +8,7 @@ pub fn style() -> CssStylesheet {
 struct OatsAndEndsStandard;
 
 impl StylesheetRecipe for OatsAndEndsStandard {
-    recipe_boilerplate!(StylesheetRecipe, CssStylesheet);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssStylesheet::new()
             .push(CssStylesheet::from(AndyBell))
             .push(palette())
@@ -27,6 +25,7 @@ impl StylesheetRecipe for OatsAndEndsStandard {
             .push(visit())
             .push(newsletter())
             .push(site_footer())
+            .into()
     }
 }
 

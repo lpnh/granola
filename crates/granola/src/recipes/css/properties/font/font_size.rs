@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FontSize;
 
 impl DeclarationRecipe for FontSize {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font-size".into()
     }

@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FlexBasis;
 
 impl DeclarationRecipe for FlexBasis {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "flex-basis".into()
     }

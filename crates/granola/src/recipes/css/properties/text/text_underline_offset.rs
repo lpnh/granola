@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct TextUnderlineOffset;
 
 impl DeclarationRecipe for TextUnderlineOffset {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-underline-offset".into()
     }

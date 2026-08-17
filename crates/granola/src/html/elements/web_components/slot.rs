@@ -38,10 +38,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SlotRecipe, content = Bake)]
+#[recipe(SlotRecipe)]
 pub struct HtmlSlot<R: SlotRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: SlotAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,

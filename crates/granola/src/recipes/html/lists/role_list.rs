@@ -26,16 +26,12 @@ use crate::prelude::*;
 pub struct RoleList;
 
 impl UlRecipe for RoleList {
-    recipe_boilerplate!(UlRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().role("list")
     }
 }
 
 impl OlRecipe for RoleList {
-    recipe_boilerplate!(OlRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().role("list")
     }

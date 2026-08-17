@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct OverflowWrap;
 
 impl DeclarationRecipe for OverflowWrap {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "overflow-wrap".into()
     }

@@ -23,13 +23,11 @@ use crate::{prelude::*, recipes::*};
 pub struct HrReset;
 
 impl RuleRecipe for HrReset {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "hr".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from(Height).content("0"),
             CssDeclaration::from(Color).inherit(),

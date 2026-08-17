@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct BackgroundColor;
 
 impl DeclarationRecipe for BackgroundColor {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "background-color".into()
     }

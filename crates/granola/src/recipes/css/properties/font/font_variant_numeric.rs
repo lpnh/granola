@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct FontVariantNumeric;
 
 impl DeclarationRecipe for FontVariantNumeric {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font-variant-numeric".into()
     }

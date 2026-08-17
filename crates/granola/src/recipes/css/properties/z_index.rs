@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct ZIndex;
 
 impl DeclarationRecipe for ZIndex {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "z-index".into()
     }

@@ -56,7 +56,7 @@ use crate::prelude::*;
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[granola(format = css)]
-#[recipe(name = AtRuleRecipe)]
+#[recipe(AtRuleRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssAtRule<R: AtRuleRecipe = ()> {
     _recipe: PhantomData<R>,

@@ -42,7 +42,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ImgRecipe)]
+#[recipe(ImgRecipe)]
 pub struct HtmlImg<R: ImgRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles

@@ -1,12 +1,9 @@
 use proc_macro::TokenStream;
-use proc_macro2::{Span, TokenStream as TokenStream2};
+use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use syn::{
-    Data, DeriveInput, Field, Fields, GenericParam, Ident, Token, Type,
-    parse::{Parse, ParseStream},
-    parse_macro_input,
+    Data, DeriveInput, Field, Fields, GenericParam, Ident, Token, Type, parse_macro_input,
     punctuated::Punctuated,
-    spanned::Spanned,
 };
 
 /// Derive macro for templates.
@@ -108,56 +105,7 @@ fn granola_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     })
 }
 
-struct RecipeArgs {
-    recipe_name: Ident,
-    content_type: Option<Type>,
-    attr_span: Span,
-}
-
-struct ParsedRecipeArgs {
-    recipe_name: Option<Ident>,
-    content_type: Option<Type>,
-}
-
-impl Parse for ParsedRecipeArgs {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        let mut recipe_name: Option<Ident> = None;
-        let mut content_type: Option<Type> = None;
-
-        while !input.is_empty() {
-            let key: Ident = input.parse()?;
-            let key_span = key.span();
-            input.parse::<Token![=]>()?;
-
-            match key.to_string().as_str() {
-                "name" => {
-                    if recipe_name.is_some() {
-                        return Err(syn::Error::new(key_span, "duplicate `name` key"));
-                    }
-                    recipe_name = Some(input.parse()?);
-                }
-                "content" => {
-                    if content_type.is_some() {
-                        return Err(syn::Error::new(key_span, "duplicate `content` key"));
-                    }
-                    content_type = Some(input.parse()?);
-                }
-                _ => return Err(syn::Error::new(key_span, format!("unknown key `{key}`"))),
-            }
-
-            if input.peek(Token![,]) {
-                input.parse::<Token![,]>()?;
-            }
-        }
-
-        Ok(Self {
-            recipe_name,
-            content_type,
-        })
-    }
-}
-
-fn parse_recipe_args(input: &DeriveInput) -> syn::Result<RecipeArgs> {
+fn parse_recipe_name(input: &DeriveInput) -> syn::Result<Ident> {
     let mut recipe_attrs = input
         .attrs
         .iter()
@@ -172,16 +120,7 @@ fn parse_recipe_args(input: &DeriveInput) -> syn::Result<RecipeArgs> {
         ));
     }
 
-    let args: ParsedRecipeArgs = recipe_attr.parse_args()?;
-    let recipe_name = args.recipe_name.ok_or_else(|| {
-        syn::Error::new_spanned(recipe_attr, "`name` is required in #[recipe(name = ...)]")
-    })?;
-
-    Ok(RecipeArgs {
-        recipe_name,
-        content_type: args.content_type,
-        attr_span: recipe_attr.span(),
-    })
+    recipe_attr.parse_args::<Ident>()
 }
 
 fn recipe_type_parameter(input: &DeriveInput, derive_name: &str) -> syn::Result<Ident> {
@@ -275,13 +214,13 @@ fn is_phantom_data_of(ty: &Type, type_param: &Ident) -> bool {
 }
 
 fn validate_recipe_layout(
+    input: &DeriveInput,
     named_fields: &Punctuated<Field, Token![,]>,
     recipe_type_param: &Ident,
-    args: &RecipeArgs,
 ) -> syn::Result<()> {
     let first = named_fields.first().ok_or_else(|| {
-        syn::Error::new(
-            args.attr_span,
+        syn::Error::new_spanned(
+            &input.ident,
             "`Recipe` requires an `_recipe: PhantomData<R>` field",
         )
     })?;
@@ -295,16 +234,6 @@ fn validate_recipe_layout(
         return Err(syn::Error::new_spanned(
             &first.ty,
             "the `_recipe` field must have type `PhantomData<R>`",
-        ));
-    }
-    if args.content_type.is_some()
-        && !named_fields
-            .iter()
-            .any(|field| field.ident.as_ref().is_some_and(|ident| ident == "content"))
-    {
-        return Err(syn::Error::new(
-            args.attr_span,
-            "#[recipe(content = ...)] requires a `content` field",
         ));
     }
 
@@ -322,7 +251,7 @@ pub fn daisyui_derive(input: TokenStream) -> TokenStream {
 }
 
 fn daisyui_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
-    parse_recipe_args(input)?;
+    parse_recipe_name(input)?;
     let recipe_type_param = recipe_type_parameter(input, "DaisyUI")?;
 
     const CAPABILITIES: [(&str, &str, &str, &str); 7] = [
@@ -410,17 +339,15 @@ fn daisyui_capability_impl(
 /// parameter, and a leading `_recipe: PhantomData<R>` field.
 ///
 /// For a struct `Foo<R>`, it generates:
-/// - the recipe trait named by `#[recipe(name = ...)]`, with one hook per field
+/// - the recipe trait named by `#[recipe(RecipeName)]`, with one hook per field
 ///   and an impl for `()` (the baked, no-op recipe)
 /// - the `new` and `from_cookbook` constructors, plus a `From<R>` impl
 ///   (`Foo::from(recipe)`)
 /// - a `bake_recipe` method lowering `Foo<R>` to `Foo<()>`
 ///
-/// With `content`:
-/// - a `Content` associated type, a `content(content)` builder method
-/// - a required `bake_content` method mapping `Content` back into the default
-///   content type `T`
-/// - a `From<(R, impl Into<R::Content>)>` impl (`Foo::from((recipe, content))`)
+/// For structs with a `content` field:
+/// - a `content(content)` builder method
+/// - a `From<(R, impl Into<Bake>)>` impl (`Foo::from((recipe, content))`)
 ///
 /// And also the matching `Has*` impl for:
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
@@ -438,31 +365,25 @@ pub fn recipe_derive(input: TokenStream) -> TokenStream {
 fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     let struct_name = &input.ident;
 
-    let args = parse_recipe_args(input)?;
-
-    let trait_name = &args.recipe_name;
-    let default_content_type = args.content_type.as_ref();
-    let has_content = default_content_type.is_some();
+    let trait_name = parse_recipe_name(input)?;
 
     let type_param = recipe_type_parameter_for_recipe(input)?;
     let named_fields = recipe_named_fields(input)?;
-    validate_recipe_layout(named_fields, &type_param, &args)?;
+    validate_recipe_layout(input, named_fields, &type_param)?;
 
-    let recipe_generics = recipe_impl_generics(input, &type_param, trait_name);
+    let has_content = named_fields
+        .iter()
+        .any(|field| field.ident.as_ref().is_some_and(|ident| ident == "content"));
+
+    let recipe_generics = recipe_impl_generics(input, &type_param, &trait_name);
     let (impl_generics, ty_generics, where_clause) = recipe_generics.split_for_impl();
     let mut content_generics = recipe_generics.clone();
     content_generics.params.push(syn::parse_quote!(
-        __IntoContent: ::std::convert::Into<#type_param::Content>
+        __IntoContent: ::std::convert::Into<::granola::oven::Bake>
     ));
     let (content_impl_generics, _, content_where_clause) = content_generics.split_for_impl();
 
-    // Every field except the leading `_recipe` marker and `content` (threaded
-    // separately below). These drive the per-field recipe hooks.
-    let other_fields: Vec<_> = named_fields
-        .iter()
-        .skip(1)
-        .filter(|f| !(has_content && f.ident.as_ref().map(|i| i == "content").unwrap_or(false)))
-        .collect();
+    let other_fields: Vec<_> = named_fields.iter().skip(1).collect();
 
     let field_idents: Vec<Ident> = other_fields
         .iter()
@@ -475,82 +396,16 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
         .collect();
     let has_field = |name: &str| field_idents.iter().any(|i| i == name);
 
-    // When the recipe carries a `content` field (`#[recipe(content = T)]`), the
-    // trait gains a `Content` associated type plus `bake_content` /
-    // `content_recipe`, and the constructors thread content through. All such
-    // content-gated fragments are grouped here.
-    //
-    // `bake_content` is emitted required (no default body) so a recipe that
-    // overrides `type Content` must supply the map-back itself, surfacing the
-    // gap on the author's own impl rather than downstream at `bake_recipe`.
-    let trait_content = if let Some(content_type) = default_content_type {
-        quote! {
-            type Content:
-                ::askama::FastWritable
-                + ::std::default::Default
-                + ::std::clone::Clone
-                + ::std::fmt::Debug;
-
-            /// Bakes this recipe's content back into the element's default
-            /// content type, called when the recipe is lowered via
-            /// `bake_recipe`.
-            ///
-            /// See [`recipe_boilerplate!`](::granola::recipe_boilerplate).
-            fn bake_content(content: Self::Content) -> #content_type;
-
-            fn content_recipe() -> Self::Content {
-                ::std::default::Default::default()
-            }
-        }
-    } else {
-        quote! {}
-    };
-
-    // `()` impl: default content type, identity bake-back.
-    let unit_content = if let Some(content_type) = default_content_type {
-        quote! {
-            type Content = #content_type;
-
-            fn bake_content(content: #content_type) -> #content_type {
-                content
-            }
-        }
-    } else {
-        quote! {}
-    };
-
-    // Constructor pieces that thread content through `from_cookbook`,
-    // `content(...)`, and the `bake_recipe` lowering.
-    let content_init = if has_content {
-        quote! {
-            let content = #type_param::content_recipe();
-        }
-    } else {
-        quote! {}
-    };
-    let content_struct_field = if has_content {
-        quote! { content, }
-    } else {
-        quote! {}
-    };
-    // `content`: sets the content on `#struct_name<R>`, keeping the
-    // recipe `R`. Returns `Self`, so the recipe is fixed at construction and
-    // flows through unchanged.
     let content_method = if has_content {
         quote! {
             pub fn content(
                 mut self,
-                content: impl ::std::convert::Into<#type_param::Content>,
+                content: impl ::std::convert::Into<::granola::oven::Bake>,
             ) -> Self {
                 self.content = content.into();
                 self
             }
         }
-    } else {
-        quote! {}
-    };
-    let bake_content_field = if has_content {
-        quote! { content: #type_param::bake_content(self.content), }
     } else {
         quote! {}
     };
@@ -694,15 +549,12 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
             + ::std::fmt::Debug
             + 'static
         {
-            #trait_content
             #(fn #method_names() -> #field_types {
                 ::std::default::Default::default()
             })*
         }
 
-        impl #trait_name for () {
-            #unit_content
-        }
+        impl #trait_name for () {}
 
         #global_attrs_impl
         #global_aria_attrs_impl
@@ -722,9 +574,7 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
             #content_method
 
             pub fn from_cookbook() -> Self {
-                #content_init
                 Self {
-                    #content_struct_field
                     #(#field_idents: #type_param::#method_names(),)*
                     ..::std::default::Default::default()
                 }
@@ -747,7 +597,6 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
             pub fn bake_recipe(self) -> #struct_name<()> {
                 #struct_name {
                     _recipe: ::std::marker::PhantomData,
-                    #bake_content_field
                     #(#field_idents: self.#field_idents,)*
                 }
             }

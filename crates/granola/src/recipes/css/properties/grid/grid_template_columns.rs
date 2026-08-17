@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct GridTemplateColumns;
 
 impl DeclarationRecipe for GridTemplateColumns {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "grid-template-columns".into()
     }

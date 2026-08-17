@@ -21,10 +21,8 @@ use crate::{prelude::*, recipes::*};
 pub struct MaterialSymbolsImage;
 
 impl SvgRecipe for MaterialSymbolsImage {
-    recipe_boilerplate!(SvgRecipe, SvgPath<MaterialSymbolsImage>);
-
-    fn content_recipe() -> Self::Content {
-        SvgPath::from(MaterialSymbolsImage)
+    fn content_recipe() -> Bake {
+        SvgPath::from(MaterialSymbolsImage).into()
     }
 
     fn specific_attrs_recipe() -> SvgAttrs {

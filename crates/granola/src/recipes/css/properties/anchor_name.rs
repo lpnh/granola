@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct AnchorName;
 
 impl DeclarationRecipe for AnchorName {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "anchor-name".into()
     }

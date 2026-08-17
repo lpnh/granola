@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BorderColor;
 
 impl DeclarationRecipe for BorderColor {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-color".into()
     }

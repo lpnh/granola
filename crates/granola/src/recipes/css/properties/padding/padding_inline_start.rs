@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct PaddingInlineStart;
 
 impl DeclarationRecipe for PaddingInlineStart {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "padding-inline-start".into()
     }

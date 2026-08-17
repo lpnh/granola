@@ -21,13 +21,11 @@ use crate::{prelude::*, recipes::*};
 pub struct ProgressVerticalAlignment;
 
 impl RuleRecipe for ProgressVerticalAlignment {
-    recipe_boilerplate!(StylesheetRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "progress".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from(VerticalAlign)
             .content("baseline")
             .into()

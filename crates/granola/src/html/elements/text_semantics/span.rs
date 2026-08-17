@@ -42,10 +42,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SpanRecipe, content = Bake)]
+#[recipe(SpanRecipe)]
 pub struct HtmlSpan<R: SpanRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -55,7 +55,7 @@ pub struct HtmlSpan<R: SpanRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: SpanRecipe<Content = Bake>> HtmlSpan<R> {
+impl<R: SpanRecipe> HtmlSpan<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

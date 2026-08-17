@@ -51,10 +51,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = SelectRecipe, content = Bake)]
+#[recipe(SelectRecipe)]
 pub struct HtmlSelect<R: SelectRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// menu (with no multiple attribute and no size attribute greater than 1)
@@ -65,7 +65,7 @@ pub struct HtmlSelect<R: SelectRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: SelectRecipe<Content = Bake>> HtmlSelect<R> {
+impl<R: SelectRecipe> HtmlSelect<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

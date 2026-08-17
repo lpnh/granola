@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct WebkitTextDecoration;
 
 impl DeclarationRecipe for WebkitTextDecoration {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "-webkit-text-decoration".into()
     }

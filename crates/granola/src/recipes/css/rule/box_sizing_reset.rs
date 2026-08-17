@@ -21,13 +21,11 @@ use crate::{prelude::*, recipes::*};
 pub struct BoxSizingReset;
 
 impl RuleRecipe for BoxSizingReset {
-    recipe_boilerplate!(StylesheetRecipe);
-
     fn selectors_list_recipe() -> Bake {
         UniversalSelectors::selectors_list_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from(BoxSizing).content("border-box").into()
     }
 }

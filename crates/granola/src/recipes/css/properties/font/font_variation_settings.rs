@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct FontVariationSettings;
 
 impl DeclarationRecipe for FontVariationSettings {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font-variation-settings".into()
     }

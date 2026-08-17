@@ -7,64 +7,10 @@ mod tests_recipe {
     use granola::{homemade::*, prelude::*};
 
     #[test]
-    fn content_replace_keeps_caller_value() {
-        let mut custom_root = HtmlRoot::from(Homemade).lang("fr");
-        custom_root.body(HtmlBody::new().content("custom hello"));
+    fn homemade_content_builds_document() {
+        let custom_root = HomemadeRootContent::new().body(HtmlBody::new().content("custom hello"));
 
-        let doc = HtmlDocument::from(Homemade).content(custom_root);
-
-        assert_eq!(
-            doc.bake_pretty(),
-            r#"<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
-  <body>custom hello</body>
-</html>
-"#
-        );
-    }
-
-    #[test]
-    fn content_replace_does_not_duplicate() {
-        let head = HtmlHead::from(Homemade);
-        let mut content = head.content.clone();
-        content
-            .meta
-            .push(HtmlMeta::new().content("yo").bake_recipe());
-
-        let head = head.content(content);
-
-        assert_eq!(head.content.meta.len(), 3);
-    }
-
-    #[test]
-    fn content_replace_keeps_both_fields() {
-        let root = HtmlRoot::from(Homemade);
-
-        let mut custom_head = HtmlHead::from(Homemade);
-        custom_head.content.title = Some(HtmlTitle::new().content("custom title").bake_recipe());
-
-        let mut new_content = root.content.clone();
-        new_content.head = custom_head;
-        new_content.body = Some(HtmlBody::new().content("keep me").bake_recipe());
-
-        let root = root.content(new_content);
-
-        assert!(root.bake().contains("custom title"));
-        assert!(root.bake().contains("keep me"));
-    }
-
-    #[test]
-    fn bake_recipe_preserves_custom_content() {
-        let mut custom_root = HtmlRoot::from(Homemade).lang("fr");
-        custom_root.body(HtmlBody::new().content("custom hello"));
-
-        let doc: HtmlDocument = HtmlDocument::from(Homemade)
-            .content(custom_root)
-            .bake_recipe();
+        let doc = HtmlDocument::new().content(HtmlRoot::new().lang("fr").content(custom_root));
 
         assert_eq!(
             doc.bake_pretty(),
@@ -81,14 +27,40 @@ mod tests_recipe {
     }
 
     #[test]
-    fn recipe_boilerplate() {
+    fn homemade_root_content_keeps_both_fields() {
+        let root_content = HomemadeRootContent::new()
+            .push_title(HtmlTitle::new().content("custom title"))
+            .body(HtmlBody::new().content("keep me"));
+
+        let root = HtmlRoot::new().content(root_content);
+
+        assert!(root.bake().contains("<title>custom title</title>"));
+        assert!(root.bake().contains("<body>keep me</body>"));
+    }
+
+    #[test]
+    fn homemade_root_content_preserves_head_structure() {
+        let root = HtmlRoot::new().content(
+            HomemadeRootContent::new()
+                .push_title(HtmlTitle::new().content("replaced"))
+                .push_link(HtmlLink::new().rel("stylesheet").href("style.css"))
+                .push_meta(HtmlMeta::new().name("description").content("example"))
+                .push_title(HtmlTitle::new().content("kept")),
+        );
+
+        let html = root.bake();
+        assert!(!html.contains("replaced"));
+        assert!(html.find("description").unwrap() < html.find("<title>kept</title>").unwrap());
+        assert!(html.find("<title>kept</title>").unwrap() < html.find("stylesheet").unwrap());
+    }
+
+    #[test]
+    fn recipe_default_hooks() {
         #[derive(Default, Debug, Clone)]
         struct Counter;
 
         impl ButtonRecipe for Counter {
-            recipe_boilerplate!(ButtonRecipe);
-
-            fn content_recipe() -> Self::Content {
+            fn content_recipe() -> Bake {
                 let count = 1 + 2;
                 format!("clicked {count} times").into()
             }
@@ -117,8 +89,8 @@ mod tests_recipe {
     }
 
     #[test]
-    fn recipe_boilerplate_custom_content() {
-        #[derive(Default, Debug, Clone, Template)]
+    fn recipe_custom_content() {
+        #[derive(Default, Debug, Clone, Template, Granola)]
         #[template(
             ext = "html",
             escape = "none",
@@ -136,36 +108,29 @@ mod tests_recipe {
             }
         }
 
-        impl From<TagList> for Bake {
-            fn from(list: TagList) -> Self {
-                Self::new(&list)
-            }
-        }
-
         #[derive(Default, Debug, Clone)]
         struct Tags;
 
         impl DivRecipe for Tags {
-            recipe_boilerplate!(DivRecipe, TagList);
-
-            fn content_recipe() -> Self::Content {
-                Self::Content {
+            fn content_recipe() -> Bake {
+                TagList {
                     tags: vec!["foo".into(), "bar".into()],
                 }
+                .into()
             }
         }
 
         let foo_bar = HtmlDiv::from(Tags);
         assert_eq!(foo_bar.bake(), "<div><b>foo</b><b>bar</b></div>");
 
-        let foo_bar_content: TagList = foo_bar.content;
-        assert_eq!(foo_bar_content.render().unwrap(), "<b>foo</b><b>bar</b>");
+        let foo_bar_content: Bake = foo_bar.content;
+        assert_eq!(foo_bar_content, "<b>foo</b><b>bar</b>");
 
         let baz = HtmlDiv::from(Tags).content(TagList::new("baz"));
         assert_eq!(baz.bake(), "<div><b>baz</b></div>");
 
-        let baz_content: TagList = baz.content;
-        assert_eq!(baz_content.render().unwrap(), "<b>baz</b>");
+        let baz_content: Bake = baz.content;
+        assert_eq!(baz_content, "<b>baz</b>");
 
         let baked_recipe = HtmlDiv::from(Tags).bake_recipe();
         assert_eq!(baked_recipe.bake(), "<div><b>foo</b><b>bar</b></div>");
@@ -190,8 +155,6 @@ mod tests_recipe {
         struct Counter;
 
         impl ButtonRecipe for Counter {
-            recipe_boilerplate!(ButtonRecipe);
-
             fn specific_attrs_recipe() -> ButtonAttrs {
                 ButtonAttrs::default().button_type(ButtonType::Button)
             }

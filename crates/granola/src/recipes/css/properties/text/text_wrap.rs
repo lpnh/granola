@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextWrap;
 
 impl DeclarationRecipe for TextWrap {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-wrap".into()
     }

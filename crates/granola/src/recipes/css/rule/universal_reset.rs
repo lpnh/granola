@@ -24,13 +24,11 @@ use crate::{prelude::*, recipes::*};
 pub struct UniversalReset;
 
 impl RuleRecipe for UniversalReset {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         UniversalSelectorsExt::selectors_list_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from(BoxSizing).content("border-box"),
             CssDeclaration::from(Margin).content("0"),

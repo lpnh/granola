@@ -28,21 +28,17 @@ use crate::prelude::*;
 pub struct Colors;
 
 impl StylesheetRecipe for Colors {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssRule::from(Colors).into()
     }
 }
 
 impl RuleRecipe for Colors {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ":root".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from(ColorBackground),
             CssDeclaration::from(ColorSurface),
@@ -79,13 +75,11 @@ impl RuleRecipe for Colors {
 pub struct ColorBackground;
 
 impl DeclarationRecipe for ColorBackground {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -125,13 +119,11 @@ impl FnVarRecipe for ColorBackground {
 pub struct ColorSurface;
 
 impl DeclarationRecipe for ColorSurface {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -171,13 +163,11 @@ impl FnVarRecipe for ColorSurface {
 pub struct ColorBorder;
 
 impl DeclarationRecipe for ColorBorder {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -217,13 +207,11 @@ impl FnVarRecipe for ColorBorder {
 pub struct ColorText;
 
 impl DeclarationRecipe for ColorText {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -263,13 +251,11 @@ impl FnVarRecipe for ColorText {
 pub struct ColorPrimary;
 
 impl DeclarationRecipe for ColorPrimary {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -309,13 +295,11 @@ impl FnVarRecipe for ColorPrimary {
 pub struct ColorPrimaryText;
 
 impl DeclarationRecipe for ColorPrimaryText {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -355,13 +339,11 @@ impl FnVarRecipe for ColorPrimaryText {
 pub struct ColorError;
 
 impl DeclarationRecipe for ColorError {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }
@@ -401,13 +383,11 @@ impl FnVarRecipe for ColorError {
 pub struct ColorSuccess;
 
 impl DeclarationRecipe for ColorSuccess {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         CssCustomProperty::from(Self).into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         "initial".into()
     }
 }

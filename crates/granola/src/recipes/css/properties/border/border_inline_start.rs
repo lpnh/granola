@@ -21,8 +21,6 @@ use crate::prelude::*;
 pub struct BorderInlineStart;
 
 impl DeclarationRecipe for BorderInlineStart {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-inline-start".into()
     }

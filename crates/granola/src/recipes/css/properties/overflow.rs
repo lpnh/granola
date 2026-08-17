@@ -27,8 +27,6 @@ use crate::prelude::*;
 pub struct Overflow;
 
 impl DeclarationRecipe for Overflow {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "overflow".into()
     }

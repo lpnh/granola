@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct MarginRight;
 
 impl DeclarationRecipe for MarginRight {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "margin-right".into()
     }

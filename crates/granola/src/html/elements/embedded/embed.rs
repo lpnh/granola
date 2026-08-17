@@ -44,7 +44,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = EmbedRecipe)]
+#[recipe(EmbedRecipe)]
 pub struct HtmlEmbed<R: EmbedRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles

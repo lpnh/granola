@@ -30,9 +30,7 @@ use crate::{filters, prelude::*};
 ///
 /// assert_eq!(
 ///     colgroup.bake(),
-///     r#"<colgroup>
-///     <col class="item" />
-///     <col class="description" /></colgroup>"#
+///     r#"<colgroup><col class="item" /><col class="description" /></colgroup>"#
 /// );
 /// ```
 ///
@@ -49,10 +47,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ColgroupRecipe, content = TableColumns)]
+#[recipe(ColgroupRecipe)]
 pub struct HtmlColgroup<R: ColgroupRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: ColgroupAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -130,9 +128,7 @@ impl<R: ColgroupRecipe> HasColgroupAttrs for HtmlColgroup<R> {
 ///
 /// assert_eq!(
 ///     colgroup.bake(),
-///     r#"<colgroup>
-///     <col class="item" />
-///     <col class="description" /></colgroup>"#
+///     r#"<colgroup><col class="item" /><col class="description" /></colgroup>"#
 /// );
 /// ```
 #[macro_export]

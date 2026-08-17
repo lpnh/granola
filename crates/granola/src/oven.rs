@@ -144,6 +144,26 @@ impl From<Bake> for String {
     }
 }
 
+impl<T: Into<Bake>, const N: usize> From<[T; N]> for Bake {
+    fn from(items: [T; N]) -> Self {
+        let mut bake = Bake::default();
+        for item in items {
+            bake.fold_in(item.into());
+        }
+        bake
+    }
+}
+
+impl<T: Into<Bake>> From<Vec<T>> for Bake {
+    fn from(items: Vec<T>) -> Self {
+        let mut bake = Bake::default();
+        for item in items {
+            bake.fold_in(item.into());
+        }
+        bake
+    }
+}
+
 // Provide an upfront size estimate for `bake!` and `bake_ws!` macros.
 //
 // The macros call `(&&BakeSize(item)).bake_size()`.
@@ -278,146 +298,6 @@ macro_rules! bake_comma {
     ($first:expr $(, $rest:expr)* $(,)?) => {
         $crate::bake!($first $(, ", ", $rest)*)
     };
-}
-
-/// Defines `type Content` and `bake_content`.
-///
-/// `recipe_boilerplate!(R)` sets `Content` to `R`'s default content type.
-///
-/// ```rust
-/// use granola::prelude::*;
-///
-/// #[derive(Default, Debug, Clone)]
-/// struct Greeting;
-///
-/// impl SpanRecipe for Greeting {
-///     recipe_boilerplate!(SpanRecipe);
-///
-///     fn content_recipe() -> Self::Content {
-///         "hello!".into()
-///     }
-/// }
-///
-/// let span = HtmlSpan::from(Greeting);
-/// assert_eq!(span.bake(), "<span>hello!</span>");
-///
-/// let span = HtmlSpan::from(Greeting).content("bye!");
-/// assert_eq!(span.bake(), "<span>bye!</span>");
-/// ```
-///
-/// `recipe_boilerplate!(R, T)` sets `Content = T`.
-/// Requires `T: Into<C>`, where `C` is `R`'s default content type.
-///
-/// ```rust
-/// use askama::Template;
-///
-/// use granola::prelude::*;
-///
-/// #[derive(Default, Debug, Clone, Template)]
-/// #[template(ext = "html", source = "hi!")]
-/// struct Hi;
-///
-/// impl From<Hi> for Bake {
-///     fn from(hi: Hi) -> Self {
-///         Bake::new(&hi)
-///     }
-/// }
-///
-/// impl SpanRecipe for Hi {
-///     recipe_boilerplate!(SpanRecipe, Hi);
-/// }
-///
-/// let span = HtmlSpan::from(Hi);
-/// assert_eq!(span.bake(), "<span>hi!</span>");
-///
-/// let baked = HtmlSpan::from(Hi).bake_recipe();
-/// assert_eq!(baked.bake(), "<span>hi!</span>");
-/// ```
-#[macro_export]
-macro_rules! recipe_boilerplate {
-    ($recipe:path) => {
-        type Content = <() as $recipe>::Content;
-
-        fn bake_content(content: Self::Content) -> Self::Content {
-            content
-        }
-    };
-    ($recipe:path , $custom_type:ty) => {
-        type Content = $custom_type;
-
-        fn bake_content(content: $custom_type) -> <() as $recipe>::Content {
-            content.into()
-        }
-    };
-}
-
-#[cfg(test)]
-mod from_content_type_tests {
-    use askama::Template;
-
-    use crate::prelude::*;
-
-    #[derive(Default, Debug, Clone)]
-    struct Number;
-
-    impl PRecipe for Number {
-        type Content = u8;
-
-        fn bake_content(content: Self::Content) -> Bake {
-            content.to_string().into()
-        }
-    }
-
-    #[derive(Default, Debug, Clone, PartialEq, Template)]
-    #[template(ext = "html", source = "{{ self.0 }}°C")]
-    struct Celsius(i32);
-
-    #[derive(Default, Debug, Clone)]
-    struct Temperature;
-
-    impl PRecipe for Temperature {
-        type Content = Celsius;
-
-        fn bake_content(content: Self::Content) -> Bake {
-            Bake::new(&content)
-        }
-    }
-
-    #[test]
-    fn primitive() {
-        let p = HtmlP::from(Number).content(42);
-        assert_eq!(p.bake(), "<p>42</p>");
-
-        let content: u8 = p.content;
-        assert_eq!(content, 42);
-    }
-
-    #[test]
-    fn primitive_baked() {
-        let baked = HtmlP::from(Number).content(42).bake_recipe();
-        assert_eq!(baked.bake(), "<p>42</p>");
-
-        let content: Bake = baked.content;
-        assert_eq!(content, "42");
-    }
-
-    #[test]
-    fn custom() {
-        let p = HtmlP::from(Temperature).content(Celsius(26));
-        assert_eq!(p.bake(), "<p>26°C</p>");
-
-        let content: Celsius = p.content;
-        assert_eq!(content, Celsius(26));
-    }
-
-    #[test]
-    fn custom_baked() {
-        let baked = HtmlP::from(Temperature).content(Celsius(26)).bake_recipe();
-        assert_eq!(baked.bake(), "<p>26°C</p>");
-
-        let content: Bake = baked.content;
-        assert_eq!(content, "26°C");
-    }
 }
 
 #[cfg(test)]

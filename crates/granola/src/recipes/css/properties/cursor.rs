@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Cursor;
 
 impl DeclarationRecipe for Cursor {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "cursor".into()
     }

@@ -15,8 +15,6 @@ use crate::prelude::*;
 pub struct Headings;
 
 impl RuleRecipe for Headings {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         bake_comma!["h1", "h2", "h3", "h4"]
     }

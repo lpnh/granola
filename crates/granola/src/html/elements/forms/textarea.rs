@@ -44,10 +44,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TextareaRecipe, content = Bake)]
+#[recipe(TextareaRecipe)]
 pub struct HtmlTextarea<R: TextareaRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: TextareaAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,

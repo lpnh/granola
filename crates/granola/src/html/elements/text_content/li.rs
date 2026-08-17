@@ -41,10 +41,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = LiRecipe, content = Bake)]
+#[recipe(LiRecipe)]
 pub struct HtmlLi<R: LiRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// menuitem, menuitemcheckbox, menuitemradio, option, none, presentation,
@@ -56,7 +56,7 @@ pub struct HtmlLi<R: LiRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: LiRecipe<Content = Bake>> HtmlLi<R> {
+impl<R: LiRecipe> HtmlLi<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

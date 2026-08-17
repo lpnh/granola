@@ -1,27 +1,185 @@
-error[E0277]: the trait bound `Foo: askama::FastWritable` is not satisfied
-  --> tests/ui/non_fastwritable.rs:12:20
-   |
-12 |     type Content = Foo;
-   |                    ^^^ unsatisfied trait bound
-   |
-help: the trait `askama::FastWritable` is not implemented for `Foo`
-  --> tests/ui/non_fastwritable.rs:6:1
-   |
- 6 | struct Foo;
-   | ^^^^^^^^^^
-   = help: the following other types implement trait `askama::FastWritable`:
-             &T
-             &mut T
-             AAttrs
-             AreaAttrs
-             Areas
-             Arguments<'_>
-             AudioAttrs
-             BaseAttrs
-           and $N others
-note: required by a bound in `granola::html::SpanRecipe::Content`
-  --> $WORKSPACE/crates/granola/src/html/elements/text_semantics/span.rs
-   |
-   | #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
-   |                                                               ^^^^^^ required by this bound in `SpanRecipe::Content`
-   = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)
+error[E0277]: the trait bound `Bake: From<Foo>` is not satisfied
+ --> tests/ui/non_fastwritable.rs:9:37
+  |
+9 |     let _ = HtmlSpan::new().content(Foo);
+  |                             ------- ^^^ the trait `From<Foo>` is not implemented for `Bake`
+  |                             |
+  |                             required by a bound introduced by this call
+  |
+  = help: `Bake` implements trait `From<T>`:
+            From<&str>
+            From<(HtmlHead<H>, HtmlBody<B>)>
+            From<Areas>
+            From<ButtonType>
+            From<ColorSpace>
+            From<Cow<'_, str>>
+            From<CssAtRule<R>>
+            From<CssCombinator>
+            From<CssComplexSelector<R>>
+            From<CssCompoundSelector<R>>
+            From<CssCustomFunction<R>>
+            From<CssCustomProperty<R>>
+            From<CssDeclaration<R>>
+            From<CssFnAnchorSize<R>>
+            From<CssFnCalc<R>>
+            From<CssFnClamp<R>>
+            From<CssFnColorMix<R>>
+            From<CssFnVar<R>>
+            From<CssRule<R>>
+            From<CssSimpleSelector<R>>
+            From<CssStylesheet<R>>
+            From<CssTypeSelector<R>>
+            From<FormMethod>
+            From<HomemadeHeadContent>
+            From<HomemadeRootContent>
+            From<HtmlA<R>>
+            From<HtmlAbbr<R>>
+            From<HtmlAddress<R>>
+            From<HtmlArea<R>>
+            From<HtmlArticle<R>>
+            From<HtmlAside<R>>
+            From<HtmlAudio<R>>
+            From<HtmlB<R>>
+            From<HtmlBase<R>>
+            From<HtmlBdi<R>>
+            From<HtmlBdo<R>>
+            From<HtmlBlockquote<R>>
+            From<HtmlBody<R>>
+            From<HtmlBr<R>>
+            From<HtmlButton<R>>
+            From<HtmlCanvas<R>>
+            From<HtmlCaption<R>>
+            From<HtmlCite<R>>
+            From<HtmlCode<R>>
+            From<HtmlCol<R>>
+            From<HtmlColgroup<R>>
+            From<HtmlData<R>>
+            From<HtmlDatalist<R>>
+            From<HtmlDd<R>>
+            From<HtmlDel<R>>
+            From<HtmlDetails<R>>
+            From<HtmlDfn<R>>
+            From<HtmlDialog<R>>
+            From<HtmlDiv<R>>
+            From<HtmlDl<R>>
+            From<HtmlDoctype>
+            From<HtmlDocument<R>>
+            From<HtmlDt<R>>
+            From<HtmlEm<R>>
+            From<HtmlEmbed<R>>
+            From<HtmlFieldset<R>>
+            From<HtmlFigcaption<R>>
+            From<HtmlFigure<R>>
+            From<HtmlFooter<R>>
+            From<HtmlForm<R>>
+            From<HtmlH1<R>>
+            From<HtmlH2<R>>
+            From<HtmlH3<R>>
+            From<HtmlH4<R>>
+            From<HtmlHead<R>>
+            From<HtmlHeader<R>>
+            From<HtmlHgroup<R>>
+            From<HtmlHr<R>>
+            From<HtmlI<R>>
+            From<HtmlIframe<R>>
+            From<HtmlImg<R>>
+            From<HtmlInput<R>>
+            From<HtmlIns<R>>
+            From<HtmlKbd<R>>
+            From<HtmlLabel<R>>
+            From<HtmlLegend<R>>
+            From<HtmlLi<R>>
+            From<HtmlLink<R>>
+            From<HtmlMain<R>>
+            From<HtmlMap<R>>
+            From<HtmlMark<R>>
+            From<HtmlMenu<R>>
+            From<HtmlMeta<R>>
+            From<HtmlMeter<R>>
+            From<HtmlNav<R>>
+            From<HtmlNoscript<R>>
+            From<HtmlObject<R>>
+            From<HtmlOl<R>>
+            From<HtmlOptgroup<R>>
+            From<HtmlOption<R>>
+            From<HtmlOutput<R>>
+            From<HtmlP<R>>
+            From<HtmlPicture<R>>
+            From<HtmlPre<R>>
+            From<HtmlProgress<R>>
+            From<HtmlQ<R>>
+            From<HtmlRoot<R>>
+            From<HtmlRootContent>
+            From<HtmlRp<R>>
+            From<HtmlRt<R>>
+            From<HtmlRuby<R>>
+            From<HtmlS<R>>
+            From<HtmlSamp<R>>
+            From<HtmlScript<R>>
+            From<HtmlSearch<R>>
+            From<HtmlSection<R>>
+            From<HtmlSelect<R>>
+            From<HtmlSlot<R>>
+            From<HtmlSmall<R>>
+            From<HtmlSource<R>>
+            From<HtmlStrong<R>>
+            From<HtmlStyle<R>>
+            From<HtmlSub<R>>
+            From<HtmlSummary<R>>
+            From<HtmlSup<R>>
+            From<HtmlTable<R>>
+            From<HtmlTbody<R>>
+            From<HtmlTd<R>>
+            From<HtmlTemplate<R>>
+            From<HtmlTextarea<R>>
+            From<HtmlTfoot<R>>
+            From<HtmlTh<R>>
+            From<HtmlThead<R>>
+            From<HtmlTime<R>>
+            From<HtmlTitle<R>>
+            From<HtmlTr<R>>
+            From<HtmlTrack<R>>
+            From<HtmlU<R>>
+            From<HtmlUl<R>>
+            From<HtmlVar<R>>
+            From<HtmlVideo<R>>
+            From<HtmlWbr<R>>
+            From<InputType>
+            From<ListItems>
+            From<MimeType>
+            From<Options>
+            From<ScriptType>
+            From<String>
+            From<SvgPath<R>>
+            From<SvgRect<R>>
+            From<SvgText<R>>
+            From<TableColumns>
+            From<TableRows>
+            From<TooltipContent>
+            From<Vec<T>>
+            From<[T; N]>
+            From<bool>
+            From<char>
+            From<f32>
+            From<f64>
+            From<granola::html::HtmlSpan<R>>
+            From<granola::svg::Svg<R>>
+            From<i128>
+            From<i16>
+            From<i32>
+            From<i64>
+            From<i8>
+            From<isize>
+            From<u128>
+            From<u16>
+            From<u32>
+            From<u64>
+            From<u8>
+            From<usize>
+  = note: required for `Foo` to implement `Into<Bake>`
+note: required by a bound in `granola::html::HtmlSpan::<R>::content`
+ --> $WORKSPACE/crates/granola/src/html/elements/text_semantics/span.rs
+  |
+  | #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
+  |                                                               ^^^^^^ required by this bound in `HtmlSpan::<R>::content`
+  = note: this error originates in the derive macro `Recipe` (in Nightly builds, run with -Z macro-backtrace for more info)

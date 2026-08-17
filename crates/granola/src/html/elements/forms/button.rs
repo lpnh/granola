@@ -44,10 +44,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ButtonRecipe, content = Bake)]
+#[recipe(ButtonRecipe)]
 pub struct HtmlButton<R: ButtonRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// checkbox, combobox, link, menuitem, menuitemcheckbox, menuitemradio,

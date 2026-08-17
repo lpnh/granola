@@ -37,10 +37,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = TextRecipe, content = Bake)]
+#[recipe(TextRecipe)]
 pub struct SvgText<R: TextRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_svg_attrs: GlobalSvgAttrs,
     pub specific_attrs: TextAttrs,
     pub paint_attrs: PaintAttrs,

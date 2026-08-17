@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct MinWidth;
 
 impl DeclarationRecipe for MinWidth {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "min-width".into()
     }

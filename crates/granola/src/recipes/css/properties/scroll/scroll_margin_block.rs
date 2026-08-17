@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct ScrollMarginBlock;
 
 impl DeclarationRecipe for ScrollMarginBlock {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "scroll-margin-block".into()
     }

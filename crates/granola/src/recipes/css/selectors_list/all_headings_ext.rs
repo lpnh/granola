@@ -15,8 +15,6 @@ use crate::{prelude::*, recipes::*};
 pub struct AllHeadingsExt;
 
 impl RuleRecipe for AllHeadingsExt {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         bake_comma!["p", AllHeadings::selectors_list_recipe()]
     }

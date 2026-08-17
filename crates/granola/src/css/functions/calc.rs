@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// calc({{ expression | kirei }})
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = FnCalcRecipe)]
+#[recipe(FnCalcRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnCalc<R: FnCalcRecipe = ()> {
     _recipe: PhantomData<R>,

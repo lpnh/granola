@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Gap;
 
 impl DeclarationRecipe for Gap {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "gap".into()
     }

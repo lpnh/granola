@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct JustifyContent;
 
 impl DeclarationRecipe for JustifyContent {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "justify-content".into()
     }

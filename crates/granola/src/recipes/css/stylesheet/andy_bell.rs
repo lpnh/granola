@@ -66,9 +66,7 @@ use crate::{macros::*, prelude::*, recipes::*};
 pub struct AndyBell;
 
 impl StylesheetRecipe for AndyBell {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         rules![
             BoxSizingReset,
             rule!(

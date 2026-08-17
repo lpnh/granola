@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct OutlineOffset;
 
 impl DeclarationRecipe for OutlineOffset {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "outline-offset".into()
     }

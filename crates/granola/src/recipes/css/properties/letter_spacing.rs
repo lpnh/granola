@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct LetterSpacing;
 
 impl DeclarationRecipe for LetterSpacing {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "letter-spacing".into()
     }

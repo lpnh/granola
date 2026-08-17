@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FlexShrink;
 
 impl DeclarationRecipe for FlexShrink {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "flex-shrink".into()
     }

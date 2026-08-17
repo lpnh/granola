@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FlexWrap;
 
 impl DeclarationRecipe for FlexWrap {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "flex-wrap".into()
     }

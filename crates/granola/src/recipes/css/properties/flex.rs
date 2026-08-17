@@ -29,8 +29,6 @@ use crate::prelude::*;
 pub struct Flex;
 
 impl DeclarationRecipe for Flex {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "flex".into()
     }

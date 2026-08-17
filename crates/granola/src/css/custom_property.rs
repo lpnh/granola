@@ -23,7 +23,7 @@ use crate::prelude::*;
 /// --{{ name }}
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = CustomPropertyRecipe)]
+#[recipe(CustomPropertyRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssCustomProperty<R: CustomPropertyRecipe = ()> {
     _recipe: PhantomData<R>,

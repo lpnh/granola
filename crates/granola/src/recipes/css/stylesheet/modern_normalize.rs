@@ -107,9 +107,7 @@ use crate::{macros::*, prelude::*, recipes::*};
 pub struct ModernNormalize;
 
 impl StylesheetRecipe for ModernNormalize {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         rules![
             BoxSizingReset,
             rule!(

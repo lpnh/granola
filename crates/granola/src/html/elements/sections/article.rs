@@ -57,10 +57,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ArticleRecipe, content = Bake)]
+#[recipe(ArticleRecipe)]
 pub struct HtmlArticle<R: ArticleRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// application, document, feed, main, none, presentation, region
@@ -70,7 +70,7 @@ pub struct HtmlArticle<R: ArticleRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: ArticleRecipe<Content = Bake>> HtmlArticle<R> {
+impl<R: ArticleRecipe> HtmlArticle<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

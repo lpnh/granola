@@ -200,9 +200,7 @@ use crate::{macros::*, prelude::*, recipes::*};
 pub struct Preflight;
 
 impl StylesheetRecipe for Preflight {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(UniversalReset),
             rule!(
@@ -395,13 +393,11 @@ impl CustomPropertyRecipe for DefaultFontFamily {
 }
 
 impl CustomFunctionRecipe for DefaultFontFamily {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn name_recipe() -> Bake {
         Theme::name_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_comma![
             CssCustomProperty::from(Self),
             "ui-sans-serif",
@@ -436,13 +432,11 @@ impl CustomPropertyRecipe for DefaultFontFeatureSettings {
 }
 
 impl CustomFunctionRecipe for DefaultFontFeatureSettings {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn name_recipe() -> Bake {
         Theme::name_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
@@ -468,13 +462,11 @@ impl CustomPropertyRecipe for DefaultFontVariationSettings {
 }
 
 impl CustomFunctionRecipe for DefaultFontVariationSettings {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn name_recipe() -> Bake {
         Theme::name_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
@@ -500,13 +492,11 @@ impl CustomPropertyRecipe for DefaultMonoFontFamily {
 }
 
 impl CustomFunctionRecipe for DefaultMonoFontFamily {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn name_recipe() -> Bake {
         Theme::name_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_comma![
             CssCustomProperty::from(Self),
             "ui-monospace",
@@ -545,13 +535,11 @@ impl CustomPropertyRecipe for DefaultMonoFontFeatureSettings {
 }
 
 impl CustomFunctionRecipe for DefaultMonoFontFeatureSettings {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn name_recipe() -> Bake {
         Theme::name_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
@@ -580,13 +568,11 @@ impl CustomPropertyRecipe for DefaultMonoFontVariationSettings {
 }
 
 impl CustomFunctionRecipe for DefaultMonoFontVariationSettings {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn name_recipe() -> Bake {
         Theme::name_recipe()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_comma![CssCustomProperty::from(Self), "normal"]
     }
 }
@@ -606,8 +592,6 @@ impl CustomFunctionRecipe for DefaultMonoFontVariationSettings {
 pub struct Theme;
 
 impl CustomFunctionRecipe for Theme {
-    recipe_boilerplate!(CustomFunctionRecipe);
-
     fn name_recipe() -> Bake {
         "theme".into()
     }

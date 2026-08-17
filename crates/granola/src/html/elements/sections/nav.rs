@@ -61,10 +61,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = NavRecipe, content = Bake)]
+#[recipe(NavRecipe)]
 pub struct HtmlNav<R: NavRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// menu, menubar, none, presentation, tablist
@@ -74,7 +74,7 @@ pub struct HtmlNav<R: NavRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: NavRecipe<Content = Bake>> HtmlNav<R> {
+impl<R: NavRecipe> HtmlNav<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

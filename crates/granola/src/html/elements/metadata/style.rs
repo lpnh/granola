@@ -48,10 +48,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = StyleRecipe, content = Bake)]
+#[recipe(StyleRecipe)]
 pub struct HtmlStyle<R: StyleRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: StyleAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,

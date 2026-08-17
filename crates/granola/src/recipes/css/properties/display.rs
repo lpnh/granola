@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Display;
 
 impl DeclarationRecipe for Display {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "display".into()
     }

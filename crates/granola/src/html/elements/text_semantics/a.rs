@@ -38,10 +38,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = ARecipe, content = Bake)]
+#[recipe(ARecipe)]
 pub struct HtmlA<R: ARecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// when href attribute is present: button, checkbox, menuitem,

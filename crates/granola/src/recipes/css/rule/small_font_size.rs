@@ -21,13 +21,11 @@ use granola::{prelude::*, recipes::*};
 pub struct SmallFontSize;
 
 impl RuleRecipe for SmallFontSize {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         "small".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         CssDeclaration::from(FontSize).content("80%").into()
     }
 }

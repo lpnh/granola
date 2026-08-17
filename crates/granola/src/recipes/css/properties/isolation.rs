@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Isolation;
 
 impl DeclarationRecipe for Isolation {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "isolation".into()
     }

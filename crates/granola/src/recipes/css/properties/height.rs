@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Height;
 
 impl DeclarationRecipe for Height {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "height".into()
     }

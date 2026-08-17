@@ -3,7 +3,7 @@ use granola::{homemade::*, prelude::*};
 const FAVICON: &str = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' \
     viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>";
 
-pub fn page() -> HtmlDocument<Homemade> {
+pub fn page() -> HtmlDocument {
     let description = HtmlMeta::new().name("description").content(
         "A cozy café on the corner of Oak Street and Elm Avenue, pouring coffee \
         and baking sourdough since six every morning.",
@@ -16,6 +16,7 @@ pub fn page() -> HtmlDocument<Homemade> {
         .name("theme-color")
         .content("#1c140d")
         .media("(prefers-color-scheme: dark)");
+
     let favicon = HtmlLink::new().rel("icon").href(FAVICON);
     let title = HtmlTitle::new().content("Oats &amp; Ends Café");
     let style = HtmlStyle::new().content(super::style());
@@ -41,15 +42,16 @@ pub fn page() -> HtmlDocument<Homemade> {
         .fold_in(main)
         .fold_in(site_footer());
 
-    HtmlDocument::from(Homemade)
-        .lang("en")
+    let root_content = HomemadeRootContent::new()
         .push_meta(description)
         .push_meta(theme_light)
         .push_meta(theme_dark)
         .push_title(title)
         .push_link(favicon)
         .push_style(style)
-        .body(body)
+        .body(body);
+
+    HtmlDocument::new().content(HtmlRoot::new().lang("en").content(root_content))
 }
 
 fn site_header() -> HtmlHeader {
@@ -302,7 +304,7 @@ fn site_footer() -> HtmlFooter {
     HtmlFooter::new().content(inner).class("site-footer")
 }
 
-fn menu_group(title: &'static str, items: impl Into<ListItems>) -> HtmlDiv {
+fn menu_group(title: &'static str, items: impl Into<Bake>) -> HtmlDiv {
     let h3 = HtmlH3::new().content(title);
     let list = HtmlUl::new().content(items).class("menu-list").role("list");
 
@@ -336,8 +338,9 @@ fn menu_item_with_tip(
 fn info_tip(id: &'static str, note: &'static str) -> HtmlSpan<Tooltip> {
     let trigger = HtmlButton::from(Tip).content("i");
 
+    let content = TooltipContent::new(id, trigger).text(note);
+
     HtmlSpan::from(Tooltip)
-        .with_id(id, trigger)
-        .text(note)
+        .content(content)
         .placement(Placement::Top)
 }

@@ -168,9 +168,7 @@ mod tests {
     #[derive(Default, Debug, Clone, PartialEq)]
     struct Dummy;
 
-    impl DivRecipe for Dummy {
-        recipe_boilerplate!(DivRecipe);
-    }
+    impl DivRecipe for Dummy {}
 
     impl HasStyle for Dummy {
         type Style = TestStyle;

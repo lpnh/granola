@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct PositionArea;
 
 impl DeclarationRecipe for PositionArea {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "position-area".into()
     }

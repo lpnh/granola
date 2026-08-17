@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct MinHeight;
 
 impl DeclarationRecipe for MinHeight {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "min-height".into()
     }

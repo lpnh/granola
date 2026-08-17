@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct PointerEvents;
 
 impl DeclarationRecipe for PointerEvents {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "pointer-events".into()
     }

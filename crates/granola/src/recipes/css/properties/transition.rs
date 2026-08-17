@@ -26,8 +26,6 @@ use crate::prelude::*;
 pub struct Transition;
 
 impl DeclarationRecipe for Transition {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "transition".into()
     }

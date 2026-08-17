@@ -26,7 +26,7 @@ use crate::prelude::*;
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = ComplexSelectorRecipe)]
+#[recipe(ComplexSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssComplexSelector<R: ComplexSelectorRecipe = ()> {
     _recipe: PhantomData<R>,

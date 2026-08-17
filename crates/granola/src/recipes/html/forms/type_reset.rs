@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TypeReset;
 
 impl ButtonRecipe for TypeReset {
-    recipe_boilerplate!(ButtonRecipe);
-
     fn specific_attrs_recipe() -> ButtonAttrs {
         ButtonAttrs::default().button_type(ButtonType::Reset)
     }

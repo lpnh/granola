@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct LineHeight;
 
 impl DeclarationRecipe for LineHeight {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "line-height".into()
     }

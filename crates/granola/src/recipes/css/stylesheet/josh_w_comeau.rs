@@ -58,9 +58,7 @@ use crate::{macros::*, prelude::*, recipes::*};
 pub struct JoshWComeau;
 
 impl StylesheetRecipe for JoshWComeau {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(BoxSizingReset),
             rule!("*:not(dialog)", declaration!(Margin, "0")),

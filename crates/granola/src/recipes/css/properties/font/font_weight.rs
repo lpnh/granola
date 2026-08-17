@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FontWeight;
 
 impl DeclarationRecipe for FontWeight {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "font-weight".into()
     }

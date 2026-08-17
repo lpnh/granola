@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct PaddingBlock;
 
 impl DeclarationRecipe for PaddingBlock {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "padding-block".into()
     }

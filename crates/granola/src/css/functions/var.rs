@@ -25,7 +25,7 @@ use crate::{filters, prelude::*};
 /// )
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = FnVarRecipe)]
+#[recipe(FnVarRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnVar<R: FnVarRecipe = ()> {
     _recipe: PhantomData<R>,

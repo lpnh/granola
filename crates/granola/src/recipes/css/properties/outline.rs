@@ -26,8 +26,6 @@ use crate::prelude::*;
 pub struct Outline;
 
 impl DeclarationRecipe for Outline {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "outline".into()
     }

@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct ScrollBehavior;
 
 impl DeclarationRecipe for ScrollBehavior {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "scroll-behavior".into()
     }

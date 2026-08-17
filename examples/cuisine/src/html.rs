@@ -2,7 +2,7 @@ use granola::{daisyui::btn, homemade::*, macros::*, prelude::*};
 
 use crate::{css::Stylesheet, handlers::Reset, snippets::snippets, utils::Palette};
 
-pub fn home_page(palette: Palette) -> HtmlDocument<Homemade> {
+pub fn home_page(palette: Palette) -> HtmlDocument {
     let menu = nav![
         h2!("What's On the Menu"),
         p!(
@@ -15,15 +15,17 @@ pub fn home_page(palette: Palette) -> HtmlDocument<Homemade> {
         ),
     ];
 
-    page(
-        "cuisine example",
-        body!(header!(h1!("cuisine")), main_card(menu)),
+    document(
+        page(
+            "cuisine example",
+            body!(header!(h1!("cuisine")), main_card(menu)),
+        )
+        .push_link(Stylesheet::Cuisine.link())
+        .push_style(palette_style(palette)),
     )
-    .push_link(Stylesheet::Cuisine.link())
-    .push_style(palette_style(palette))
 }
 
-pub fn palette_page(palette: Palette) -> HtmlDocument<Homemade> {
+pub fn palette_page(palette: Palette) -> HtmlDocument {
     let swatches = div!(
         swatch_div("base-100", &palette.base_100),
         swatch_div("base-200", &palette.base_200),
@@ -32,18 +34,20 @@ pub fn palette_page(palette: Palette) -> HtmlDocument<Homemade> {
     )
     .class("flex flex-wrap justify-center gap-4 p-4 sm:p-8");
 
-    example_page(
-        "palette - cuisine example",
-        "Palette generator",
-        palette_picker(&palette.source),
-        swatches,
+    document(
+        example_page(
+            "palette - cuisine example",
+            "Palette generator",
+            palette_picker(&palette.source),
+            swatches,
+        )
+        .push_link(Stylesheet::Cuisine.link())
+        .push_style(palette_style(palette)),
     )
-    .push_link(Stylesheet::Cuisine.link())
-    .push_style(palette_style(palette))
 }
 
-pub fn reset_page(reset: Reset) -> HtmlDocument<Homemade> {
-    let mut page = example_page(
+pub fn reset_page(reset: Reset) -> HtmlDocument {
+    let mut content = example_page(
         "resets - cuisine example",
         "CSS resets",
         reset_picker(reset),
@@ -51,17 +55,20 @@ pub fn reset_page(reset: Reset) -> HtmlDocument<Homemade> {
     );
 
     if let Some(stylesheet) = reset.stylesheet() {
-        page = page.push_link(stylesheet.link());
+        content = content.push_link(stylesheet.link());
     }
 
-    page
+    document(content)
 }
 
-fn page(title: &'static str, body: HtmlBody) -> HtmlDocument<Homemade> {
-    HtmlDocument::from(Homemade)
-        .lang("en")
+fn page(title: &'static str, body: HtmlBody) -> HomemadeRootContent {
+    HomemadeRootContent::new()
         .push_title(title!(title))
         .body(body.class("flex flex-col items-center gap-8"))
+}
+
+fn document(content: HomemadeRootContent) -> HtmlDocument {
+    HtmlDocument::new().content(HtmlRoot::new().lang("en").content(content))
 }
 
 fn main_card(content: impl Into<Bake>) -> HtmlMain {
@@ -73,7 +80,7 @@ fn example_page(
     heading: &'static str,
     picker: HtmlForm,
     content: impl Into<Bake>,
-) -> HtmlDocument<Homemade> {
+) -> HomemadeRootContent {
     page(
         title,
         body!(

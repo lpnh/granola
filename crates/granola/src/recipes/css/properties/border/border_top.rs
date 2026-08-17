@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BorderTop;
 
 impl DeclarationRecipe for BorderTop {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-top".into()
     }

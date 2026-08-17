@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct WebkitTextSizeAdjust;
 
 impl DeclarationRecipe for WebkitTextSizeAdjust {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "-webkit-text-size-adjust".into()
     }

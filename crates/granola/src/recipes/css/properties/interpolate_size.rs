@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct InterpolateSize;
 
 impl DeclarationRecipe for InterpolateSize {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "interpolate-size".into()
     }

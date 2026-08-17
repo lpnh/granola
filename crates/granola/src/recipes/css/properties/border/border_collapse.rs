@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BorderCollapse;
 
 impl DeclarationRecipe for BorderCollapse {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-collapse".into()
     }

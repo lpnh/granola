@@ -43,7 +43,7 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = InputRecipe)]
+#[recipe(InputRecipe)]
 pub struct HtmlInput<R: InputRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles

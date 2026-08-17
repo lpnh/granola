@@ -12,9 +12,10 @@ use crate::{homemade::*, macros::declarations_block, prelude::*, recipes::*};
 ///
 /// let tip = HtmlButton::from(Tip).content("i");
 ///
+/// let content = TooltipContent::new("tip_id", tip).text("Roll 2d10.");
+///
 /// let tooltip = HtmlSpan::from(Tooltip)
-///     .with_id("tip_id", tip)
-///     .text("Roll 2d10.")
+///     .content(content)
 ///     .placement(Placement::Bottom);
 ///
 /// assert_eq!(
@@ -165,34 +166,43 @@ pub struct Tooltip;
 /// ```askama
 /// {{ element }}{{ bubble }}
 /// ```
-#[derive(Default, Debug, Clone, Template, Granola)]
+#[derive(Debug, Clone, Template, Granola)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct TooltipContent {
     element: Bake,
     bubble: HtmlSpan<TipBubble>,
 }
 
+impl Default for TooltipContent {
+    fn default() -> Self {
+        Self {
+            element: Bake::default(),
+            bubble: HtmlSpan::from(TipBubble),
+        }
+    }
+}
+
 impl TooltipContent {
     pub fn new(
-        mut self,
         id: impl Into<Cow<'static, str>>,
         element: impl Into<Bake> + HasGlobalAriaAttrs,
     ) -> Self {
         let cloned_id = id.into().to_string();
-        self.element = element.aria_describedby(cloned_id.clone()).into();
-        self.bubble = self.bubble.id(cloned_id.clone());
+        Self {
+            element: element.aria_describedby(cloned_id.clone()).into(),
+            bubble: HtmlSpan::from(TipBubble).id(cloned_id),
+        }
+    }
+
+    pub fn text(mut self, text: impl Into<Bake>) -> Self {
+        self.bubble = self.bubble.content(text);
         self
     }
 }
 
 impl SpanRecipe for Tooltip {
-    recipe_boilerplate!(SpanRecipe, TooltipContent);
-
-    fn content_recipe() -> Self::Content {
-        Self::Content {
-            bubble: HtmlSpan::from(TipBubble),
-            ..Default::default()
-        }
+    fn content_recipe() -> Bake {
+        TooltipContent::default().into()
     }
 
     fn global_attrs_recipe() -> GlobalAttrs {
@@ -201,50 +211,12 @@ impl SpanRecipe for Tooltip {
 }
 
 impl DivRecipe for Tooltip {
-    recipe_boilerplate!(DivRecipe, TooltipContent);
-
-    fn content_recipe() -> Self::Content {
-        Self::Content {
-            bubble: HtmlSpan::from(TipBubble),
-            ..Default::default()
-        }
+    fn content_recipe() -> Bake {
+        TooltipContent::default().into()
     }
 
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("tooltip")
-    }
-}
-
-impl HtmlSpan<Tooltip> {
-    pub fn with_id(
-        mut self,
-        id: impl Into<Cow<'static, str>>,
-        element: impl Into<Bake> + HasGlobalAriaAttrs,
-    ) -> Self {
-        let id_str = id.into();
-        self.content = self.content.new(id_str.clone(), element);
-        self
-    }
-
-    pub fn text(mut self, text: impl Into<Bake>) -> Self {
-        self.content.bubble = self.content.bubble.content(text);
-        self
-    }
-}
-
-impl HtmlDiv<Tooltip> {
-    pub fn with_id(
-        self,
-        id: impl Into<Cow<'static, str>>,
-        element: impl Into<Bake> + HasGlobalAriaAttrs,
-    ) -> Self {
-        Self::from(Tooltip).content.new(id.into(), element);
-        self
-    }
-
-    pub fn text(mut self, text: impl Into<Bake>) -> Self {
-        self.content.bubble = self.content.bubble.content(text);
-        self
     }
 }
 
@@ -256,9 +228,7 @@ impl HasTooltipPlacement for HtmlDiv<Tooltip> {
 }
 
 impl StylesheetRecipe for Tooltip {
-    recipe_boilerplate!(StylesheetRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(Tooltip),
             CssRule::from(Tip),
@@ -351,13 +321,11 @@ fn tip_bubble_tail_placements() -> Bake {
 }
 
 impl RuleRecipe for Tooltip {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".tooltip".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         bake_ws![
             CssDeclaration::from(Display).content("inline flex"),
             CssDeclaration::from(AnchorScope).content("all"),
@@ -384,8 +352,6 @@ impl RuleRecipe for Tooltip {
 pub struct Tip;
 
 impl ButtonRecipe for Tip {
-    recipe_boilerplate!(ButtonRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("tip")
     }
@@ -396,13 +362,11 @@ impl ButtonRecipe for Tip {
 }
 
 impl RuleRecipe for Tip {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".tip".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         declarations_block![
             (Display, "inline flex"),
             (AlignItems, "center"),
@@ -451,21 +415,17 @@ fn tip_trigger_hover() -> CssRule {
 pub struct TipBubble;
 
 impl SpanRecipe for TipBubble {
-    recipe_boilerplate!(SpanRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("tip-bubble").role("tooltip")
     }
 }
 
 impl RuleRecipe for TipBubble {
-    recipe_boilerplate!(RuleRecipe);
-
     fn selectors_list_recipe() -> Bake {
         ".tip-bubble".into()
     }
 
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         declarations_block![
             (Display, "none"),
             (Opacity, "0"),

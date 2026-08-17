@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextAlign;
 
 impl DeclarationRecipe for TextAlign {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-align".into()
     }

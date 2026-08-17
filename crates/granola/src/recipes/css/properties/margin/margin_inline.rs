@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct MarginInline;
 
 impl DeclarationRecipe for MarginInline {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "margin-inline".into()
     }

@@ -3,10 +3,7 @@
 use gungraun::prelude::*;
 use std::hint::black_box;
 
-use granola::{
-    homemade::Homemade,
-    prelude::{CssStylesheet, HtmlDocument},
-};
+use granola::prelude::{CssStylesheet, HtmlDocument};
 
 main!(library_benchmark_groups = [html, css]);
 
@@ -16,17 +13,17 @@ library_benchmark_group!(
 );
 
 #[library_benchmark(setup = html_fixture_standard)]
-fn html_standard(snippet: HtmlDocument<Homemade>) -> String {
+fn html_standard(snippet: HtmlDocument) -> String {
     black_box(snippet.bake())
 }
 
 #[library_benchmark(setup = html_fixture_macros)]
-fn html_macros(snippet: HtmlDocument<Homemade>) -> String {
+fn html_macros(snippet: HtmlDocument) -> String {
     black_box(snippet.bake())
 }
 
 #[library_benchmark(setup = html_fixture_recipes)]
-fn html_recipes(snippet: HtmlDocument<Homemade>) -> String {
+fn html_recipes(snippet: HtmlDocument) -> String {
     black_box(snippet.bake())
 }
 
@@ -50,15 +47,15 @@ fn css_recipes(snippet: CssStylesheet) -> String {
     black_box(snippet.bake())
 }
 
-pub fn html_fixture_standard() -> HtmlDocument<Homemade> {
+pub fn html_fixture_standard() -> HtmlDocument {
     fixtures::standard::page()
 }
 
-pub fn html_fixture_macros() -> HtmlDocument<Homemade> {
+pub fn html_fixture_macros() -> HtmlDocument {
     fixtures::macros::page()
 }
 
-pub fn html_fixture_recipes() -> HtmlDocument<Homemade> {
+pub fn html_fixture_recipes() -> HtmlDocument {
     fixtures::recipes::page()
 }
 

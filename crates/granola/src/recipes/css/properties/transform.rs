@@ -21,8 +21,6 @@ use crate::prelude::*;
 pub struct Transform;
 
 impl DeclarationRecipe for Transform {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "transform".into()
     }

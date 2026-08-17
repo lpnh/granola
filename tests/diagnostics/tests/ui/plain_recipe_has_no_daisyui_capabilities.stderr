@@ -1,22 +1,22 @@
 error[E0599]: the method `color` exists for struct `granola::html::HtmlDiv<PlainRecipe>`, but its trait bounds were not satisfied
-  --> tests/ui/plain_recipe_has_no_daisyui_capabilities.rs:11:40
-   |
- 4 | struct PlainRecipe;
-   | ------------------ doesn't satisfy `PlainRecipe: HasColor`
+ --> tests/ui/plain_recipe_has_no_daisyui_capabilities.rs:9:40
+  |
+4 | struct PlainRecipe;
+  | ------------------ doesn't satisfy `PlainRecipe: HasColor`
 ...
-11 |     let _ = HtmlDiv::from(PlainRecipe).color(());
-   |                                        ^^^^^ method cannot be called on `granola::html::HtmlDiv<PlainRecipe>` due to unsatisfied trait bounds
-   |
-  ::: $WORKSPACE/crates/granola/src/html/elements/text_content/div.rs
-   |
-   | pub struct HtmlDiv<R: DivRecipe = ()> {
-   | ------------------------------------- doesn't satisfy `_: DaisyUIColor`
-   |
-   = note: the following trait bounds were not satisfied:
-           `PlainRecipe: HasColor`
-           which is required by `granola::html::HtmlDiv<PlainRecipe>: granola::daisyui::DaisyUIColor`
+9 |     let _ = HtmlDiv::from(PlainRecipe).color(());
+  |                                        ^^^^^ method cannot be called on `granola::html::HtmlDiv<PlainRecipe>` due to unsatisfied trait bounds
+  |
+ ::: $WORKSPACE/crates/granola/src/html/elements/text_content/div.rs
+  |
+  | pub struct HtmlDiv<R: DivRecipe = ()> {
+  | ------------------------------------- doesn't satisfy `_: DaisyUIColor`
+  |
+  = note: the following trait bounds were not satisfied:
+          `PlainRecipe: HasColor`
+          which is required by `granola::html::HtmlDiv<PlainRecipe>: granola::daisyui::DaisyUIColor`
 note: the trait `HasColor` must be implemented
-  --> $WORKSPACE/crates/granola/src/daisyui/traits.rs
-   |
-   | pub trait HasColor {
-   | ^^^^^^^^^^^^^^^^^^
+ --> $WORKSPACE/crates/granola/src/daisyui/traits.rs
+  |
+  | pub trait HasColor {
+  | ^^^^^^^^^^^^^^^^^^

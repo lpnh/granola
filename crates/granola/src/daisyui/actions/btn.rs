@@ -66,16 +66,12 @@ daisyui_component! {
 }
 
 impl ButtonRecipe for Btn {
-    recipe_boilerplate!(ButtonRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
 }
 
 impl ARecipe for Btn {
-    recipe_boilerplate!(ARecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
@@ -88,24 +84,18 @@ impl InputRecipe for Btn {
 }
 
 impl DivRecipe for Btn {
-    recipe_boilerplate!(DivRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS).role("button")
     }
 }
 
 impl SpanRecipe for Btn {
-    recipe_boilerplate!(SpanRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
 }
 
 impl LabelRecipe for Btn {
-    recipe_boilerplate!(LabelRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }

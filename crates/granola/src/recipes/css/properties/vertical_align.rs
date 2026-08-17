@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct VerticalAlign;
 
 impl DeclarationRecipe for VerticalAlign {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "vertical-align".into()
     }

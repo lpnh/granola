@@ -49,7 +49,7 @@ use crate::prelude::*;
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = HrRecipe)]
+#[recipe(HrRecipe)]
 pub struct HtmlHr<R: HrRecipe = ()> {
     _recipe: PhantomData<R>,
     /// # Permitted ARIA roles

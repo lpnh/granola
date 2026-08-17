@@ -21,8 +21,6 @@ use crate::prelude::*;
 pub struct Color;
 
 impl DeclarationRecipe for Color {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "color".into()
     }

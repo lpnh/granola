@@ -32,7 +32,7 @@ use crate::prelude::*;
 /// {%- endfor -%}
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = CompoundSelectorRecipe)]
+#[recipe(CompoundSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssCompoundSelector<R: CompoundSelectorRecipe = ()> {
     _recipe: PhantomData<R>,

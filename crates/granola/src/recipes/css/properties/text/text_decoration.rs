@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextDecoration;
 
 impl DeclarationRecipe for TextDecoration {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-decoration".into()
     }

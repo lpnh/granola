@@ -20,8 +20,6 @@ use crate::prelude::*;
 pub struct Background;
 
 impl DeclarationRecipe for Background {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "background".into()
     }

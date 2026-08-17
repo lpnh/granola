@@ -90,8 +90,6 @@ use crate::prelude::*;
 pub struct Border;
 
 impl DeclarationRecipe for Border {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border".into()
     }

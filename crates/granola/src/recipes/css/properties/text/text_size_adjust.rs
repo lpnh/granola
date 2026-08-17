@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextSizeAdjust;
 
 impl DeclarationRecipe for TextSizeAdjust {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-size-adjust".into()
     }

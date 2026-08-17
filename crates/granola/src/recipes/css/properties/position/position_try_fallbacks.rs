@@ -21,8 +21,6 @@ use crate::prelude::*;
 pub struct PositionTryFallbacks;
 
 impl DeclarationRecipe for PositionTryFallbacks {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "position-try-fallbacks".into()
     }

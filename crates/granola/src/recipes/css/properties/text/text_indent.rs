@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct TextIndent;
 
 impl DeclarationRecipe for TextIndent {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "text-indent".into()
     }

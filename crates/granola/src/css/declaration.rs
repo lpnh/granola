@@ -25,12 +25,12 @@ use crate::{filters, prelude::*};
 /// {{ property }}: {{ content | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = DeclarationRecipe, content = Bake)]
+#[recipe(DeclarationRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssDeclaration<R: DeclarationRecipe = ()> {
     _recipe: PhantomData<R>,
     pub property: Bake,
-    pub content: R::Content,
+    pub content: Bake,
 }
 
 impl<R: DeclarationRecipe> CssDeclaration<R> {
@@ -40,7 +40,7 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
     }
 }
 
-impl<R: DeclarationRecipe<Content = Bake>> CssDeclaration<R> {
+impl<R: DeclarationRecipe> CssDeclaration<R> {
     /// Apply the `inherit` keyword to the property.
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/inherit)

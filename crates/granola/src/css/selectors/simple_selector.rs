@@ -23,7 +23,7 @@ use crate::prelude::*;
 /// {{ selector }}
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = SimpleSelectorRecipe)]
+#[recipe(SimpleSelectorRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssSimpleSelector<R: SimpleSelectorRecipe = ()> {
     _recipe: PhantomData<R>,

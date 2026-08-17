@@ -37,14 +37,14 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[granola(format = css)]
-#[recipe(name = StylesheetRecipe, content = Bake)]
+#[recipe(StylesheetRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssStylesheet<R: StylesheetRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
 }
 
-impl<R: StylesheetRecipe<Content = Bake>> CssStylesheet<R> {
+impl<R: StylesheetRecipe> CssStylesheet<R> {
     pub fn push(mut self, statement: impl FastWritable) -> Self {
         self.content.fold_in_ws(statement);
         self

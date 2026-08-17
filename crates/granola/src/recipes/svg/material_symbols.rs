@@ -25,8 +25,6 @@ use crate::{prelude::*, recipes::*};
 pub struct MaterialSymbols;
 
 impl SvgRecipe for MaterialSymbols {
-    recipe_boilerplate!(SvgRecipe);
-
     fn specific_attrs_recipe() -> SvgAttrs {
         SvgAttrs::default()
             .height("24px")

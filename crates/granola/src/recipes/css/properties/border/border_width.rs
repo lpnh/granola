@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct BorderWidth;
 
 impl DeclarationRecipe for BorderWidth {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "border-width".into()
     }

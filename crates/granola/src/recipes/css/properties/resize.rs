@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Resize;
 
 impl DeclarationRecipe for Resize {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "resize".into()
     }

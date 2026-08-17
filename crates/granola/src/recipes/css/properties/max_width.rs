@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct MaxWidth;
 
 impl DeclarationRecipe for MaxWidth {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "max-width".into()
     }

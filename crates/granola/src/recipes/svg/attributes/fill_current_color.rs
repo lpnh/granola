@@ -13,8 +13,6 @@ use crate::prelude::*;
 pub struct FillCurrentColor;
 
 impl SvgRecipe for FillCurrentColor {
-    recipe_boilerplate!(SvgRecipe);
-
     fn paint_attrs_recipe() -> PaintAttrs {
         PaintAttrs::default().fill("currentColor")
     }

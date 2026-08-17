@@ -54,10 +54,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = FigureRecipe, content = Bake)]
+#[recipe(FigureRecipe)]
 pub struct HtmlFigure<R: FigureRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// With figcaption descendant: no permitted roles

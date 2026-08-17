@@ -3,7 +3,7 @@ use granola::{homemade::*, macros::*, prelude::*};
 const FAVICON: &str = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' \
     viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>";
 
-pub fn page() -> HtmlDocument<Homemade> {
+pub fn page() -> HtmlDocument {
     let description = meta!().name("description").content(
         "A cozy café on the corner of Oak Street and Elm Avenue, pouring coffee \
         and baking sourdough since six every morning.",
@@ -40,24 +40,23 @@ pub fn page() -> HtmlDocument<Homemade> {
         HtmlFooter::from(SiteFooter),
     ];
 
-    HtmlDocument::from(Homemade)
-        .lang("en")
+    let root_content = HomemadeRootContent::new()
         .push_meta(description)
         .push_meta(theme_light)
         .push_meta(theme_dark)
         .push_title(title)
         .push_link(favicon)
         .push_style(style)
-        .body(body)
+        .body(body);
+
+    HtmlDocument::new().content(HtmlRoot::new().lang("en").content(root_content))
 }
 
 #[derive(Debug, Default, Clone)]
 pub struct SiteHeader;
 
 impl HeaderRecipe for SiteHeader {
-    recipe_boilerplate!(HeaderRecipe, HtmlNav);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let brand = a!("Oats &amp; Ends").href("/").class("brand");
         let menu_link = a!("Menu").href("#menu");
         let hours_link = a!("Hours").href("#hours");
@@ -71,6 +70,7 @@ impl HeaderRecipe for SiteHeader {
         nav!(brand, nav_links)
             .aria_label("Primary")
             .class("site-nav wrap")
+            .into()
     }
 
     fn global_attrs_recipe() -> GlobalAttrs {
@@ -82,9 +82,7 @@ impl HeaderRecipe for SiteHeader {
 pub struct Hero;
 
 impl SectionRecipe for Hero {
-    recipe_boilerplate!(SectionRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let h1 = h1!("Freshly roasted, freshly baked");
         let lede = p!("We open at six and pour until the last regular leaves. \
             Come for the coffee, stay for the toast.")
@@ -106,9 +104,7 @@ impl SectionRecipe for Hero {
 pub struct AboutArticle;
 
 impl ArticleRecipe for AboutArticle {
-    recipe_boilerplate!(ArticleRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let h2 = h2!("Our story");
         let p = p!(
             "Oats &amp; Ends opened on Oak Street, at the corner of Elm Avenue, bringing \
@@ -129,9 +125,7 @@ impl ArticleRecipe for AboutArticle {
 pub struct MenuSection;
 
 impl SectionRecipe for MenuSection {
-    recipe_boilerplate!(SectionRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let h2 = h2!("On the menu").id("menu-heading");
         let intro = p!("Small menu, made in-house, changed with the seasons.").class("lede");
 
@@ -187,9 +181,7 @@ impl SectionRecipe for MenuSection {
 pub struct HoursSection;
 
 impl SectionRecipe for HoursSection {
-    recipe_boilerplate!(SectionRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let h2 = h2!("Hours").id("hours-heading");
 
         let thead = thead!(tr![th!("Day").scope("col"), th!("Hours").scope("col")]);
@@ -218,9 +210,7 @@ impl SectionRecipe for HoursSection {
 pub struct VisitSection;
 
 impl SectionRecipe for VisitSection {
-    recipe_boilerplate!(SectionRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let h2 = h2!("Visit").id("visit-heading");
 
         let mail = a!("hello@oatsandends.test").href("mailto:hello@oatsandends.test");
@@ -249,9 +239,7 @@ impl SectionRecipe for VisitSection {
 pub struct NewsletterSection;
 
 impl SectionRecipe for NewsletterSection {
-    recipe_boilerplate!(SectionRecipe);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let h2 = h2!("Stay in the loop").id("newsletter-heading");
         let intro = p!(
             "New seasonal drinks, bread restocks, and the occasional live music \
@@ -295,13 +283,11 @@ impl SectionRecipe for NewsletterSection {
 pub struct SiteFooter;
 
 impl FooterRecipe for SiteFooter {
-    recipe_boilerplate!(FooterRecipe, HtmlDiv);
-
-    fn content_recipe() -> Self::Content {
+    fn content_recipe() -> Bake {
         let copyright = small!("&copy; 2026 Oats &amp; Ends Café");
         let address = address!("Oak Street, corner of Elm Avenue");
 
-        div!(copyright, address).class("wrap footer-inner")
+        div!(copyright, address).class("wrap footer-inner").into()
     }
 
     fn global_attrs_recipe() -> GlobalAttrs {
@@ -309,7 +295,7 @@ impl FooterRecipe for SiteFooter {
     }
 }
 
-fn menu_group(title: &'static str, items: impl Into<ListItems>) -> HtmlDiv {
+fn menu_group(title: &'static str, items: impl Into<Bake>) -> HtmlDiv {
     let h3 = h3!(title);
     let list = ul!(items).class("menu-list").role("list");
 
@@ -339,8 +325,9 @@ fn menu_item_with_tip(
 fn info_tip(id: &'static str, note: &'static str) -> HtmlSpan<Tooltip> {
     let trigger = HtmlButton::from(Tip).content("i");
 
+    let content = TooltipContent::new(id, trigger).text(note);
+
     HtmlSpan::from(Tooltip)
-        .with_id(id, trigger)
-        .text(note)
+        .content(content)
         .placement(Placement::Top)
 }

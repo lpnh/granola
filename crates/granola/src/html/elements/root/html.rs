@@ -59,10 +59,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = HtmlRecipe, content = HtmlRootContent)]
+#[recipe(HtmlRecipe)]
 pub struct HtmlRoot<R: HtmlRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
     pub custom_data_attrs: CustomDataAttrs,
@@ -112,6 +112,12 @@ impl<H: HeadRecipe, B: BodyRecipe> From<(HtmlHead<H>, HtmlBody<B>)> for HtmlRoot
             head: Some(head.bake_recipe()),
             body: Some(body.bake_recipe()),
         }
+    }
+}
+
+impl<H: HeadRecipe, B: BodyRecipe> From<(HtmlHead<H>, HtmlBody<B>)> for Bake {
+    fn from(tuple: (HtmlHead<H>, HtmlBody<B>)) -> Self {
+        HtmlRootContent::from(tuple).into()
     }
 }
 

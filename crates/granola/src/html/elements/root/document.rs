@@ -14,7 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let html_document = HtmlDocument::new();
 ///
-/// assert_eq!(html_document.bake(), r#"<!doctype html><html></html>"#);
+/// assert_eq!(html_document.bake(), r#"<!doctype html>"#);
 /// ```
 ///
 /// ```rust
@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 ///
 /// let body = HtmlBody::new().content("Hello, world!");
 ///
-/// let html_document = HtmlDocument::new().content(body);
+/// let html_document = HtmlDocument::new().content(HtmlRoot::from(body));
 ///
 /// assert_eq!(
 ///     html_document.bake(),
@@ -38,10 +38,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = HtmlDocumentRecipe, content = HtmlRoot)]
+#[recipe(HtmlDocumentRecipe)]
 pub struct HtmlDocument<R: HtmlDocumentRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
 }
 
 /// Shorthand for `HtmlDocument`.
@@ -54,7 +54,7 @@ pub struct HtmlDocument<R: HtmlDocumentRecipe = ()> {
 ///
 /// let html_document = html_document!();
 ///
-/// assert_eq!(html_document.bake(), r#"<!doctype html><html></html>"#);
+/// assert_eq!(html_document.bake(), r#"<!doctype html>"#);
 /// ```
 ///
 /// ```rust
@@ -62,7 +62,7 @@ pub struct HtmlDocument<R: HtmlDocumentRecipe = ()> {
 ///
 /// let body = body!().content("Hello, world!");
 ///
-/// let html_document = html_document!().content(body);
+/// let html_document = html_document!(root!(body));
 ///
 /// assert_eq!(
 ///     html_document.bake(),

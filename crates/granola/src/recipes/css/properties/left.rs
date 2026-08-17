@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Left;
 
 impl DeclarationRecipe for Left {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "left".into()
     }

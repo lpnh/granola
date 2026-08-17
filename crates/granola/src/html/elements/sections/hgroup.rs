@@ -56,10 +56,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = HgroupRecipe, content = Bake)]
+#[recipe(HgroupRecipe)]
 pub struct HtmlHgroup<R: HgroupRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     /// # Permitted ARIA roles
     ///
     /// any
@@ -69,7 +69,7 @@ pub struct HtmlHgroup<R: HgroupRecipe = ()> {
     pub event_handlers: EventHandlers,
 }
 
-impl<R: HgroupRecipe<Content = Bake>> HtmlHgroup<R> {
+impl<R: HgroupRecipe> HtmlHgroup<R> {
     pub fn fold_in(mut self, content: impl FastWritable) -> Self {
         self.content.fold_in(content);
         self

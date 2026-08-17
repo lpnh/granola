@@ -4,8 +4,8 @@ error: missing #[recipe(...)] attribute
 4 | struct MissingRecipe<R>(R);
   |        ^^^^^^^^^^^^^
 
-error: `name` is required in #[recipe(name = ...)]
- --> tests/ui/daisyui_requires_recipe_metadata.rs:7:1
+error: missing #[recipe(...)] attribute
+ --> tests/ui/daisyui_requires_recipe_metadata.rs:7:8
   |
-7 | #[recipe(content = ())]
-  | ^^^^^^^^^^^^^^^^^^^^^^^
+7 | struct MalformedRecipe<R>(R);
+  |        ^^^^^^^^^^^^^^^

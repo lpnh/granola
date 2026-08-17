@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct FlexDirection;
 
 impl DeclarationRecipe for FlexDirection {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "flex-direction".into()
     }

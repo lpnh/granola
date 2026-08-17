@@ -48,8 +48,7 @@ use crate::{filters, prelude::*};
 /// );
 /// assert_eq!(
 ///     map.bake_pretty(),
-///     r#"<map name="minas-gerais">
-///   <area
+///     r#"<map name="minas-gerais"><area
 ///     shape="poly"
 ///     coords="300,63,470,357,130,357"
 ///     href="https://w.wiki/LTnF"
@@ -72,10 +71,10 @@ use crate::{filters, prelude::*};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
-#[recipe(name = MapRecipe, content = Areas)]
+#[recipe(MapRecipe)]
 pub struct HtmlMap<R: MapRecipe = ()> {
     _recipe: PhantomData<R>,
-    pub content: R::Content,
+    pub content: Bake,
     pub global_attrs: GlobalAttrs,
     pub specific_attrs: MapAttrs,
     pub global_aria_attrs: GlobalAriaAttrs,
@@ -171,8 +170,7 @@ impl<R: MapRecipe> HasMapAttrs for HtmlMap<R> {
 /// );
 /// assert_eq!(
 ///     map.bake_pretty(),
-///     r#"<map name="minas-gerais">
-///   <area
+///     r#"<map name="minas-gerais"><area
 ///     shape="poly"
 ///     coords="300,63,470,357,130,357"
 ///     href="https://w.wiki/LTnF"

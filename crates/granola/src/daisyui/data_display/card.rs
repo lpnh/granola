@@ -82,32 +82,24 @@ daisyui_component! {
 }
 
 impl DivRecipe for Card {
-    recipe_boilerplate!(DivRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
 }
 
 impl ARecipe for Card {
-    recipe_boilerplate!(ARecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
 }
 
 impl SectionRecipe for Card {
-    recipe_boilerplate!(SectionRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
 }
 
 impl ArticleRecipe for Card {
-    recipe_boilerplate!(ArticleRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }
@@ -118,24 +110,18 @@ impl ArticleRecipe for Card {
 pub struct CardBody;
 
 impl DivRecipe for CardBody {
-    recipe_boilerplate!(DivRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-body")
     }
 }
 
 impl SectionRecipe for CardBody {
-    recipe_boilerplate!(SectionRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-body")
     }
 }
 
 impl ArticleRecipe for CardBody {
-    recipe_boilerplate!(ArticleRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-body")
     }
@@ -146,48 +132,36 @@ impl ArticleRecipe for CardBody {
 pub struct CardTitle;
 
 impl H1Recipe for CardTitle {
-    recipe_boilerplate!(H1Recipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-title")
     }
 }
 
 impl H2Recipe for CardTitle {
-    recipe_boilerplate!(H2Recipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-title")
     }
 }
 
 impl H3Recipe for CardTitle {
-    recipe_boilerplate!(H3Recipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-title")
     }
 }
 
 impl H4Recipe for CardTitle {
-    recipe_boilerplate!(H4Recipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-title")
     }
 }
 
 impl DivRecipe for CardTitle {
-    recipe_boilerplate!(DivRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-title")
     }
 }
 
 impl SpanRecipe for CardTitle {
-    recipe_boilerplate!(SpanRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-title")
     }
@@ -198,8 +172,6 @@ impl SpanRecipe for CardTitle {
 pub struct CardActions;
 
 impl DivRecipe for CardActions {
-    recipe_boilerplate!(DivRecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class("card-actions")
     }

@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct OutlineStyle;
 
 impl DeclarationRecipe for OutlineStyle {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "outline-style".into()
     }

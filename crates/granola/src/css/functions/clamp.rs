@@ -23,7 +23,7 @@ use crate::{filters, prelude::*};
 /// clamp({{ min | kirei }}, {{ val | kirei }}, {{ max | kirei }})
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
-#[recipe(name = FnClampRecipe)]
+#[recipe(FnClampRecipe)]
 #[template(ext = "html", in_doc = true, escape = "none")]
 pub struct CssFnClamp<R: FnClampRecipe = ()> {
     _recipe: PhantomData<R>,

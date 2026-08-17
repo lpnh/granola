@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct ListStyle;
 
 impl DeclarationRecipe for ListStyle {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "list-style".into()
     }

@@ -37,8 +37,6 @@ daisyui_component! {
 }
 
 impl ARecipe for Link {
-    recipe_boilerplate!(ARecipe);
-
     fn global_attrs_recipe() -> GlobalAttrs {
         GlobalAttrs::default().class(BASE_CLASS)
     }

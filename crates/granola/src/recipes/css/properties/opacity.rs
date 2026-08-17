@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct Opacity;
 
 impl DeclarationRecipe for Opacity {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "opacity".into()
     }

@@ -17,8 +17,6 @@ use crate::prelude::*;
 pub struct MarginTop;
 
 impl DeclarationRecipe for MarginTop {
-    recipe_boilerplate!(DeclarationRecipe);
-
     fn property_recipe() -> Bake {
         "margin-top".into()
     }
