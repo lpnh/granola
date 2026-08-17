@@ -1,6 +1,13 @@
 [workspace]
 resolver = "2"
-members = ["crates/granola", "crates/granola-derive", "crates/granola-scanner", "crates/granola-cli", "examples/*", "tests/*"]
+members = [
+    "crates/granola",
+    "crates/granola-derive",
+    "crates/granola-scanner",
+    "crates/granola-cli",
+    "examples/*",
+    "tests/*",
+]
 default-members = ["crates/granola"]
 
 [workspace.package]
