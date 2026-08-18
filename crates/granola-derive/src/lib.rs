@@ -124,20 +124,6 @@ fn parse_recipe_name(input: &DeriveInput) -> syn::Result<Ident> {
 }
 
 fn recipe_type_parameter(input: &DeriveInput, derive_name: &str) -> syn::Result<Ident> {
-    input
-        .generics
-        .type_params()
-        .next()
-        .map(|parameter| parameter.ident.clone())
-        .ok_or_else(|| {
-            syn::Error::new_spanned(
-                &input.ident,
-                format!("`{derive_name}` requires a recipe type parameter"),
-            )
-        })
-}
-
-fn recipe_type_parameter_for_recipe(input: &DeriveInput) -> syn::Result<Ident> {
     let mut parameters = input.generics.params.iter();
     let first = parameters.next();
 
@@ -145,30 +131,28 @@ fn recipe_type_parameter_for_recipe(input: &DeriveInput) -> syn::Result<Ident> {
         (Some(GenericParam::Type(parameter)), None) => Ok(parameter.ident.clone()),
         (None, _) => Err(syn::Error::new_spanned(
             &input.ident,
-            "`Recipe` requires one recipe type parameter",
+            format!("`{derive_name}` requires a recipe type parameter"),
         )),
         _ => Err(syn::Error::new_spanned(
             &input.generics,
-            "`Recipe` supports exactly one type parameter, the recipe parameter",
+            format!("`{derive_name}` supports exactly one type parameter"),
         )),
     }
 }
 
-fn recipe_impl_generics(
-    input: &DeriveInput,
-    recipe_type_param: &Ident,
-    recipe_trait: &Ident,
+fn with_type_param_bound(
+    generics: &syn::Generics,
+    type_param: &Ident,
+    bound: syn::TypeParamBound,
 ) -> syn::Generics {
-    let mut generics = input.generics.clone();
+    let mut generics = generics.clone();
 
-    for parameter in &mut generics.params {
-        if let GenericParam::Type(parameter) = parameter
-            && parameter.ident == *recipe_type_param
-        {
-            parameter.bounds.push(syn::parse_quote!(#recipe_trait));
-            break;
-        }
-    }
+    generics
+        .type_params_mut()
+        .find(|parameter| parameter.ident == *type_param)
+        .expect("validated recipe type parameter")
+        .bounds
+        .push(bound);
 
     generics
 }
@@ -254,83 +238,42 @@ fn daisyui_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     parse_recipe_name(input)?;
     let recipe_type_param = recipe_type_parameter(input, "DaisyUI")?;
 
-    const CAPABILITIES: [(&str, &str, &str, &str); 7] = [
-        ("HasStyle", "DaisyUIStyle", "ComponentStyle", "Style"),
-        (
-            "HasBehavior",
-            "DaisyUIBehavior",
-            "ComponentBehavior",
-            "Behavior",
-        ),
-        ("HasColor", "DaisyUIColor", "ComponentColor", "Color"),
-        ("HasSize", "DaisyUISize", "ComponentSize", "Size"),
-        (
-            "HasPlacement",
-            "DaisyUIPlacement",
-            "ComponentPlacement",
-            "Placement",
-        ),
-        (
-            "HasDirection",
-            "DaisyUIDirection",
-            "ComponentDirection",
-            "Direction",
-        ),
-        (
-            "HasModifier",
-            "DaisyUIModifier",
-            "ComponentModifier",
-            "Modifier",
-        ),
+    const CAPABILITIES: [&str; 7] = [
+        "Style",
+        "Behavior",
+        "Color",
+        "Size",
+        "Placement",
+        "Direction",
+        "Modifier",
     ];
 
-    let capability_impls = CAPABILITIES.map(
-        |(marker_trait, capability_trait, capability_type, marker_type)| {
-            let marker_trait = format_ident!("{marker_trait}");
-            let capability_trait = format_ident!("{capability_trait}");
-            daisyui_capability_impl(
-                input,
-                &recipe_type_param,
-                quote!(::granola::daisyui::#marker_trait),
-                quote!(::granola::daisyui::#capability_trait),
-                format_ident!("{capability_type}"),
-                format_ident!("{marker_type}"),
-            )
-        },
-    );
+    let struct_name = &input.ident;
+    let capability_impls = CAPABILITIES.map(|capability| {
+        let capability_trait = format_ident!("DaisyUI{capability}");
+        let capability_type = format_ident!("Component{capability}");
+        let recipe_trait = format_ident!("Has{capability}");
+        let recipe_associated_type = format_ident!("{capability}");
+
+        let generics = with_type_param_bound(
+            &input.generics,
+            &recipe_type_param,
+            syn::parse_quote!(::granola::daisyui::#recipe_trait),
+        );
+        let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
+        quote! {
+            impl #impl_generics ::granola::daisyui::#capability_trait
+                for #struct_name #ty_generics #where_clause
+            {
+                type #capability_type = <#recipe_type_param as ::granola::daisyui::#recipe_trait>::#recipe_associated_type;
+            }
+        }
+    });
 
     Ok(quote! {
         #(#capability_impls)*
     })
-}
-
-fn daisyui_capability_impl(
-    input: &DeriveInput,
-    recipe_type_param: &Ident,
-    marker_trait: TokenStream2,
-    capability_trait: TokenStream2,
-    capability_type: Ident,
-    marker_type: Ident,
-) -> TokenStream2 {
-    let struct_name = &input.ident;
-    let mut generics = input.generics.clone();
-
-    for parameter in &mut generics.params {
-        if let GenericParam::Type(parameter) = parameter
-            && parameter.ident == *recipe_type_param
-        {
-            parameter.bounds.push(syn::parse_quote!(#marker_trait));
-            break;
-        }
-    }
-
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-
-    quote! {
-        impl #impl_generics #capability_trait for #struct_name #ty_generics #where_clause {
-            type #capability_type = <#recipe_type_param as #marker_trait>::#marker_type;
-        }
-    }
 }
 
 /// Derive macro for recipes.
@@ -366,181 +309,86 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     let struct_name = &input.ident;
 
     let trait_name = parse_recipe_name(input)?;
-
-    let type_param = recipe_type_parameter_for_recipe(input)?;
+    let type_param = recipe_type_parameter(input, "Recipe")?;
     let named_fields = recipe_named_fields(input)?;
     validate_recipe_layout(input, named_fields, &type_param)?;
 
-    let has_content = named_fields
-        .iter()
-        .any(|field| field.ident.as_ref().is_some_and(|ident| ident == "content"));
-
-    let recipe_generics = recipe_impl_generics(input, &type_param, &trait_name);
+    let recipe_generics =
+        with_type_param_bound(&input.generics, &type_param, syn::parse_quote!(#trait_name));
     let (impl_generics, ty_generics, where_clause) = recipe_generics.split_for_impl();
-    let mut content_generics = recipe_generics.clone();
-    content_generics.params.push(syn::parse_quote!(
-        __IntoContent: ::std::convert::Into<::granola::oven::Bake>
-    ));
-    let (content_impl_generics, _, content_where_clause) = content_generics.split_for_impl();
 
     let other_fields: Vec<_> = named_fields.iter().skip(1).collect();
 
-    let field_idents: Vec<Ident> = other_fields
+    let field_idents: Vec<&Ident> = other_fields
         .iter()
-        .filter_map(|field| field.ident.clone())
+        .map(|field| field.ident.as_ref().expect("named fields have identifiers"))
         .collect();
     let field_types: Vec<&Type> = other_fields.iter().map(|f| &f.ty).collect();
     let method_names: Vec<Ident> = field_idents
         .iter()
         .map(|i| format_ident!("{i}_recipe"))
         .collect();
-    let has_field = |name: &str| field_idents.iter().any(|i| i == name);
+    let has_field = |name: &str| field_idents.iter().any(|i| *i == name);
+    let has_content = has_field("content");
 
-    let content_method = if has_content {
-        quote! {
-            pub fn content(
-                mut self,
-                content: impl ::std::convert::Into<::granola::oven::Bake>,
-            ) -> Self {
-                self.content = content.into();
-                self
-            }
-        }
-    } else {
-        quote! {}
-    };
+    let (content_method, from_recipe_and_content) = if has_content {
+        let mut content_generics = recipe_generics.clone();
+        content_generics.params.push(syn::parse_quote!(
+            __IntoContent: ::std::convert::Into<::granola::oven::Bake>
+        ));
+        let (content_impl_generics, _, content_where_clause) = content_generics.split_for_impl();
 
-    // HTML
-    let global_attrs_impl = if has_field("global_attrs") {
-        quote! {
-            impl #impl_generics ::granola::html::HasGlobalAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn global_attrs_mut(&mut self) -> &mut ::granola::html::GlobalAttrs {
-                    &mut self.global_attrs
+        (
+            quote! {
+                pub fn content(
+                    mut self,
+                    content: impl ::std::convert::Into<::granola::oven::Bake>,
+                ) -> Self {
+                    self.content = content.into();
+                    self
                 }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let global_aria_attrs_impl = if has_field("global_aria_attrs") {
-        quote! {
-            impl #impl_generics ::granola::html::HasGlobalAriaAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn global_aria_attrs_mut(&mut self) -> &mut ::granola::html::GlobalAriaAttrs {
-                    &mut self.global_aria_attrs
+            },
+            quote! {
+                impl #content_impl_generics
+                    ::std::convert::From<(#type_param, __IntoContent)>
+                    for #struct_name #ty_generics #content_where_clause
+                {
+                    fn from((_recipe, content): (#type_param, __IntoContent)) -> Self {
+                        Self::from_cookbook().content(content)
+                    }
                 }
-            }
-        }
+            },
+        )
     } else {
-        quote! {}
-    };
-    let custom_data_attrs_impl = if has_field("custom_data_attrs") {
-        quote! {
-            impl #impl_generics ::granola::html::HasCustomDataAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn custom_data_attrs_mut(&mut self) -> &mut ::granola::html::CustomDataAttrs {
-                    &mut self.custom_data_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let event_handlers_impl = if has_field("event_handlers") {
-        quote! {
-            impl #impl_generics ::granola::html::HasEventHandlers
-                for #struct_name #ty_generics #where_clause
-            {
-                fn event_handlers_mut(&mut self) -> &mut ::granola::html::EventHandlers {
-                    &mut self.event_handlers
-                }
-            }
-        }
-    } else {
-        quote! {}
+        (quote! {}, quote! {})
     };
 
-    // SVG
-    let global_svg_attrs_impl = if has_field("global_svg_attrs") {
-        quote! {
-            impl #impl_generics ::granola::svg::HasGlobalSvgAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn global_svg_attrs_mut(&mut self) -> &mut ::granola::svg::GlobalSvgAttrs {
-                    &mut self.global_svg_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let paint_attrs_impl = if has_field("paint_attrs") {
-        quote! {
-            impl #impl_generics ::granola::svg::HasPaintAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn paint_attrs_mut(&mut self) -> &mut ::granola::svg::PaintAttrs {
-                    &mut self.paint_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let shape_attrs_impl = if has_field("shape_attrs") {
-        quote! {
-            impl #impl_generics ::granola::svg::HasShapeAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn shape_attrs_mut(&mut self) -> &mut ::granola::svg::ShapeAttrs {
-                    &mut self.shape_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
-    let text_content_attrs_impl = if has_field("text_content_attrs") {
-        quote! {
-            impl #impl_generics ::granola::svg::HasTextContentAttrs
-                for #struct_name #ty_generics #where_clause
-            {
-                fn text_content_attrs_mut(&mut self) -> &mut ::granola::svg::TextContentAttrs {
-                    &mut self.text_content_attrs
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
+    let attr_impls = other_fields.iter().filter_map(|field| {
+        let field_ident = field.ident.as_ref().expect("named fields have identifiers");
+        let trait_path = match field_ident.to_string().as_str() {
+            "global_attrs" => quote!(::granola::html::HasGlobalAttrs),
+            "global_aria_attrs" => quote!(::granola::html::HasGlobalAriaAttrs),
+            "custom_data_attrs" => quote!(::granola::html::HasCustomDataAttrs),
+            "event_handlers" => quote!(::granola::html::HasEventHandlers),
+            "global_svg_attrs" => quote!(::granola::svg::HasGlobalSvgAttrs),
+            "paint_attrs" => quote!(::granola::svg::HasPaintAttrs),
+            "shape_attrs" => quote!(::granola::svg::HasShapeAttrs),
+            "text_content_attrs" => quote!(::granola::svg::HasTextContentAttrs),
+            _ => return None,
+        };
+        let method_name = format_ident!("{field_ident}_mut");
+        let field_type = &field.ty;
 
-    let from_recipe_and_content = if has_content {
-        quote! {
-            impl #content_impl_generics
-                ::std::convert::From<(#type_param, __IntoContent)>
-                for #struct_name #ty_generics #content_where_clause
+        Some(quote! {
+            impl #impl_generics #trait_path
+                for #struct_name #ty_generics #where_clause
             {
-                fn from((_recipe, content): (#type_param, __IntoContent)) -> Self {
-                    Self::from_cookbook().content(content)
+                fn #method_name(&mut self) -> &mut #field_type {
+                    &mut self.#field_ident
                 }
             }
-        }
-    } else {
-        quote! {}
-    };
-
-    // `new`: empty constructor, only on `#struct_name<()>`.
-    let new_method = quote! {
-        pub fn new() -> Self {
-            Self {
-                ..::std::default::Default::default()
-            }
-        }
-    };
+        })
+    });
 
     Ok(quote! {
         pub trait #trait_name:
@@ -556,18 +404,14 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
 
         impl #trait_name for () {}
 
-        #global_attrs_impl
-        #global_aria_attrs_impl
-        #custom_data_attrs_impl
-        #event_handlers_impl
-
-        #global_svg_attrs_impl
-        #paint_attrs_impl
-        #shape_attrs_impl
-        #text_content_attrs_impl
+        #(#attr_impls)*
 
         impl #struct_name<()> {
-            #new_method
+            pub fn new() -> Self {
+                Self {
+                    ..::std::default::Default::default()
+                }
+            }
         }
 
         impl #impl_generics #struct_name #ty_generics #where_clause {
@@ -577,6 +421,15 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
                 Self {
                     #(#field_idents: #type_param::#method_names(),)*
                     ..::std::default::Default::default()
+                }
+            }
+
+            /// Converts this element into its recipe-free form, replacing
+            /// the recipe type parameter with its default.
+            pub fn bake_recipe(self) -> #struct_name<()> {
+                #struct_name {
+                    _recipe: ::std::marker::PhantomData,
+                    #(#field_idents: self.#field_idents,)*
                 }
             }
         }
@@ -590,16 +443,5 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
         }
 
         #from_recipe_and_content
-
-        impl #impl_generics #struct_name #ty_generics #where_clause {
-            /// Converts this element into its recipe-free form, replacing
-            /// the recipe type parameter with its default.
-            pub fn bake_recipe(self) -> #struct_name<()> {
-                #struct_name {
-                    _recipe: ::std::marker::PhantomData,
-                    #(#field_idents: self.#field_idents,)*
-                }
-            }
-        }
     })
 }
