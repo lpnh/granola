@@ -1,3 +1,4 @@
+pub mod css;
 pub mod macros;
 pub mod recipes;
 pub mod standard;
@@ -17,15 +18,5 @@ mod fixture_tests {
 
         assert_eq!(standard_page.bake(), macros_page.bake());
         assert_eq!(standard_page.bake(), recipes_page.bake());
-    }
-
-    #[test]
-    fn css_eq_tests() {
-        let standard_style = standard::style();
-        let macros_style = macros::style();
-        let recipes_style = recipes::style();
-
-        assert_eq!(standard_style.bake(), macros_style.bake());
-        assert_eq!(standard_style.bake(), recipes_style.bake());
     }
 }

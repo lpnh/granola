@@ -8,6 +8,10 @@ publish = false
 
 [dependencies]
 granola = { path = "../../crates/granola" }
+seahash = "4.1.0"
+
+[build-dependencies]
+granola-scanner = { path = "../../crates/granola-scanner" }
 
 [lints]
 workspace = true

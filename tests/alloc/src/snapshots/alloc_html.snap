@@ -3,6 +3,6 @@ source: tests/alloc/src/lib.rs
 ---
              snippet  allocs     churn      peak
              -------  ------     -----      ----
-       html_standard     933    300535     63635
-         html_macros     798    301011     67507
-        html_recipes     801    301409     67507
+       html_standard     300    150016     34943
+         html_macros     226    146866     40476
+        html_recipes     226    146866     40476

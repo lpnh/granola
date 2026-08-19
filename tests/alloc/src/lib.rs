@@ -133,14 +133,6 @@ mod tests {
         ]
     }
 
-    fn css_fixtures() -> &'static [Snippet] {
-        &[
-            fixture!(css_standard, fixtures::standard::style()),
-            fixture!(css_macros, fixtures::macros::style()),
-            fixture!(css_recipes, fixtures::recipes::style()),
-        ]
-    }
-
     #[test]
     fn alloc_html() {
         insta::with_settings!({
@@ -148,16 +140,6 @@ mod tests {
             prepend_module_to_snapshot => false,
         },
             {insta::assert_snapshot!(print_result(html_fixtures()))
-        })
-    }
-
-    #[test]
-    fn alloc_css() {
-        insta::with_settings!({
-            omit_expression => true,
-            prepend_module_to_snapshot => false,
-        },
-            {insta::assert_snapshot!(print_result(css_fixtures()))
         })
     }
 }

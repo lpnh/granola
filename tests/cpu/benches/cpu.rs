@@ -3,9 +3,9 @@
 use gungraun::prelude::*;
 use std::hint::black_box;
 
-use granola::prelude::{CssStylesheet, HtmlDocument};
+use granola::prelude::HtmlDocument;
 
-main!(library_benchmark_groups = [html, css]);
+main!(library_benchmark_groups = [html]);
 
 library_benchmark_group!(
     name = html,
@@ -27,26 +27,6 @@ fn html_recipes(snippet: HtmlDocument) -> String {
     black_box(snippet.bake())
 }
 
-library_benchmark_group!(
-    name = css,
-    benchmarks = [css_standard, css_macros, css_recipes]
-);
-
-#[library_benchmark(setup = css_fixture_standard)]
-fn css_standard(snippet: CssStylesheet) -> String {
-    black_box(snippet.bake())
-}
-
-#[library_benchmark(setup = css_fixture_macros)]
-fn css_macros(snippet: CssStylesheet) -> String {
-    black_box(snippet.bake())
-}
-
-#[library_benchmark(setup = css_fixture_recipes)]
-fn css_recipes(snippet: CssStylesheet) -> String {
-    black_box(snippet.bake())
-}
-
 pub fn html_fixture_standard() -> HtmlDocument {
     fixtures::standard::page()
 }
@@ -57,16 +37,4 @@ pub fn html_fixture_macros() -> HtmlDocument {
 
 pub fn html_fixture_recipes() -> HtmlDocument {
     fixtures::recipes::page()
-}
-
-pub fn css_fixture_standard() -> CssStylesheet {
-    fixtures::standard::style()
-}
-
-pub fn css_fixture_macros() -> CssStylesheet {
-    fixtures::macros::style()
-}
-
-pub fn css_fixture_recipes() -> CssStylesheet {
-    fixtures::recipes::style()
 }

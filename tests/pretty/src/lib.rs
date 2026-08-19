@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use fixtures::standard::{page, style};
+    use fixtures::standard::page;
 
     macro_rules! compare_snapshot {
         ($name:ident, $build:expr) => {
@@ -25,5 +25,4 @@ mod tests {
     }
 
     compare_snapshot!(full_page, page());
-    compare_snapshot!(stylesheet, style());
 }

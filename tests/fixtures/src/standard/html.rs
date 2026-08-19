@@ -1,4 +1,10 @@
-use granola::{homemade::*, prelude::*};
+use granola::{
+    daisyui::{btn, link},
+    homemade::*,
+    prelude::*,
+};
+
+use crate::css::Stylesheet;
 
 const FAVICON: &str = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' \
     viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>";
@@ -8,23 +14,17 @@ pub fn page() -> HtmlDocument {
         "A cozy café on the corner of Oak Street and Elm Avenue, pouring coffee \
         and baking sourdough since six every morning.",
     );
-    let theme_light = HtmlMeta::new()
-        .name("theme-color")
-        .content("#fbf4e8")
-        .media("(prefers-color-scheme: light)");
-    let theme_dark = HtmlMeta::new()
-        .name("theme-color")
-        .content("#1c140d")
-        .media("(prefers-color-scheme: dark)");
 
     let favicon = HtmlLink::new().rel("icon").href(FAVICON);
+    let stylesheet = Stylesheet::OatsAndEnds.link();
     let title = HtmlTitle::new().content("Oats &amp; Ends Café");
-    let style = HtmlStyle::new().content(super::style());
 
-    let skip_link = HtmlA::new()
+    let skip_link = HtmlA::from(btn::Btn)
         .content("Skip to content")
         .href("#main")
-        .class("skip-link");
+        .color(btn::Color::Neutral)
+        .size(btn::Size::Sm)
+        .class("sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50");
 
     let main = HtmlMain::new()
         .fold_in(about_article())
@@ -33,107 +33,140 @@ pub fn page() -> HtmlDocument {
         .fold_in(visit_section())
         .fold_in(newsletter_section())
         .id("main")
-        .tabindex(-1);
+        .tabindex(-1)
+        .class("container mx-auto px-4 max-w-5xl space-y-12 pb-16");
 
     let body = HtmlBody::new()
         .fold_in(skip_link)
         .fold_in(site_header())
         .fold_in(hero())
         .fold_in(main)
-        .fold_in(site_footer());
+        .fold_in(site_footer())
+        .class("min-h-screen font-sans");
 
     let root_content = HomemadeRootContent::new()
         .push_meta(description)
-        .push_meta(theme_light)
-        .push_meta(theme_dark)
         .push_title(title)
         .push_link(favicon)
-        .push_style(style)
+        .push_link(stylesheet)
         .body(body);
 
-    HtmlDocument::new().content(HtmlRoot::new().lang("en").content(root_content))
+    HtmlDocument::new().content(
+        HtmlRoot::new()
+            .lang("en")
+            .class("motion-safe:scroll-smooth")
+            .content(root_content),
+    )
 }
 
 fn site_header() -> HtmlHeader {
     let brand = HtmlA::new()
         .content("Oats &amp; Ends")
         .href("/")
-        .class("brand");
+        .class("text-xl font-bold font-serif");
+    let start = HtmlDiv::new().fold_in(brand).class("navbar-start");
 
-    let menu_link = HtmlA::new().content("Menu").href("#menu");
-    let hours_link = HtmlA::new().content("Hours").href("#hours");
-    let visit_link = HtmlA::new().content("Visit").href("#visit");
-    let cta = HtmlA::new()
-        .content("Newsletter")
-        .href("#newsletter")
-        .class("btn btn-primary");
+    let menu_link = HtmlA::from(link::Link)
+        .content("Menu")
+        .href("#menu")
+        .modifier(link::Modifier::Hover)
+        .class("font-medium");
+    let hours_link = HtmlA::from(link::Link)
+        .content("Hours")
+        .href("#hours")
+        .modifier(link::Modifier::Hover)
+        .class("font-medium");
+    let visit_link = HtmlA::from(link::Link)
+        .content("Visit")
+        .href("#visit")
+        .modifier(link::Modifier::Hover)
+        .class("font-medium");
 
-    let nav_links = HtmlDiv::new()
+    let nav = HtmlNav::new()
         .fold_in(menu_link)
         .fold_in(hours_link)
         .fold_in(visit_link)
-        .fold_in(cta)
-        .class("nav-links");
-
-    let nav = HtmlNav::new()
-        .fold_in(brand)
-        .fold_in(nav_links)
         .aria_label("Primary")
-        .class("site-nav wrap");
+        .class("flex items-center gap-6");
 
-    HtmlHeader::new().content(nav).class("site-header")
+    let cta = HtmlA::from(btn::Btn)
+        .content("Newsletter")
+        .href("#newsletter")
+        .color(btn::Color::Primary)
+        .size(btn::Size::Sm);
+
+    let end = HtmlDiv::new()
+        .fold_in(nav)
+        .fold_in(cta)
+        .class("navbar-end gap-6");
+
+    let navbar = HtmlDiv::new()
+        .fold_in(start)
+        .fold_in(end)
+        .class("navbar container mx-auto px-4 max-w-5xl");
+
+    HtmlHeader::new()
+        .content(navbar)
+        .class("sticky top-0 z-20 bg-base-100 border-b border-base-300")
 }
 
 fn hero() -> HtmlSection {
-    let h1 = HtmlH1::new().content("Freshly roasted, freshly baked");
+    let h1 = HtmlH1::new()
+        .content("Freshly roasted, freshly baked")
+        .class("text-4xl sm:text-5xl font-serif font-bold text-balance");
     let lede = HtmlP::new()
         .content(
             "We open at six and pour until the last regular leaves. \
             Come for the coffee, stay for the toast.",
         )
-        .class("lede");
+        .class("text-lg text-base-content/80");
 
-    let see_menu = HtmlA::new()
+    let see_menu = HtmlA::from(btn::Btn)
         .content("See the menu")
         .href("#menu")
-        .class("btn btn-primary");
-    let get_directions = HtmlA::new()
+        .color(btn::Color::Primary);
+    let get_directions = HtmlA::from(btn::Btn)
         .content("Get directions")
         .href("#visit")
-        .class("btn btn-ghost");
+        .style(btn::Style::Ghost);
     let actions = HtmlDiv::new()
         .fold_in(see_menu)
         .fold_in(get_directions)
-        .class("hero-actions");
+        .class("flex justify-center gap-4 flex-wrap mt-6");
 
-    HtmlSection::new()
+    let content = HtmlDiv::new()
         .fold_in(h1)
         .fold_in(lede)
         .fold_in(actions)
-        .class("hero wrap")
+        .class("hero-content flex-col");
+
+    HtmlSection::new()
+        .content(content)
+        .class("hero py-16 container mx-auto px-4 max-w-5xl text-center")
 }
 
 fn about_article() -> HtmlArticle {
-    let h2 = HtmlH2::new().content("Our story");
+    let h2 = HtmlH2::new()
+        .content("Our story")
+        .class("text-2xl font-serif font-semibold mb-3");
     let p = HtmlP::new().content(
-        "Oats &amp; Ends opened on Oak Street, at the corner of Elm Avenue, bringing \
-        new aromas to the block. Its cozy atmosphere draws in passersby looking to \
-        treat themselves to a cup or two of good, hot black coffee and a slice of \
-        something fresh from the oven.",
+        "Oats &amp; Ends opened on Oak Street, at the corner of Elm Avenue, \
+        bringing new aromas to the block. Its cozy atmosphere draws in \
+        passersby looking to treat themselves to a cup or two of good, hot \
+        black coffee and a slice of something fresh from the oven.",
     );
 
-    HtmlArticle::new()
-        .fold_in(h2)
-        .fold_in(p)
-        .id("about")
-        .class("section wrap")
+    HtmlArticle::new().fold_in(h2).fold_in(p).id("about")
 }
 
 fn menu_section() -> HtmlSection {
-    let h2 = HtmlH2::new().content("On the menu").id("menu-heading");
+    let h2 = HtmlH2::new()
+        .content("On the menu")
+        .id("menu-heading")
+        .class("text-2xl font-serif font-semibold");
     let intro = HtmlP::new()
         .content("Small menu, made in-house, changed with the seasons.")
-        .class("lede");
+        .class("text-lg text-base-content/80");
 
     let coffee = menu_group(
         "Coffee",
@@ -149,7 +182,7 @@ fn menu_section() -> HtmlSection {
             menu_item_with_tip(
                 "Oat milk latte",
                 "Double shot, steamed oat milk.",
-                "oat-milk-tip",
+                "Oat milk information",
                 "Dairy-free. Works in any espresso drink, just ask.",
             ),
         ],
@@ -163,7 +196,7 @@ fn menu_section() -> HtmlSection {
             menu_item_with_tip(
                 "Sourdough loaf",
                 "Whole loaf, ready to take home.",
-                "sourdough-tip",
+                "Sourdough information",
                 "Baked fresh each morning, ask what's left.",
             ),
         ],
@@ -172,7 +205,7 @@ fn menu_section() -> HtmlSection {
     let groups = HtmlDiv::new()
         .fold_in(coffee)
         .fold_in(bakery)
-        .class("menu-groups");
+        .class("grid grid-cols-1 md:grid-cols-2 gap-12 mt-8");
 
     HtmlSection::new()
         .fold_in(h2)
@@ -180,63 +213,80 @@ fn menu_section() -> HtmlSection {
         .fold_in(groups)
         .id("menu")
         .aria_labelledby("menu-heading")
-        .class("section wrap")
 }
 
 fn hours_section() -> HtmlSection {
-    let h2 = HtmlH2::new().content("Hours").id("hours-heading");
+    let h2 = HtmlH2::new()
+        .content("Hours")
+        .id("hours-heading")
+        .class("text-2xl font-serif font-semibold mb-4");
 
     let thead = HtmlThead::new().content(
         HtmlTr::new()
             .fold_in(HtmlTh::new().content("Day").scope("col"))
             .fold_in(HtmlTh::new().content("Hours").scope("col")),
     );
-    let tbody = HtmlTbody::new().content([
-        HtmlTr::new()
-            .fold_in(HtmlTh::new().content("Weekdays").scope("row"))
-            .fold_in(HtmlTd::new().content("6:00 – 18:00")),
-        HtmlTr::new()
-            .fold_in(HtmlTh::new().content("Weekends").scope("row"))
-            .fold_in(HtmlTd::new().content("7:00 – 16:00")),
-    ]);
+    let tbody = HtmlTbody::new()
+        .content([
+            HtmlTr::new()
+                .fold_in(HtmlTh::new().content("Weekdays").scope("row"))
+                .fold_in(HtmlTd::new().content("6:00 – 18:00")),
+            HtmlTr::new()
+                .fold_in(HtmlTh::new().content("Weekends").scope("row"))
+                .fold_in(HtmlTd::new().content("7:00 – 16:00")),
+        ])
+        .class("tabular-nums");
     let table = HtmlTable::new()
-        .fold_in(HtmlCaption::new().content("Opening hours"))
+        .fold_in(
+            HtmlCaption::new()
+                .content("Opening hours")
+                .class("text-left font-semibold mb-2"),
+        )
         .fold_in(thead)
-        .fold_in(tbody);
+        .fold_in(tbody)
+        .class("table");
+
+    let wrapper = HtmlDiv::new()
+        .fold_in(table)
+        .class("overflow-x-auto max-w-md");
 
     let note = HtmlP::new()
         .content("Holidays are a coin toss. Email us before making a special trip.")
-        .class("note");
+        .class("text-sm text-base-content/70 mt-3");
 
     HtmlSection::new()
         .fold_in(h2)
-        .fold_in(table)
+        .fold_in(wrapper)
         .fold_in(note)
         .id("hours")
         .aria_labelledby("hours-heading")
-        .class("section wrap")
 }
 
 fn visit_section() -> HtmlSection {
-    let h2 = HtmlH2::new().content("Visit").id("visit-heading");
+    let h2 = HtmlH2::new()
+        .content("Visit")
+        .id("visit-heading")
+        .class("text-2xl font-serif font-semibold mb-3");
 
-    let mail = HtmlA::new()
+    let mail = HtmlA::from(link::Link)
         .content("hello@oatsandends.test")
-        .href("mailto:hello@oatsandends.test");
+        .href("mailto:hello@oatsandends.test")
+        .color(link::Color::Primary);
     let address = HtmlAddress::new()
         .fold_in("Oak Street, corner of Elm Avenue")
         .fold_in(HtmlBr::new())
-        .fold_in(mail);
+        .fold_in(mail)
+        .class("not-italic leading-relaxed");
 
     let note = HtmlP::new()
         .content("No reservations. If there's a free chair, it's yours.")
-        .class("note");
+        .class("text-sm text-base-content/70 mt-2");
 
-    let email_cta = HtmlA::new()
+    let email_cta = HtmlA::from(btn::Btn)
         .content("Email us")
         .href("mailto:hello@oatsandends.test")
-        .class("btn btn-ghost");
-    let actions = HtmlDiv::new().content(email_cta).class("visit-actions");
+        .style(btn::Style::Ghost);
+    let actions = HtmlDiv::new().content(email_cta).class("mt-4");
 
     HtmlSection::new()
         .fold_in(h2)
@@ -245,42 +295,49 @@ fn visit_section() -> HtmlSection {
         .fold_in(actions)
         .id("visit")
         .aria_labelledby("visit-heading")
-        .class("section wrap")
 }
 
 fn newsletter_section() -> HtmlSection {
     let h2 = HtmlH2::new()
         .content("Stay in the loop")
-        .id("newsletter-heading");
+        .id("newsletter-heading")
+        .class("text-2xl font-serif font-semibold");
     let intro = HtmlP::new()
         .content(
             "New seasonal drinks, bread restocks, and the occasional live music \
             night, straight to your inbox.",
         )
-        .class("lede");
+        .class("text-lg text-base-content/80");
 
-    let label = HtmlLabel::new().content("Email").for_id("email");
+    let legend = HtmlLegend::new()
+        .content("Email")
+        .class("fieldset-legend font-medium");
     let input = HtmlInput::new()
         .input_type(InputType::Email)
         .id("email")
         .name("email")
         .autocomplete("email")
         .placeholder("you@example.com")
-        .required(true);
-    let field = HtmlDiv::new().fold_in(label).fold_in(input).class("field");
-    let submit = HtmlButton::new()
+        .required(true)
+        .class("input min-w-64");
+    let fieldset = HtmlFieldset::new()
+        .content(bake![legend, input])
+        .class("fieldset");
+
+    let submit = HtmlButton::from(btn::Btn)
         .content("Sign me up")
-        .class("btn btn-primary");
+        .color(btn::Color::Primary);
 
     let form = HtmlForm::new()
-        .fold_in(field)
+        .fold_in(fieldset)
         .fold_in(submit)
         .action("/newsletter")
-        .method(FormMethod::Post);
+        .method(FormMethod::Post)
+        .class("flex flex-wrap items-end gap-4 mt-6");
 
     let note = HtmlP::new()
         .content("Just bread news and the odd event, never more than twice a month.")
-        .class("note");
+        .class("text-sm text-base-content/70 mt-3");
 
     HtmlSection::new()
         .fold_in(h2)
@@ -289,58 +346,79 @@ fn newsletter_section() -> HtmlSection {
         .fold_in(note)
         .id("newsletter")
         .aria_labelledby("newsletter-heading")
-        .class("section wrap")
 }
 
 fn site_footer() -> HtmlFooter {
     let copyright = HtmlSmall::new().content("&copy; 2026 Oats &amp; Ends Café");
-    let address = HtmlAddress::new().content("Oak Street, corner of Elm Avenue");
+    let address = HtmlAddress::new()
+        .content("Oak Street, corner of Elm Avenue")
+        .class("not-italic");
 
     let inner = HtmlDiv::new()
         .fold_in(copyright)
         .fold_in(address)
-        .class("wrap footer-inner");
+        .class("container mx-auto px-4 max-w-5xl flex justify-between items-center flex-wrap gap-3 text-sm");
 
-    HtmlFooter::new().content(inner).class("site-footer")
+    HtmlFooter::new()
+        .content(inner)
+        .class("footer sm:footer-horizontal border-t border-base-300 py-8 bg-base-100")
 }
 
 fn menu_group(title: &'static str, items: impl Into<Bake>) -> HtmlDiv {
-    let h3 = HtmlH3::new().content(title);
-    let list = HtmlUl::new().content(items).class("menu-list").role("list");
+    let h3 = HtmlH3::new()
+        .content(title)
+        .class("text-xl font-serif font-semibold border-b border-base-300 pb-2 mb-4");
+    let list = HtmlUl::new().content(items).class("list").role("list");
 
-    HtmlDiv::new().fold_in(h3).fold_in(list).class("menu-group")
+    HtmlDiv::new().fold_in(h3).fold_in(list)
 }
 
 fn menu_item(name: &'static str, desc: &'static str) -> HtmlLi {
-    let name_el = HtmlSpan::new().content(name).class("menu-item-name");
-    let desc_el = HtmlP::new().content(desc).class("menu-item-desc");
+    let name_el = HtmlDiv::new()
+        .content(name)
+        .class("list-col-grow font-semibold");
+    let desc_el = HtmlDiv::new()
+        .content(desc)
+        .class("text-sm text-base-content/70 list-col-wrap w-full");
 
-    HtmlLi::new().fold_in(name_el).fold_in(desc_el)
+    HtmlLi::new()
+        .fold_in(name_el)
+        .fold_in(desc_el)
+        .class("list-row flex-wrap items-baseline gap-y-1")
 }
 
 fn menu_item_with_tip(
     name: &'static str,
     desc: &'static str,
-    tip_id: &'static str,
+    tip_aria_label: &'static str,
     tip_note: &'static str,
 ) -> HtmlLi {
-    let tip = info_tip(tip_id, tip_note);
-    let name_el = HtmlSpan::new()
+    let tip = info_tip(tip_aria_label, tip_note);
+    let name_el = HtmlDiv::new()
         .fold_in(name)
-        .fold_in(" ")
         .fold_in(tip)
-        .class("menu-item-name");
-    let desc_el = HtmlP::new().content(desc).class("menu-item-desc");
+        .class("list-col-grow font-semibold flex items-center gap-1.5");
+    let desc_el = HtmlDiv::new()
+        .content(desc)
+        .class("text-sm text-base-content/70 list-col-wrap w-full");
 
-    HtmlLi::new().fold_in(name_el).fold_in(desc_el)
+    HtmlLi::new()
+        .fold_in(name_el)
+        .fold_in(desc_el)
+        .class("list-row flex-wrap items-baseline gap-y-1")
 }
 
-fn info_tip(id: &'static str, note: &'static str) -> HtmlSpan<Tooltip> {
-    let trigger = HtmlButton::from(Tip).content("i");
+fn info_tip(aria_label: &'static str, note: &'static str) -> HtmlDiv {
+    let trigger = HtmlButton::from(btn::Btn)
+        .button_type(ButtonType::Button)
+        .content("i")
+        .modifier(btn::Modifier::Circle)
+        .size(btn::Size::Xs)
+        .style(btn::Style::Outline)
+        .aria_label(aria_label);
 
-    let content = TooltipContent::new(id, trigger).text(note);
-
-    HtmlSpan::from(Tooltip)
-        .content(content)
-        .placement(Placement::Top)
+    HtmlDiv::new()
+        .content(trigger)
+        .class("tooltip tooltip-top")
+        .custom_data("tip", note)
 }
