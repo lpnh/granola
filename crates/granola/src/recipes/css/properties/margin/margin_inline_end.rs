@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_margin_inline_end = CssDeclaration::from(MarginInlineEnd).content("4px");
+/// let css_margin_inline_end = CssDeclaration::from(MarginInlineEnd).value("4px");
 ///
 /// assert_eq!(css_margin_inline_end.bake(), "margin-inline-end: 4px;");
 /// ```

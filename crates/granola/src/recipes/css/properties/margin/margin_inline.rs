@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_margin_inline = CssDeclaration::from(MarginInline).content("auto");
+/// let css_margin_inline = CssDeclaration::from(MarginInline).value("auto");
 ///
 /// assert_eq!(css_margin_inline.bake(), "margin-inline: auto;");
 /// ```

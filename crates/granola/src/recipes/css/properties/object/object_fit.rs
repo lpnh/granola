@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_object_fit = CssDeclaration::from(ObjectFit).content("cover");
+/// let css_object_fit = CssDeclaration::from(ObjectFit).value("cover");
 ///
 /// assert_eq!(css_object_fit.bake(), "object-fit: cover;");
 /// ```

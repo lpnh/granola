@@ -26,6 +26,6 @@ impl RuleRecipe for BoxSizingReset {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(BoxSizing).content("border-box").into()
+        CssDeclaration::from(BoxSizing).value("border-box").into()
     }
 }

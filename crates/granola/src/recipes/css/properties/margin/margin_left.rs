@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_margin_left = CssDeclaration::from(MarginLeft).content("1rem");
+/// let css_margin_left = CssDeclaration::from(MarginLeft).value("1rem");
 ///
 /// assert_eq!(css_margin_left.bake(), "margin-left: 1rem;");
 /// ```

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_outline_style = CssDeclaration::from(OutlineStyle).content("solid");
+/// let css_outline_style = CssDeclaration::from(OutlineStyle).value("solid");
 ///
 /// assert_eq!(css_outline_style.bake(), "outline-style: solid;");
 /// ```

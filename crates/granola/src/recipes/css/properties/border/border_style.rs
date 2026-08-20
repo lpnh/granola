@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border_style = CssDeclaration::from(BorderStyle).content("1.2rem");
+/// let css_border_style = CssDeclaration::from(BorderStyle).value("1.2rem");
 ///
 /// assert_eq!(css_border_style.bake(), "border-style: 1.2rem;");
 /// ```

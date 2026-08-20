@@ -19,7 +19,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_overflow = CssDeclaration::from(Overflow).content("hidden");
+/// let css_overflow = CssDeclaration::from(Overflow).value("hidden");
 ///
 /// assert_eq!(css_overflow.bake(), "overflow: hidden;");
 /// ```

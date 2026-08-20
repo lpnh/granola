@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_bottom = CssDeclaration::from(Bottom).content("-0.25em");
+/// let css_bottom = CssDeclaration::from(Bottom).value("-0.25em");
 ///
 /// assert_eq!(css_bottom.bake(), "bottom: -0.25em;");
 /// ```

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_transform = CssDeclaration::from(TextTransform).content("uppercase");
+/// let css_text_transform = CssDeclaration::from(TextTransform).value("uppercase");
 ///
 /// assert_eq!(css_text_transform.bake(), "text-transform: uppercase;");
 /// ```

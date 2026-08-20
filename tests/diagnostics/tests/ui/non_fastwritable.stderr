@@ -155,7 +155,6 @@ error[E0277]: the trait bound `Bake: From<Foo>` is not satisfied
             From<SvgText<R>>
             From<TableColumns>
             From<TableRows>
-            From<TooltipContent>
             From<Vec<T>>
             From<[T; N]>
             From<bool>

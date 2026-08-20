@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_align_items = CssDeclaration::from(AlignItems).content("center");
+/// let css_align_items = CssDeclaration::from(AlignItems).value("center");
 ///
 /// assert_eq!(css_align_items.bake(), "align-items: center;");
 /// ```

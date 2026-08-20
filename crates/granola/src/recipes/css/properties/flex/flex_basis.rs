@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_flex_basis = CssDeclaration::from(FlexBasis).content("100%");
+/// let css_flex_basis = CssDeclaration::from(FlexBasis).value("100%");
 ///
 /// assert_eq!(css_flex_basis.bake(), "flex-basis: 100%;");
 /// ```

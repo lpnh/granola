@@ -12,7 +12,7 @@ impl Bake {
     ///
     /// Panics if [`FastWritable::write_into`] returns an error. See
     /// [`askama::Error`].
-    pub fn new<T: Template + FastWritable>(template: &T) -> Self {
+    pub fn new<T: Template>(template: &T) -> Self {
         let mut buf = String::with_capacity(T::SIZE_HINT);
         FastWritable::write_into(template, &mut buf, NO_VALUES).unwrap();
         Self(Cow::Owned(buf))
@@ -72,6 +72,18 @@ impl Bake {
     /// Returns a mutable reference to the underlying [`String`] buffer.
     pub fn as_mut_string(&mut self) -> &mut String {
         self.0.to_mut()
+    }
+
+    fn from_items<T: Into<Bake>>(items: impl IntoIterator<Item = T>) -> Self {
+        let mut items = items.into_iter();
+        let Some(first) = items.next() else {
+            return Self::default();
+        };
+        let mut bake = first.into();
+        for item in items {
+            bake.fold_in(item.into());
+        }
+        bake
     }
 }
 
@@ -151,21 +163,13 @@ impl From<Bake> for String {
 
 impl<T: Into<Bake>, const N: usize> From<[T; N]> for Bake {
     fn from(items: [T; N]) -> Self {
-        let mut bake = Bake::default();
-        for item in items {
-            bake.fold_in(item.into());
-        }
-        bake
+        Self::from_items(items)
     }
 }
 
 impl<T: Into<Bake>> From<Vec<T>> for Bake {
     fn from(items: Vec<T>) -> Self {
-        let mut bake = Bake::default();
-        for item in items {
-            bake.fold_in(item.into());
-        }
-        bake
+        Self::from_items(items)
     }
 }
 
@@ -411,9 +415,33 @@ macro_rules! escape_comma {
 
 #[cfg(test)]
 mod oven_tests {
+    use super::Bake;
+    use std::borrow::Cow;
+
     const RAW_STRING: &str = "<span> \"hello\" & 'world' </span>";
     const ESCAPED_STRING: &str =
         "&#60;span&#62; &#34;hello&#34; &#38; &#39;world&#39; &#60;/span&#62;";
+
+    #[test]
+    fn bake_from_collections() {
+        let empty: Bake = Vec::<String>::new().into();
+        assert_eq!(empty, "");
+
+        let borrowed: Bake = ["borrowed"].into();
+        assert!(matches!(borrowed.0, Cow::Borrowed("borrowed")));
+
+        let owned = String::from("owned");
+        let owned_ptr = owned.as_ptr();
+        let owned: Bake = vec![owned].into();
+        let Cow::Owned(owned) = owned.0 else {
+            panic!("a String should remain owned");
+        };
+        assert_eq!(owned, "owned");
+        assert_eq!(owned.as_ptr(), owned_ptr);
+
+        let combined: Bake = ["one", "two", "three"].into();
+        assert_eq!(combined, "onetwothree");
+    }
 
     #[test]
     fn bake_1() {
@@ -564,7 +592,7 @@ mod oven_tests {
     #[test]
     fn escape_string_types() {
         let owned = String::from("<owned>");
-        let cow: std::borrow::Cow<'_, str> = std::borrow::Cow::Borrowed("<cow>");
+        let cow: Cow<'_, str> = Cow::Borrowed("<cow>");
         let slice: &str = "<slice>";
 
         assert_eq!(

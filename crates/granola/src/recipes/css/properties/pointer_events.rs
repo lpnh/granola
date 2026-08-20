@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_pointer_events = CssDeclaration::from(PointerEvents).content("none");
+/// let css_pointer_events = CssDeclaration::from(PointerEvents).value("none");
 ///
 /// assert_eq!(css_pointer_events.bake(), "pointer-events: none;");
 /// ```

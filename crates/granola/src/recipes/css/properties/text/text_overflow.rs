@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_overflow = CssDeclaration::from(TextOverflow).content("ellipsis");
+/// let css_text_overflow = CssDeclaration::from(TextOverflow).value("ellipsis");
 ///
 /// assert_eq!(css_text_overflow.bake(), "text-overflow: ellipsis;");
 /// ```

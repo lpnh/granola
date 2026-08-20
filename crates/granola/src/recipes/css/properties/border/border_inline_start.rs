@@ -10,7 +10,7 @@ use crate::prelude::*;
 /// use granola::{prelude::*, recipes::*};
 ///
 /// let css_border_inline_start =
-///     CssDeclaration::from(BorderInlineStart).content("3px solid var(--color-accent)");
+///     CssDeclaration::from(BorderInlineStart).value("3px solid var(--color-accent)");
 ///
 /// assert_eq!(
 ///     css_border_inline_start.bake(),

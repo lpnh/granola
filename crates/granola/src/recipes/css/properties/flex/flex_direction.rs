@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_flex_direction = CssDeclaration::from(FlexDirection).content("row");
+/// let css_flex_direction = CssDeclaration::from(FlexDirection).value("row");
 ///
 /// assert_eq!(css_flex_direction.bake(), "flex-direction: row;");
 /// ```

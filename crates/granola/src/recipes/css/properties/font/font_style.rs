@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_style = CssDeclaration::from(FontStyle).content("italic");
+/// let css_font_style = CssDeclaration::from(FontStyle).value("italic");
 ///
 /// assert_eq!(css_font_style.bake(), "font-style: italic;");
 /// ```

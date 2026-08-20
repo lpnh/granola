@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_padding_block = CssDeclaration::from(PaddingBlock).content("0");
+/// let css_padding_block = CssDeclaration::from(PaddingBlock).value("0");
 ///
 /// assert_eq!(css_padding_block.bake(), "padding-block: 0;");
 /// ```

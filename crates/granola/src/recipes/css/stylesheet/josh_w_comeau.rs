@@ -61,32 +61,33 @@ impl StylesheetRecipe for JoshWComeau {
     fn content_recipe() -> Bake {
         bake_ws![
             CssRule::from(BoxSizingReset),
-            rule!("*:not(dialog)", declaration!(Margin, "0")),
+            rule!("*:not(dialog)", CssDeclaration::from(Margin).value("0")),
             CssAtRule::new()
                 .identifier("media")
                 .rule("(prefers-reduced-motion: no-preference)")
                 .block(rule!(
                     "html",
-                    declaration!(InterpolateSize, "allow-keywords")
+                    CssDeclaration::from(InterpolateSize).value("allow-keywords")
                 )),
             rule!(
                 "body",
                 declarations_block![
-                    (LineHeight, "1.5"),
+                    CssDeclaration::from(LineHeight).value("1.5"),
                     ("-webkit-font-smoothing", "antialiased"),
                 ]
             ),
-            CssRule::from((
-                MediaSelectors,
-                declarations_block![(Display, "block"), (MaxWidth, "100%")]
-            )),
-            CssRule::from((FormControls, declaration!(Font, "inherit"))),
-            CssRule::from((AllHeadingsExt, declaration!(OverflowWrap, "break-word"))),
-            rule!("p", declaration!(TextWrap, "pretty")),
-            CssRule::from((AllHeadings, declaration!(TextWrap, "balance"))),
+            CssRule::from(MediaSelectors).content(declarations_block![
+                CssDeclaration::from(Display).value("block"),
+                CssDeclaration::from(MaxWidth).value("100%")
+            ]),
+            CssRule::from(FormControls).content(CssDeclaration::from(Font).value("inherit")),
+            CssRule::from(AllHeadingsExt)
+                .content(CssDeclaration::from(OverflowWrap).value("break-word")),
+            rule!("p", CssDeclaration::from(TextWrap).value("pretty")),
+            CssRule::from(AllHeadings).content(CssDeclaration::from(TextWrap).value("balance")),
             rule!(
                 bake_comma!["#root", "#__next"],
-                declaration!(Isolation, "isolate")
+                CssDeclaration::from(Isolation).value("isolate")
             ),
         ]
     }

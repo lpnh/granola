@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_background_color = CssDeclaration::from(BackgroundColor).content("transparent");
+/// let css_background_color = CssDeclaration::from(BackgroundColor).value("transparent");
 ///
 /// assert_eq!(
 ///     css_background_color.bake(),

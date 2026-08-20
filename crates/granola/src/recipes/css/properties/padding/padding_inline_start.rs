@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_padding_inline_start = CssDeclaration::from(PaddingInlineStart).content("20px");
+/// let css_padding_inline_start = CssDeclaration::from(PaddingInlineStart).value("20px");
 ///
 /// assert_eq!(
 ///     css_padding_inline_start.bake(),

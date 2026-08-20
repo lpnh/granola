@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_outline_width = CssDeclaration::from(OutlineWidth).content("2px");
+/// let css_outline_width = CssDeclaration::from(OutlineWidth).value("2px");
 ///
 /// assert_eq!(css_outline_width.bake(), "outline-width: 2px;");
 /// ```

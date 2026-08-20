@@ -26,7 +26,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_padding = CssDeclaration::from(Padding).content("0.6em 1.2em");
+/// let css_padding = CssDeclaration::from(Padding).value("0.6em 1.2em");
 ///
 /// assert_eq!(css_padding.bake(), "padding: 0.6em 1.2em;");
 /// ```

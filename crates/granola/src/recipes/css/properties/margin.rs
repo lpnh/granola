@@ -28,7 +28,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_margin = CssDeclaration::from(Margin).content("0");
+/// let css_margin = CssDeclaration::from(Margin).value("0");
 ///
 /// assert_eq!(css_margin.bake(), "margin: 0;");
 /// ```

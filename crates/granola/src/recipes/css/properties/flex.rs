@@ -21,7 +21,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_flex = CssDeclaration::from(Flex).content("1");
+/// let css_flex = CssDeclaration::from(Flex).value("1");
 ///
 /// assert_eq!(css_flex.bake(), "flex: 1;");
 /// ```

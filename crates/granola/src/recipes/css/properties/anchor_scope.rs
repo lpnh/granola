@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_anchor_scope = CssDeclaration::from(AnchorScope).content("all");
+/// let css_anchor_scope = CssDeclaration::from(AnchorScope).value("all");
 ///
 /// assert_eq!(css_anchor_scope.bake(), "anchor-scope: all;");
 /// ```

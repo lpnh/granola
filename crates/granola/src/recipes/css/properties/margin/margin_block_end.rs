@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_margin_block_end = CssDeclaration::from(MarginBlockEnd).content("0");
+/// let css_margin_block_end = CssDeclaration::from(MarginBlockEnd).value("0");
 ///
 /// assert_eq!(css_margin_block_end.bake(), "margin-block-end: 0;");
 /// ```

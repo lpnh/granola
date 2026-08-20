@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_z_index = CssDeclaration::from(ZIndex).content("1");
+/// let css_z_index = CssDeclaration::from(ZIndex).value("1");
 ///
 /// assert_eq!(css_z_index.bake(), "z-index: 1;");
 /// ```

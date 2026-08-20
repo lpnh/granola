@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_padding_bottom = CssDeclaration::from(PaddingBottom).content("1rem");
+/// let css_padding_bottom = CssDeclaration::from(PaddingBottom).value("1rem");
 ///
 /// assert_eq!(css_padding_bottom.bake(), "padding-bottom: 1rem;");
 /// ```

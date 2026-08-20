@@ -3,8 +3,53 @@ fn main() {}
 #[cfg(test)]
 mod tests_recipe {
     use askama::Template;
+    use std::{cell::Cell, marker::PhantomData};
 
     use granola::{homemade::*, prelude::*};
+
+    std::thread_local! {
+        static ELEMENT_DEFAULT_CALLS: Cell<usize> = const { Cell::new(0) };
+        static CONTENT_RECIPE_CALLS: Cell<usize> = const { Cell::new(0) };
+    }
+
+    #[derive(Debug, Clone, Template, Granola, Recipe)]
+    #[template(source = "{{ content }}", ext = "html", escape = "none")]
+    #[recipe(ConstructorProbeRecipe)]
+    struct ConstructorProbe<R: ConstructorProbeRecipe = ()> {
+        _recipe: PhantomData<R>,
+        content: Bake,
+        marker: bool,
+    }
+
+    impl<R: ConstructorProbeRecipe> Default for ConstructorProbe<R> {
+        fn default() -> Self {
+            ELEMENT_DEFAULT_CALLS.set(ELEMENT_DEFAULT_CALLS.get() + 1);
+            Self {
+                _recipe: PhantomData,
+                content: Bake::default(),
+                marker: false,
+            }
+        }
+    }
+
+    #[derive(Default, Debug, Clone)]
+    struct ConstructorRecipe;
+
+    impl ConstructorProbeRecipe for ConstructorRecipe {
+        fn content_recipe() -> Bake {
+            CONTENT_RECIPE_CALLS.set(CONTENT_RECIPE_CALLS.get() + 1);
+            "recipe content".into()
+        }
+
+        fn marker_recipe() -> bool {
+            true
+        }
+    }
+
+    fn reset_constructor_calls() {
+        ELEMENT_DEFAULT_CALLS.set(0);
+        CONTENT_RECIPE_CALLS.set(0);
+    }
 
     #[test]
     fn homemade_content_builds_document() {
@@ -148,22 +193,14 @@ mod tests_recipe {
     }
 
     #[test]
-    fn from_recipe_and_content() {
-        use granola::recipes::Background;
+    fn from_recipe_initializes_only_recipe_fields() {
+        reset_constructor_calls();
 
-        #[derive(Default, Debug, Clone)]
-        struct Counter;
+        let probe: ConstructorProbe<ConstructorRecipe> = ConstructorProbe::from_recipe();
 
-        impl ButtonRecipe for Counter {
-            fn specific_attrs_recipe() -> ButtonAttrs {
-                ButtonAttrs::default().button_type(ButtonType::Button)
-            }
-        }
-
-        let button = HtmlButton::from((Counter, "reset"));
-        assert_eq!(button.bake(), r#"<button type="button">reset</button>"#);
-
-        let css_declaration = CssDeclaration::from((Background, "none"));
-        assert_eq!(css_declaration.bake(), "background: none;");
+        assert_eq!(probe.content, "recipe content");
+        assert!(probe.marker);
+        ELEMENT_DEFAULT_CALLS.with(|calls| assert_eq!(calls.get(), 0));
+        CONTENT_RECIPE_CALLS.with(|calls| assert_eq!(calls.get(), 1));
     }
 }

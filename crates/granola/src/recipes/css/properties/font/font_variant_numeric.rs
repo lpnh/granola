@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_variant_numeric = CssDeclaration::from(FontVariantNumeric).content("tabular-nums");
+/// let css_font_variant_numeric = CssDeclaration::from(FontVariantNumeric).value("tabular-nums");
 ///
 /// assert_eq!(
 ///     css_font_variant_numeric.bake(),

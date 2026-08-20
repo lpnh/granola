@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_appearance = CssDeclaration::from(Appearance).content("button");
+/// let css_appearance = CssDeclaration::from(Appearance).value("button");
 ///
 /// assert_eq!(css_appearance.bake(), "appearance: button;");
 /// ```

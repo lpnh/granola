@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_flex_shrink = CssDeclaration::from(FlexShrink).content("0");
+/// let css_flex_shrink = CssDeclaration::from(FlexShrink).value("0");
 ///
 /// assert_eq!(css_flex_shrink.bake(), "flex-shrink: 0;");
 /// ```

@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `NotARecipe: ButtonRecipe` is not satisfied
  --> tests/ui/not_a_recipe.rs:7:18
   |
-7 |     let _button: HtmlButton<NotARecipe> = HtmlButton::from_cookbook();
+7 |     let _button: HtmlButton<NotARecipe> = HtmlButton::from_recipe();
   |                  ^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
   |
 help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
@@ -11,14 +11,13 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
   | ^^^^^^^^^^^^^^^^^
   = help: the following other types implement trait `ButtonRecipe`:
             ()
-            BtnGhost
-            BtnPrimary
-            BtnSquare
+            Btn
             FormmethodDialog
             FormmethodGet
             FormmethodPost
-            Tip
-          and $N others
+            TypeButton
+            TypeReset
+            TypeSubmit
 note: required by a bound in `granola::html::HtmlButton`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
   |
@@ -28,7 +27,7 @@ note: required by a bound in `granola::html::HtmlButton`
 error[E0277]: the trait bound `NotARecipe: ButtonRecipe` is not satisfied
  --> tests/ui/not_a_recipe.rs:7:43
   |
-7 |     let _button: HtmlButton<NotARecipe> = HtmlButton::from_cookbook();
+7 |     let _button: HtmlButton<NotARecipe> = HtmlButton::from_recipe();
   |                                           ^^^^^^^^^^ unsatisfied trait bound
   |
 help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
@@ -38,14 +37,13 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
   | ^^^^^^^^^^^^^^^^^
   = help: the following other types implement trait `ButtonRecipe`:
             ()
-            BtnGhost
-            BtnPrimary
-            BtnSquare
+            Btn
             FormmethodDialog
             FormmethodGet
             FormmethodPost
-            Tip
-          and $N others
+            TypeButton
+            TypeReset
+            TypeSubmit
 note: required by a bound in `granola::html::HtmlButton`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
   |
@@ -55,8 +53,8 @@ note: required by a bound in `granola::html::HtmlButton`
 error[E0277]: the trait bound `NotARecipe: ButtonRecipe` is not satisfied
  --> tests/ui/not_a_recipe.rs:7:43
   |
-7 |     let _button: HtmlButton<NotARecipe> = HtmlButton::from_cookbook();
-  |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+7 |     let _button: HtmlButton<NotARecipe> = HtmlButton::from_recipe();
+  |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
   |
 help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
  --> tests/ui/not_a_recipe.rs:4:1
@@ -65,19 +63,18 @@ help: the trait `ButtonRecipe` is not implemented for `NotARecipe`
   | ^^^^^^^^^^^^^^^^^
   = help: the following other types implement trait `ButtonRecipe`:
             ()
-            BtnGhost
-            BtnPrimary
-            BtnSquare
+            Btn
             FormmethodDialog
             FormmethodGet
             FormmethodPost
-            Tip
-          and $N others
-note: required by a bound in `granola::html::HtmlButton::<R>::from_cookbook`
+            TypeButton
+            TypeReset
+            TypeSubmit
+note: required by a bound in `granola::html::HtmlButton::<R>::from_recipe`
  --> $WORKSPACE/crates/granola/src/html/elements/forms/button.rs
   |
   | #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe, DaisyUI)]
   |                                                               ------ required by a bound in this associated function
 ...
   | pub struct HtmlButton<R: ButtonRecipe = ()> {
-  |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton::<R>::from_cookbook`
+  |                          ^^^^^^^^^^^^ required by this bound in `HtmlButton::<R>::from_recipe`

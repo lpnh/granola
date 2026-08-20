@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_underline_offset = CssDeclaration::from(TextUnderlineOffset).content("0.15em");
+/// let css_text_underline_offset = CssDeclaration::from(TextUnderlineOffset).value("0.15em");
 ///
 /// assert_eq!(
 ///     css_text_underline_offset.bake(),

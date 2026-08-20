@@ -26,6 +26,6 @@ impl RuleRecipe for SubVerticalPos {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(Bottom).content("-0.25em").into()
+        CssDeclaration::from(Bottom).value("-0.25em").into()
     }
 }

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_outline_offset = CssDeclaration::from(OutlineOffset).content("2px");
+/// let css_outline_offset = CssDeclaration::from(OutlineOffset).value("2px");
 ///
 /// assert_eq!(css_outline_offset.bake(), "outline-offset: 2px;");
 /// ```

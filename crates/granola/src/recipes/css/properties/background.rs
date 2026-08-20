@@ -12,7 +12,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_background = CssDeclaration::from(Background).content("none");
+/// let css_background = CssDeclaration::from(Background).value("none");
 ///
 /// assert_eq!(css_background.bake(), "background: none;");
 /// ```

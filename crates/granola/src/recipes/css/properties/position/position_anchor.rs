@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_position_anchor = CssDeclaration::from(PositionAnchor).content("--my-anchor");
+/// let css_position_anchor = CssDeclaration::from(PositionAnchor).value("--my-anchor");
 ///
 /// assert_eq!(css_position_anchor.bake(), "position-anchor: --my-anchor;");
 /// ```

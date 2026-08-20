@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css = CssDeclaration::from(WebkitTextDecoration).content("none");
+/// let css = CssDeclaration::from(WebkitTextDecoration).value("none");
 ///
 /// assert_eq!(css.bake(), "-webkit-text-decoration: none;");
 /// ```

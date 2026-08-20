@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_cursor = CssDeclaration::from(Cursor).content("pointer");
+/// let css_cursor = CssDeclaration::from(Cursor).value("pointer");
 ///
 /// assert_eq!(css_cursor.bake(), "cursor: pointer;");
 /// ```

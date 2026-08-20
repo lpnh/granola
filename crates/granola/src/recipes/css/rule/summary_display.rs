@@ -26,6 +26,6 @@ impl RuleRecipe for SummaryDisplayListItem {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(Display).content("list-item").into()
+        CssDeclaration::from(Display).value("list-item").into()
     }
 }

@@ -18,7 +18,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_outline = CssDeclaration::from(Outline).content("auto");
+/// let css_outline = CssDeclaration::from(Outline).value("auto");
 ///
 /// assert_eq!(css_outline.bake(), "outline: auto;");
 /// ```

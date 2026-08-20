@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border_bottom = CssDeclaration::from(BorderBottom).content("1px solid black");
+/// let css_border_bottom = CssDeclaration::from(BorderBottom).value("1px solid black");
 ///
 /// assert_eq!(css_border_bottom.bake(), "border-bottom: 1px solid black;");
 /// ```

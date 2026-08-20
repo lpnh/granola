@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_position_area = CssDeclaration::from(PositionArea).content("top");
+/// let css_position_area = CssDeclaration::from(PositionArea).value("top");
 ///
 /// assert_eq!(css_position_area.bake(), "position-area: top;");
 /// ```

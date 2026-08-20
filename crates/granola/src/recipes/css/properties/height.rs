@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_height = CssDeclaration::from(Height).content("auto");
+/// let css_height = CssDeclaration::from(Height).value("auto");
 ///
 /// assert_eq!(css_height.bake(), "height: auto;");
 /// ```

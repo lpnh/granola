@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border_color = CssDeclaration::from(BorderColor).content("currentcolor");
+/// let css_border_color = CssDeclaration::from(BorderColor).value("currentcolor");
 ///
 /// assert_eq!(css_border_color.bake(), "border-color: currentcolor;");
 /// ```

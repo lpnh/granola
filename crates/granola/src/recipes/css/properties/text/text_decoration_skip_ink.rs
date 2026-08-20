@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_decoration_skip_ink = CssDeclaration::from(TextDecorationSkipInk).content("auto");
+/// let css_text_decoration_skip_ink = CssDeclaration::from(TextDecorationSkipInk).value("auto");
 ///
 /// assert_eq!(
 ///     css_text_decoration_skip_ink.bake(),

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_min_width = CssDeclaration::from(MinWidth).content("0");
+/// let css_min_width = CssDeclaration::from(MinWidth).value("0");
 ///
 /// assert_eq!(css_min_width.bake(), "min-width: 0;");
 /// ```

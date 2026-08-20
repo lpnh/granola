@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_opacity = CssDeclaration::from(Opacity).content("1");
+/// let css_opacity = CssDeclaration::from(Opacity).value("1");
 ///
 /// assert_eq!(css_opacity.bake(), "opacity: 1;");
 /// ```

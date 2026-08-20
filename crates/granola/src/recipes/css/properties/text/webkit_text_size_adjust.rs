@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css = CssDeclaration::from(WebkitTextSizeAdjust).content("100%");
+/// let css = CssDeclaration::from(WebkitTextSizeAdjust).value("100%");
 ///
 /// assert_eq!(css.bake(), "-webkit-text-size-adjust: 100%;");
 /// ```

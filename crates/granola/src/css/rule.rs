@@ -26,7 +26,7 @@ use crate::{filters, prelude::*};
 ///
 /// let css_declaration = CssDeclaration::new()
 ///     .property("color")
-///     .content("rgb(102, 51, 153)");
+///     .value("rgb(102, 51, 153)");
 ///
 /// let css_rule = CssRule::new()
 ///     .selectors_list(css_selector)

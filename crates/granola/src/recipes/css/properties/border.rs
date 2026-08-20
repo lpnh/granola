@@ -82,7 +82,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border = CssDeclaration::from(Border).content("none");
+/// let css_border = CssDeclaration::from(Border).value("none");
 ///
 /// assert_eq!(css_border.bake(), "border: none;");
 /// ```

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_scroll_behavior = CssDeclaration::from(ScrollBehavior).content("smooth");
+/// let css_scroll_behavior = CssDeclaration::from(ScrollBehavior).value("smooth");
 ///
 /// assert_eq!(css_scroll_behavior.bake(), "scroll-behavior: smooth;");
 /// ```

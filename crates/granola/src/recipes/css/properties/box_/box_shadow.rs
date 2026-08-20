@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_box_shadow = CssDeclaration::from(BoxShadow).content("none");
+/// let css_box_shadow = CssDeclaration::from(BoxShadow).value("none");
 ///
 /// assert_eq!(css_box_shadow.bake(), "box-shadow: none;");
 /// ```

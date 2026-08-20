@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_list_style = CssDeclaration::from(ListStyle).content("none");
+/// let css_list_style = CssDeclaration::from(ListStyle).value("none");
 ///
 /// assert_eq!(css_list_style.bake(), "list-style: none;");
 /// ```

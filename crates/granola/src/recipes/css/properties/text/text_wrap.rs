@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_wrap = CssDeclaration::from(TextWrap).content("balance");
+/// let css_text_wrap = CssDeclaration::from(TextWrap).value("balance");
 ///
 /// assert_eq!(css_text_wrap.bake(), "text-wrap: balance;");
 /// ```

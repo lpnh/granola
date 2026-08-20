@@ -9,8 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_position_try_fallbacks =
-///     CssDeclaration::from(PositionTryFallbacks).content("flip-block");
+/// let css_position_try_fallbacks = CssDeclaration::from(PositionTryFallbacks).value("flip-block");
 ///
 /// assert_eq!(
 ///     css_position_try_fallbacks.bake(),

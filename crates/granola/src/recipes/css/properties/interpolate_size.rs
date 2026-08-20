@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_interpolate_size = CssDeclaration::from(InterpolateSize).content("allow-keywords");
+/// let css_interpolate_size = CssDeclaration::from(InterpolateSize).value("allow-keywords");
 ///
 /// assert_eq!(
 ///     css_interpolate_size.bake(),

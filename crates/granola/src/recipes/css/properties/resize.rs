@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_resize = CssDeclaration::from(Resize).content("vertical");
+/// let css_resize = CssDeclaration::from(Resize).value("vertical");
 ///
 /// assert_eq!(css_resize.bake(), "resize: vertical;");
 /// ```

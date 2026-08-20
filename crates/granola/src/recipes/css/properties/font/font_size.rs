@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_size = CssDeclaration::from(FontSize).content("0.875rem");
+/// let css_font_size = CssDeclaration::from(FontSize).value("0.875rem");
 ///
 /// assert_eq!(css_font_size.bake(), "font-size: 0.875rem;");
 /// ```

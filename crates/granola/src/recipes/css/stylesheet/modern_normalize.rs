@@ -113,41 +113,36 @@ impl StylesheetRecipe for ModernNormalize {
             rule!(
                 "html",
                 declarations_block![
-                    (
-                        FontFamily,
+                    CssDeclaration::from(FontFamily).value(
                         "system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"
                     ),
-                    (LineHeight, "1.15"),
-                    (WebkitTextSizeAdjust, "100%"),
-                    (TabSize, "4"),
+                    CssDeclaration::from(LineHeight).value("1.15"),
+                    CssDeclaration::from(WebkitTextSizeAdjust).value("100%"),
+                    CssDeclaration::from(TabSize).value("4"),
                 ]
             ),
-            rule!("body", declaration!(Margin, "0")),
+            rule!("body", CssDeclaration::from(Margin).value("0")),
             BStrongFontWeight,
-            (
-                MonospaceSelectors,
-                declarations_block![
-                    (
-                        FontFamily,
-                        "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace"
-                    ),
-                    (FontSize, "1em")
-                ]
-            ),
+            CssRule::from(MonospaceSelectors).content(declarations_block![
+                CssDeclaration::from(FontFamily).value(
+                    "ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace"
+                ),
+                CssDeclaration::from(FontSize).value("1em")
+            ]),
             SmallFontSize,
             SubSupDefaults,
             SubVerticalPos,
             SupVerticalPos,
-            rule!("table", declaration!(BorderColor, "currentcolor")),
-            (
-                FormControlsExt,
-                declarations_block![
-                    (FontFamily, "inherit"),
-                    (FontSize, "100%"),
-                    (LineHeight, "1.15"),
-                    (Margin, "0"),
-                ]
+            rule!(
+                "table",
+                CssDeclaration::from(BorderColor).value("currentcolor")
             ),
+            CssRule::from(FormControlsExt).content(declarations_block![
+                CssDeclaration::from(FontFamily).value("inherit"),
+                CssDeclaration::from(FontSize).value("100%"),
+                CssDeclaration::from(LineHeight).value("1.15"),
+                CssDeclaration::from(Margin).value("0"),
+            ]),
             rule!(
                 bake_comma![
                     "button",
@@ -157,17 +152,23 @@ impl StylesheetRecipe for ModernNormalize {
                 ],
                 declaration!("-webkit-appearance", "button")
             ),
-            rule!("legend", declaration!(Padding, "0")),
+            rule!("legend", CssDeclaration::from(Padding).value("0")),
             ProgressVerticalAlignment,
             SpinButtonHeight,
             rule!(
                 r#"[type="search"]"#,
-                declarations_block![("-webkit-appearance", "textfield"), (OutlineOffset, "-2px")]
+                declarations_block![
+                    ("-webkit-appearance", "textfield"),
+                    CssDeclaration::from(OutlineOffset).value("-2px")
+                ]
             ),
             SearchDecorationAppearance,
             rule!(
                 "::-webkit-file-upload-button",
-                declarations_block![("-webkit-appearance", "button"), (Font, "inherit")]
+                declarations_block![
+                    ("-webkit-appearance", "button"),
+                    CssDeclaration::from(Font).value("inherit")
+                ]
             ),
             SummaryDisplayListItem,
         ]

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border_radius = CssDeclaration::from(BorderRadius).content("0.5em");
+/// let css_border_radius = CssDeclaration::from(BorderRadius).value("0.5em");
 ///
 /// assert_eq!(css_border_radius.bake(), "border-radius: 0.5em;");
 /// ```

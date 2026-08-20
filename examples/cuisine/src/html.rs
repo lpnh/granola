@@ -101,10 +101,10 @@ fn palette_style(palette: Palette) -> HtmlStyle {
         ":root",
         declarations_block![
             ("color-scheme", palette.color_scheme()),
-            (base_color("100"), palette.base_100),
-            (base_color("200"), palette.base_200),
-            (base_color("300"), palette.base_300),
-            (base_color("content"), palette.base_content),
+            CssDeclaration::from((base_color("100"), palette.base_100)),
+            CssDeclaration::from((base_color("200"), palette.base_200)),
+            CssDeclaration::from((base_color("300"), palette.base_300)),
+            CssDeclaration::from((base_color("content"), palette.base_content)),
         ]
     );
 

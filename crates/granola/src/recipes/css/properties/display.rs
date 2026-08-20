@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_display = CssDeclaration::from(Display).content("inline flex");
+/// let css_display = CssDeclaration::from(Display).value("inline flex");
 ///
 /// assert_eq!(css_display.bake(), "display: inline flex;");
 /// ```

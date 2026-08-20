@@ -4,5 +4,5 @@ use granola::prelude::*;
 struct NotARecipe;
 
 fn main() {
-    let _button: HtmlButton<NotARecipe> = HtmlButton::from_cookbook();
+    let _button: HtmlButton<NotARecipe> = HtmlButton::from_recipe();
 }

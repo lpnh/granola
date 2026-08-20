@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_indent = CssDeclaration::from(TextIndent).content("0");
+/// let css_text_indent = CssDeclaration::from(TextIndent).value("0");
 ///
 /// assert_eq!(css_text_indent.bake(), "text-indent: 0;");
 /// ```

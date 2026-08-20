@@ -284,14 +284,13 @@ fn daisyui_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
 /// For a struct `Foo<R>`, it generates:
 /// - the recipe trait named by `#[recipe(RecipeName)]`, with one hook per field
 ///   and an impl for `()` (the baked, no-op recipe)
-/// - the `new` and `from_cookbook` constructors, plus a `From<R>` impl
+/// - the `new` and `from_recipe` constructors, plus a `From<R>` impl
 ///   (`Foo::from(recipe)`)
 /// - a `bake_recipe` method lowering `Foo<R>` to `Foo<()>`
 ///
 /// For structs with a `content` field:
 /// - a `content(content)` builder method
 /// - an `escape(content)` builder method
-/// - a `From<(R, impl Into<Bake>)>` impl (`Foo::from((recipe, content))`)
 ///
 /// And also the matching `Has*` impl for:
 /// - `global_attrs`, `global_aria_attrs`, `custom_data_attrs`,
@@ -332,44 +331,26 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
     let has_field = |name: &str| field_idents.iter().any(|i| *i == name);
     let has_content = has_field("content");
 
-    let (content_method, from_recipe_and_content) = if has_content {
-        let mut content_generics = recipe_generics.clone();
-        content_generics.params.push(syn::parse_quote!(
-            __IntoContent: ::std::convert::Into<::granola::oven::Bake>
-        ));
-        let (content_impl_generics, _, content_where_clause) = content_generics.split_for_impl();
+    let content_method = if has_content {
+        quote! {
+            pub fn content(
+                mut self,
+                content: impl ::std::convert::Into<::granola::oven::Bake>,
+            ) -> Self {
+                self.content = content.into();
+                self
+            }
 
-        (
-            quote! {
-                pub fn content(
-                    mut self,
-                    content: impl ::std::convert::Into<::granola::oven::Bake>,
-                ) -> Self {
-                    self.content = content.into();
-                    self
-                }
-
-                pub fn escape(
-                    mut self,
-                    content: impl ::askama::FastWritable,
-                ) -> Self {
-                    self.content = ::granola::oven::escape_content(content).into();
-                    self
-                }
-            },
-            quote! {
-                impl #content_impl_generics
-                    ::std::convert::From<(#type_param, __IntoContent)>
-                    for #struct_name #ty_generics #content_where_clause
-                {
-                    fn from((_recipe, content): (#type_param, __IntoContent)) -> Self {
-                        Self::from_cookbook().content(content)
-                    }
-                }
-            },
-        )
+            pub fn escape(
+                mut self,
+                content: impl ::askama::FastWritable,
+            ) -> Self {
+                self.content = ::granola::oven::escape_content(content);
+                self
+            }
+        }
     } else {
-        (quote! {}, quote! {})
+        quote! {}
     };
 
     let attr_impls = other_fields.iter().filter_map(|field| {
@@ -417,24 +398,22 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
 
         impl #struct_name<()> {
             pub fn new() -> Self {
-                Self {
-                    ..::std::default::Default::default()
-                }
+                Self::default()
             }
         }
 
         impl #impl_generics #struct_name #ty_generics #where_clause {
             #content_method
 
-            pub fn from_cookbook() -> Self {
+            pub fn from_recipe() -> Self {
                 Self {
+                    _recipe: ::std::marker::PhantomData,
                     #(#field_idents: #type_param::#method_names(),)*
-                    ..::std::default::Default::default()
                 }
             }
 
-            /// Converts this element into its recipe-free form, replacing
-            /// the recipe type parameter with its default.
+            /// Converts this element into its recipe-free form by replacing
+            /// the recipe type parameter with `()`.
             pub fn bake_recipe(self) -> #struct_name<()> {
                 #struct_name {
                     _recipe: ::std::marker::PhantomData,
@@ -447,10 +426,8 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
             for #struct_name #ty_generics #where_clause
         {
             fn from(_recipe: #type_param) -> Self {
-                Self::from_cookbook()
+                Self::from_recipe()
             }
         }
-
-        #from_recipe_and_content
     })
 }

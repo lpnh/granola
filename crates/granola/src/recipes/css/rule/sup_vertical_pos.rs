@@ -26,6 +26,6 @@ impl RuleRecipe for SupVerticalPos {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(Top).content("-0.5em").into()
+        CssDeclaration::from(Top).value("-0.5em").into()
     }
 }

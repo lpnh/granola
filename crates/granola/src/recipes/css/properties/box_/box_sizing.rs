@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_box_sizing = CssDeclaration::from(BoxSizing).content("border-box");
+/// let css_box_sizing = CssDeclaration::from(BoxSizing).value("border-box");
 ///
 /// assert_eq!(css_box_sizing.bake(), "box-sizing: border-box;");
 /// ```

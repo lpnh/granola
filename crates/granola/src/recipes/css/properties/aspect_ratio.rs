@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_aspect_ratio = CssDeclaration::from(AspectRatio).content("16 / 9");
+/// let css_aspect_ratio = CssDeclaration::from(AspectRatio).value("16 / 9");
 ///
 /// assert_eq!(css_aspect_ratio.bake(), "aspect-ratio: 16 / 9;");
 /// ```

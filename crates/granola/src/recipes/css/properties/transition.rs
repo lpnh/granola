@@ -15,7 +15,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_transition = CssDeclaration::from(Transition).content("background-color 150ms ease");
+/// let css_transition = CssDeclaration::from(Transition).value("background-color 150ms ease");
 ///
 /// assert_eq!(
 ///     css_transition.bake(),

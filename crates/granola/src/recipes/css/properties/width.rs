@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_width = CssDeclaration::from(Width).content("100%");
+/// let css_width = CssDeclaration::from(Width).value("100%");
 ///
 /// assert_eq!(css_width.bake(), "width: 100%;");
 /// ```

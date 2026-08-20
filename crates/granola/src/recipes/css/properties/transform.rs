@@ -13,7 +13,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_transform = CssDeclaration::from(Transform).content("scale(0.97)");
+/// let css_transform = CssDeclaration::from(Transform).value("scale(0.97)");
 ///
 /// assert_eq!(css_transform.bake(), "transform: scale(0.97);");
 /// ```

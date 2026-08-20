@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_border_top_width = CssDeclaration::from(BorderTopWidth).content("0.5em");
+/// let css_border_top_width = CssDeclaration::from(BorderTopWidth).value("0.5em");
 ///
 /// assert_eq!(css_border_top_width.bake(), "border-top-width: 0.5em;");
 /// ```

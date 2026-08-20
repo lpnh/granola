@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_top = CssDeclaration::from(Top).content("-0.5em");
+/// let css_top = CssDeclaration::from(Top).value("-0.5em");
 ///
 /// assert_eq!(css_top.bake(), "top: -0.5em;");
 /// ```

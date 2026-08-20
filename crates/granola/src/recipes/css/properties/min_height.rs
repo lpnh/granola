@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_min_height = CssDeclaration::from(MinHeight).content("1lh");
+/// let css_min_height = CssDeclaration::from(MinHeight).value("1lh");
 ///
 /// assert_eq!(css_min_height.bake(), "min-height: 1lh;");
 /// ```

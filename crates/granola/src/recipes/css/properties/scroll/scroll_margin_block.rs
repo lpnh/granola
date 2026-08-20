@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_scroll_margin_block = CssDeclaration::from(ScrollMarginBlock).content("5ex");
+/// let css_scroll_margin_block = CssDeclaration::from(ScrollMarginBlock).value("5ex");
 ///
 /// assert_eq!(css_scroll_margin_block.bake(), "scroll-margin-block: 5ex;");
 /// ```

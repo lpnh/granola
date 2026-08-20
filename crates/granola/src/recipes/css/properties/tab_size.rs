@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_tab_size = CssDeclaration::from(TabSize).content("4");
+/// let css_tab_size = CssDeclaration::from(TabSize).value("4");
 ///
 /// assert_eq!(css_tab_size.bake(), "tab-size: 4;");
 /// ```

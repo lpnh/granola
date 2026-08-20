@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_grid_template_columns = CssDeclaration::from(GridTemplateColumns).content("auto 1fr");
+/// let css_grid_template_columns = CssDeclaration::from(GridTemplateColumns).value("auto 1fr");
 ///
 /// assert_eq!(
 ///     css_grid_template_columns.bake(),

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_flex_wrap = CssDeclaration::from(FlexWrap).content("nowrap");
+/// let css_flex_wrap = CssDeclaration::from(FlexWrap).value("nowrap");
 ///
 /// assert_eq!(css_flex_wrap.bake(), "flex-wrap: nowrap;");
 /// ```

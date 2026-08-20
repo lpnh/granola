@@ -26,8 +26,6 @@ impl RuleRecipe for ProgressVerticalAlignment {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(VerticalAlign)
-            .content("baseline")
-            .into()
+        CssDeclaration::from(VerticalAlign).value("baseline").into()
     }
 }

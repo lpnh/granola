@@ -26,6 +26,6 @@ impl RuleRecipe for ListReset {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(ListStyle).content("none").into()
+        CssDeclaration::from(ListStyle).value("none").into()
     }
 }

@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_clip_path = CssDeclaration::from(ClipPath).content("inset(50%)");
+/// let css_clip_path = CssDeclaration::from(ClipPath).value("inset(50%)");
 ///
 /// assert_eq!(css_clip_path.bake(), "clip-path: inset(50%);");
 /// ```

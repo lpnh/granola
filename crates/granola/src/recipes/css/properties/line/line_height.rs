@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_line_height = CssDeclaration::from(LineHeight).content("1.25rem");
+/// let css_line_height = CssDeclaration::from(LineHeight).value("1.25rem");
 ///
 /// assert_eq!(css_line_height.bake(), "line-height: 1.25rem;");
 /// ```

@@ -14,7 +14,7 @@ use crate::{filters, prelude::*};
 ///
 /// let css_declaration = CssDeclaration::new()
 ///     .property("color")
-///     .content("rebeccapurple");
+///     .value("rebeccapurple");
 ///
 /// assert_eq!(css_declaration.bake(), "color: rebeccapurple;");
 /// ```
@@ -22,7 +22,7 @@ use crate::{filters, prelude::*};
 /// # Askama template
 ///
 /// ```askama
-/// {{ property }}: {{ content | kirei }};
+/// {{ property }}: {{ value | kirei }};
 /// ```
 #[derive(Debug, Clone, Default, PartialEq, Template, Granola, Recipe)]
 #[recipe(DeclarationRecipe)]
@@ -30,12 +30,17 @@ use crate::{filters, prelude::*};
 pub struct CssDeclaration<R: DeclarationRecipe = ()> {
     _recipe: PhantomData<R>,
     pub property: Bake,
-    pub content: Bake,
+    pub value: Bake,
 }
 
 impl<R: DeclarationRecipe> CssDeclaration<R> {
     pub fn property(mut self, property: impl Into<Bake>) -> Self {
         self.property = property.into();
+        self
+    }
+
+    pub fn value(mut self, value: impl Into<Bake>) -> Self {
+        self.value = value.into();
         self
     }
 }
@@ -45,7 +50,7 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/inherit)
     pub fn inherit(mut self) -> Self {
-        self.content = "inherit".into();
+        self.value = "inherit".into();
         self
     }
 
@@ -53,7 +58,7 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/initial)
     pub fn initial(mut self) -> Self {
-        self.content = "initial".into();
+        self.value = "initial".into();
         self
     }
 
@@ -61,7 +66,7 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/revert)
     pub fn revert(mut self) -> Self {
-        self.content = "revert".into();
+        self.value = "revert".into();
         self
     }
 
@@ -69,7 +74,7 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/unset)
     pub fn unset(mut self) -> Self {
-        self.content = "unset".into();
+        self.value = "unset".into();
         self
     }
 
@@ -77,8 +82,8 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important)
     pub fn important(mut self) -> Self {
-        if !self.content.is_empty() {
-            self.content.fold_in_ws("!important");
+        if !self.value.is_empty() {
+            self.value.fold_in_ws("!important");
         }
         self
     }
@@ -86,7 +91,7 @@ impl<R: DeclarationRecipe> CssDeclaration<R> {
 
 impl<P: Into<Bake>, V: Into<Bake>> From<(P, V)> for CssDeclaration {
     fn from((property, value): (P, V)) -> Self {
-        Self::new().property(property).content(value)
+        Self::new().property(property).value(value)
     }
 }
 

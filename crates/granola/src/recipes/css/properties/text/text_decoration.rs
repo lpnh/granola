@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_text_decoration = CssDeclaration::from(TextDecoration).content("none");
+/// let css_text_decoration = CssDeclaration::from(TextDecoration).value("none");
 ///
 /// assert_eq!(css_text_decoration.bake(), "text-decoration: none;");
 /// ```

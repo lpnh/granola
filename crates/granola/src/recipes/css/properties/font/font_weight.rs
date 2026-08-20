@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_font_weight = CssDeclaration::from(FontWeight).content("500");
+/// let css_font_weight = CssDeclaration::from(FontWeight).value("500");
 ///
 /// assert_eq!(css_font_weight.bake(), "font-weight: 500;");
 /// ```

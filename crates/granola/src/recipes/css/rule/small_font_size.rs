@@ -26,6 +26,6 @@ impl RuleRecipe for SmallFontSize {
     }
 
     fn content_recipe() -> Bake {
-        CssDeclaration::from(FontSize).content("80%").into()
+        CssDeclaration::from(FontSize).value("80%").into()
     }
 }

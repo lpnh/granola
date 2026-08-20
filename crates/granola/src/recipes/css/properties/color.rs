@@ -13,7 +13,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_color = CssDeclaration::from(Color).content("rebeccapurple");
+/// let css_color = CssDeclaration::from(Color).value("rebeccapurple");
 ///
 /// assert_eq!(css_color.bake(), "color: rebeccapurple;");
 /// ```

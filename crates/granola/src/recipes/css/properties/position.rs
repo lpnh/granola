@@ -20,7 +20,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_position = CssDeclaration::from(Position).content("relative");
+/// let css_position = CssDeclaration::from(Position).value("relative");
 ///
 /// assert_eq!(css_position.bake(), "position: relative;");
 /// ```

@@ -30,10 +30,10 @@ impl RuleRecipe for UniversalReset {
 
     fn content_recipe() -> Bake {
         bake_ws![
-            CssDeclaration::from(BoxSizing).content("border-box"),
-            CssDeclaration::from(Margin).content("0"),
-            CssDeclaration::from(Padding).content("0"),
-            CssDeclaration::from(Border).content(bake_ws!["0", "solid"]),
+            CssDeclaration::from(BoxSizing).value("border-box"),
+            CssDeclaration::from(Margin).value("0"),
+            CssDeclaration::from(Padding).value("0"),
+            CssDeclaration::from(Border).value(bake_ws!["0", "solid"]),
         ]
     }
 }

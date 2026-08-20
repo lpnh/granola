@@ -73,8 +73,8 @@ impl StylesheetRecipe for AndyBell {
                 "html",
                 declarations_block![
                     ("-moz-text-size-adjust", "none"),
-                    (WebkitTextSizeAdjust, "none"),
-                    (TextSizeAdjust, "none"),
+                    CssDeclaration::from(WebkitTextSizeAdjust).value("none"),
+                    CssDeclaration::from(TextSizeAdjust).value("none"),
                 ]
             ),
             rule!(
@@ -90,27 +90,40 @@ impl StylesheetRecipe for AndyBell {
                     "dl",
                     "dd",
                 ],
-                declaration!(MarginBlockEnd, "0")
+                CssDeclaration::from(MarginBlockEnd).value("0")
             ),
             ListReset,
             rule!(
                 "body",
-                declarations_block![(MinHeight, "100vh"), (LineHeight, "1.5")]
+                declarations_block![
+                    CssDeclaration::from(MinHeight).value("100vh"),
+                    CssDeclaration::from(LineHeight).value("1.5")
+                ]
             ),
-            CssRule::from((Headings, declaration!(LineHeight, "1.1")))
+            CssRule::from(Headings)
+                .content(CssDeclaration::from(LineHeight).value("1.1"))
                 .push_selectors_list(bake_comma!["button", "input", "label"]),
-            (Headings, declaration!(TextWrap, "balance")),
+            CssRule::from(Headings).content(CssDeclaration::from(TextWrap).value("balance")),
             AnchorDefaults,
             rule!(
                 bake_comma!["img", "picture"],
-                declarations_block![(MaxWidth, "100%"), (Display, "block")]
+                declarations_block![
+                    CssDeclaration::from(MaxWidth).value("100%"),
+                    CssDeclaration::from(Display).value("block")
+                ]
             ),
-            (
-                FormControls,
-                declarations_block![(FontFamily, "inherit"), (FontSize, "inherit")]
+            CssRule::from(FormControls).content(declarations_block![
+                CssDeclaration::from(FontFamily).value("inherit"),
+                CssDeclaration::from(FontSize).value("inherit")
+            ]),
+            rule!(
+                "textarea:not([rows])",
+                CssDeclaration::from(MinHeight).value("10em")
             ),
-            rule!("textarea:not([rows])", declaration!(MinHeight, "10em")),
-            rule!(":target", declaration!(ScrollMarginBlock, "5ex")),
+            rule!(
+                ":target",
+                CssDeclaration::from(ScrollMarginBlock).value("5ex")
+            ),
         ]
     }
 }

@@ -14,8 +14,8 @@ use crate::{prelude::*, recipes::*};
 ///
 /// let css_rule = CssRule::new()
 ///     .push_selector("body")
-///     .push_property(CssDeclaration::from(Height).content("100vh"))
-///     .push_property(CssDeclaration::from(Margin).content("0"));
+///     .push_property(CssDeclaration::from(Height).value("100vh"))
+///     .push_property(CssDeclaration::from(Margin).value("0"));
 /// let style = HtmlStyle::new().content(css_rule);
 ///
 /// let body = HtmlBody::new().content("Hello, world!");

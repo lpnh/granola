@@ -9,7 +9,7 @@ use crate::prelude::*;
 /// ```rust
 /// use granola::{prelude::*, recipes::*};
 ///
-/// let css_gap = CssDeclaration::from(Gap).content("1rem");
+/// let css_gap = CssDeclaration::from(Gap).value("1rem");
 ///
 /// assert_eq!(css_gap.bake(), "gap: 1rem;");
 /// ```
