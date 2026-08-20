@@ -290,6 +290,7 @@ fn daisyui_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
 ///
 /// For structs with a `content` field:
 /// - a `content(content)` builder method
+/// - an `escape(content)` builder method
 /// - a `From<(R, impl Into<Bake>)>` impl (`Foo::from((recipe, content))`)
 ///
 /// And also the matching `Has*` impl for:
@@ -345,6 +346,14 @@ fn recipe_derive_impl(input: &DeriveInput) -> syn::Result<TokenStream2> {
                     content: impl ::std::convert::Into<::granola::oven::Bake>,
                 ) -> Self {
                     self.content = content.into();
+                    self
+                }
+
+                pub fn escape(
+                    mut self,
+                    content: impl ::askama::FastWritable,
+                ) -> Self {
+                    self.content = ::granola::oven::escape_content(content).into();
                     self
                 }
             },

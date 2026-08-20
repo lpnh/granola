@@ -21,7 +21,7 @@ pub mod prelude {
     pub use super::{
         DaisyUI, Granola, Recipe, css::*, daisyui::traits::*, html::*, oven::Bake, recipes, svg::*,
     };
-    pub use crate::{bake, bake_comma, bake_ws};
+    pub use crate::{bake, bake_comma, bake_ws, escape, escape_comma, escape_ws};
 }
 
 pub mod macros {
